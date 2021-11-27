@@ -19,7 +19,7 @@ class Quarter extends React.Component {
             } else {
                 classes = (
                     <div className={`p-2 rounded-lg bg-white border-2 border-dashed border-black
-                    overflow-scroll whitespace-nowrap opacity-40`}>
+                    overflow-hidden whitespace-nowrap opacity-40`}>
                         <p className="text-md font-bold">
                             No classes to show.
                         </p>

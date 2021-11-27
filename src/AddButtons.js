@@ -11,14 +11,15 @@ function AddButton(props) {
 
 function AddButtonSection(props) {
     return (
-        <div className="py-4">
+        <div className="py-2">
             <p className="text-center text-gray-500 font-bold p-2 text-sm">
                 {props.title}
             </p>
-
-            <AddButton text="Fall" color="orange" action={() => {props.action(0);}}/>
-            <AddButton text="Winter" color="red" action={() => {props.action(1);}}/>
-            <AddButton text="Spring" color="emerald" action={() => {props.action(2);}}/>
+            <div className="grid grid-cols-3 gap-0">
+                <AddButton text="Fall" color="orange" action={() => {props.action(0);}}/>
+                <AddButton text="Winter" color="red" action={() => {props.action(1);}}/>
+                <AddButton text="Spring" color="emerald" action={() => {props.action(2);}}/>
+            </div>
         </div>
     )
 }
@@ -28,7 +29,7 @@ function AddButtonSection(props) {
 export default function AddButtons(props) {
 
     return (
-        <div className="grid grid-cols-2">
+        <div className="">
             <AddButtonSection title="FIRST YEAR" action={quarter => {props.action(0, quarter);}}/>
             <AddButtonSection title="SECOND YEAR" action={quarter => {props.action(1, quarter);}}/>
             <AddButtonSection title="THIRD YEAR" action={quarter => {props.action(2, quarter);}}/>

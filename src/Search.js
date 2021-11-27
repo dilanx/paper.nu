@@ -68,7 +68,7 @@ class Search extends React.Component {
         let singleClassView = false;
 
         let searchField = (
-            <div className="sticky top-0 p-2 mb-2 bg-white bg-opacity-75 backdrop-filter backdrop-blur-lg z-10">
+            <div className="sticky top-0 p-2 mb-2 bg-white z-10">
                 <input className="block m-4 mx-auto w-11/12 border-2 border-gray-300 shadow-md
                 rounded-lg hover:border-gray-500 outline-none focus:border-black text-lg p-2 px-4
                 bg-white" value={this.state.search} placeholder="Search for classes..." onChange={event => {
@@ -106,7 +106,7 @@ class Search extends React.Component {
 
 
         return (
-            <div className="border-4 border-black my-2 rounded-xl shadow-lg h-5/6
+            <div className="border-4 border-black my-4 md:my-2 rounded-xl shadow-lg h-5/6
             overflow-scroll overscroll-contain">
                 {!singleClassView && searchField}
                 {!singleClassView && this.getResults()}

@@ -9,7 +9,7 @@ import Alert from './Alert.js';
 
 import { ExclamationIcon } from '@heroicons/react/outline';
 
-const VERSION = '1.0 beta';
+const VERSION = '1.0.3 beta';
 
 class App extends React.Component {
 
@@ -70,18 +70,18 @@ class App extends React.Component {
         return (
             <div className="">
 
-            {this.state.alert &&
-                <Alert data={this.state.alert}
-                    onClose={() => {
-                        this.postShowAlert();
-                    }}
-                    onConfirm={() => {
-                        if (this.state.alert.action) {
-                            this.state.alert.action();
+                {this.state.alert &&
+                    <Alert data={this.state.alert}
+                        onClose={() => {
+                            this.postShowAlert();
+                        }}
+                        onConfirm={() => {
+                            if (this.state.alert.action) {
+                                this.state.alert.action();
+                            }
+                            this.postShowAlert();
                         }
-                        this.postShowAlert();
-                    }
-            }/>}
+                }/>}
 
                 <div className="grid grid-cols-1 md:grid-cols-8">
                     <div className="col-span-2 px-4 block md:sticky top-0 h-96 md:h-screen ">

@@ -28,6 +28,22 @@ function decodeCourse(encodedCourse) {
 
 let Utility = {
 
+    getTotalCredits: data => {
+
+        let total = 0;
+
+        for (let y = 0; y < data.length; y++) {
+            for (let q = 0; q < data[y].length; q++) {
+                for (let c = 0; c < data[y][q].length; c++) {
+                    total += parseFloat(data[y][q][c].units);
+                }
+            }
+        }
+
+        return total;
+
+    },
+
     checkPrereq: (courseData, year, quarter, data) => {
 
         if (!courseData.prereqs || courseData.prereqs.length === 0) {
