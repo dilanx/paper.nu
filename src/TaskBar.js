@@ -39,15 +39,15 @@ class TaskBar extends React.Component {
 
                 }}/>
 
-                <TaskBarButton name="Save / Share" color="green" action={() => {
+                <TaskBarButton name="Save / Share" color="emerald" action={() => {
                     this.props.alert({
                         title: 'Ready to share!',
                         message: 'All of your plan data is stored in the URL. When you make changes to your plan, the URL is updated to reflect those changes. Save it somewhere, or share with a friend!',
                         confirmButton: 'Copy to clipboard',
-                        confirmButtonColor: 'green',
+                        confirmButtonColor: 'emerald',
                         cancelButton: 'Close',
-                        iconBackgroundColor: 'green',
-                        icon: (<SaveIcon className="h-6 w-6 text-green-600" aria-hidden="true" />),
+                        iconBackgroundColor: 'emerald',
+                        icon: (<SaveIcon className="h-6 w-6 text-emerald-600" aria-hidden="true" />),
                         textView: window.location.href,
                         action: () => {
                             navigator.clipboard.writeText(window.location.href);

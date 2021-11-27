@@ -1,7 +1,11 @@
 const colors = require('tailwindcss/colors');
 
 module.exports = {
-  purge: ['./src/**/*.{js,jsx,ts,tsx,css}', './public/index.html'],
+  purge: {
+    content: ['./src/**/*.{js,jsx,ts,tsx,css}', './public/index.html'],
+    safelist: [/(border|bg|text)-(.*)-(50|100|200|300|400|500|600|700|800|900)/]
+
+  },
   darkMode: false, // or 'media' or 'class'
   theme: {
     colors: {
@@ -22,7 +26,7 @@ module.exports = {
       indigo: colors.indigo,
       violet: colors.violet,
       purple: colors.purple,
-      fuschia: colors.fuschia,
+      fuchsia: colors.fuchsia,
       pink: colors.pink,
       rose: colors.rose,
       white: colors.white,

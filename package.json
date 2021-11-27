@@ -18,7 +18,7 @@
   },
   "scripts": {
     "start": "export NODE_OPTIONS=--openssl-legacy-provider && craco start TAILWIND_MODE=watch",
-    "build": "craco build",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",

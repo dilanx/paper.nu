@@ -32,13 +32,23 @@ class App extends React.Component {
             }
         })
 
+        let defaultAlert = null;
+
         if (failed) {
-            console.log('failed');
+            data = [[[], [], []], [[], [], []], [[], [], []], [[], [], []]];
+            defaultAlert = {
+                title: 'Unable to load plan.',
+                message: `The plan URL you entered is not valid. Ensure that it hasn't been manualy modified.`,
+                confirmButton: 'What a shame.',
+                confirmButtonColor: 'red',
+                iconBackgroundColor: 'red',
+                icon: (<ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />)
+            }
         }
 
         this.state = {
             data: data,
-            alert: null
+            alert: defaultAlert
 
         }
 

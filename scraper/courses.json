@@ -5158,43 +5158,99 @@
             "id": "COMP_SCI 150-0",
             "name": "Fundamentals of Computer Programming 1.5",
             "units": "1",
-            "description": "An introduction to Object-oriented programming: focus on Python but including a brief introduction to a statically typed language (e.g. C++). Students will use some approaches from Artificial Intelligence and Machine Learning to complete programming assignments. Required for the computer science degree."
+            "description": "An introduction to Object-oriented programming: focus on Python but including a brief introduction to a statically typed language (e.g. C++). Students will use some approaches from Artificial Intelligence and Machine Learning to complete programming assignments. Required for the computer science degree.",
+            "prereqs": [
+                [
+                    "COMP_SCI 110-0"
+                ],
+                [
+                    "COMP_SCI 111-0"
+                ],
+                [
+                    "GEN_ENG 205-1"
+                ],
+                [
+                    "GEN_ENG 206-1"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 211-0",
             "name": "Fundamentals of Computer Programming II",
             "units": "1",
-            "description": "Programming in statically-typed imperative languages.  The von Neuman machine model: pointers, address manipulation, and manual memory management.  Object-oriented programming and design.  The C/C++ language family.  Required for the computer science degree.  Not to be taken for credit with COMP_SCI 230-0."
+            "description": "Programming in statically-typed imperative languages.  The von Neuman machine model: pointers, address manipulation, and manual memory management.  Object-oriented programming and design.  The C/C++ language family.  Required for the computer science degree.  Not to be taken for credit with COMP_SCI 230-0.",
+            "prereqs": [
+                [
+                    "COMP_SCI 111-0"
+                ],
+                [
+                    "COMP_SCI 150-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 212-0",
             "name": "Mathematical Foundations of Comp Science",
             "units": "1",
-            "description": "Basic concepts of finite and structural mathematics. Sets, axiomatic systems, the propositional and predicate calculi, and graph theory. Application to computer science: sequential machines, formal grammars, and software design."
+            "description": "Basic concepts of finite and structural mathematics. Sets, axiomatic systems, the propositional and predicate calculi, and graph theory. Application to computer science: sequential machines, formal grammars, and software design.",
+            "prereqs": [
+                [
+                    "MATH 228-1"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 213-0",
             "name": "Introduction to Computer Systems",
             "units": "1",
-            "description": "The hierarchy of abstractions and implementations that make up a modern computer system; demystifying the machine and the tools used to program it; systems programming in C in the UNIX environment. Preparation for upper-level systems courses."
+            "description": "The hierarchy of abstractions and implementations that make up a modern computer system; demystifying the machine and the tools used to program it; systems programming in C in the UNIX environment. Preparation for upper-level systems courses.",
+            "prereqs": [
+                [
+                    "COMP_SCI 211-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 214-0",
             "name": "Data Structures & Algorithms",
             "units": "1",
-            "description": "Design, implementation, and performance analysis of abstract data types; data structures and their algorithms. Topics include fundamental collection classes, tree and graph representations and walks, search trees, sorting, priority queues and heaps, least-cost paths computations, and disjoint-set structures. Required for the computer science degree."
+            "description": "Design, implementation, and performance analysis of abstract data types; data structures and their algorithms. Topics include fundamental collection classes, tree and graph representations and walks, search trees, sorting, priority queues and heaps, least-cost paths computations, and disjoint-set structures. Required for the computer science degree.",
+            "prereqs": [
+                [
+                    "COMP_SCI 111-0",
+                    "COMP_SCI 211-0"
+                ],
+                [
+                    "COMP_SCI 111-0",
+                    "COMP_SCI 150-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 217-0",
             "name": "Data Management & Information Processing",
             "units": "1",
-            "description": "This class offers a hands-on introduction to data representation, data modelling, and the SQL language for accessing and analyzing data in relational databases. Students access and analyze data in real-world large-scale databases from the public domain. Not for computer science or computer engineering degree candidates."
+            "description": "This class offers a hands-on introduction to data representation, data modelling, and the SQL language for accessing and analyzing data in relational databases. Students access and analyze data in real-world large-scale databases from the public domain. Not for computer science or computer engineering degree candidates.",
+            "prereqs": [
+                [
+                    "COMP_SCI 110-0"
+                ],
+                [
+                    "COMP_SCI 111-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 230-0",
             "name": "Programming for Engineers",
             "units": "1",
-            "description": "Introduction to computer programming in an object-oriented language. Emphasis on applications to computer systems, computer simulation, and discrete optimization. Basic principles of software engineering. Not to be taken for credit with or after COMP_SCI 211-0."
+            "description": "Introduction to computer programming in an object-oriented language. Emphasis on applications to computer systems, computer simulation, and discrete optimization. Basic principles of software engineering. Not to be taken for credit with or after COMP_SCI 211-0.",
+            "prereqs": [
+                [
+                    "GEN_ENG 205-1",
+                    "GEN_ENG 205-2"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 295-0",
@@ -5206,19 +5262,38 @@
             "id": "COMP_SCI 301-0",
             "name": "Introduction to Robotics Laboratory",
             "units": "1",
-            "description": "Lab-based introduction to robotics, focusing on hardware (sensors/ actuators) and software (sensor processing/behavior development); motion control and planning; artificial intelligence; machine learning. Not open to graduate students except by consent of instructor."
+            "description": "Lab-based introduction to robotics, focusing on hardware (sensors/ actuators) and software (sensor processing/behavior development); motion control and planning; artificial intelligence; machine learning. Not open to graduate students except by consent of instructor.",
+            "prereqs": [
+                [
+                    "COMP_SCI 110-0"
+                ],
+                [
+                    "COMP_SCI 111-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 310-0",
             "name": "Scalable Software Architectures",
             "units": "1",
-            "description": "Teaches software design principles for building high-scale Internet services.  Focuses on challenges arising when assembling software services that run on many machines in parallel and which require the coordination of multiple software applications."
+            "description": "Teaches software design principles for building high-scale Internet services.  Focuses on challenges arising when assembling software services that run on many machines in parallel and which require the coordination of multiple software applications.",
+            "prereqs": [
+                [
+                    "COMP_SCI 213-0",
+                    "COMP_SCI 214-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 313-0",
             "name": "Tangible Interaction Design and Learning",
             "units": "1",
-            "description": "The use of tangible interaction to create innovative learning experiences, including distributed cognition, embodied interaction, cultural forms, and design frameworks."
+            "description": "The use of tangible interaction to create innovative learning experiences, including distributed cognition, embodied interaction, cultural forms, and design frameworks.",
+            "prereqs": [
+                [
+                    "COMP_SCI 110-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 314-0",
@@ -5236,25 +5311,49 @@
             "id": "COMP_SCI 321-0",
             "name": "Programming Languages",
             "units": "1",
-            "description": "Introduction to key parts of programming languages: syntax, semantics, and pragmatics. Implementation of a series of interpreters that show how various aspects of programming languages behave."
+            "description": "Introduction to key parts of programming languages: syntax, semantics, and pragmatics. Implementation of a series of interpreters that show how various aspects of programming languages behave.",
+            "prereqs": [
+                [
+                    "COMP_SCI 111-0",
+                    "COMP_SCI 214-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 322-0",
             "name": "Compiler Construction",
             "units": "1",
-            "description": "The compiler is the programmer's primary tool. Understanding the compiler is therefore critical for programmers, even if they never build one. Furthermore, many design techniques that emerged in the context of compilers are useful for a range of other application areas. This course introduces students to the essential elements of building a compiler: parsing, context-sensitive property checking, code linearization, register allocation, etc. To take this course, students are expected to already understand how programming languages behave, to a fairly detailed degree. The material in the course builds on that knowledge via a series of semantics preserving transformations that start with a fairly high-level programming language and culminate in machine code."
+            "description": "The compiler is the programmer's primary tool. Understanding the compiler is therefore critical for programmers, even if they never build one. Furthermore, many design techniques that emerged in the context of compilers are useful for a range of other application areas. This course introduces students to the essential elements of building a compiler: parsing, context-sensitive property checking, code linearization, register allocation, etc. To take this course, students are expected to already understand how programming languages behave, to a fairly detailed degree. The material in the course builds on that knowledge via a series of semantics preserving transformations that start with a fairly high-level programming language and culminate in machine code.",
+            "prereqs": [
+                [
+                    "COMP_SCI 213-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 323-0",
             "name": "Code Analysis and Transformation",
             "units": "1",
-            "description": "Fast, highly sophisticated code analysis and code transformation tools are essential for modern software development. Before releasing its mobile apps, Facebook submits them to a tool called Infer that finds bugs by static analysis, i.e., without even having to run the code, and guides developers in fixing them. Google Chrome and Mozilla Firefox analyze and optimize JavaScript code to make browsers acceptably responsive. Performance-critical systems and application software would be impossible to build and evolve without compilers that derive highly optimized machine code from high-level source code that humans can understand. Understanding what modern code analysis and transformation techniques can and can't do is a prerequisite for research on both software engineering and computer architecture since hardware relies on software to realize its potential. In this class, you will learn the fundamentals of code analysis and transformation, and you will apply them by extending LLVM, a compiler framework now in production use by Apple, Adobe, Intel and other industrial and academic enterprises."
+            "description": "Fast, highly sophisticated code analysis and code transformation tools are essential for modern software development. Before releasing its mobile apps, Facebook submits them to a tool called Infer that finds bugs by static analysis, i.e., without even having to run the code, and guides developers in fixing them. Google Chrome and Mozilla Firefox analyze and optimize JavaScript code to make browsers acceptably responsive. Performance-critical systems and application software would be impossible to build and evolve without compilers that derive highly optimized machine code from high-level source code that humans can understand. Understanding what modern code analysis and transformation techniques can and can't do is a prerequisite for research on both software engineering and computer architecture since hardware relies on software to realize its potential. In this class, you will learn the fundamentals of code analysis and transformation, and you will apply them by extending LLVM, a compiler framework now in production use by Apple, Adobe, Intel and other industrial and academic enterprises.",
+            "prereqs": [
+                [
+                    "COMP_SCI 213-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 325-1",
             "name": "Artificial Intelligence Programming",
             "units": "1",
-            "description": "Introduction to LISP and programming knowledge-based systems and interfaces. Strong emphasis on writing maintainable, extensible systems. Topics include semantic net-works, frames, pattern matching, deductive inference rules, case-based reasoning, and discrimination trees. Project-driven. Substantial programming assignments."
+            "description": "Introduction to LISP and programming knowledge-based systems and interfaces. Strong emphasis on writing maintainable, extensible systems. Topics include semantic net-works, frames, pattern matching, deductive inference rules, case-based reasoning, and discrimination trees. Project-driven. Substantial programming assignments.",
+            "prereqs": [
+                [
+                    "COMP_SCI 110-0"
+                ],
+                [
+                    "COMP_SCI 111-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 330-0",
@@ -5272,19 +5371,35 @@
             "id": "COMP_SCI 335-0",
             "name": "Introduction to the Theory of Computation",
             "units": "1",
-            "description": "Mathematical foundations of computation, including computability, relationships of time and space, and the P vs. NP problem."
+            "description": "Mathematical foundations of computation, including computability, relationships of time and space, and the P vs. NP problem.",
+            "prereqs": [
+                [
+                    "COMP_SCI 212-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 336-0",
             "name": "Design & Analysis of Algorithms",
             "units": "1",
-            "description": "Analysis techniques: solving recurrence equations. Algorithm design techniques: divide and conquer, the greedy method, backtracking, branch-and-bound, and dynamic programming. Sorting and selection algorithms, order statistics, heaps, and priority queues."
+            "description": "Analysis techniques: solving recurrence equations. Algorithm design techniques: divide and conquer, the greedy method, backtracking, branch-and-bound, and dynamic programming. Sorting and selection algorithms, order statistics, heaps, and priority queues.",
+            "prereqs": [
+                [
+                    "COMP_SCI 111-0",
+                    "COMP_SCI 212-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 337-0",
             "name": "Natural Language Processing",
             "units": "1",
-            "description": "Semantics-oriented introduction to natural language processing, broadly construed. Representation of meaning and knowledge inference in story understanding, script/frame theory, plans and plan recognition, counter-planning, and thematic structures."
+            "description": "Semantics-oriented introduction to natural language processing, broadly construed. Representation of meaning and knowledge inference in story understanding, script/frame theory, plans and plan recognition, counter-planning, and thematic structures.",
+            "prereqs": [
+                [
+                    "COMP_SCI 348-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 338-0",
@@ -5296,13 +5411,33 @@
             "id": "COMP_SCI 339-0",
             "name": "Introduction to Database Systems",
             "units": "1",
-            "description": "Data models and database design. Modeling the real world: structures, constraints, and operations. The entity relationship to data modeling (including network hierarchical and object-oriented), emphasis on the relational model. Use of existing database systems for the implementation of information systems."
+            "description": "Data models and database design. Modeling the real world: structures, constraints, and operations. The entity relationship to data modeling (including network hierarchical and object-oriented), emphasis on the relational model. Use of existing database systems for the implementation of information systems.",
+            "prereqs": [
+                [
+                    "COMP_SCI 214-0",
+                    "COMP_SCI 213-0"
+                ],
+                [
+                    "COMP_SCI 214-0",
+                    "COMP_ENG 205-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 340-0",
             "name": "Introduction to Networking",
             "units": "1",
-            "description": "A top-down exploration of networking using the five-layer model and the TCP/IP stack, covering each layer in depth. Students build web clients, servers, and a TCP implementation and implement routing algorithms."
+            "description": "A top-down exploration of networking using the five-layer model and the TCP/IP stack, covering each layer in depth. Students build web clients, servers, and a TCP implementation and implement routing algorithms.",
+            "prereqs": [
+                [
+                    "COMP_SCI 214-0",
+                    "COMP_SCI 213-0"
+                ],
+                [
+                    "COMP_SCI 214-0",
+                    "COMP_ENG 205-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 341-0",
@@ -5314,19 +5449,41 @@
             "id": "COMP_SCI 343-0",
             "name": "Operating Systems",
             "units": "1",
-            "description": "Fundamental overview of operating systems, including: concurrency (processes, synchronization, semaphores, monitors, deadlock); memory management (segmentation, paging virtual memory policies); software system architectures (level structures, microkernals); file systems (directory structures, file organization, RAID); protection (access control, capabilities, encryption, signatures, authentication). Requires substantial programming projects."
+            "description": "Fundamental overview of operating systems, including: concurrency (processes, synchronization, semaphores, monitors, deadlock); memory management (segmentation, paging virtual memory policies); software system architectures (level structures, microkernals); file systems (directory structures, file organization, RAID); protection (access control, capabilities, encryption, signatures, authentication). Requires substantial programming projects.",
+            "prereqs": [
+                [
+                    "COMP_SCI 214-0",
+                    "COMP_SCI 213-0"
+                ],
+                [
+                    "COMP_SCI 214-0",
+                    "COMP_ENG 205-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 344-0",
             "name": "Design of Computer Problem Solvers",
             "units": "1",
-            "description": "Principles and practice of organizing and building artificial intelligence reasoning systems. Pattern-directed rule systems, truth-maintenance systems, and constraint languages."
+            "description": "Principles and practice of organizing and building artificial intelligence reasoning systems. Pattern-directed rule systems, truth-maintenance systems, and constraint languages.",
+            "prereqs": [
+                [
+                    "COMP_SCI 348-0",
+                    "COMP_SCI 325-1"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 345-0",
             "name": "Distributed Systems",
             "units": "1",
-            "description": "Basic principles behind distributed systems (collections of independent components that appear to users as a single coherent system) and main paradigms used to organize them."
+            "description": "Basic principles behind distributed systems (collections of independent components that appear to users as a single coherent system) and main paradigms used to organize them.",
+            "prereqs": [
+                [
+                    "COMP_SCI 213-0",
+                    "COMP_SCI 214-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 348-0",
@@ -5338,31 +5495,58 @@
             "id": "COMP_SCI 349-0",
             "name": "Machine Learning",
             "units": "1",
-            "description": "Study of algorithms that improve through experience. Topics typically include Bayesian learning, decision trees, genetic algorithms, neural networks, Markov models, and reinforcement learning. Assignments include programming projects and written work."
+            "description": "Study of algorithms that improve through experience. Topics typically include Bayesian learning, decision trees, genetic algorithms, neural networks, Markov models, and reinforcement learning. Assignments include programming projects and written work.",
+            "prereqs": [
+                [
+                    "COMP_SCI 348-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 350-0",
             "name": "Introduction to Computer Security",
             "units": "1",
-            "description": "Basic principles and practices of computer and information security. Software, operating system, and network security techniques, with detailed analysis of real-world examples. Topics include cryptography, authentication, software and operating system security (e.g., buffer overflow), Internet vulnerability (DoS attacks, viruses/worms, etc.), intrusion detection systems, firewalls, VPN, and web and wireless security."
+            "description": "Basic principles and practices of computer and information security. Software, operating system, and network security techniques, with detailed analysis of real-world examples. Topics include cryptography, authentication, software and operating system security (e.g., buffer overflow), Internet vulnerability (DoS attacks, viruses/worms, etc.), intrusion detection systems, firewalls, VPN, and web and wireless security.",
+            "prereqs": [
+                [
+                    "COMP_SCI 213-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 351-1",
             "name": "Introduction to Computer Graphics",
             "units": "1",
-            "description": "Mathematical software and hardware requirements for computer graphics systems. Data structures and programming languages. Random displays. Graphic applications."
+            "description": "Mathematical software and hardware requirements for computer graphics systems. Data structures and programming languages. Random displays. Graphic applications.",
+            "prereqs": [
+                [
+                    "COMP_SCI 214-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 351-2",
             "name": "Intermediate Computer Graphics",
             "units": "1",
-            "description": "Methods and theory of computer graphics. Project-oriented approach. Describing shapes, movement, and lighting effects; interactive elements."
+            "description": "Methods and theory of computer graphics. Project-oriented approach. Describing shapes, movement, and lighting effects; interactive elements.",
+            "prereqs": [
+                [
+                    "COMP_SCI 214-0",
+                    "COMP_SCI 351-1"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 352-0",
             "name": "Machine Perception of Music & Audio",
             "units": "1",
-            "description": "Machine extraction of musical structure in audio and MIDI and score files, covering areas such as source separation and perceptual mapping of audio to machine-quantifiable measures."
+            "description": "Machine extraction of musical structure in audio and MIDI and score files, covering areas such as source separation and perceptual mapping of audio to machine-quantifiable measures.",
+            "prereqs": [
+                [
+                    "COMP_SCI 211-0",
+                    "GEN_ENG 205-2"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 354-0",
@@ -5383,16 +5567,16 @@
             "description": "A hands-on introduction and experience to the growing field of mobile Health. Students work together on a project with clinicians and faculty in medicine, building a unique mHealth system while testing their system on a small population. Theory-driven project hypothesis, technology selection and development, passive sensing data analytic chain understanding and implementation, and project management."
         },
         {
-            "id": "COMP_SCI 370-0",
-            "name": "Computer Game Design",
-            "units": "1",
-            "description": "Plot, narrative, and character simulation for creating game worlds; artificial intelligence for synthetic characters; tuning gameplay. Substantial programming and project work."
-        },
-        {
             "id": "COMP_SCI 371-0",
             "name": "Knowledge Representation and Reasoning",
             "units": "1",
-            "description": "Principles and practices of knowledge representation, including logics, ontologies, commonsense knowledge, and semantic web technologies."
+            "description": "Principles and practices of knowledge representation, including logics, ontologies, commonsense knowledge, and semantic web technologies.",
+            "prereqs": [
+                [
+                    "COMP_SCI 348-0",
+                    "COMP_SCI 325-1"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 372-0",
@@ -5404,19 +5588,35 @@
             "id": "COMP_SCI 376-0",
             "name": "Computer Game Design and Development",
             "units": "1",
-            "description": "Introduction to design of simulation-based media, with an emphasis on 2D game design.   Mathematical preliminaries: linear, affine, and projective spaces, linear transforms, inner and exterior products, unit quaternions; Architecture: update/render loop, component systems, serialization and deserialization, event handling and asynchronous processing, multitasking; Rendering: scene graphs, meshes, shaders, sprites; Networking; Audio; Physics: particles, rigid bodies, collision detection; Gameplay design."
+            "description": "Introduction to design of simulation-based media, with an emphasis on 2D game design.   Mathematical preliminaries: linear, affine, and projective spaces, linear transforms, inner and exterior products, unit quaternions; Architecture: update/render loop, component systems, serialization and deserialization, event handling and asynchronous processing, multitasking; Rendering: scene graphs, meshes, shaders, sprites; Networking; Audio; Physics: particles, rigid bodies, collision detection; Gameplay design.",
+            "prereqs": [
+                [
+                    "COMP_SCI 214-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 377-0",
             "name": "Game Design Studio",
             "units": "1",
-            "description": "In this course, students will design and develop games using the Unity game engine, with focus on team-based projects and agile development practices. Lectures will cover game design theory, game architecture and implementation, and the business of game development. Students will participate in class discussion and evaluation of projects in progress, to develop their skills in iterative design and implementation."
+            "description": "In this course, students will design and develop games using the Unity game engine, with focus on team-based projects and agile development practices. Lectures will cover game design theory, game architecture and implementation, and the business of game development. Students will participate in class discussion and evaluation of projects in progress, to develop their skills in iterative design and implementation.",
+            "prereqs": [
+                [
+                    "COMP_SCI 376-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 393-0",
             "name": "Software Construction",
             "units": "1",
-            "description": "Building software is a craft that requires careful design. This course teaches software design principles in a studio setting. Each week, students present their programs to the class for review. Together, the class evaluates the programs for correctness and, more importantly, clarity and design. Expect to learn how to build reliable, maintainable, extensible software and how to read others' codes."
+            "description": "Building software is a craft that requires careful design. This course teaches software design principles in a studio setting. Each week, students present their programs to the class for review. Together, the class evaluates the programs for correctness and, more importantly, clarity and design. Expect to learn how to build reliable, maintainable, extensible software and how to read others' codes.",
+            "prereqs": [
+                [
+                    "COMP_SCI 111-0",
+                    "COMP_SCI 214-0"
+                ]
+            ]
         },
         {
             "id": "COMP_SCI 394-0",
@@ -21340,475 +21540,713 @@
     "majors": {
         "AF_AM_ST": {
             "display": "African American Studies",
-            "color": "red"
+            "color": "red",
+            "id": "000"
         },
         "AFST": {
             "display": "African Studies",
-            "color": "orange"
+            "color": "orange",
+            "id": "001"
         },
         "AMER_ST": {
             "display": "American Studies",
-            "color": "amber"
+            "color": "amber",
+            "id": "002"
         },
         "ANTHRO": {
             "display": "Anthropology",
-            "color": "yellow"
+            "color": "yellow",
+            "id": "003"
         },
         "ARABIC": {
             "display": "Arabic",
-            "color": "lime"
+            "color": "lime",
+            "id": "004"
         },
         "ART_HIST": {
             "display": "Art History",
-            "color": "green"
+            "color": "green",
+            "id": "005"
         },
         "ART": {
             "display": "Art Theory & Practice",
-            "color": "emerald"
+            "color": "emerald",
+            "id": "006"
         },
         "ASIAN_AM": {
             "display": "Asian American Studies",
-            "color": "teal"
+            "color": "teal",
+            "id": "007"
         },
         "ASIAN_LC": {
             "display": "Asian Languages and Cultures",
-            "color": "cyan"
+            "color": "cyan",
+            "id": "008"
         },
         "ASTRON": {
             "display": "Astronomy",
-            "color": "sky"
+            "color": "sky",
+            "id": "009"
         },
         "BIOL_SCI": {
             "display": "Biological Sciences",
-            "color": "blue"
+            "color": "blue",
+            "id": "010"
         },
         "BMD_ENG": {
             "display": "Biomedical Engineering",
-            "color": "indigo"
+            "color": "indigo",
+            "id": "011"
         },
         "BUS_INST": {
             "display": "Business Institutions",
-            "color": "violet"
+            "color": "violet",
+            "id": "012"
         },
         "CRDV": {
             "display": "Career Development",
-            "color": "purple"
+            "color": "purple",
+            "id": "013"
         },
         "LDRSHP": {
             "display": "Center for Leadership",
-            "color": "fuchsia"
+            "color": "fuchsia",
+            "id": "014"
         },
         "CHEM_ENG": {
             "display": "Chemical Engineering",
-            "color": "pink"
+            "color": "pink",
+            "id": "015"
         },
         "CHEM": {
             "display": "Chemistry",
-            "color": "rose"
+            "color": "rose",
+            "id": "016"
         },
         "CFS": {
             "display": "Chicago Field Studies",
-            "color": "red"
+            "color": "red",
+            "id": "017"
         },
         "CHINESE": {
             "display": "Chinese",
-            "color": "orange"
+            "color": "orange",
+            "id": "018"
         },
         "CIV_ENV": {
             "display": "Civil and Environmental Engineering",
-            "color": "amber"
+            "color": "amber",
+            "id": "019"
         },
         "CLASSICS": {
             "display": "Classics - Readings in English",
-            "color": "yellow"
+            "color": "yellow",
+            "id": "020"
         },
         "COG_SCI": {
             "display": "Cognitive Science",
-            "color": "lime"
+            "color": "lime",
+            "id": "021"
         },
         "CMN": {
             "display": "Communication Related Courses",
-            "color": "green"
+            "color": "green",
+            "id": "022"
         },
         "CSD": {
             "display": "Communication Sciences and Disorders",
-            "color": "emerald"
+            "color": "emerald",
+            "id": "023"
         },
         "COMM_ST": {
             "display": "Communication Studies",
-            "color": "teal"
+            "color": "teal",
+            "id": "024"
         },
         "COMP_LIT": {
             "display": "Comparative Literary Studies",
-            "color": "cyan"
+            "color": "cyan",
+            "id": "025"
         },
         "COMP_ENG": {
             "display": "Computer Engineering",
-            "color": "sky"
+            "color": "sky",
+            "id": "026"
         },
         "COMP_SCI": {
             "display": "Computer Science",
-            "color": "blue"
+            "color": "blue",
+            "id": "027"
         },
         "CONDUCT": {
             "display": "Conducting",
-            "color": "indigo"
+            "color": "indigo",
+            "id": "028"
         },
         "DANCE": {
             "display": "Dance",
-            "color": "violet"
+            "color": "violet",
+            "id": "029"
         },
         "DATA_ENG": {
             "display": "Data Science & Engineering",
-            "color": "purple"
+            "color": "purple",
+            "id": "030"
         },
         "EARTH": {
             "display": "Earth and Planetary Sciences",
-            "color": "fuchsia"
+            "color": "fuchsia",
+            "id": "031"
         },
         "ECON": {
             "display": "Economics",
-            "color": "pink"
+            "color": "pink",
+            "id": "032"
         },
         "ELEC_ENG": {
             "display": "Electrical Engineering",
-            "color": "rose"
+            "color": "rose",
+            "id": "033"
         },
         "ES_APPM": {
             "display": "Engineering Science & Applied Math",
-            "color": "red"
+            "color": "red",
+            "id": "034"
         },
         "ENGLISH": {
             "display": "English",
-            "color": "orange"
+            "color": "orange",
+            "id": "035"
         },
         "ENTREP": {
             "display": "Entrepreneurship & Innovation",
-            "color": "amber"
+            "color": "amber",
+            "id": "036"
         },
         "ENVR_POL": {
             "display": "Environmental Policy & Culture",
-            "color": "yellow"
+            "color": "yellow",
+            "id": "037"
         },
         "ENVR_SCI": {
             "display": "Environmental Science",
-            "color": "lime"
+            "color": "lime",
+            "id": "038"
         },
         "KELLG_FE": {
             "display": "Financial Economics",
-            "color": "green"
+            "color": "green",
+            "id": "039"
         },
         "FRENCH": {
             "display": "French",
-            "color": "emerald"
+            "color": "emerald",
+            "id": "040"
         },
         "GNDR_ST": {
             "display": "Gender Studies",
-            "color": "teal"
+            "color": "teal",
+            "id": "041"
         },
         "GEN_ENG": {
             "display": "General Engineering",
-            "color": "cyan"
+            "color": "cyan",
+            "id": "042"
         },
         "GEN_LA": {
             "display": "General Liberal Arts",
-            "color": "sky"
+            "color": "sky",
+            "id": "043"
         },
         "GEN_MUS": {
             "display": "General Music",
-            "color": "blue"
+            "color": "blue",
+            "id": "044"
         },
         "GEOG": {
             "display": "Geography",
-            "color": "indigo"
+            "color": "indigo",
+            "id": "045"
         },
         "GERMAN": {
             "display": "German",
-            "color": "violet"
+            "color": "violet",
+            "id": "046"
         },
         "GBL_HLTH": {
             "display": "Global Health",
-            "color": "purple"
+            "color": "purple",
+            "id": "047"
         },
         "GREEK": {
             "display": "Greek",
-            "color": "fuchsia"
+            "color": "fuchsia",
+            "id": "048"
         },
         "HEBREW": {
             "display": "Hebrew",
-            "color": "pink"
+            "color": "pink",
+            "id": "049"
         },
         "HIND_URD": {
             "display": "Hindi and Urdu",
-            "color": "rose"
+            "color": "rose",
+            "id": "050"
         },
         "HISTORY": {
             "display": "History",
-            "color": "red"
+            "color": "red",
+            "id": "051"
         },
         "HDC": {
             "display": "Human Development in Context",
-            "color": "orange"
+            "color": "orange",
+            "id": "052"
         },
         "HUM": {
             "display": "Humanities",
-            "color": "amber"
+            "color": "amber",
+            "id": "053"
         },
         "IEMS": {
             "display": "Industrial Engineering & Management Sciences",
-            "color": "yellow"
+            "color": "yellow",
+            "id": "054"
         },
         "ISEN": {
             "display": "Initiative for Sustainability & Energy at NU",
-            "color": "lime"
+            "color": "lime",
+            "id": "055"
         },
         "IMC": {
             "display": "Integrated Marketing Communications",
-            "color": "green"
+            "color": "green",
+            "id": "056"
         },
         "INTG_SCI": {
             "display": "Integrated Science",
-            "color": "emerald"
+            "color": "emerald",
+            "id": "057"
         },
         "INTL_ST": {
             "display": "International Studies",
-            "color": "teal"
+            "color": "teal",
+            "id": "058"
         },
         "ITALIAN": {
             "display": "Italian",
-            "color": "cyan"
+            "color": "cyan",
+            "id": "059"
         },
         "JAPANESE": {
             "display": "Japanese",
-            "color": "sky"
+            "color": "sky",
+            "id": "060"
         },
         "JAZZ_ST": {
             "display": "Jazz Studies",
-            "color": "blue"
+            "color": "blue",
+            "id": "061"
         },
         "JWSH_ST": {
             "display": "Jewish Studies",
-            "color": "indigo"
+            "color": "indigo",
+            "id": "062"
         },
         "JOUR": {
             "display": "Journalism",
-            "color": "violet"
+            "color": "violet",
+            "id": "063"
         },
         "KELLG_CP": {
             "display": "Kellogg Certificate Program for Undergraduates",
-            "color": "purple"
+            "color": "purple",
+            "id": "064"
         },
         "KOREAN": {
             "display": "Korean",
-            "color": "fuchsia"
+            "color": "fuchsia",
+            "id": "065"
         },
         "LATIN": {
             "display": "Latin",
-            "color": "pink"
+            "color": "pink",
+            "id": "066"
         },
         "LATIN_AM": {
             "display": "Latin American & Caribbean Studies",
-            "color": "rose"
+            "color": "rose",
+            "id": "067"
         },
         "LATINO": {
             "display": "Latina and Latino Studies",
-            "color": "red"
+            "color": "red",
+            "id": "068"
         },
         "LOC": {
             "display": "Learning & Organizational Change",
-            "color": "orange"
+            "color": "orange",
+            "id": "069"
         },
         "LRN_SCI": {
             "display": "Learning Sciences",
-            "color": "amber"
+            "color": "amber",
+            "id": "070"
         },
         "LEGAL_ST": {
             "display": "Legal Studies",
-            "color": "yellow"
+            "color": "yellow",
+            "id": "071"
         },
         "LING": {
             "display": "Linguistics",
-            "color": "lime"
+            "color": "lime",
+            "id": "072"
         },
         "KELLG_MA": {
             "display": "Managerial Analytics",
-            "color": "green"
+            "color": "green",
+            "id": "073"
         },
         "MAT_SCI": {
             "display": "Materials Science & Engineering",
-            "color": "emerald"
+            "color": "emerald",
+            "id": "074"
         },
         "MMSS": {
             "display": "Math Methods in the Social Sciences",
-            "color": "teal"
+            "color": "teal",
+            "id": "075"
         },
         "MATH": {
             "display": "Mathematics",
-            "color": "cyan"
+            "color": "cyan",
+            "id": "076"
         },
         "MECH_ENG": {
             "display": "Mechanical Engineering",
-            "color": "sky"
+            "color": "sky",
+            "id": "077"
         },
         "MENA": {
             "display": "Middle East and North African Studies",
-            "color": "blue"
+            "color": "blue",
+            "id": "078"
         },
         "MUSIC": {
             "display": "Music",
-            "color": "indigo"
+            "color": "indigo",
+            "id": "079"
         },
         "MUS_COMP": {
             "display": "Music Composition",
-            "color": "violet"
+            "color": "violet",
+            "id": "080"
         },
         "MUSIC_ED": {
             "display": "Music Education",
-            "color": "purple"
+            "color": "purple",
+            "id": "081"
         },
         "MUS_TECH": {
             "display": "Music Technology",
-            "color": "fuchsia"
+            "color": "fuchsia",
+            "id": "082"
         },
         "MUS_THRY": {
             "display": "Music Theory",
-            "color": "pink"
+            "color": "pink",
+            "id": "083"
         },
         "MUSICOL": {
             "display": "Musicology",
-            "color": "rose"
+            "color": "rose",
+            "id": "084"
         },
         "NAV_SCI": {
             "display": "Naval Science",
-            "color": "red"
+            "color": "red",
+            "id": "085"
         },
         "NEUROSCI": {
             "display": "Neuroscience",
-            "color": "orange"
+            "color": "orange",
+            "id": "086"
         },
         "NICO": {
             "display": "Northwestern Institute for Complex Systems",
-            "color": "amber"
+            "color": "amber",
+            "id": "087"
         },
         "PERF_ST": {
             "display": "Performance Studies",
-            "color": "yellow"
+            "color": "yellow",
+            "id": "088"
         },
         "PERSIAN": {
             "display": "Persian",
-            "color": "lime"
+            "color": "lime",
+            "id": "089"
         },
         "PRDV": {
             "display": "Personal Development",
-            "color": "green"
+            "color": "green",
+            "id": "090"
         },
         "PHIL": {
             "display": "Philosophy",
-            "color": "emerald"
+            "color": "emerald",
+            "id": "091"
         },
         "PHYSICS": {
             "display": "Physics",
-            "color": "teal"
+            "color": "teal",
+            "id": "092"
         },
         "PIANO": {
             "display": "Piano",
-            "color": "cyan"
+            "color": "cyan",
+            "id": "093"
         },
         "POLISH": {
             "display": "Polish",
-            "color": "sky"
+            "color": "sky",
+            "id": "094"
         },
         "POLI_SCI": {
             "display": "Political Science",
-            "color": "blue"
+            "color": "blue",
+            "id": "095"
         },
         "PORT": {
             "display": "Portuguese",
-            "color": "indigo"
+            "color": "indigo",
+            "id": "096"
         },
         "PSYCH": {
             "display": "Psychology",
-            "color": "violet"
+            "color": "violet",
+            "id": "097"
         },
         "RTVF": {
             "display": "Radio/Television/Film",
-            "color": "purple"
+            "color": "purple",
+            "id": "098"
         },
         "RELIGION": {
             "display": "Religion",
-            "color": "fuchsia"
+            "color": "fuchsia",
+            "id": "099"
         },
         "RUSSIAN": {
             "display": "Russian",
-            "color": "pink"
+            "color": "pink",
+            "id": "100"
         },
         "SESP": {
             "display": "School of Education & Social Policy Core",
-            "color": "rose"
+            "color": "rose",
+            "id": "101"
         },
         "SHC": {
             "display": "Science in Human Culture",
-            "color": "red"
+            "color": "red",
+            "id": "102"
         },
         "DSGN": {
             "display": "Segal Design Institute",
-            "color": "orange"
+            "color": "orange",
+            "id": "103"
         },
         "SLAVIC": {
             "display": "Slavic Languages & Literatures",
-            "color": "amber"
+            "color": "amber",
+            "id": "104"
         },
         "SOC_POL": {
             "display": "Social Policy",
-            "color": "yellow"
+            "color": "yellow",
+            "id": "105"
         },
         "SOCIOL": {
             "display": "Sociology",
-            "color": "lime"
+            "color": "lime",
+            "id": "106"
         },
         "SPANISH": {
             "display": "Spanish",
-            "color": "green"
+            "color": "green",
+            "id": "107"
         },
         "STAT": {
             "display": "Statistics",
-            "color": "emerald"
+            "color": "emerald",
+            "id": "108"
         },
         "STRINGS": {
             "display": "String Instruments",
-            "color": "teal"
+            "color": "teal",
+            "id": "109"
         },
         "SWAHILI": {
             "display": "Swahili",
-            "color": "cyan"
+            "color": "cyan",
+            "id": "110"
         },
         "TEACH_ED": {
             "display": "Teacher Education",
-            "color": "sky"
+            "color": "sky",
+            "id": "111"
         },
         "THEATRE": {
             "display": "Theatre",
-            "color": "blue"
+            "color": "blue",
+            "id": "112"
         },
         "TRANS": {
             "display": "Transportation",
-            "color": "indigo"
+            "color": "indigo",
+            "id": "113"
         },
         "TURKISH": {
             "display": "Turkish",
-            "color": "violet"
+            "color": "violet",
+            "id": "114"
         },
         "VOICE": {
             "display": "Voice & Opera",
-            "color": "purple"
+            "color": "purple",
+            "id": "115"
         },
         "WIND_PER": {
             "display": "Wind & Percussion",
-            "color": "fuchsia"
+            "color": "fuchsia",
+            "id": "116"
         },
         "YIDDISH": {
             "display": "Yiddish",
-            "color": "pink"
+            "color": "pink",
+            "id": "117"
         }
+    },
+    "major_ids": {
+        "000": "AF_AM_ST",
+        "001": "AFST",
+        "002": "AMER_ST",
+        "003": "ANTHRO",
+        "004": "ARABIC",
+        "005": "ART_HIST",
+        "006": "ART",
+        "007": "ASIAN_AM",
+        "008": "ASIAN_LC",
+        "009": "ASTRON",
+        "010": "BIOL_SCI",
+        "011": "BMD_ENG",
+        "012": "BUS_INST",
+        "013": "CRDV",
+        "014": "LDRSHP",
+        "015": "CHEM_ENG",
+        "016": "CHEM",
+        "017": "CFS",
+        "018": "CHINESE",
+        "019": "CIV_ENV",
+        "020": "CLASSICS",
+        "021": "COG_SCI",
+        "022": "CMN",
+        "023": "CSD",
+        "024": "COMM_ST",
+        "025": "COMP_LIT",
+        "026": "COMP_ENG",
+        "027": "COMP_SCI",
+        "028": "CONDUCT",
+        "029": "DANCE",
+        "030": "DATA_ENG",
+        "031": "EARTH",
+        "032": "ECON",
+        "033": "ELEC_ENG",
+        "034": "ES_APPM",
+        "035": "ENGLISH",
+        "036": "ENTREP",
+        "037": "ENVR_POL",
+        "038": "ENVR_SCI",
+        "039": "KELLG_FE",
+        "040": "FRENCH",
+        "041": "GNDR_ST",
+        "042": "GEN_ENG",
+        "043": "GEN_LA",
+        "044": "GEN_MUS",
+        "045": "GEOG",
+        "046": "GERMAN",
+        "047": "GBL_HLTH",
+        "048": "GREEK",
+        "049": "HEBREW",
+        "050": "HIND_URD",
+        "051": "HISTORY",
+        "052": "HDC",
+        "053": "HUM",
+        "054": "IEMS",
+        "055": "ISEN",
+        "056": "IMC",
+        "057": "INTG_SCI",
+        "058": "INTL_ST",
+        "059": "ITALIAN",
+        "060": "JAPANESE",
+        "061": "JAZZ_ST",
+        "062": "JWSH_ST",
+        "063": "JOUR",
+        "064": "KELLG_CP",
+        "065": "KOREAN",
+        "066": "LATIN",
+        "067": "LATIN_AM",
+        "068": "LATINO",
+        "069": "LOC",
+        "070": "LRN_SCI",
+        "071": "LEGAL_ST",
+        "072": "LING",
+        "073": "KELLG_MA",
+        "074": "MAT_SCI",
+        "075": "MMSS",
+        "076": "MATH",
+        "077": "MECH_ENG",
+        "078": "MENA",
+        "079": "MUSIC",
+        "080": "MUS_COMP",
+        "081": "MUSIC_ED",
+        "082": "MUS_TECH",
+        "083": "MUS_THRY",
+        "084": "MUSICOL",
+        "085": "NAV_SCI",
+        "086": "NEUROSCI",
+        "087": "NICO",
+        "088": "PERF_ST",
+        "089": "PERSIAN",
+        "090": "PRDV",
+        "091": "PHIL",
+        "092": "PHYSICS",
+        "093": "PIANO",
+        "094": "POLISH",
+        "095": "POLI_SCI",
+        "096": "PORT",
+        "097": "PSYCH",
+        "098": "RTVF",
+        "099": "RELIGION",
+        "100": "RUSSIAN",
+        "101": "SESP",
+        "102": "SHC",
+        "103": "DSGN",
+        "104": "SLAVIC",
+        "105": "SOC_POL",
+        "106": "SOCIOL",
+        "107": "SPANISH",
+        "108": "STAT",
+        "109": "STRINGS",
+        "110": "SWAHILI",
+        "111": "TEACH_ED",
+        "112": "THEATRE",
+        "113": "TRANS",
+        "114": "TURKISH",
+        "115": "VOICE",
+        "116": "WIND_PER",
+        "117": "YIDDISH"
     }
 }

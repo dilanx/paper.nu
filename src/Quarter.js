@@ -11,7 +11,7 @@ class Quarter extends React.Component {
         if (content) {
             if (content.length > 0) {
                 classes = content.map((classData, index) => {
-                    return <Class id={classData.id} name={classData.name} color={Utility.getCourseColor(classData.name)} key={index}
+                    return <Class id={classData.id} name={classData.name} color={Utility.getCourseColor(classData.id)} key={index}
                     delClass={() => {
                         this.props.delClass(index);
                     }}/>

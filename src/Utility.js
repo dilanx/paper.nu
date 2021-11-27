@@ -2,47 +2,30 @@ import courses from './data/courses.json';
 
 function encodeCourse(courseName) {
 
-    let encoded = '';
+    let sp = courseName.split(' ');
 
-    for (let i = 0; i < courseName.length; i++) {
+    let subj = sp[0];
+    let num = sp[1];
 
-        let char = courseName[i];
+    let id = courses.majors[subj].id;
 
-        let encodedChar = char.charCodeAt(0).toString(16);
-
-        if (encodedChar.length === 1) {
-            encodedChar = '0' + encodedChar;
-        }
-
-        encoded += encodedChar;
-
-    }
-
-    return encoded;
+    return id + '_' + num;
 
 }
 
 function decodeCourse(encodedCourse) {
+    
+    let sp = encodedCourse.split('_');
 
-    let decoded = '';
+    let id = sp[0];
+    let num = sp[1];
 
-    for (let i = 0; i < encodedCourse.length; i += 2) {
+    let subj = courses.major_ids[id];
 
-        if (i + 2 > encodedCourse.length) {
-            break;
-        }
-
-        let encodedChar = encodedCourse[i] + encodedCourse[i + 1];
-
-        let char = String.fromCharCode(parseInt(encodedChar, 16));
-
-        decoded += char;
-
-    }
-
-    return decoded;
-
+    return subj + ' ' + num;
+    
 }
+
 let Utility = {
 
     checkPrereq: (courseData, year, quarter, data) => {
@@ -218,3 +201,52 @@ let Utility = {
 }
 
 export default Utility;
+
+/*
+old encoding system but the URLs are too long
+will probably delete this from this file later
+
+function encodeCourse(courseName) {
+
+    let encoded = '';
+
+    for (let i = 0; i < courseName.length; i++) {
+
+        let char = courseName[i];
+
+        let encodedChar = char.charCodeAt(0).toString(16);
+
+        if (encodedChar.length === 1) {
+            encodedChar = '0' + encodedChar;
+        }
+
+        encoded += encodedChar;
+
+    }
+
+    return encoded;
+
+}
+
+function decodeCourse(encodedCourse) {
+
+    let decoded = '';
+
+    for (let i = 0; i < encodedCourse.length; i += 2) {
+
+        if (i + 2 > encodedCourse.length) {
+            break;
+        }
+
+        let encodedChar = encodedCourse[i] + encodedCourse[i + 1];
+
+        let char = String.fromCharCode(parseInt(encodedChar, 16));
+
+        decoded += char;
+
+    }
+
+    return decoded;
+
+}
+*/
