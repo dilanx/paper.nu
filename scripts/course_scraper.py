@@ -75,7 +75,7 @@ print('Finished scraping.')
 
     
 
-with open('courses.json', 'w') as out:
+with open('result.json', 'w') as out:
     json.dump({
         'courses': course_data,
         'majors': majors

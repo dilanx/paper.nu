@@ -1,6 +1,6 @@
 import json
 
-with open('courses.json') as f:
+with open('result.json') as f:
     courses = json.load(f)
 
 majors = courses['majors']
@@ -19,5 +19,5 @@ for major in majors:
 courses['majors'] = majors
 courses['major_ids'] = id_to_major
 
-with open('courses.json', 'w') as out:
+with open('result.json', 'w') as out:
     json.dump(courses, out, indent=4)

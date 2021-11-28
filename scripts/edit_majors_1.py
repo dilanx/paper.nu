@@ -1,6 +1,6 @@
 import json
 
-with open('courses.json') as f:
+with open('result.json') as f:
     courses = json.load(f)
 
 colors = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 
@@ -14,5 +14,5 @@ for major in courses['majors']:
     if cur_color == len(colors):
         cur_color = 0
 
-with open('courses.json', 'w') as out:
+with open('result.json', 'w') as out:
     json.dump(courses, out, indent=4)
