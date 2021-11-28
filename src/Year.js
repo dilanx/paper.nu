@@ -30,7 +30,7 @@ class Year extends React.Component {
                     {quarters}
                 </div>
                 {quarters.length < 4 &&
-                    <button className="absolute right-1 top-1 p-1 px-2 bg-white text-gray-200 hover:text-blue-400 focus:text-blue-500"
+                    <button className="absolute right-1 top-1 p-1 px-2 bg-white text-gray-300 hover:text-blue-400 focus:text-blue-500"
                             title="Add summer quarter"
                             onClick={() => {
                                 this.props.addSummerQuarter(this.props.index);
