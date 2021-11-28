@@ -9,14 +9,16 @@ class Content extends React.Component {
         let years = [];
         if (content) {
             years = content.map((year, index) => {
-                return <Year title={Utility.convertYear(index) + ' YEAR'} content={year} key={index}
+                return <Year title={Utility.convertYear(index) + ' YEAR'} content={year} index={index} key={index}
                 delClass={(courseIndex, quarter) => {
                     this.props.delClass(courseIndex, index, quarter);
-                }}/>;
+                }}
+                addSummerQuarter={this.props.addSummerQuarter}
+                />;
             })
         }
         return (
-            <div className="col-span-6 block pt-20 md:pt-0">
+            <div className="col-span-6 block pt-0 h-screen md:overflow-scroll">
                 {years}
             </div>
         );

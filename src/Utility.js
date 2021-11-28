@@ -129,7 +129,7 @@ let Utility = {
             if (failed) return null;
 
             while (data.length < year + 1) {
-                data.push([]);
+                data.push([[], [], []]);
             }
 
             while (data[year].length < quarter + 1) {
@@ -177,6 +177,14 @@ let Utility = {
                 return 'FIFTH';
             case 5:
                 return 'SIXTH';
+            case 6:
+                return 'SEVENTH';
+            case 7:
+                return 'EIGHTH';
+            case 8:
+                return 'NINTH';
+            case 9:
+                return 'TENTH';
             default:
                 return 'UNKNOWN';
         }
@@ -191,7 +199,7 @@ let Utility = {
             case 2:
                 return {title: 'SPRING', color: 'emerald'};
             case 3:
-                return 'SUMMER';
+                return {title: 'SUMMER', color: 'blue'};
             default:
                 return 'UNKNOWN';
         }

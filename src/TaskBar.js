@@ -1,5 +1,5 @@
 import React from 'react';
-import { SaveIcon, ClipboardListIcon, InformationCircleIcon } from '@heroicons/react/outline';
+import { SaveIcon, PlusIcon, InformationCircleIcon, ExclamationIcon } from '@heroicons/react/outline';
 
 function TaskBarButton(props) {
     return (
@@ -55,16 +55,42 @@ class TaskBar extends React.Component {
                     });
                 }}/>
 
-                <TaskBarButton name="Settings" color="blue" action={() => {
+                <TaskBarButton name="Add Year" color="cyan" action={() => {
+                    if (this.props.allowAddYear) {
+                        this.props.alert({
+                            title: 'Add a year?',
+                            message: 'This will add another year to your plan. You can remove it by removing all classes from that year and refreshing the page.',
+                            confirmButton: 'Add year',
+                            confirmButtonColor: 'cyan',
+                            cancelButton: 'Close',
+                            iconBackgroundColor: 'cyan',
+                            icon: (<PlusIcon className="h-6 w-6 text-cyan-600" aria-hidden="true" />),
+                            action: () => {
+                                this.props.addYear();
+                            }
+                        });
+                    } else {
+                        this.props.alert({
+                            title: `Can't add another year :(`,
+                            message: `You can't add more than 10 years.`,
+                            confirmButton: 'Close',
+                            confirmButtonColor: 'cyan',
+                            iconBackgroundColor: 'cyan',
+                            icon: (<ExclamationIcon className="h-6 w-6 text-cyan-600" aria-hidden="true" />),
+                        });
+                    }
+                }}/>
+
+                {/* <TaskBarButton name="Settings" color="blue" action={() => {
                     this.props.alert({
-                        title: 'Coming soon!',
+                        title: 'Settings',
                         message: `Features like summer classes, more than 4 years, and more are coming soon. Oh also, I found this cool library for drag-and-drop online so I hope to make it possible to drag courses into the quarter you want.`,
                         confirmButton: 'Close',
                         confirmButtonColor: 'blue',
                         iconBackgroundColor: 'blue',
-                        icon: (<ClipboardListIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />)
+                        icon: (<CogIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />),
                     })
-                }}/>
+                }}/> */}
 
                 
 

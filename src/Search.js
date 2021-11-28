@@ -92,7 +92,7 @@ class Search extends React.Component {
                     <AddButtons action={(year, quarter) => {
                         this.props.addCourse(this.state.current, year, quarter);
                         this.setState({current: null});
-                    }}/>
+                    }} data={this.props.data}/>
             )
             exitButton = (
                 <button className="block mx-auto bg-white border-2 border-gray-400 text-gray-400
@@ -106,7 +106,7 @@ class Search extends React.Component {
 
 
         return (
-            <div className="border-4 border-black my-4 md:my-2 rounded-xl shadow-lg h-5/6
+            <div className="border-4 border-black my-4 rounded-xl shadow-lg h-full
             overflow-scroll overscroll-contain">
                 {!singleClassView && searchField}
                 {!singleClassView && this.getResults()}

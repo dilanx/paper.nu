@@ -33,6 +33,9 @@ module.exports = {
       black: colors.black
     },
     extend: {
+      spacing: {
+        '128': '32rem'
+      }
     },
   },
   variants: {

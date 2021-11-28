@@ -7,9 +7,9 @@ import Info from './Info.js';
 import TaskBar from './TaskBar.js';
 import Alert from './Alert.js';
 
-import { ExclamationIcon } from '@heroicons/react/outline';
+import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '1.0.3 beta';
+const VERSION = '0.5.0 beta';
 
 class App extends React.Component {
 
@@ -49,7 +49,6 @@ class App extends React.Component {
         this.state = {
             data: data,
             alert: defaultAlert
-
         }
 
     }
@@ -84,12 +83,21 @@ class App extends React.Component {
                 }/>}
 
                 <div className="grid grid-cols-1 md:grid-cols-8">
-                    <div className="col-span-2 px-4 block md:sticky top-0 h-96 md:h-screen ">
+                    <div className="col-span-2 px-4 h-128 md:h-screen flex flex-col">
                         <Info version={VERSION}/>
-                        <TaskBar alert={alertData => {
-                            this.showAlert(alertData)
-                        }} version={VERSION}/>
-                        <Search addCourse={(course, year, quarter) => {
+                        <TaskBar
+                            alert={alertData => {
+                                this.showAlert(alertData)
+                            }}
+                            allowAddYear={this.state.data.length < 10}
+                            addYear={() => {
+                                let data = this.state.data;
+                                data.push([[], [], []]);
+                                this.setState({data: data})
+                            }}
+                            version={VERSION}
+                        />
+                        <Search data={this.state.data} addCourse={(course, year, quarter) => {
                             let data = this.state.data;
                             let fulfilledPrereqs = Utility.checkPrereq(course, year, quarter, data);
 
@@ -125,12 +133,32 @@ class App extends React.Component {
                         }}/>
                     </div>
                     
-                    <Content content={this.state.data} delClass={(courseIndex, year, quarter) => {
-                        let data = this.state.data;
-                        data[year][quarter].splice(courseIndex, 1);
-                        this.setState({data: data});
-                        Utility.saveData(data);
-                    }}/>
+                    <Content content={this.state.data}
+                            delClass={(courseIndex, year, quarter) => {
+                                let data = this.state.data;
+                                data[year][quarter].splice(courseIndex, 1);
+                                this.setState({data: data});
+                                Utility.saveData(data);
+                            }}
+                            addSummerQuarter={year => {
+
+                                this.showAlert({
+                                    title: 'Add summer quarter to this year?',
+                                    message: `This will add a summer quarter to your ${Utility.convertYear(year).toLowerCase()} year. You can remove it by removing all classes from that quarter and refreshing the page.`,
+                                    confirmButton: 'Add quarter',
+                                    confirmButtonColor: 'blue',
+                                    cancelButton: 'Close',
+                                    iconBackgroundColor: 'blue',
+                                    icon: (<PlusIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />),
+                                    action: () => {
+                                        let data = this.state.data;
+                                        data[year].push([]);
+                                        this.setState({data: data});
+                                    }
+                                });
+                                
+                            }}
+                    />
                 </div>
             </div>
         );

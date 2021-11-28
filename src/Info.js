@@ -4,7 +4,7 @@ class Info extends React.Component {
 
     render() {
         return (
-            <div className="my-4 px-4 text-black overflow-hidden whitespace-nowrap">
+            <div className="my-4 px-4 text-black whitespace-nowrap">
                 <p className="text-lg font-bold text-purple-800">
                     Plan Northwestern (name still tbd)
                 </p>
