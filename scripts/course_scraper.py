@@ -47,13 +47,13 @@ for link_major in link_all_majors:
 
         course_name_id_unit = course_name_id_unit.get_text().strip().replace('&nbsp;', ' ').replace('\xa0', ' ')
 
-        cniu = course_name_id_unit.split(' (')
-        course_name_id = cniu[0]
+        cniu_sp = course_name_id_unit.split(' (')
+        course_name_id = cniu_sp[0]
         cni_sp = course_name_id.split(' ')
         course_id = ' '.join(cni_sp[0:2])
         course_name = ' '.join(cni_sp[2:])
 
-        course_unit = cniu[1].split(' Unit)')[0]
+        course_unit = cniu_sp[1].split(' Unit)')[0]
 
         course_desc = major_class.find(class_='courseblockdesc').get_text().strip().replace('&nbsp;', ' ').replace('\xa0', ' ')
 
