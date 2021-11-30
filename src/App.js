@@ -9,7 +9,7 @@ import Alert from './Alert.js';
 
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '0.1.6 beta';
+const VERSION = '1.0.0 beta 6';
 
 class App extends React.Component {
 
