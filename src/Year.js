@@ -14,6 +14,7 @@ class Year extends React.Component {
             quarters = content.map((quarter, index) => {
                 let {title, color} = Utility.convertQuarter(index);
                 return <Quarter title={title} color={color} content={quarter} key={index} yi={this.props.yi} qi={index}
+                alert={this.props.alert}
                 addCourse={course => {
                     this.props.addCourse(course, index);
                 }}

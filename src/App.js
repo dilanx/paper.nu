@@ -11,7 +11,7 @@ import Alert from './Alert.js';
 
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '0.1.0 beta 8';
+const VERSION = '0.1.9 (beta)';
 
 class App extends React.Component {
 
@@ -149,30 +149,33 @@ class App extends React.Component {
                         </div>
                         
                         <Content content={this.state.data}
-                                addCourse={(course, year, quarter) => {
-                                    this.addCourse(course, year, quarter);
-                                }}
-                                delCourse={(courseIndex, year, quarter) => {
-                                    this.delCourse(courseIndex, year, quarter);
-                                }}
-                                addSummerQuarter={year => {
+                            alert={alertData => {
+                                this.showAlert(alertData)
+                            }}
+                            addCourse={(course, year, quarter) => {
+                                this.addCourse(course, year, quarter);
+                            }}
+                            delCourse={(courseIndex, year, quarter) => {
+                                this.delCourse(courseIndex, year, quarter);
+                            }}
+                            addSummerQuarter={year => {
 
-                                    this.showAlert({
-                                        title: 'Add summer quarter to this year?',
-                                        message: `This will add a summer quarter to your ${Utility.convertYear(year).toLowerCase()} year. You can remove it by removing all classes from that quarter and refreshing the page.`,
-                                        confirmButton: 'Add quarter',
-                                        confirmButtonColor: 'blue',
-                                        cancelButton: 'Close',
-                                        iconBackgroundColor: 'blue',
-                                        icon: (<PlusIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />),
-                                        action: () => {
-                                            let data = this.state.data;
-                                            data[year].push([]);
-                                            this.setState({data: data});
-                                        }
-                                    });
-                                    
-                                }}
+                                this.showAlert({
+                                    title: 'Add summer quarter to this year?',
+                                    message: `This will add a summer quarter to your ${Utility.convertYear(year).toLowerCase()} year. You can remove it by removing all classes from that quarter and refreshing the page.`,
+                                    confirmButton: 'Add quarter',
+                                    confirmButtonColor: 'blue',
+                                    cancelButton: 'Close',
+                                    iconBackgroundColor: 'blue',
+                                    icon: (<PlusIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />),
+                                    action: () => {
+                                        let data = this.state.data;
+                                        data[year].push([]);
+                                        this.setState({data: data});
+                                    }
+                                });
+                                
+                            }}
                         />
                     </div>
                 </div>

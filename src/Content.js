@@ -10,6 +10,7 @@ class Content extends React.Component {
         if (content) {
             years = content.map((year, index) => {
                 return <Year title={Utility.convertYear(index) + ' YEAR'} content={year} yi={index} key={index}
+                alert={this.props.alert}
                 addCourse={(course, quarter) => {
                     this.props.addCourse(course, index, quarter);
                 }}

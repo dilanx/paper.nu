@@ -4,10 +4,10 @@ import { DragSource } from 'react-dnd'
 
 const classSource = {
 
-  beginDrag(props, monitor, component) {
-    const item = { course: props.course }
-    return item;
-  }
+    beginDrag(props, monitor, component) {
+        const item = { course: props.course }
+        return item;
+    }
 
 }
 
@@ -78,4 +78,4 @@ class SearchClass extends React.Component {
 
 }
 
-export default DragSource('SearchClass', classSource, collect)(SearchClass);
+export default DragSource('Class', classSource, collect)(SearchClass);
