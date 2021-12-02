@@ -32,7 +32,7 @@ class TaskBar extends React.Component {
                         iconBackgroundColor: 'purple',
                         icon: (<InformationCircleIcon className="h-6 w-6 text-purple-600" aria-hidden="true" />),
                         action: () => {
-                            window.open('https://github.com/dilanx', '_blank');
+                            window.open('https://github.com/dilanx/plan-northwestern', '_blank');
                         }
 
                     })

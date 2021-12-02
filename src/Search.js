@@ -16,32 +16,27 @@ class Search extends React.Component {
 
     }
 
+    searchMessage(title, subtitle) {
+        return (
+            <div className="text-center text-gray-600 px-4">
+                <p className="text-lg font-medium">
+                    {title}
+                </p>
+                <p className="text-sm font-light">
+                    {subtitle}
+                </p>
+            </div>
+        )
+    }
+
     getResults() {
 
         let search = this.state.search.toLowerCase();
         if (search.length === 0) {
-            return (
-                <div className="text-center text-gray-600 px-4">
-                    <p className="text-lg font-medium">
-                        Find classes here.
-                    </p>
-                    <p className="text-sm font-light">
-                        Search for a class to add it to your plan.
-                    </p>
-                </div>
-            )
+            return this.searchMessage('Find classes here.', 'Search for a class to add it to your plan.');
         }
         if (search.length < 3) {
-            return (
-                <div className="text-center text-gray-600 px-4">
-                    <p className="text-lg font-medium">
-                        Keep typing...
-                    </p>
-                    <p className="text-sm font-light">
-                        You'll need at least 3 characters.
-                    </p>
-                </div>
-            );
+            return this.searchMessage('Keep typing...', `You'll need at least 3 characters.`);
         }
 
         let filtered = courses.courses.filter(course => {
@@ -58,6 +53,9 @@ class Search extends React.Component {
                     this.setState({current: classData});
                 }}/>
             )
+        }
+        if (courseList.length === 0) {
+            return this.searchMessage('Absolutely nothing.', `No results for '${search}'. You might want to try searching for something else.`);
         }
         return courseList;
 
