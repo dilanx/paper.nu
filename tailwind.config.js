@@ -32,6 +32,18 @@ module.exports = {
       white: colors.white,
       black: colors.black
     },
+    cursor: {
+      auto: 'auto',
+      default: 'default',
+      pointer: 'pointer',
+      wait: 'wait',
+      text: 'text',
+      move: 'move',
+      'not-allowed': 'not-allowed',
+      crosshair: 'crosshair',
+      'zoom-in': 'zoom-in',
+      grab: 'grab'
+    },
     extend: {
       spacing: {
         '128': '32rem'

@@ -13,9 +13,12 @@ class Year extends React.Component {
         if (content) {
             quarters = content.map((quarter, index) => {
                 let {title, color} = Utility.convertQuarter(index);
-                return <Quarter title={title} color={color} content={quarter} key={index}
-                delClass={courseIndex => {
-                    this.props.delClass(courseIndex, index);
+                return <Quarter title={title} color={color} content={quarter} key={index} yi={this.props.yi} qi={index}
+                addCourse={course => {
+                    this.props.addCourse(course, index);
+                }}
+                delCourse={courseIndex => {
+                    this.props.delCourse(courseIndex, index);
                 }}/>
             })
         }
@@ -33,7 +36,7 @@ class Year extends React.Component {
                     <button className="absolute right-1 top-1 p-1 px-2 bg-white text-gray-300 hover:text-blue-400 focus:text-blue-500"
                             title="Add summer quarter"
                             onClick={() => {
-                                this.props.addSummerQuarter(this.props.index);
+                                this.props.addSummerQuarter(this.props.yi);
                             }}>
                         <PlusIcon className="w-6 h-6"/>
                     </button>

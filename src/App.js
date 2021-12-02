@@ -1,5 +1,7 @@
 
 import React from 'react';
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 import Content from './Content.js';
 import Search from './Search.js';
 import Utility from './Utility.js';
@@ -9,7 +11,7 @@ import Alert from './Alert.js';
 
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '0.1.0 beta 7';
+const VERSION = '0.1.0 beta 8';
 
 class App extends React.Component {
 
@@ -65,102 +67,116 @@ class App extends React.Component {
         })
     }
 
+    addCourse(course, year, quarter) {
+        let data = this.state.data;
+        let fulfilledPrereqs = Utility.checkPrereq(course, year, quarter, data);
+
+        if (!fulfilledPrereqs) {
+            this.showAlert({
+                title: 'Missing prerequisite courses.',
+                message: `You can't take this course that quarter without taking the necessary prerequisites in previous quarters. Make sure you have all prereqs of a certain color in your plan.`,
+                cancelButton: 'Go back',
+                confirmButton: 'Add anyway',
+                confirmButtonColor: 'red',
+                iconBackgroundColor: 'red',
+                icon: (<ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />),
+                action: () => {
+                    data[year][quarter].push(course);
+                    data[year][quarter].sort((a, b) => {
+                        return a.id.localeCompare(b.id);
+                    });
+                    this.setState({data: data});
+                    Utility.saveData(data);
+                }
+
+            })
+        } else {
+            data[year][quarter].push(course);
+            data[year][quarter].sort((a, b) => {
+                return a.id.localeCompare(b.id);
+            });
+            this.setState({data: data});
+            Utility.saveData(data);
+        }
+    }
+
+    delCourse(courseIndex, year, quarter) {
+        let data = this.state.data;
+        data[year][quarter].splice(courseIndex, 1);
+        this.setState({data: data});
+        Utility.saveData(data);
+    }
+
     render() {
         return (
-            <div className="">
+            <DndProvider backend={HTML5Backend}>
+                <div className="">
 
-                {this.state.alert &&
-                    <Alert data={this.state.alert}
-                        onClose={() => {
-                            this.postShowAlert();
-                        }}
-                        onConfirm={() => {
-                            if (this.state.alert.action) {
-                                this.state.alert.action();
+                    {this.state.alert &&
+                        <Alert data={this.state.alert}
+                            onClose={() => {
+                                this.postShowAlert();
+                            }}
+                            onConfirm={() => {
+                                if (this.state.alert.action) {
+                                    this.state.alert.action();
+                                }
+                                this.postShowAlert();
                             }
-                            this.postShowAlert();
-                        }
-                }/>}
+                    }/>}
 
-                <div className="grid grid-cols-1 md:grid-cols-8">
-                    <div className="col-span-2 px-4 h-128 md:h-screen flex flex-col">
-                        <Info version={VERSION}/>
-                        <TaskBar
-                            alert={alertData => {
-                                this.showAlert(alertData)
-                            }}
-                            allowAddYear={this.state.data.length < 10}
-                            addYear={() => {
-                                let data = this.state.data;
-                                data.push([[], [], []]);
-                                this.setState({data: data})
-                            }}
-                            version={VERSION}
+                    <div className="grid grid-cols-1 md:grid-cols-8">
+                        <div className="col-span-2 px-4 h-128 md:h-screen flex flex-col">
+                            <Info version={VERSION}/>
+                            <TaskBar
+                                alert={alertData => {
+                                    this.showAlert(alertData)
+                                }}
+                                allowAddYear={this.state.data.length < 10}
+                                addYear={() => {
+                                    let data = this.state.data;
+                                    data.push([[], [], []]);
+                                    this.setState({data: data})
+                                }}
+                                version={VERSION}
+                            />
+                            <Search
+                                data={this.state.data}
+                                addCourse={(course, year, quarter) => {
+                                    this.addCourse(course, year, quarter);
+                                }}
+                            />
+                        </div>
+                        
+                        <Content content={this.state.data}
+                                addCourse={(course, year, quarter) => {
+                                    this.addCourse(course, year, quarter);
+                                }}
+                                delCourse={(courseIndex, year, quarter) => {
+                                    this.delCourse(courseIndex, year, quarter);
+                                }}
+                                addSummerQuarter={year => {
+
+                                    this.showAlert({
+                                        title: 'Add summer quarter to this year?',
+                                        message: `This will add a summer quarter to your ${Utility.convertYear(year).toLowerCase()} year. You can remove it by removing all classes from that quarter and refreshing the page.`,
+                                        confirmButton: 'Add quarter',
+                                        confirmButtonColor: 'blue',
+                                        cancelButton: 'Close',
+                                        iconBackgroundColor: 'blue',
+                                        icon: (<PlusIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />),
+                                        action: () => {
+                                            let data = this.state.data;
+                                            data[year].push([]);
+                                            this.setState({data: data});
+                                        }
+                                    });
+                                    
+                                }}
                         />
-                        <Search data={this.state.data} addCourse={(course, year, quarter) => {
-                            let data = this.state.data;
-                            let fulfilledPrereqs = Utility.checkPrereq(course, year, quarter, data);
-
-                            if (!fulfilledPrereqs) {
-                                this.showAlert({
-                                    title: 'Missing prerequisite courses.',
-                                    message: `You can't take this course that quarter without taking the necessary prerequisites in previous quarters. Make sure you have all prereqs of a certain color in your plan.`,
-                                    cancelButton: 'Go back',
-                                    confirmButton: 'Add anyway',
-                                    confirmButtonColor: 'red',
-                                    iconBackgroundColor: 'red',
-                                    icon: (<ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />),
-                                    action: () => {
-                                        data[year][quarter].push(course);
-                                        data[year][quarter].sort((a, b) => {
-                                            return a.id.localeCompare(b.id);
-                                        });
-                                        this.setState({data: data});
-                                        Utility.saveData(data);
-                                    }
-
-                                })
-                            } else {
-                                data[year][quarter].push(course);
-                                data[year][quarter].sort((a, b) => {
-                                    return a.id.localeCompare(b.id);
-                                });
-                                this.setState({data: data});
-                                Utility.saveData(data);
-                            }
-
-                            
-                        }}/>
                     </div>
-                    
-                    <Content content={this.state.data}
-                            delClass={(courseIndex, year, quarter) => {
-                                let data = this.state.data;
-                                data[year][quarter].splice(courseIndex, 1);
-                                this.setState({data: data});
-                                Utility.saveData(data);
-                            }}
-                            addSummerQuarter={year => {
-
-                                this.showAlert({
-                                    title: 'Add summer quarter to this year?',
-                                    message: `This will add a summer quarter to your ${Utility.convertYear(year).toLowerCase()} year. You can remove it by removing all classes from that quarter and refreshing the page.`,
-                                    confirmButton: 'Add quarter',
-                                    confirmButtonColor: 'blue',
-                                    cancelButton: 'Close',
-                                    iconBackgroundColor: 'blue',
-                                    icon: (<PlusIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />),
-                                    action: () => {
-                                        let data = this.state.data;
-                                        data[year].push([]);
-                                        this.setState({data: data});
-                                    }
-                                });
-                                
-                            }}
-                    />
                 </div>
-            </div>
+            </DndProvider>
         );
     }
 

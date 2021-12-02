@@ -1,5 +1,22 @@
 import React from 'react';
 import Utility from './Utility.js';
+import { DragSource } from 'react-dnd'
+
+const classSource = {
+
+  beginDrag(props, monitor, component) {
+    const item = { course: props.course }
+    return item;
+  }
+
+}
+
+function collect(connect, monitor) {
+    return {
+        connectDragSource: connect.dragSource(),
+        isDragging: monitor.isDragging()
+    }
+}
 
 class SearchClass extends React.Component {
 
@@ -32,10 +49,11 @@ class SearchClass extends React.Component {
     }
 
     render() {
-        return (
+        const { isDragging, connectDragSource } = this.props;
+        return connectDragSource(
             <div className={`p-2 rounded-lg bg-opacity-60 bg-${this.props.color}-100
             rounded-lg border-2 border-${this.props.color}-300 border-opacity-60
-            hover:shadow-md transition ease-in-out duration-300 transform hover:-translate-y-1 m-4 cursor-pointer`}
+            hover:shadow-md transition ease-in-out duration-300 transform hover:-translate-y-1 m-4 cursor-pointer ${isDragging ? 'cursor-grab ' : 'cursor-pointer'}`}
             onClick={() => {
                 if (this.props.select) this.props.select(this.props.course);
             }}>
@@ -60,4 +78,4 @@ class SearchClass extends React.Component {
 
 }
 
-export default SearchClass;
+export default DragSource('SearchClass', classSource, collect)(SearchClass);

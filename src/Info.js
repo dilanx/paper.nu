@@ -6,7 +6,7 @@ class Info extends React.Component {
         return (
             <div className="my-4 px-4 py-2 text-black whitespace-nowrap bg-purple-50 border-2 border-purple-800 rounded-3xl">
                 <p className="text-xl font-light text-purple-800">
-                    Plan Northwestern
+                    Plan Northwestern (tbd)
                 </p>
                 <p className="text-sm font-light">
                     {this.props.version}

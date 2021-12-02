@@ -16,7 +16,7 @@ class Class extends React.Component {
                 border-2 border-dotted border-gray-800 text-gray-800 text-xs opacity-20
                 hover:border-red-500 hover:text-red-500 hover:opacity-100
                 transition-all duration-150 hidden group-hover:block" onClick={() => {
-                    this.props.delClass();
+                    this.props.delCourse();
                 }}>
                     del
                 </button>

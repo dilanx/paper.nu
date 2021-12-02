@@ -9,9 +9,12 @@ class Content extends React.Component {
         let years = [];
         if (content) {
             years = content.map((year, index) => {
-                return <Year title={Utility.convertYear(index) + ' YEAR'} content={year} index={index} key={index}
-                delClass={(courseIndex, quarter) => {
-                    this.props.delClass(courseIndex, index, quarter);
+                return <Year title={Utility.convertYear(index) + ' YEAR'} content={year} yi={index} key={index}
+                addCourse={(course, quarter) => {
+                    this.props.addCourse(course, index, quarter);
+                }}
+                delCourse={(courseIndex, quarter) => {
+                    this.props.delCourse(courseIndex, index, quarter);
                 }}
                 addSummerQuarter={this.props.addSummerQuarter}
                 />;
