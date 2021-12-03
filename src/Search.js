@@ -10,7 +10,7 @@ const SEARCH_RESULT_LIMIT = 100;
 function MiniContentBlock(props) {
 
     return (
-        <div className="text-center py-4">
+        <div className="text-center p-4">
             <div className="mx-auto my-1 flex items-center justify-center text-gray-500">
                 {props.icon}
             </div>
@@ -55,7 +55,7 @@ class Search extends React.Component {
         let search = this.state.search.toLowerCase();
         if (search.length === 0) {
             return (
-                <div className="px-4">
+                <div>
                     <MiniContentBlock
                         icon={<SearchIcon className="w-6 h-6"/>}
                         title="Search"
@@ -76,7 +76,6 @@ class Search extends React.Component {
                         title="Save and share"
                         text="The URL updates as you modify your plan. Save it somewhere or share it with others."
                     />
-
                 </div>
             )
         }

@@ -195,11 +195,11 @@ let Utility = {
             case 0:
                 return {title: 'FALL', color: 'orange'};
             case 1:
-                return {title: 'WINTER', color: 'red'};
+                return {title: 'WINTER', color: 'sky'};
             case 2:
-                return {title: 'SPRING', color: 'emerald'};
+                return {title: 'SPRING', color: 'lime'};
             case 3:
-                return {title: 'SUMMER', color: 'blue'};
+                return {title: 'SUMMER', color: 'yellow'};
             default:
                 return 'UNKNOWN';
         }
