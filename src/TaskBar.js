@@ -1,13 +1,15 @@
 import React from 'react';
-import { SaveIcon, PlusIcon, InformationCircleIcon, ExclamationIcon } from '@heroicons/react/outline';
+import { SaveIcon, PlusIcon, InformationCircleIcon, ExclamationIcon, CogIcon } from '@heroicons/react/outline';
 
 function TaskBarButton(props) {
     return (
         <button className={`border-2 rounded-md border-gray-400 bg-gray-50 text-gray-600
-        hover:border-${props.color}-500 hover:bg-${props.color}-50 hover:text-${props.color}-500
-        transition-all duration-150`} onClick={() => {
-            props.action();
-        }}>
+                hover:border-${props.color}-500 hover:bg-${props.color}-50 hover:text-${props.color}-500
+                transition-all duration-150 ${props.span ? `col-span-${props.span}` : ''}
+                ${props.active ? `border-${props.color}-400 bg-${props.color}-50 text-${props.color}-400` : `border-solid`}`}
+                onClick={() => {
+                    props.action();
+                }}>
             {props.name}
         </button>
     )
@@ -79,6 +81,21 @@ class TaskBar extends React.Component {
                             icon: (<ExclamationIcon className="h-6 w-6 text-cyan-600" aria-hidden="true" />),
                         });
                     }
+                }}/>
+
+                <TaskBarButton name="Settings" color="yellow" action={() => {
+                    this.props.alert({
+                        title: 'Settings',
+                        message: 'Soon lol give me a sec',
+                        confirmButton: 'Close',
+                        confirmButtonColor: 'yellow',
+                        iconBackgroundColor: 'yellow',
+                        icon: (<CogIcon className="h-6 w-6 text-yellow-600" aria-hidden="true" />),
+                    })
+                }}/>
+
+                <TaskBarButton name="Contribute course data" color="red" active={this.props.switches.contribution} span="2" action={() => {
+                    this.props.setSwitch('contribution', !this.props.switches.contribution);
                 }}/>
 
                 {/* <TaskBarButton name="Settings" color="blue" action={() => {

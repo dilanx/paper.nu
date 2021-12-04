@@ -28,6 +28,46 @@ function decodeCourse(encodedCourse) {
 
 let Utility = {
 
+    convertDistros: distros => {
+
+        let strings = [];
+
+        if (!distros) return strings;
+
+        for (let i = 0; i < distros.length; i++) {
+
+            let d = parseInt(distros[i]);
+
+            switch (d) {
+                case 1:
+                    strings.push('Natural Sciences')
+                    break;
+                case 2:
+                    strings.push('Formal Studies')
+                    break;
+                case 3:
+                    strings.push('Social and Behavioral Sciences')
+                    break;
+                case 4:
+                    strings.push('Historical Studies')
+                    break;
+                case 5:
+                    strings.push('Ethics and Values')
+                    break;
+                case 6:
+                    strings.push('Literature and Fine Arts')
+                    break;
+                default:
+                    strings.push('Unknown')
+                    break;
+            }
+
+        }
+
+        return strings;
+
+    },
+
     getTotalCredits: data => {
 
         let total = 0;
@@ -94,8 +134,8 @@ let Utility = {
         return null;
     },
 
-    getCourseColor: name => {
-        let subj = name.split(' ')[0];
+    getCourseColor: id => {
+        let subj = id.split(' ')[0];
         return courses.majors[subj].color;
     },
 

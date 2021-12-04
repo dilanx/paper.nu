@@ -42,8 +42,20 @@ class SearchClass extends React.Component {
             }
         }
 
+        let distros = [];
+        let distroStrings = Utility.convertDistros(this.props.course.distros);
+
+        for (let i = 0; i < distroStrings.length; i++) {
+            distros.push(
+                <p className="m-0 p-0 text-xs text-gray-500 font-light" key={`distro-${i}`}>
+                    {distroStrings[i].toUpperCase()}
+                </p>
+            )
+        }
+
         this.state = {
-            prereq: prereq
+            prereq: prereq,
+            distros: distros
         }
 
     }
@@ -66,11 +78,18 @@ class SearchClass extends React.Component {
                 <p className="text-xs mt-4 text-gray-700">
                     {this.props.course.description}
                 </p>
+                {this.state.distros.length > 0 &&
+                    <div className="mt-4">
+                        <p className="text-xs text-gray-500 font-bold">
+                            DISTRIBUTION AREAS
+                        </p>
+                        {this.state.distros}
+                    </div>
+                }
                 {this.state.prereq.length > 0 &&
-                    <div className="flex flex-row flex-wrap">
+                    <div className="flex flex-row flex-wrap mt-4">
                         {this.state.prereq}
                     </div>
-                
                 }
             </div>
         )

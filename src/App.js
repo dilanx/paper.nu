@@ -3,6 +3,7 @@ import React from 'react';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import Content from './Content.js';
+import Contribution from './Contribution.js';
 import Search from './Search.js';
 import Utility from './Utility.js';
 import Info from './Info.js';
@@ -11,7 +12,7 @@ import Alert from './Alert.js';
 
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '0.1.10 (beta)';
+const VERSION = '0.1.11 (beta)';
 
 class App extends React.Component {
 
@@ -50,9 +51,16 @@ class App extends React.Component {
 
         this.state = {
             data: data,
-            alert: defaultAlert
+            alert: defaultAlert,
+            switches: {}
         }
 
+    }
+
+    setSwitch(key, val) {
+        let switches = this.state.switches;
+        switches[key] = val;
+        this.setState({switches: switches});
     }
 
     showAlert(alertData) {
@@ -139,6 +147,8 @@ class App extends React.Component {
                                     this.setState({data: data})
                                 }}
                                 version={VERSION}
+                                switches={this.state.switches}
+                                setSwitch={(key, val) => {this.setSwitch(key, val)}}
                             />
                             <Search
                                 data={this.state.data}
@@ -148,35 +158,44 @@ class App extends React.Component {
                             />
                         </div>
                         
-                        <Content content={this.state.data}
-                            alert={alertData => {
-                                this.showAlert(alertData)
-                            }}
-                            addCourse={(course, year, quarter) => {
-                                this.addCourse(course, year, quarter);
-                            }}
-                            delCourse={(courseIndex, year, quarter) => {
-                                this.delCourse(courseIndex, year, quarter);
-                            }}
-                            addSummerQuarter={year => {
+                        <div className="col-span-6 block pt-0 h-screen md:overflow-scroll">
+                            {this.state.switches.contribution &&
+                                <Contribution
+                                alert={alertData => {
+                                    this.showAlert(alertData)
+                                }}/>
+                            }
+                            
+                            <Content content={this.state.data}
+                                alert={alertData => {
+                                    this.showAlert(alertData)
+                                }}
+                                addCourse={(course, year, quarter) => {
+                                    this.addCourse(course, year, quarter);
+                                }}
+                                delCourse={(courseIndex, year, quarter) => {
+                                    this.delCourse(courseIndex, year, quarter);
+                                }}
+                                addSummerQuarter={year => {
 
-                                this.showAlert({
-                                    title: 'Add summer quarter to this year?',
-                                    message: `This will add a summer quarter to your ${Utility.convertYear(year).toLowerCase()} year. You can remove it by removing all classes from that quarter and refreshing the page.`,
-                                    confirmButton: 'Add quarter',
-                                    confirmButtonColor: 'blue',
-                                    cancelButton: 'Close',
-                                    iconBackgroundColor: 'blue',
-                                    icon: (<PlusIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />),
-                                    action: () => {
-                                        let data = this.state.data;
-                                        data[year].push([]);
-                                        this.setState({data: data});
-                                    }
-                                });
-                                
-                            }}
-                        />
+                                    this.showAlert({
+                                        title: 'Add summer quarter to this year?',
+                                        message: `This will add a summer quarter to your ${Utility.convertYear(year).toLowerCase()} year. You can remove it by removing all classes from that quarter and refreshing the page.`,
+                                        confirmButton: 'Add quarter',
+                                        confirmButtonColor: 'blue',
+                                        cancelButton: 'Close',
+                                        iconBackgroundColor: 'blue',
+                                        icon: (<PlusIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />),
+                                        action: () => {
+                                            let data = this.state.data;
+                                            data[year].push([]);
+                                            this.setState({data: data});
+                                        }
+                                    });
+                                    
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
             </DndProvider>

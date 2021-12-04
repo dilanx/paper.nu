@@ -22,7 +22,7 @@ class Content extends React.Component {
             })
         }
         return (
-            <div className="col-span-6 block pt-0 h-screen md:overflow-scroll">
+            <div>
                 {years}
             </div>
         );

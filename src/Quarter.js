@@ -38,11 +38,11 @@ class Quarter extends React.Component {
     componentDidUpdate(prevProps) {
         if (!prevProps.isOver && this.props.isOver) {
             this.setState({ hovered: true });
-          }
+        }
       
-          if (prevProps.isOver && !this.props.isOver) {
+        if (prevProps.isOver && !this.props.isOver) {
             this.setState({ hovered: false });
-          }
+        }
     }
 
     render() {
@@ -77,7 +77,9 @@ class Quarter extends React.Component {
         const { connectDropTarget } = this.props;
 
         return connectDropTarget(
-            <div className={`block rounded-lg px-8 pt-4 pb-8 border-2 ${this.state.hovered ? `border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50` : `border-solid bg-${this.props.color}-50 border-${this.props.color}-400`} space-y-3 h-full shadow-lg`}>
+            <div className={`block rounded-lg px-8 pt-4 pb-8 border-2
+                ${this.state.hovered ? `border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50` : `border-solid bg-${this.props.color}-50 border-${this.props.color}-400`}
+                space-y-3 h-full shadow-lg`}>
                 <p className="text-center font-bold text-md m-0 p-0 text-gray-600">
                     {this.props.title}
                 </p>
