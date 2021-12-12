@@ -14,7 +14,7 @@ import Alert from './components/menu/Alert.js';
 
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '0.1.12 (beta)';
+const VERSION = '0.1.13 (beta)';
 
 class App extends React.Component {
 
@@ -216,7 +216,7 @@ class App extends React.Component {
                             />
                         </div>
                         
-                        <div className={`${this.state.switches.compact ? 'compact-mode ' : ''} col-span-6 block pt-0 h-screen md:overflow-y-scroll`}>
+                        <div className={`${this.state.switches.compact ? 'compact-mode ' : ''} col-span-6 block pt-0 h-screen md:overflow-y-scroll md:no-scrollbar`}>
                             {this.state.switches.contribution &&
                                 <Contribution
                                 alert={alertData => {

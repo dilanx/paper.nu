@@ -43,7 +43,7 @@ class TaskBar extends React.Component {
                                 description: `Find any bugs, notice any errors in course data, or have any suggestions? Let me know! I'm always interested in making the site better.`,
                                 buttonTextOn: 'Leave feedback',
                                 singleAction: () => {
-                                    window.open('https://github.com/dilanx/plan-northwestern', '_blank');
+                                    window.open('https://github.com/dilanx/plan-northwestern/blob/main/FEEDBACK.md', '_blank');
                                 }
                             }
                         ]
