@@ -2,7 +2,7 @@
   "name": "plan-northwestern",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://plan-nu.dilanxd.com",
+  "homepage": "https://plan-nu.com",
   "dependencies": {
     "@craco/craco": "^5.9.0",
     "@headlessui/react": "^1.4.2",
