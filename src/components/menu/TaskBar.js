@@ -38,6 +38,15 @@ class TaskBar extends React.Component {
                         },
                         options: [
                             {
+                                name: 'about_coming_soon',
+                                title: 'Coming soon',
+                                description: `Check out what's been requested and what I'm working on on the GitHub issues page. Check this out before you send feedback in case someone else has already requested it.`,
+                                buttonTextOn: `See what's coming`,
+                                singleAction: () => {
+                                    window.open('https://github.com/dilanx/plan-northwestern/issues', '_blank');
+                                }
+                            },
+                            {
                                 name: 'about_feedback',
                                 title: 'Share your thoughts!',
                                 description: `Find any bugs, notice any errors in course data, or have any suggestions? Let me know! I'm always interested in making the site better.`,

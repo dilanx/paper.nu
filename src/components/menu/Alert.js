@@ -105,7 +105,7 @@ export default function Alert(props) {
                                 </div>
                                 {data.textView &&
                                     <div>
-                                        <p className="bg-gray-200 mt-4 p-1 px-4 font-mono text-sm rounded-md md:w-96 overflow-scroll whitespace-nowrap overscroll-contain">
+                                        <p className="bg-gray-200 mt-4 p-1 px-4 font-mono text-sm rounded-md md:w-96 overflow-scroll whitespace-nowrap overscroll-contain no-scrollbar">
                                             {data.textView}
                                         </p>
                                     </div>
