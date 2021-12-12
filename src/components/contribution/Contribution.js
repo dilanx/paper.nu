@@ -86,18 +86,22 @@ class Contribution extends React.Component {
                 </div>
 
                 <div className="hidden sm:block">
+
+                    <p className="text-center font-md font-medium text-red-500 p-2">
+                        Submission unavailable until I finish making this feature.
+                    </p>
+
                     {cc}
 
-                    <button className="block mt-2 mb-4 mx-auto py-1 px-2 bg-white border-2 border-orange-200 rounded-lg text-xs text-orange-200
-                            hover:border-orange-400 hover:text-orange-400 transition-all duration-150"
+                    <button className="block mt-2 mb-4 mx-auto py-2 px-4 bg-orange-400 rounded-lg text-sm font-medium text-white opacity-100 hover:opacity-60 transition-all duration-150 shadow-md"
                             onClick={() => {
                                 this.setState({shown: this.state.shown + 1});
                             }}>
-                        ADD MORE DATA
+                        Add more data
                     </button>
 
-                    <button className="block mt-4 mb-2 mx-auto py-2 px-20 bg-white border-2 border-red-200 rounded-lg text-md font-medium text-red-200
-                        transition-all duration-150 cursor-not-allowed">
+                    <button className="block mt-4 mb-2 mx-auto py-2 px-20 bg-emerald-500 rounded-lg text-md font-medium text-white opacity-60
+                        transition-all duration-150 cursor-not-allowed shadow-md">
                         SUBMIT
                     </button>
 

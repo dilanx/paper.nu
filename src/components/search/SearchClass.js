@@ -1,5 +1,5 @@
 import React from 'react';
-import Utility from './Utility.js';
+import Utility from '../../Utility.js';
 import { DragSource } from 'react-dnd'
 
 const classSource = {

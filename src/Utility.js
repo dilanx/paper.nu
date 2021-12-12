@@ -1,32 +1,30 @@
-import courses from './data/courses.json';
-
-function encodeCourse(courseName) {
-
-    let sp = courseName.split(' ');
-
-    let subj = sp[0];
-    let num = sp[1];
-
-    let id = courses.majors[subj].id;
-
-    return id + '_' + num;
-
-}
-
-function decodeCourse(encodedCourse) {
-    
-    let sp = encodedCourse.split('_');
-
-    let id = sp[0];
-    let num = sp[1];
-
-    let subj = courses.major_ids[id];
-
-    return subj + ' ' + num;
-    
-}
-
 let Utility = {
+
+    loadSwitchesFromStorage: () => {
+        let switches = {};
+        let keys = Object.keys(localStorage);
+        for (let i = 0; i < keys.length; i++) {
+            if (keys[i].startsWith("switch_")) {
+                let val = localStorage.getItem(keys[i]);
+                let switchId = keys[i].substring(7);
+                if (val === 'true') val = true;
+                else if (val === 'false') val = false;
+                switches[switchId] = val;
+            }
+        }
+        return switches;
+    },
+
+    saveSwitchToStorage: (key, val) => {
+        localStorage.setItem('switch_' + key, val);
+    },
+
+    getDistroAcronym: distroString => {
+        let distro = distroString.split(' ');
+        let acronym = '';
+        distro.forEach(d => acronym += d[0]);
+        return acronym;
+    },
 
     convertDistros: distros => {
 
@@ -65,141 +63,6 @@ let Utility = {
         }
 
         return strings;
-
-    },
-
-    getTotalCredits: data => {
-
-        let total = 0;
-
-        for (let y = 0; y < data.length; y++) {
-            for (let q = 0; q < data[y].length; q++) {
-                for (let c = 0; c < data[y][q].length; c++) {
-                    total += parseFloat(data[y][q][c].units);
-                }
-            }
-        }
-
-        return total;
-
-    },
-
-    checkPrereq: (courseData, year, quarter, data) => {
-
-        if (!courseData.prereqs || courseData.prereqs.length === 0) {
-            return true;
-        }
-
-        for (let i = 0; i < courseData.prereqs.length; i++) {
-
-            let prereqs = courseData.prereqs[i];
-            let foundPrereqs = [];
-
-            for (let y = 0; y <= year; y++) {
-                for (let q = 0; q < data[y].length; q++) {
-
-                    if (y === year && q > quarter) break;
-
-                    for (let j = 0; j < prereqs.length; j++) {
-
-                        for (let c = 0; c < data[y][q].length; c++) {
-
-                            if (data[y][q][c].id === prereqs[j]) {
-                                foundPrereqs.push(data[y][q][c].id);
-                            }
-
-                        }
-
-                    }
-
-                }
-            }
-
-            if (foundPrereqs.length === prereqs.length) {
-                return true;
-            }
-
-        }
-
-        return false;
-
-    },
-
-    getCourse: name => {
-        for (let course of courses.courses) {
-            if (course.id === name) {
-                return course;
-            }
-        }
-        return null;
-    },
-
-    getCourseColor: id => {
-        let subj = id.split(' ')[0];
-        return courses.majors[subj].color;
-    },
-
-    loadData: (key, val, data) => {
-
-        try {
-
-            let year = parseInt(key.substring(1).split('q')[0]);
-            let quarter = parseInt(key.split('q')[1]);
-            let classes = val.split(',');
-            let classData = [];
-
-            let failed = false;
-            classes.forEach(name => {
-                
-                let course = decodeCourse(name);
-                let c = Utility.getCourse(course);
-                if (c == null) {
-                    failed = true;
-                    return;
-                }
-
-                classData.push(c);
-
-            });
-
-            classData.sort((a, b) => {
-                return a.id.localeCompare(b.id);
-            });
-
-            if (failed) return null;
-
-            while (data.length < year + 1) {
-                data.push([[], [], []]);
-            }
-
-            while (data[year].length < quarter + 1) {
-                data[year].push([]);
-            }
-
-            data[year][quarter] = classData;
-
-            return data;
-
-        } catch (e) {
-            console.error(e);
-            return null;
-
-        }
-
-    },
-
-    saveData: data => {
-
-        let params = new URLSearchParams();
-
-        for (let i = 0; i < data.length; i++) {
-            for (let j = 0; j < data[i].length; j++) {
-                let classes = data[i][j].map(course => encodeCourse(course.id)).join(',');
-                if (classes.length > 0) params.set(`y${i}q${j}`, classes);
-            }
-        }
-
-        window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
 
     },
 
@@ -265,52 +128,3 @@ let Utility = {
 }
 
 export default Utility;
-
-/*
-old encoding system but the URLs are too long
-will probably delete this from this file later
-
-function encodeCourse(courseName) {
-
-    let encoded = '';
-
-    for (let i = 0; i < courseName.length; i++) {
-
-        let char = courseName[i];
-
-        let encodedChar = char.charCodeAt(0).toString(16);
-
-        if (encodedChar.length === 1) {
-            encodedChar = '0' + encodedChar;
-        }
-
-        encoded += encodedChar;
-
-    }
-
-    return encoded;
-
-}
-
-function decodeCourse(encodedCourse) {
-
-    let decoded = '';
-
-    for (let i = 0; i < encodedCourse.length; i += 2) {
-
-        if (i + 2 > encodedCourse.length) {
-            break;
-        }
-
-        let encodedChar = encodedCourse[i] + encodedCourse[i + 1];
-
-        let char = String.fromCharCode(parseInt(encodedChar, 16));
-
-        decoded += char;
-
-    }
-
-    return decoded;
-
-}
-*/

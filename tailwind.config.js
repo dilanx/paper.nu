@@ -1,3 +1,4 @@
+const plugin = require('tailwindcss/plugin');
 const colors = require('tailwindcss/colors');
 
 module.exports = {
@@ -46,16 +47,34 @@ module.exports = {
     },
     extend: {
       spacing: {
-        '128': '32rem'
+        '128': '32rem',
+        '192': '48rem',
       }
     },
   },
   variants: {
     extend: {
-      backgroundColor: ['active'],
+      backgroundColor: ['active', 'compact'],
       backgroundOpacity: ['active'],
-      display: ["group-hover", "group-focus"],
+      display: ['group-hover', 'group-focus', 'compact'],
+      padding: ['compact'],
+      width: ['compact'],
+      height: ['compact'],
+      inset: ['compact'],
+      fontSize: ['compact'],
+      borderWidth: ['compact'],
+      boxShadow: ['compact'],
+      textColor: ['compact'],
+      margin: ['compact'],
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function({ addVariant, e }) {
+      addVariant('compact', ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `.compact-mode .${e(`compact${separator}${className}`)}`
+        })
+      })
+    })
+  ],
 }

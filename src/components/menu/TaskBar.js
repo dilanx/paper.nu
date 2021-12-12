@@ -27,7 +27,7 @@ class TaskBar extends React.Component {
                     this.props.alert({
                         title: 'Plan Northwestern',
                         subtitle: `version ${this.props.version} by Dilan N`,
-                        message: 'An easy and organized way to plan out your classes at Northwestern. Currently in beta with a temporary URL. Data is all saved in the URL, so save the link to your plan to access it later or share with friends. Notice any errors with classes? Check out the GitHub repository for instructions on reporting/fixing.',
+                        message: 'An easy and organized way to plan out your classes at Northwestern. Currently in beta with a temporary URL. Data is all saved in the URL, so save the link to your plan to access it later or share with friends.',
                         confirmButton: 'View on GitHub',
                         confirmButtonColor: 'purple',
                         cancelButton: 'Close',
@@ -35,7 +35,18 @@ class TaskBar extends React.Component {
                         icon: (<InformationCircleIcon className="h-6 w-6 text-purple-600" aria-hidden="true" />),
                         action: () => {
                             window.open('https://github.com/dilanx/plan-northwestern', '_blank');
-                        }
+                        },
+                        options: [
+                            {
+                                name: 'about_feedback',
+                                title: 'Share your thoughts!',
+                                description: `Find any bugs, notice any errors in course data, or have any suggestions? Let me know! I'm always interested in making the site better.`,
+                                buttonTextOn: 'Leave feedback',
+                                singleAction: () => {
+                                    window.open('https://github.com/dilanx/plan-northwestern', '_blank');
+                                }
+                            }
+                        ]
 
                     })
 
@@ -86,11 +97,31 @@ class TaskBar extends React.Component {
                 <TaskBarButton name="Settings" color="yellow" action={() => {
                     this.props.alert({
                         title: 'Settings',
-                        message: 'Soon lol give me a sec',
+                        message: 'Customize your Plan Northwestern experience! These settings are not saved in the URL but are saved in your browser.',
                         confirmButton: 'Close',
                         confirmButtonColor: 'yellow',
                         iconBackgroundColor: 'yellow',
                         icon: (<CogIcon className="h-6 w-6 text-yellow-600" aria-hidden="true" />),
+                        switches: this.props.switches,
+                        setSwitch: this.props.setSwitch,
+                        options: [
+                            {
+                                name: 'quarter_units',
+                                title: 'Show units per quarter',
+                                description: 'Reveal the unit count per quarter.',
+                                buttonTextOn: 'Enabled',
+                                buttonTextOff: 'Disabled',
+                                saveToStorage: true
+                            },
+                            {
+                                name: 'compact',
+                                title: 'Compact mode',
+                                description: `It's a bit uglier I think, but you can view more on the screen at once without needing to scroll.`,
+                                buttonTextOn: 'Enabled',
+                                buttonTextOff: 'Disabled',
+                                saveToStorage: true
+                            }
+                        ]
                     })
                 }}/>
 

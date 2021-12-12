@@ -1,8 +1,8 @@
 import React from 'react';
-import courses from './data/courses.json';
+import courses from '../../data/courses.json';
 import SearchClass from './SearchClass.js';
 import AddButtons from './AddButtons.js';
-import Utility from './Utility.js';
+import CourseManager from '../../CourseManager.js';
 import { SearchIcon, BookOpenIcon, ArrowRightIcon, SaveIcon, DotsHorizontalIcon } from '@heroicons/react/outline';
 
 const SEARCH_RESULT_LIMIT = 100;
@@ -94,7 +94,7 @@ class Search extends React.Component {
         let count = 0;
         for (let course of filtered) {
             courseList.push(
-                <SearchClass color={Utility.getCourseColor(course.id)} course={course} key={course.id} select={classData => {
+                <SearchClass color={CourseManager.getCourseColor(course.id)} course={course} key={course.id} select={classData => {
                     this.setState({current: classData});
                 }}/>
             )
@@ -140,7 +140,7 @@ class Search extends React.Component {
             singleClassView = true;
 
             selectedClass = (
-                <SearchClass color={Utility.getCourseColor(this.state.current.id)} course={this.state.current}/>
+                <SearchClass color={CourseManager.getCourseColor(this.state.current.id)} course={this.state.current}/>
             )
 
             addButtons = (
@@ -161,15 +161,14 @@ class Search extends React.Component {
 
 
         return (
-            <div className="border-4 border-black my-4 rounded-xl shadow-lg h-full
-            overflow-scroll overscroll-contain">
+            <div className="border-4 border-gray-400 mt-4 mb-2 rounded-lg shadow-lg h-full
+            overflow-y-scroll overscroll-contain">
                 {!singleClassView && searchField}
                 {!singleClassView && this.getResults()}
 
                 {singleClassView && selectedClass}
                 {singleClassView && addButtons}
                 {singleClassView && exitButton}
-
             </div>
         )
     }

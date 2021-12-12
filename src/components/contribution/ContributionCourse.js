@@ -1,5 +1,5 @@
 import React from 'react';
-import Utility from './Utility';
+import CourseManager from '../../CourseManager.js';
 import { DropTarget } from 'react-dnd';
 import { PencilIcon, XIcon } from '@heroicons/react/outline';
 
@@ -76,7 +76,7 @@ function ContributionCoursePrereqs(props) {
                             props.alert({
                                 title: 'Contribution Guide',
                                 subtitle: 'Prerequisite paths',
-                                message: 'A prerequisite path is a list of courses, ALL of which must be taken to take this class. At least one fulfilled prereq path counts as having the necessary prereqs to take the class. For example, CS 214 strictly requires that CS 111 must be taken, but allows you to pick between CS 211 and CS 150 as the other prerequisite. So, the two prereq paths would be "COMP_SCI 111-0, COMP_SCI 211-0" and "COMP_SCI 111-0, COMP_SCI 150-0".',
+                                message: 'A prerequisite path is a list of courses, ALL of which must be taken to take this class. At least one fulfilled prereq path counts as having the necessary prereqs to take the class. For example, CS 214 strictly requires that CS 111 must be taken, but allows you to pick between CS 211 and CS 150 as the other prerequisite. So, the two prereq paths would be "COMP_SCI 111-0, COMP_SCI 211-0" and "COMP_SCI 111-0, COMP_SCI 150-0". You can add up to 4 separate prereq paths, but you should rarely need them all.',
                                 confirmButton: 'Okay',
                                 confirmButtonColor: 'rose',
                                 iconBackgroundColor: 'rose',
@@ -122,7 +122,7 @@ class ContributionCourse extends React.Component {
         const { connectDropTarget } = this.props;
         return connectDropTarget(
             <div className={`relative grid gap-4 grid-cols-4 p-8 m-4 border-2 rounded-lg shadow-lg
-                ${this.state.hovered ? `border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50` : `border-solid bg-white ${this.props.course ? `border-${Utility.getCourseColor(this.props.course.id)}-200` : `border-gray-400`}`}`}>
+                ${this.state.hovered ? `border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50` : `border-solid bg-white ${this.props.course ? `border-${CourseManager.getCourseColor(this.props.course.id)}-200` : `border-gray-400`}`}`}>
                 
                 {this.props.multiple &&
                     <button className="absolute right-1 top-1 p-1 px-2 bg-white text-gray-300 hover:text-red-400 focus:text-red-500"
