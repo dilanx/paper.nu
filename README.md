@@ -1,13 +1,11 @@
 # Plan Northwestern
-[https://plan-nu.dilanxd.com](https://plan-nu.dilanxd.com)
+[https://plan-nu.com](https://plan-nu.com)
 
 **Currently in beta.**
 
 
 ## About
-**Plan Northwestern** is a website to help Northwestern students plan out their years of courses at the university. Find more information and get started at [https://plan-nu.dilanxd.com](https://plan-nu.dilanxd.com).
-
-The current URL is temporary while it's in development and will most likely be changed once released to the general public.
+**Plan Northwestern** is a website to help Northwestern students plan out their years of courses at the university. Find more information and get started at [https://plan-nu.com](https://plan-nu.com).
 
 
 ## Development
