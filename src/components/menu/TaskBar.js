@@ -129,6 +129,14 @@ class TaskBar extends React.Component {
                                 buttonTextOn: 'Enabled',
                                 buttonTextOff: 'Disabled',
                                 saveToStorage: true
+                            },
+                            {
+                                name: 'more_info',
+                                title: 'Show more info on classes',
+                                description: `See prerequisites and distribution areas on the class items without having to click on their info button. The info won't display if compact mode is enabled.`,
+                                buttonTextOn: 'Enabled',
+                                buttonTextOff: 'Disabled',
+                                saveToStorage: true
                             }
                         ]
                     })

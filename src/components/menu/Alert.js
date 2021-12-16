@@ -19,6 +19,22 @@ export default function Alert(props) {
 
     let data = props.data;
 
+    let extraList = [];
+    if (data.extras) {
+        let i = 0;
+        data.extras.forEach(extra => {
+            extraList.push(
+                <div className="mt-4" key={`alert-extra-${i}`}>
+                    <p className="text-xs text-gray-500 font-bold">
+                        {extra.title}
+                    </p>
+                    <p className="m-0 p-0 text-sm text-gray-500 font-light">
+                        {extra.content}
+                    </p>
+                </div>
+            )
+        })
+    }
 
     let optionList = [];
 
@@ -103,6 +119,9 @@ export default function Alert(props) {
                                     {data.message}
                                     </p>
                                 </div>
+                                {extraList.length > 0 &&
+                                    extraList
+                                }
                                 {data.textView &&
                                     <div>
                                         <p className="bg-gray-200 mt-4 p-1 px-4 font-mono text-sm rounded-md md:w-96 overflow-scroll whitespace-nowrap overscroll-contain no-scrollbar">

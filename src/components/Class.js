@@ -1,6 +1,7 @@
 import React from "react";
 import { DragSource } from 'react-dnd';
 import CourseManager from '../CourseManager.js';
+import Utility from '../Utility.js';
 import { InformationCircleIcon, TrashIcon, DocumentIcon } from '@heroicons/react/outline';
 
 const classSource = {
@@ -30,6 +31,28 @@ class Class extends React.Component {
     openInfo() {
         let course = this.props.course;
         let color = CourseManager.getCourseColor(course.id);
+
+        let extras = [];
+
+        if (course.prereqs) {
+            extras.push(
+                {
+                    title: 'PREREQUISITES',
+                    content: course.prereqs
+                }
+            )
+        }
+
+        if (course.distros) {
+            let distros = Utility.convertDistros(course.distros);
+            extras.push(
+                {
+                    title: 'DISTRIBUTION AREAS',
+                    content: distros.join(', ')
+                }
+            )
+        }
+
         this.props.alert({
             title: course.id,
             subtitle: course.name,
@@ -37,7 +60,8 @@ class Class extends React.Component {
             confirmButton: 'Close',
             confirmButtonColor: color,
             iconBackgroundColor: color,
-            icon: (<DocumentIcon className={`h-6 w-6 text-${color}-600`} aria-hidden="true" />)
+            icon: (<DocumentIcon className={`h-6 w-6 text-${color}-600`} aria-hidden="true" />),
+            extras: extras
         })
     }
 
@@ -47,6 +71,8 @@ class Class extends React.Component {
         let color = CourseManager.getCourseColor(course.id);
 
         const { isDragging, connectDragSource } = this.props;
+
+        let showMoreInfo = this.props.switches.more_info && !this.props.switches.compact;
 
         return connectDragSource(
             <div className={`p-2 rounded-lg bg-opacity-60 bg-${color}-100
@@ -59,6 +85,30 @@ class Class extends React.Component {
                 <p className="text-xs overflow-hidden w-full block whitespace-nowrap overflow-ellipsis compact:hidden" title={course.name}>
                     {course.name}
                 </p>
+                {showMoreInfo &&
+                    <div>
+                        {course.prereqs &&
+                            <div className="mt-4">
+                                <p className="text-xs text-gray-500 font-bold">
+                                    PREREQUISITES
+                                </p>
+                                <p className="m-0 p-0 text-xs text-gray-500 font-light whitespace-normal">
+                                    {course.prereqs}
+                                </p>
+                            </div>
+                        }
+                        {course.distros &&
+                            <div className="mt-4">
+                                <p className="text-xs text-gray-500 font-bold">
+                                    DISTRIBUTION AREAS
+                                </p>
+                                <p className="m-0 p-0 text-xs text-gray-500 font-light whitespace-normal">
+                                    {Utility.convertDistros(course.distros).join(', ')}
+                                </p>
+                            </div>
+                        }
+                    </div>
+                }
                 <div className="absolute top-3 bottom-3 compact:top-0.5 compact:bottom-0.5 right-1 px-2 flex flex-row gap-2">
                     <button className="text-gray-800 text-xs opacity-20 hover:text-blue-500 hover:opacity-100
                     transition-all duration-150 hidden group-hover:block" onClick={() => {

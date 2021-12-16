@@ -109,47 +109,6 @@ let CourseManager = {
 
     },
 
-    checkPrereq: (courseData, year, quarter, data) => {
-
-        if (!courseData.prereqs || courseData.prereqs.length === 0) {
-            return true;
-        }
-
-        for (let i = 0; i < courseData.prereqs.length; i++) {
-
-            let prereqs = courseData.prereqs[i];
-            let foundPrereqs = [];
-
-            for (let y = 0; y <= year; y++) {
-                for (let q = 0; q < data[y].length; q++) {
-
-                    if (y === year && q > quarter) break;
-
-                    for (let j = 0; j < prereqs.length; j++) {
-
-                        for (let c = 0; c < data[y][q].length; c++) {
-
-                            if (data[y][q][c].id === prereqs[j]) {
-                                foundPrereqs.push(data[y][q][c].id);
-                            }
-
-                        }
-
-                    }
-
-                }
-            }
-
-            if (foundPrereqs.length === prereqs.length) {
-                return true;
-            }
-
-        }
-
-        return false;
-
-    },
-
     getCourse: name => {
         for (let course of courses.courses) {
             if (course.id === name) {

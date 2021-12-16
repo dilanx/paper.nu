@@ -14,7 +14,7 @@ import Alert from './components/menu/Alert.js';
 
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '0.1.15 (beta)';
+const VERSION = '0.1.16 (beta)';
 
 class App extends React.Component {
 
@@ -34,7 +34,7 @@ class App extends React.Component {
                 }
                 data = newData;
             }
-         })
+        })
 
         let defaultAlert = null;
 
@@ -119,23 +119,6 @@ class App extends React.Component {
             this.showAlert({
                 title: 'Too many classes.',
                 message: `With this course, you'll have ${unitCount} units worth of classes this quarter, which is over Northwestern's maximum of 5.5 units.`,
-                cancelButton: 'Go back',
-                confirmButton: 'Add anyway',
-                confirmButtonColor: 'red',
-                iconBackgroundColor: 'red',
-                icon: (<ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />),
-                action: () => {
-                    this.actuallyAddCourse(course, year, quarter);
-                }
-            })
-            return;
-        }
-
-        let fulfilledPrereqs = CourseManager.checkPrereq(course, year, quarter, data);
-        if (!fulfilledPrereqs) {
-            this.showAlert({
-                title: 'Missing prerequisite courses.',
-                message: `You can't take this course that quarter without taking the necessary prerequisites in previous quarters. Make sure you have all prereqs of a certain color in your plan.`,
                 cancelButton: 'Go back',
                 confirmButton: 'Add anyway',
                 confirmButtonColor: 'red',
