@@ -11,8 +11,6 @@ import Search from './components/search/Search.js';
 import StatsBar from './components/menu/StatsBar.js';
 import Contribution from './components/contribution/Contribution.js';
 import Alert from './components/menu/Alert.js';
-
-
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
 const VERSION = '0.1.16 (beta)';
