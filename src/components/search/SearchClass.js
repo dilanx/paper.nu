@@ -18,6 +18,8 @@ function collect(connect, monitor) {
     }
 }
 
+const PLACEHOLDER_MESSAGE = `Don't know which specific class to take from a certain requirement category? Use a placeholder! Search for 'placeholder' to view all.`
+
 class SearchClass extends React.Component {
 
     constructor(props) {
@@ -61,6 +63,7 @@ class SearchClass extends React.Component {
 
     render() {
         const { isDragging, connectDragSource } = this.props;
+        let isPlaceholder = this.props.course.placeholder;
         return connectDragSource(
             <div className={`p-2 rounded-lg bg-opacity-60 bg-${this.props.color}-100 dark:bg-gray-800
             rounded-lg border-2 border-${this.props.color}-300 border-opacity-60
@@ -69,13 +72,13 @@ class SearchClass extends React.Component {
                 if (this.props.select) this.props.select(this.props.course);
             }}>
                 <p className="text-lg font-bold text-black dark:text-gray-50">
-                    {this.props.course.id}
+                    {isPlaceholder ? this.props.course.name : this.props.course.id}
                 </p>
                 <p className="text-sm text-black dark:text-gray-50">
-                    {this.props.course.name}
+                    {isPlaceholder ? 'PLACEHOLDER' : this.props.course.name}
                 </p>
                 <p className="text-xs mt-4 text-gray-700 dark:text-gray-300">
-                    {this.props.course.description}
+                    {isPlaceholder ? PLACEHOLDER_MESSAGE : this.props.course.description}
                 </p>
                 {this.props.course.prereqs &&
                     <div className="mt-4">

@@ -32,6 +32,19 @@ class Class extends React.Component {
         let course = this.props.course;
         let color = CourseManager.getCourseColor(course.id);
 
+        if (course.placeholder) {
+            this.props.alert({
+                title: 'Placeholder',
+                subtitle: course.name,
+                message: `If you aren't sure which course to take to fulfill a certain requirement, you can use a placeholder! Search using 'placeholder' or by requirement category to find placeholders.`,
+                confirmButton: 'Close',
+                confirmButtonColor: color,
+                iconBackground: color,
+                icon: (<DocumentIcon className={`h-6 w-6 text-${color}-600`} aria-hidden="true" />),
+            })
+            return;
+        }
+
         let extras = [];
 
         if (course.prereqs) {
@@ -74,16 +87,18 @@ class Class extends React.Component {
 
         let showMoreInfo = this.props.switches.more_info && !this.props.switches.compact;
 
+        let isPlaceholder = course.placeholder;
+
         return connectDragSource(
             <div className={`p-2 rounded-lg bg-opacity-60 bg-${color}-100 dark:bg-gray-800
             border-2 border-${color}-300 border-opacity-60 overflow-hidden whitespace-nowrap
             hover:shadow-md transition ease-in-out duration-300 transform hover:-translate-y-1 group ${isDragging ? 'cursor-grab' : 'cursor-default'}
             compact:px-2 compact:py-0.5`}>
-                <p className="text-md font-bold text-black dark:text-gray-50 compact:text-sm">
-                    {course.id}
+                <p className={`text-md ${isPlaceholder ? 'font-normal' : 'font-bold'} text-black dark:text-gray-50 compact:text-sm`}>
+                    {isPlaceholder ? course.name : course.id}
                 </p>
-                <p className="text-xs text-black dark:text-gray-50 overflow-hidden w-full block whitespace-nowrap overflow-ellipsis compact:hidden" title={course.name}>
-                    {course.name}
+                <p className={`text-xs ${isPlaceholder ? 'font-light' : 'font-normal'} text-black dark:text-gray-50 overflow-hidden w-full block whitespace-nowrap overflow-ellipsis compact:hidden`} title={course.name}>
+                    {isPlaceholder ? 'PLACEHOLDER' : course.name}
                 </p>
                 {showMoreInfo &&
                     <div>

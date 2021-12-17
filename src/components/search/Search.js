@@ -1,11 +1,11 @@
 import React from 'react';
-import courses from '../../data/courses.json';
 import SearchClass from './SearchClass.js';
 import AddButtons from './AddButtons.js';
 import CourseManager from '../../CourseManager.js';
 import { SearchIcon, BookOpenIcon, ArrowRightIcon, SaveIcon, DotsHorizontalIcon } from '@heroicons/react/outline';
 
 const SEARCH_RESULT_LIMIT = 100;
+var shortcut = null;
 
 function MiniContentBlock(props) {
 
@@ -32,7 +32,8 @@ class Search extends React.Component {
 
         this.state = {
             search: '',
-            current: null
+            current: null,
+            shortcut: null
         }
 
     }
@@ -53,6 +54,8 @@ class Search extends React.Component {
     getResults() {
 
         let search = this.state.search.toLowerCase();
+        shortcut = null;
+
         if (search.length === 0) {
             return (
                 <div>
@@ -79,14 +82,37 @@ class Search extends React.Component {
                 </div>
             )
         }
-        if (search.length < 3) {
-            return this.searchMessage('Keep typing...', `You'll need at least 3 characters.`);
+
+        search = search.replace(/-|_/g, ' ');
+
+        let terms = [search];
+
+        let firstWord = search.split(' ')[0];
+        if (CourseManager.data.shortcuts[firstWord]) {
+            let shortcuts = CourseManager.data.shortcuts[firstWord];
+            let remainder = search.substring(firstWord.length + 1);
+            terms = shortcuts.map(shortcut => {
+                return shortcut.toLowerCase().replace(/-|_/, ' ') + ' ' + remainder;
+            });
+
+            shortcut = {
+                replacing: firstWord,
+                with: shortcuts.join(', ')
+            }
+
         }
 
-        let filtered = courses.courses.filter(course => {
-            if (course.id.toLowerCase().includes(search)) return true;
-            if (course.name.toLowerCase().includes(search)) return true;
-            if (course.id.toLowerCase().replace('_', ' ').includes(search)) return true;
+        for (let term of terms) {
+            if (term.length < 3) {
+                return this.searchMessage('Keep typing...', `You'll need at least 3 characters.`);
+            }
+        }
+
+        let filtered = CourseManager.data.courses.filter(course => {
+            for (let term of terms) {
+                if (course.id.toLowerCase().replace(/-|_/g, ' ').includes(term)) return true;
+                if (course.name.toLowerCase().includes(term)) return true;    
+            }
             return false;
         });
 
@@ -122,13 +148,20 @@ class Search extends React.Component {
 
         let singleClassView = false;
 
+        let results = this.getResults();
+
         let searchField = (
             <div className="sticky top-0 p-2 mb-2 bg-white dark:bg-gray-800 z-10 rounded-lg">
-                <input className="block m-4 mx-auto w-11/12 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 shadow-md
+                <input className="block mt-4 mb-2 mx-auto w-11/12 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 shadow-md
                 rounded-lg outline-none hover:border-gray-500 focus:border-black dark:hover:border-gray-400 dark:focus:border-white text-lg p-2 px-4
                 transition-all duration-150 text-black dark:text-white" value={this.state.search} placeholder="Search for classes..." onChange={event => {
                     this.setState({search: event.target.value})
                 }}/>
+                {shortcut &&
+                    <p className="text-center text-sm m-0 p-0 text-gray-500 dark:text-gray-400">
+                        replacing <span className="text-black dark:text-white font-medium">{shortcut.replacing}</span> with <span className="text-black dark:text-white font-medium">{shortcut.with}</span>
+                    </p>
+                }
             </div>
         )
         
@@ -164,7 +197,7 @@ class Search extends React.Component {
             <div className="border-4 border-gray-400 dark:border-gray-500 mt-4 mb-2 rounded-lg shadow-lg h-full
             overflow-y-scroll overscroll-contain no-scrollbar">
                 {!singleClassView && searchField}
-                {!singleClassView && this.getResults()}
+                {!singleClassView && results}
 
                 {singleClassView && selectedClass}
                 {singleClassView && addButtons}

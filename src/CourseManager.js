@@ -2,6 +2,8 @@ import courses from './data/courses.json';
 
 let CourseManager = {
 
+    data: courses,
+
     getDistroFulfillment: data => {
 
         let df = [[[], [], [], [], [], []]];

@@ -24000,6 +24000,83 @@
             "name": "Independent Study",
             "units": "1",
             "description": "Prerequisite: Consent of instructor."
+        },
+        {
+            "id": "PLACEHOLDER 1",
+            "name": "DISTRO: Natural Sciences",
+            "units": "1",
+            "description": "Placeholder",
+            "placeholder": true
+        },
+        {
+            "id": "PLACEHOLDER 2",
+            "name": "DISTRO: Formal Studies",
+            "units": "1",
+            "description": "Placeholder",
+            "placeholder": true
+        },
+        {
+            "id": "PLACEHOLDER 3",
+            "name": "DISTRO: Social and Behavioral Sciences",
+            "units": "1",
+            "description": "Placeholder",
+            "placeholder": true
+        },
+        {
+            "id": "PLACEHOLDER 4",
+            "name": "DISTRO: Historical Studies",
+            "units": "1",
+            "description": "Placeholder",
+            "placeholder": true
+        },
+        {
+            "id": "PLACEHOLDER 5",
+            "name": "DISTRO: Ethics and Values",
+            "units": "1",
+            "description": "Placeholder",
+            "placeholder": true
+        },
+        {
+            "id": "PLACEHOLDER 6",
+            "name": "DISTRO: Literature and Fine Arts",
+            "units": "1",
+            "description": "Placeholder",
+            "placeholder": true
+        },
+        {
+            "id": "PLACEHOLDER 7",
+            "name": "Basic Science",
+            "units": "1",
+            "description": "Placeholder",
+            "placeholder": true
+        },
+        {
+            "id": "PLACEHOLDER 8",
+            "name": "Basic Engineering",
+            "units": "1",
+            "description": "Placeholder",
+            "placeholder": true
+        },
+        {
+            "id": "PLACEHOLDER 9",
+            "name": "Theme",
+            "units": "1",
+            "description": "Placeholder",
+            "placeholder": true
+        },
+        {
+            "id": "PLACEHOLDER 10",
+            "name": "Technical Elective",
+            "units": "1",
+            "description": "Placeholder",
+            "placeholder": true
+        },
+        {
+            "id": "PLACEHOLDER 11",
+            "name": "Unrestricted Elective",
+            "units": "1",
+            "description": "Placeholder",
+            "placeholder": true
         }
     ],
     "majors": {
@@ -24592,6 +24669,11 @@
             "display": "Yiddish",
             "color": "pink",
             "id": "117"
+        },
+        "PLACEHOLDER": {
+            "display": "Placeholder",
+            "color": "gray",
+            "id": "118"
         }
     },
     "major_ids": {
@@ -24712,6 +24794,12 @@
         "114": "TURKISH",
         "115": "VOICE",
         "116": "WIND_PER",
-        "117": "YIDDISH"
+        "117": "YIDDISH",
+        "118": "PLACEHOLDER"
+    },
+    "shortcuts": {
+        "cs": ["COMP_SCI"],
+        "ea": ["GEN_ENG 205", "GEN_ENG 206"],
+        "dtc": ["DSGN 106", "ENGLISH 106"]
     }
 }

@@ -13,7 +13,7 @@ import Contribution from './components/contribution/Contribution.js';
 import Alert from './components/menu/Alert.js';
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '0.1.17 (beta)';
+const VERSION = '0.1.18 (beta)';
 
 class App extends React.Component {
 
@@ -93,10 +93,11 @@ class App extends React.Component {
     addCourse(course, year, quarter) {
 
         let data = this.state.data;
+        let isPlaceholder = course.placeholder;
 
         let exists = CourseManager.duplicateCourse(course, data);
 
-        if (exists) {
+        if (exists && !isPlaceholder) {
             this.showAlert({
                 title: 'Course already planned.',
                 message: `You already have ${course.id} on your plan during the ${Utility.convertQuarter(exists.quarter).title.toLowerCase()} quarter of your ${Utility.convertYear(exists.year).toLowerCase()} year.`,
