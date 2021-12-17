@@ -80,10 +80,10 @@ class ContributionCourse extends React.Component {
         const { connectDropTarget } = this.props;
         return connectDropTarget(
             <div className={`relative grid gap-4 grid-cols-4 p-8 m-4 border-2 rounded-lg shadow-lg
-                ${this.state.hovered ? `border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50` : `border-solid bg-white ${this.props.course ? `border-${CourseManager.getCourseColor(this.props.course.id)}-200` : `border-gray-400`}`}`}>
+                ${this.state.hovered ? `border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50` : `border-solid bg-white dark:bg-gray-800 ${this.props.course ? `border-${CourseManager.getCourseColor(this.props.course.id)}-200` : `border-gray-400`}`}`}>
                 
                 {this.props.multiple &&
-                    <button className="absolute right-1 top-1 p-1 px-2 bg-white text-gray-300 hover:text-red-400 focus:text-red-500"
+                    <button className="absolute right-1 top-1 p-1 px-2 bg-transparent text-gray-300 hover:text-red-400 focus:text-red-500"
                             title="Remove"
                             onClick={() => {
                                 this.props.removeCourse(this.props.index);
@@ -94,15 +94,15 @@ class ContributionCourse extends React.Component {
                     }
 
                 <div className="">
-                    <p className="text-lg font-bold text-black">
+                    <p className="text-lg font-bold text-black dark:text-white">
                         {this.props.course ? this.props.course.id : 'SELECT A COURSE'}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                         {this.props.course ? this.props.course.name : 'Drag a course here.'}
                     </p>
                 </div>
 
-                <div className="col-span-3 text-gray-700 text-sm space-y-4">
+                <div className="col-span-3 text-gray-700 text-sm space-y-4 dark:text-gray-300">
 
                     {this.props.course &&
                         <ContributionCourseOffered/>}

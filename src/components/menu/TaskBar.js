@@ -5,8 +5,10 @@ function TaskBarButton(props) {
     return (
         <button className={`border-2 rounded-md border-gray-400 bg-gray-50 text-gray-600
                 hover:border-${props.color}-500 hover:bg-${props.color}-50 hover:text-${props.color}-500
+                dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400
+                dark:hover:border-${props.color}-500 dark:hover:bg-${props.color}-800 dark:hover:text-${props.color}-100
                 transition-all duration-150 ${props.span ? `col-span-${props.span}` : ''}
-                ${props.active ? `border-${props.color}-400 bg-${props.color}-50 text-${props.color}-400` : `border-solid`}`}
+                ${props.active ? `border-${props.color}-400 bg-${props.color}-50 text-${props.color}-400 dark:border-${props.color}-600 dark:bg-${props.color}-900 dark:text-${props.color}-200` : ``}`}
                 onClick={() => {
                     props.action();
                 }}>
@@ -115,9 +117,9 @@ class TaskBar extends React.Component {
                         setSwitch: this.props.setSwitch,
                         options: [
                             {
-                                name: 'quarter_units',
-                                title: 'Show units per quarter',
-                                description: 'Reveal the unit count per quarter.',
+                                name: 'dark',
+                                title: 'Dark mode',
+                                description: `Become one with the night.`,
                                 buttonTextOn: 'Enabled',
                                 buttonTextOff: 'Disabled',
                                 saveToStorage: true
@@ -126,6 +128,14 @@ class TaskBar extends React.Component {
                                 name: 'compact',
                                 title: 'Compact mode',
                                 description: `It's a bit uglier I think, but you can view more on the screen at once without needing to scroll.`,
+                                buttonTextOn: 'Enabled',
+                                buttonTextOff: 'Disabled',
+                                saveToStorage: true
+                            },
+                            {
+                                name: 'quarter_units',
+                                title: 'Show units per quarter',
+                                description: 'Reveal the unit count per quarter.',
                                 buttonTextOn: 'Enabled',
                                 buttonTextOff: 'Disabled',
                                 saveToStorage: true

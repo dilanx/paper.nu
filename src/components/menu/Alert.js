@@ -25,10 +25,10 @@ export default function Alert(props) {
         data.extras.forEach(extra => {
             extraList.push(
                 <div className="mt-4" key={`alert-extra-${i}`}>
-                    <p className="text-xs text-gray-500 font-bold">
+                    <p className="text-xs text-gray-500 font-bold dark:text-gray-400">
                         {extra.title}
                     </p>
-                    <p className="m-0 p-0 text-sm text-gray-500 font-light">
+                    <p className="m-0 p-0 text-sm text-gray-500 font-light dark:text-gray-400">
                         {extra.content}
                     </p>
                 </div>
@@ -42,15 +42,15 @@ export default function Alert(props) {
         let i = 0;
         data.options.forEach(option => {
             let enabled = false;
-            if (!option.singleAction) enabled = data.switches[option.name];
+            if (!option.singleAction) enabled = props.switches[option.name];
 
             optionList.push(
                 <div className="grid grid-cols-1 sm:grid-cols-5 p-2 m-2" key={`alert-option-${i}`}>
                     <div className="col-span-1 sm:col-span-3">
-                        <p className="text-sm font-bold">
+                        <p className="text-sm font-bold text-black dark:text-white">
                             {option.title}
                         </p>
-                        <p className="text-xs text-gray-600 mr-2">
+                        <p className="text-xs text-gray-600 mr-2 dark:text-gray-300">
                             {option.description}
                         </p>
                     </div>
@@ -59,7 +59,7 @@ export default function Alert(props) {
                             <button className="block mx-auto bg-emerald-400 text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
                             m-1 p-2 w-full rounded-md shadow-md"
                                     onClick={() => {
-                                        data.setSwitch(option.name, false, option.saveToStorage);
+                                        props.setSwitch(option.name, false, option.saveToStorage);
                                     }}>
                                 {option.buttonTextOn}
                             </button>
@@ -67,13 +67,13 @@ export default function Alert(props) {
                             <button className="block mx-auto bg-red-400 text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
                                     m-1 p-2 w-full rounded-md shadow-md"
                                     onClick={() => {
-                                        data.setSwitch(option.name, true, option.saveToStorage);
+                                        props.setSwitch(option.name, true, option.saveToStorage);
                                     }}>
                                 {option.buttonTextOff}
                             </button>
                         )}
                         {option.singleAction &&
-                            <button className="block mx-auto bg-black text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
+                            <button className="block mx-auto bg-black dark:bg-gray-500 text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
                                     m-1 p-2 w-full rounded-md shadow-md"
                                     onClick={() => {
                                         option.singleAction();
@@ -90,32 +90,32 @@ export default function Alert(props) {
     }
 
     return (
-        <Dialog open={isOpen} onClose={() => {close()}} initialFocus={cancelButtonRef} className="fixed z-10 inset-0 overflow-y-auto">
+        <Dialog open={isOpen} onClose={() => {close()}} initialFocus={cancelButtonRef} className={`${props.switches.dark ? 'dark' : ''} fixed z-10 inset-0 overflow-y-auto`}>
             <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
                     &#8203;
                 </span>
                 <Dialog.Overlay className="fixed inset-0 bg-black opacity-30"/>
-                <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                    <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full dark:bg-gray-700">
+                    <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 dark:bg-gray-700">
                         <div className="sm:flex sm:items-start">
                             <div className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-${data.iconBackgroundColor}-100 sm:mx-0 sm:h-10 sm:w-10`}>
                                 {data.icon}
                             </div>
                             <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
+                                <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                                     {data.title}
                                 </Dialog.Title>
 
                                 {data.subtitle &&
                                     <div>
-                                        <p className="text-md font-light text-gray-900">
+                                        <p className="text-md font-light text-gray-900 dark:text-gray-100">
                                             {data.subtitle}
                                         </p>
                                     </div>
                                 }
                                 <div className="mt-2">
-                                    <p className="text-sm text-gray-500">
+                                    <p className="text-sm text-gray-500 dark:text-gray-200">
                                     {data.message}
                                     </p>
                                 </div>
@@ -124,7 +124,7 @@ export default function Alert(props) {
                                 }
                                 {data.textView &&
                                     <div>
-                                        <p className="bg-gray-200 mt-4 p-1 px-4 font-mono text-sm rounded-md md:w-96 overflow-scroll whitespace-nowrap overscroll-contain no-scrollbar">
+                                        <p className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white mt-4 p-1 px-4 font-mono text-sm rounded-md md:w-96 overflow-scroll whitespace-nowrap overscroll-contain no-scrollbar">
                                             {data.textView}
                                         </p>
                                     </div>
@@ -138,7 +138,7 @@ export default function Alert(props) {
                         optionList
                     }
 
-                    <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse dark:bg-gray-800">
                         <button
                             type="button"
                             className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-${data.confirmButtonColor}-500 text-base font-medium text-white
@@ -151,7 +151,8 @@ export default function Alert(props) {
                                 ref={cancelButtonRef}
                                 type="button"
                                 className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2
-                                bg-white text-base font-medium text-gray-700 hover:bg-gray-100 focus:bg-gray-200 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                                bg-white text-base font-medium text-gray-700 hover:bg-gray-100 focus:bg-gray-200 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm
+                                dark:bg-gray-500 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 dark:focus:bg-gray-700"
                                 onClick={() => {close();}}>
                                 {data.cancelButton}
                             </button>}

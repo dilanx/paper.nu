@@ -11,13 +11,13 @@ function MiniContentBlock(props) {
 
     return (
         <div className="text-center p-4">
-            <div className="mx-auto my-1 flex items-center justify-center text-gray-500">
+            <div className="mx-auto my-1 flex items-center justify-center text-gray-500 dark:text-gray-400">
                 {props.icon}
             </div>
-            <p className="text-lg font-medium text-gray-500">
+            <p className="text-lg font-medium text-gray-500 dark:text-gray-400">
                 {props.title}
             </p>
-            <p className="text-sm font-light text-gray-400">
+            <p className="text-sm font-light text-gray-400 dark:text-gray-500">
                 {props.text}
             </p>
         </div>
@@ -39,7 +39,7 @@ class Search extends React.Component {
 
     searchMessage(title, subtitle) {
         return (
-            <div className="text-center text-gray-600 px-4">
+            <div className="text-center text-gray-600 dark:text-gray-400 px-4">
                 <p className="text-lg font-medium">
                     {title}
                 </p>
@@ -123,10 +123,10 @@ class Search extends React.Component {
         let singleClassView = false;
 
         let searchField = (
-            <div className="sticky top-0 p-2 mb-2 bg-white z-10 rounded-lg">
-                <input className="block m-4 mx-auto w-11/12 border-2 border-gray-300 shadow-md
-                rounded-lg hover:border-gray-500 outline-none focus:border-black text-lg p-2 px-4
-                bg-white transition-all duration-150" value={this.state.search} placeholder="Search for classes..." onChange={event => {
+            <div className="sticky top-0 p-2 mb-2 bg-white dark:bg-gray-800 z-10 rounded-lg">
+                <input className="block m-4 mx-auto w-11/12 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 shadow-md
+                rounded-lg outline-none hover:border-gray-500 focus:border-black dark:hover:border-gray-400 dark:focus:border-white text-lg p-2 px-4
+                transition-all duration-150 text-black dark:text-white" value={this.state.search} placeholder="Search for classes..." onChange={event => {
                     this.setState({search: event.target.value})
                 }}/>
             </div>
@@ -150,8 +150,8 @@ class Search extends React.Component {
                     }} data={this.props.data}/>
             )
             exitButton = (
-                <button className="block mx-auto bg-white border-2 border-gray-400 text-gray-400
-                w-2/3 p-2 my-4 hover:border-black hover:text-black transition-all duration-150 rounded-md" onClick={() => {
+                <button className="block mx-auto bg-white dark:bg-gray-800 border-2 border-gray-400 text-gray-400
+                w-2/3 p-2 my-4 hover:border-black hover:text-black dark:hover:border-gray-100 dark:hover:text-gray-100 transition-all duration-150 rounded-md" onClick={() => {
                     this.setState({current: null});
                 }}>
                     Back
@@ -161,7 +161,7 @@ class Search extends React.Component {
 
 
         return (
-            <div className="border-4 border-gray-400 mt-4 mb-2 rounded-lg shadow-lg h-full
+            <div className="border-4 border-gray-400 dark:border-gray-500 mt-4 mb-2 rounded-lg shadow-lg h-full
             overflow-y-scroll overscroll-contain no-scrollbar">
                 {!singleClassView && searchField}
                 {!singleClassView && this.getResults()}

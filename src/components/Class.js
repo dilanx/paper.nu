@@ -75,34 +75,34 @@ class Class extends React.Component {
         let showMoreInfo = this.props.switches.more_info && !this.props.switches.compact;
 
         return connectDragSource(
-            <div className={`p-2 rounded-lg bg-opacity-60 bg-${color}-100
+            <div className={`p-2 rounded-lg bg-opacity-60 bg-${color}-100 dark:bg-gray-800
             border-2 border-${color}-300 border-opacity-60 overflow-hidden whitespace-nowrap
             hover:shadow-md transition ease-in-out duration-300 transform hover:-translate-y-1 group ${isDragging ? 'cursor-grab' : 'cursor-default'}
             compact:px-2 compact:py-0.5`}>
-                <p className="text-md font-bold compact:text-sm">
+                <p className="text-md font-bold text-black dark:text-gray-50 compact:text-sm">
                     {course.id}
                 </p>
-                <p className="text-xs overflow-hidden w-full block whitespace-nowrap overflow-ellipsis compact:hidden" title={course.name}>
+                <p className="text-xs text-black dark:text-gray-50 overflow-hidden w-full block whitespace-nowrap overflow-ellipsis compact:hidden" title={course.name}>
                     {course.name}
                 </p>
                 {showMoreInfo &&
                     <div>
                         {course.prereqs &&
-                            <div className="mt-4">
-                                <p className="text-xs text-gray-500 font-bold">
+                            <div className="mt-4 text-gray-500 dark:text-gray-400">
+                                <p className="text-xs font-bold">
                                     PREREQUISITES
                                 </p>
-                                <p className="m-0 p-0 text-xs text-gray-500 font-light whitespace-normal">
+                                <p className="m-0 p-0 text-xs font-light whitespace-normal">
                                     {course.prereqs}
                                 </p>
                             </div>
                         }
                         {course.distros &&
-                            <div className="mt-4">
-                                <p className="text-xs text-gray-500 font-bold">
+                            <div className="mt-4 text-gray-500 dark:text-gray-400">
+                                <p className="text-xs font-bold">
                                     DISTRIBUTION AREAS
                                 </p>
-                                <p className="m-0 p-0 text-xs text-gray-500 font-light whitespace-normal">
+                                <p className="m-0 p-0 text-xs font-light whitespace-normal">
                                     {Utility.convertDistros(course.distros).join(', ')}
                                 </p>
                             </div>
@@ -110,14 +110,14 @@ class Class extends React.Component {
                     </div>
                 }
                 <div className="absolute top-3 bottom-3 compact:top-0.5 compact:bottom-0.5 right-1 px-2 flex flex-row gap-2">
-                    <button className="text-gray-800 text-xs opacity-20 hover:text-blue-500 hover:opacity-100
+                    <button className="text-gray-500 dark:text-white text-xs opacity-40 hover:text-blue-500 dark:hover:text-blue-500 hover:opacity-100
                     transition-all duration-150 hidden group-hover:block" onClick={() => {
                         this.openInfo();
                     }}>
                         <InformationCircleIcon className="w-6 h-6 compact:w-5 compact:h-5"/>
                         
                     </button>
-                    <button className="text-gray-800 text-xs opacity-20 hover:text-red-500 hover:opacity-100
+                    <button className="text-gray-500 dark:text-white text-xs opacity-40 hover:text-red-500 dark:hover:text-red-500 hover:opacity-100
                     transition-all duration-150 hidden group-hover:block" onClick={() => {
                         this.props.delCourse();
                     }}>

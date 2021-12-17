@@ -13,7 +13,7 @@ import Contribution from './components/contribution/Contribution.js';
 import Alert from './components/menu/Alert.js';
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '0.1.16 (beta)';
+const VERSION = '0.1.17 (beta)';
 
 class App extends React.Component {
 
@@ -155,10 +155,12 @@ class App extends React.Component {
     render() {
         return (
             <DndProvider backend={HTML5Backend}>
-                <div className="">
+                <div className={`${this.state.switches.dark ? 'dark' : ''}`}>
 
                     {this.state.alert &&
                         <Alert data={this.state.alert}
+                            switches={this.state.switches}
+                            setSwitch={(key, val, save=false) => {this.setSwitch(key, val, save)}}
                             onClose={() => {
                                 this.postShowAlert();
                             }}
@@ -170,7 +172,7 @@ class App extends React.Component {
                             }
                     }/>}
 
-                    <div className="grid grid-cols-1 md:grid-cols-8">
+                    <div className="bg-white dark:bg-gray-800 grid grid-cols-1 md:grid-cols-8">
                         <div className="col-span-2 px-4 h-192 md:h-screen flex flex-col">
                             <Info version={VERSION}/>
                             <TaskBar

@@ -62,12 +62,12 @@ class Contribution extends React.Component {
         }
 
         return (
-            <div className="relative p-4 border-4 border-red-400 rounded-lg m-5 shadow-sm bg-white">
+            <div className="relative p-4 border-4 border-red-400 rounded-lg m-5 shadow-sm bg-white dark:bg-gray-800">
                 <p className="text-center text-2xl text-red-400 font-bold pb-2">
                     CONTRIBUTION
                 </p>
 
-                <p className="text-center text-sm text-gray-600 py-2 lg:px-24">
+                <p className="text-center text-sm text-gray-600 py-2 lg:px-24 dark:text-gray-300">
                     There's a lot of data that would be useful to have here. While a lot of the main course data was grabbed in bulk from the Northwestern course catalog site,
                     there's still a lot missing, like which courses are offered during what quarters, prerequisites for every course, which courses fulfill specific major requirements,
                     and more. A lot of that is department/major specific, and is spread out over several websites that may only have data for the current year, or might not even have

@@ -7,7 +7,7 @@ module.exports = {
     safelist: [/(border|bg|text)-(.*)-(50|100|200|300|400|500|600|700|800|900)/]
 
   },
-  darkMode: false, // or 'media' or 'class'
+  darkMode: 'class', // or 'media' or 'class'
   theme: {
     colors: {
       transparent: 'transparent',
