@@ -96,7 +96,7 @@ class Search extends React.Component {
             });
 
             shortcut = {
-                replacing: firstWord,
+                replacing: firstWord.toUpperCase(),
                 with: shortcuts.join(', ')
             }
 
