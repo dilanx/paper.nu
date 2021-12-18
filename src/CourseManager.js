@@ -76,7 +76,7 @@ let CourseManager = {
             }
         }
 
-        return total;
+        return Math.round(total * 100) / 100;
 
     },
 
@@ -88,7 +88,8 @@ let CourseManager = {
             total += parseFloat(quarter[c].units);
         }
 
-        return total;
+
+        return Math.round(total * 100) / 100;
 
     },
 
