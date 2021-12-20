@@ -13,7 +13,7 @@ import Contribution from './components/contribution/Contribution.js';
 import Alert from './components/menu/Alert.js';
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '0.1.20 (beta)';
+const VERSION = '0.1.21 (beta)';
 
 class App extends React.Component {
 
@@ -84,6 +84,8 @@ class App extends React.Component {
         let data = this.state.data;
         data[year][quarter].push(course);
         data[year][quarter].sort((a, b) => {
+            if (a.placeholder) return 1;
+            if (b.placeholder) return -1;
             return a.id.localeCompare(b.id);
         });
         this.setState({data: data});

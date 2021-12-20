@@ -93,7 +93,7 @@ class Quarter extends React.Component {
             <div className={`relative block rounded-lg px-8 pt-4 pb-8 border-2
                 ${this.state.hovered ? `border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50` : `border-solid bg-${this.props.color}-50 dark:bg-gray-800 border-${this.props.color}-400`}
                 space-y-3 h-full shadow-lg compact:py-2 compact:shadow-sm`}>
-                <p className="text-center font-bold text-md m-0 p-0 text-gray-600 compact:text-sm">
+                <p className="text-center font-bold text-md m-0 p-0 text-gray-600 dark:text-gray-400 compact:text-sm">
                     {this.props.title}
                 </p>
                 {classes}
