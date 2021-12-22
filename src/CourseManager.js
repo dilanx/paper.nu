@@ -191,7 +191,7 @@ let CourseManager = {
 
     },
 
-    saveData: data => {
+    saveData: (data, saveToStorage) => {
 
         let params = new URLSearchParams();
 
@@ -223,7 +223,13 @@ let CourseManager = {
             }
         }
 
-        window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+        let dataStr = params.toString();
+
+        window.history.replaceState({}, '', `${window.location.pathname}?${dataStr}`);
+
+        if (saveToStorage) {
+            localStorage.setItem('data', dataStr);
+        }
 
     }
 

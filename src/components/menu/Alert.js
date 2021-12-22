@@ -3,7 +3,8 @@ import { Dialog } from '@headlessui/react'
 
 export default function Alert(props) {
 
-    let [isOpen, setIsOpen] = useState(true)
+    let [isOpen, setIsOpen] = useState(true);
+    let [confirmation, setConfirmation] = useState({});
 
     let cancelButtonRef = useRef(null);
 
@@ -43,7 +44,6 @@ export default function Alert(props) {
         data.options.forEach(option => {
             let enabled = false;
             if (!option.singleAction) enabled = props.switches[option.name];
-
             optionList.push(
                 <div className="grid grid-cols-1 sm:grid-cols-5 p-2 m-2" key={`alert-option-${i}`}>
                     <div className="col-span-1 sm:col-span-3">
@@ -73,12 +73,19 @@ export default function Alert(props) {
                             </button>
                         )}
                         {option.singleAction &&
-                            <button className="block mx-auto bg-black dark:bg-gray-500 text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
-                                    m-1 p-2 w-full rounded-md shadow-md"
+                            <button className={`block mx-auto ${confirmation[option.name] ? 'bg-red-500 dark:bg-red-500' : 'bg-black dark:bg-gray-500'} text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
+                                    m-1 p-2 w-full rounded-md shadow-md"`}
                                     onClick={() => {
+                                        if (option.requireConfirmation) {
+                                            if (!confirmation[option.name]) {
+                                                setConfirmation({...confirmation, [option.name]: true});
+                                                return;
+                                            }
+                                        }
                                         option.singleAction();
+                                        setConfirmation({...confirmation, [option.name]: false});
                                     }}>
-                                {option.buttonTextOn}
+                                {confirmation[option.name] ? 'Confirm' : option.buttonTextOn}
                             </button>
                         }
                     </div>

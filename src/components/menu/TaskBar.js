@@ -147,6 +147,24 @@ class TaskBar extends React.Component {
                                 buttonTextOn: 'Enabled',
                                 buttonTextOff: 'Disabled',
                                 saveToStorage: true
+                            },
+                            {
+                                name: 'save_to_storage',
+                                title: 'Remember most recent plan',
+                                description: `If you visit this site without a full plan URL, your most recently modified plan will be loaded.`,
+                                buttonTextOn: 'Enabled',
+                                buttonTextOff: 'Disabled',
+                                saveToStorage: true
+                            },
+                            {
+                                name: 'clear_plan',
+                                title: 'Clear plan',
+                                description: `Clear your current plan data.`,
+                                buttonTextOn: 'Clear',
+                                requireConfirmation: true,
+                                singleAction: () => {
+                                    this.props.clearData();
+                                }
                             }
                         ]
                     })

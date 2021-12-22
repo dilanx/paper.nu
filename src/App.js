@@ -13,18 +13,23 @@ import Contribution from './components/contribution/Contribution.js';
 import Alert from './components/menu/Alert.js';
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '0.1.21 (beta)';
+const VERSION = '0.1.22 (beta)';
 
 class App extends React.Component {
 
     constructor(props) {
         super(props);
+
+        let defaultSwitches = Utility.loadSwitchesFromStorage();
+
         let data = [[[], [], []], [[], [], []], [[], [], []], [[], [], []]];
         let search = window.location.search;
         let params = new URLSearchParams(search);
         let failed = false;
-        params.forEach((val, key, par) => {
+        let loadedAny = false;
+        params.forEach((val, key) => {
             if (key.startsWith('y')) {
+                loadedAny = true;
                 if (failed) return;
                 let newData = CourseManager.loadData(key, val, data);
                 if (newData == null) {
@@ -34,6 +39,27 @@ class App extends React.Component {
                 data = newData;
             }
         })
+
+        if (!loadedAny && defaultSwitches.save_to_storage) {
+            let dataStr = localStorage.getItem('data');
+            let params = new URLSearchParams(dataStr);
+            if (dataStr != null) {
+                if (failed) return;
+                params.forEach((val, key) => {
+                    if (key.startsWith('y')) {
+                        loadedAny = true;
+                        if (failed) return;
+                        let newData = CourseManager.loadData(key, val, data);
+                        if (newData == null) {
+                            failed = true;
+                            return;
+                        }
+                        data = newData;
+                    }
+                })
+                CourseManager.saveData(data, false);
+            }
+        }
 
         let defaultAlert = null;
 
@@ -48,8 +74,6 @@ class App extends React.Component {
                 icon: (<ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />)
             }
         }
-
-        let defaultSwitches = Utility.loadSwitchesFromStorage();
 
         this.state = {
             data: data,
@@ -89,7 +113,7 @@ class App extends React.Component {
             return a.id.localeCompare(b.id);
         });
         this.setState({data: data});
-        CourseManager.saveData(data);
+        CourseManager.saveData(data, this.state.switches.save_to_storage);
     }
 
     addCourse(course, year, quarter) {
@@ -141,7 +165,7 @@ class App extends React.Component {
         let data = this.state.data;
         data[year][quarter].splice(courseIndex, 1);
         this.setState({data: data});
-        CourseManager.saveData(data);
+        CourseManager.saveData(data, this.state.switches.save_to_storage);
     }
 
     moveCourse(course, oldYear, oldQuarter, newYear, newQuarter) {
@@ -191,6 +215,10 @@ class App extends React.Component {
                                 version={VERSION}
                                 switches={this.state.switches}
                                 setSwitch={(key, val, save=false) => {this.setSwitch(key, val, save)}}
+                                clearData={() => {
+                                    this.setState({data: [[[], [], []], [[], [], []], [[], [], []], [[], [], []]]});
+                                    CourseManager.saveData(this.state.data, this.state.switches.save_to_storage);
+                                }}
                             />
                             <Search
                                 data={this.state.data}
