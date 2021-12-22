@@ -1,7 +1,7 @@
 # Plan Northwestern
 [https://plan-nu.com](https://plan-nu.com)
 
-Beta 1.0.0 will be released to the public on Fri Dec 17.
+Beta 1.0.0 will be released to the public on Wed Dec 22.
 
 **Currently in beta.**
 
