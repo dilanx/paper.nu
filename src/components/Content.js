@@ -24,7 +24,7 @@ class Content extends React.Component {
             })
         }
         return (
-            <div>
+            <div className="bg-white dark:bg-gray-800">
                 {years}
             </div>
         );
