@@ -12,7 +12,7 @@ import Contribution from './components/contribution/Contribution.js';
 import Alert from './components/menu/Alert.js';
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '1.0.0 (beta)';
+const VERSION = '1.0.0 beta';
 
 class App extends React.Component {
 
