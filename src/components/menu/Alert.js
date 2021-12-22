@@ -73,7 +73,7 @@ export default function Alert(props) {
                             </button>
                         )}
                         {option.singleAction &&
-                            <button className={`block mx-auto ${confirmation[option.name] ? 'bg-red-500 dark:bg-red-500' : 'bg-black dark:bg-gray-500'} text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
+                            <button className={`block mx-auto ${confirmation[option.name] ? 'bg-red-500 dark:bg-red-500' : 'bg-gray-600 dark:bg-gray-500'} text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
                                     m-1 p-2 w-full rounded-md shadow-md"`}
                                     onClick={() => {
                                         if (option.requireConfirmation) {
