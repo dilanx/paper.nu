@@ -1,8 +1,6 @@
 # Plan Northwestern
 [https://plan-nu.com](https://plan-nu.com)
 
-Beta 1.0.0 will be released to the public on Wed Dec 22.
-
 **Currently in beta.**
 
 
@@ -11,10 +9,10 @@ Beta 1.0.0 will be released to the public on Wed Dec 22.
 
 
 ## Development
-This project is completely open-source. While redistributing the project is not allowed, you're welcome to submit issues with feature requests, or potentially create them yourself and submit a pull request.
+This project is completely open-source. While redistributing the project is not allowed, you're welcome to submit issues with feature requests, or potentially create them yourself and submit a pull request. Contact me if you have any questions or are interested in how Plan Northwestern was developed.
 
 
 ## Author
 Created by Dilan (CS in McCormick, 2024) [dilanxd.com](https://dilanxd.com)
 
-Honestly, GitHub Copilot helped a bit, too.
+GitHub Copilot helped a bit, too.
