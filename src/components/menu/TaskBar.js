@@ -29,7 +29,7 @@ class TaskBar extends React.Component {
                     this.props.alert({
                         title: 'Plan Northwestern',
                         subtitle: `version ${this.props.version} by Dilan N`,
-                        message: 'An easy and organized way to plan out your classes at Northwestern. Currently in beta with a temporary URL. Data is all saved in the URL, so save the link to your plan to access it later or share with friends.',
+                        message: 'An easy and organized way to plan out your classes at Northwestern. Data is all saved in the URL, so save the link to your plan to access it later or share with friends.',
                         confirmButton: 'View on GitHub',
                         confirmButtonColor: 'purple',
                         cancelButton: 'Close',
