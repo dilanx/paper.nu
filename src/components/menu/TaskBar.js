@@ -45,7 +45,7 @@ class TaskBar extends React.Component {
                                 description: `Check out what's been requested and what I'm working on on the GitHub issues page. Check this out before you send feedback in case someone else has already requested it.`,
                                 buttonTextOn: `See what's coming`,
                                 singleAction: () => {
-                                    window.open('https://github.com/dilanx/plan-northwestern/issues', '_blank');
+                                    window.open('https://github.com/dilanx/plan-northwestern/issues?q=', '_blank');
                                 }
                             },
                             {

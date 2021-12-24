@@ -4,7 +4,7 @@ Encounter a bug while using Plan Northwestern? Find any errors in course data? H
 There are multiple ways you can submit feedback.
 
 ## GitHub Issues
-By clicking the [issues](https://github.com/dilanx/plan-northwestern/issues) tab above and creating a new issue, you can share your bug report or feature request (and attach any images as necessary).
+By clicking the [issues](https://github.com/dilanx/plan-northwestern/issues?q=) tab above and creating a new issue, you can share your bug report or feature request (and attach any images as necessary).
 
 This is preferred, since it'll help keep things organized, other people can see what feedback has been left already and upvote as necessary, I can follow up with any extra questions I have, and I can link updates I make to the code to the issue.
 
