@@ -11,4 +11,4 @@ This is preferred, since it'll help keep things organized, other people can see 
 This requires a GitHub account.
 
 ## Feedback Form
-If you don't have a GitHub account and would prefer not to make one, you can share your feedback privately (and anonymously if you'd like) by using [this form](https://forms.gle/nz6yzfoYy2CSrwNEA). No worries if you prefer to do this, but I will most likely repost bugs/suggestions on the issues page to keep track of everything in one place.
+If you don't have a GitHub account and would prefer not to make one, you can share your feedback anonymously by using [this form](https://auth.dilanxd.com/plan-nu/feedback). Whatever you submit on there will automatically and instantly be posted on GitHub Issues for you, where you can track the status of your feedback.
