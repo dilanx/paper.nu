@@ -77465,1358 +77465,1087 @@
     "majors": {
         "AF_AM_ST": {
             "id": "000",
-            "display": "African American Studies",
-            "color": "red"
+            "display": "African American Studies"
         },
         "AFST": {
             "id": "001",
-            "display": "African Studies",
-            "color": "orange"
+            "display": "African Studies"
         },
         "AMER_ST": {
             "id": "002",
-            "display": "American Studies",
-            "color": "amber"
+            "display": "American Studies"
         },
         "ANTHRO": {
             "id": "003",
-            "display": "Anthropology",
-            "color": "yellow"
+            "display": "Anthropology"
         },
         "ARABIC": {
             "id": "004",
-            "display": "Arabic",
-            "color": "lime"
+            "display": "Arabic"
         },
         "ART_HIST": {
             "id": "005",
-            "display": "Art History",
-            "color": "green"
+            "display": "Art History"
         },
         "ART": {
             "id": "006",
-            "display": "Art Theory & Practice",
-            "color": "emerald"
+            "display": "Art Theory & Practice"
         },
         "ASIAN_AM": {
             "id": "007",
-            "display": "Asian American Studies",
-            "color": "teal"
+            "display": "Asian American Studies"
         },
         "ASIAN_LC": {
             "id": "008",
-            "display": "Asian Languages and Cultures",
-            "color": "cyan"
+            "display": "Asian Languages and Cultures"
         },
         "ASTRON": {
             "id": "009",
-            "display": "Astronomy",
-            "color": "sky"
+            "display": "Astronomy"
         },
         "BIOL_SCI": {
             "id": "010",
-            "display": "Biological Sciences",
-            "color": "blue"
+            "display": "Biological Sciences"
         },
         "BMD_ENG": {
             "id": "011",
-            "display": "Biomedical Engineering",
-            "color": "indigo"
+            "display": "Biomedical Engineering"
         },
         "BUS_INST": {
             "id": "012",
-            "display": "Business Institutions",
-            "color": "violet"
+            "display": "Business Institutions"
         },
         "CRDV": {
             "id": "013",
-            "display": "Career Development",
-            "color": "purple"
+            "display": "Career Development"
         },
         "LDRSHP": {
             "id": "014",
-            "display": "Center for Leadership",
-            "color": "fuchsia"
+            "display": "Center for Leadership"
         },
         "CHEM_ENG": {
             "id": "015",
-            "display": "Chemical Engineering",
-            "color": "pink"
+            "display": "Chemical Engineering"
         },
         "CHEM": {
             "id": "016",
-            "display": "Chemistry",
-            "color": "rose"
+            "display": "Chemistry"
         },
         "CFS": {
             "id": "017",
-            "display": "Chicago Field Studies",
-            "color": "red"
+            "display": "Chicago Field Studies"
         },
         "CHINESE": {
             "id": "018",
-            "display": "Chinese",
-            "color": "orange"
+            "display": "Chinese"
         },
         "CIV_ENV": {
             "id": "019",
-            "display": "Civil and Environmental Engineering",
-            "color": "amber"
+            "display": "Civil and Environmental Engineering"
         },
         "CLASSICS": {
             "id": "020",
-            "display": "Classics - Readings in English",
-            "color": "yellow"
+            "display": "Classics - Readings in English"
         },
         "COG_SCI": {
             "id": "021",
-            "display": "Cognitive Science",
-            "color": "lime"
+            "display": "Cognitive Science"
         },
         "CMN": {
             "id": "022",
-            "display": "Communication Related Courses",
-            "color": "green"
+            "display": "Communication Related Courses"
         },
         "CSD": {
             "id": "023",
-            "display": "Communication Sciences and Disorders",
-            "color": "emerald"
+            "display": "Communication Sciences and Disorders"
         },
         "COMM_ST": {
             "id": "024",
-            "display": "Communication Studies",
-            "color": "teal"
+            "display": "Communication Studies"
         },
         "COMP_LIT": {
             "id": "025",
-            "display": "Comparative Literary Studies",
-            "color": "cyan"
+            "display": "Comparative Literary Studies"
         },
         "COMP_ENG": {
             "id": "026",
-            "display": "Computer Engineering",
-            "color": "sky"
+            "display": "Computer Engineering"
         },
         "COMP_SCI": {
             "id": "027",
-            "display": "Computer Science",
-            "color": "blue"
+            "display": "Computer Science"
         },
         "CONDUCT": {
             "id": "028",
-            "display": "Conducting",
-            "color": "indigo"
+            "display": "Conducting"
         },
         "DANCE": {
             "id": "029",
-            "display": "Dance",
-            "color": "violet"
+            "display": "Dance"
         },
         "DATA_ENG": {
             "id": "030",
-            "display": "Data Science & Engineering",
-            "color": "purple"
+            "display": "Data Science & Engineering"
         },
         "EARTH": {
             "id": "031",
-            "display": "Earth and Planetary Sciences",
-            "color": "fuchsia"
+            "display": "Earth and Planetary Sciences"
         },
         "ECON": {
             "id": "032",
-            "display": "Economics",
-            "color": "pink"
+            "display": "Economics"
         },
         "ELEC_ENG": {
             "id": "033",
-            "display": "Electrical Engineering",
-            "color": "rose"
+            "display": "Electrical Engineering"
         },
         "ES_APPM": {
             "id": "034",
-            "display": "Engineering Science & Applied Math",
-            "color": "red"
+            "display": "Engineering Science & Applied Math"
         },
         "ENGLISH": {
             "id": "035",
-            "display": "English",
-            "color": "orange"
+            "display": "English"
         },
         "ENTREP": {
             "id": "036",
-            "display": "Entrepreneurship & Innovation",
-            "color": "amber"
+            "display": "Entrepreneurship & Innovation"
         },
         "ENVR_POL": {
             "id": "037",
-            "display": "Environmental Policy & Culture",
-            "color": "yellow"
+            "display": "Environmental Policy & Culture"
         },
         "ENVR_SCI": {
             "id": "038",
-            "display": "Environmental Science",
-            "color": "lime"
+            "display": "Environmental Science"
         },
         "KELLG_FE": {
             "id": "039",
-            "display": "Financial Economics",
-            "color": "green"
+            "display": "Financial Economics"
         },
         "FRENCH": {
             "id": "040",
-            "display": "French",
-            "color": "emerald"
+            "display": "French"
         },
         "GNDR_ST": {
             "id": "041",
-            "display": "Gender Studies",
-            "color": "teal"
+            "display": "Gender Studies"
         },
         "GEN_ENG": {
             "id": "042",
-            "display": "General Engineering",
-            "color": "cyan"
+            "display": "General Engineering"
         },
         "GEN_LA": {
             "id": "043",
-            "display": "General Liberal Arts",
-            "color": "sky"
+            "display": "General Liberal Arts"
         },
         "GEN_MUS": {
             "id": "044",
-            "display": "General Music",
-            "color": "blue"
+            "display": "General Music"
         },
         "GEOG": {
             "id": "045",
-            "display": "Geography",
-            "color": "indigo"
+            "display": "Geography"
         },
         "GERMAN": {
             "id": "046",
-            "display": "German",
-            "color": "violet"
+            "display": "German"
         },
         "GBL_HLTH": {
             "id": "047",
-            "display": "Global Health",
-            "color": "purple"
+            "display": "Global Health"
         },
         "GREEK": {
             "id": "048",
-            "display": "Greek",
-            "color": "fuchsia"
+            "display": "Greek"
         },
         "HEBREW": {
             "id": "049",
-            "display": "Hebrew",
-            "color": "pink"
+            "display": "Hebrew"
         },
         "HIND_URD": {
             "id": "050",
-            "display": "Hindi and Urdu",
-            "color": "rose"
+            "display": "Hindi and Urdu"
         },
         "HISTORY": {
             "id": "051",
-            "display": "History",
-            "color": "red"
+            "display": "History"
         },
         "HDC": {
             "id": "052",
-            "display": "Human Development in Context",
-            "color": "orange"
+            "display": "Human Development in Context"
         },
         "HUM": {
             "id": "053",
-            "display": "Humanities",
-            "color": "amber"
+            "display": "Humanities"
         },
         "IEMS": {
             "id": "054",
-            "display": "Industrial Engineering & Management Sciences",
-            "color": "yellow"
+            "display": "Industrial Engineering & Management Sciences"
         },
         "ISEN": {
             "id": "055",
-            "display": "Initiative for Sustainability & Energy at NU",
-            "color": "lime"
+            "display": "Initiative for Sustainability & Energy at NU"
         },
         "IMC": {
             "id": "056",
-            "display": "Integrated Marketing Communications",
-            "color": "green"
+            "display": "Integrated Marketing Communications"
         },
         "INTG_SCI": {
             "id": "057",
-            "display": "Integrated Science",
-            "color": "emerald"
+            "display": "Integrated Science"
         },
         "INTL_ST": {
             "id": "058",
-            "display": "International Studies",
-            "color": "teal"
+            "display": "International Studies"
         },
         "ITALIAN": {
             "id": "059",
-            "display": "Italian",
-            "color": "cyan"
+            "display": "Italian"
         },
         "JAPANESE": {
             "id": "060",
-            "display": "Japanese",
-            "color": "sky"
+            "display": "Japanese"
         },
         "JAZZ_ST": {
             "id": "061",
-            "display": "Jazz Studies",
-            "color": "blue"
+            "display": "Jazz Studies"
         },
         "JWSH_ST": {
             "id": "062",
-            "display": "Jewish Studies",
-            "color": "indigo"
+            "display": "Jewish Studies"
         },
         "JOUR": {
             "id": "063",
-            "display": "Journalism",
-            "color": "violet"
+            "display": "Journalism"
         },
         "KELLG_CP": {
             "id": "064",
-            "display": "Kellogg Certificate Program for Undergraduates",
-            "color": "purple"
+            "display": "Kellogg Certificate Program for Undergraduates"
         },
         "KOREAN": {
             "id": "065",
-            "display": "Korean",
-            "color": "fuchsia"
+            "display": "Korean"
         },
         "LATIN": {
             "id": "066",
-            "display": "Latin",
-            "color": "pink"
+            "display": "Latin"
         },
         "LATIN_AM": {
             "id": "067",
-            "display": "Latin American & Caribbean Studies",
-            "color": "rose"
+            "display": "Latin American & Caribbean Studies"
         },
         "LATINO": {
             "id": "068",
-            "display": "Latina and Latino Studies",
-            "color": "red"
+            "display": "Latina and Latino Studies"
         },
         "LOC": {
             "id": "069",
-            "display": "Learning & Organizational Change",
-            "color": "orange"
+            "display": "Learning & Organizational Change"
         },
         "LRN_SCI": {
             "id": "070",
-            "display": "Learning Sciences",
-            "color": "amber"
+            "display": "Learning Sciences"
         },
         "LEGAL_ST": {
             "id": "071",
-            "display": "Legal Studies",
-            "color": "yellow"
+            "display": "Legal Studies"
         },
         "LING": {
             "id": "072",
-            "display": "Linguistics",
-            "color": "lime"
+            "display": "Linguistics"
         },
         "KELLG_MA": {
             "id": "073",
-            "display": "Managerial Analytics",
-            "color": "green"
+            "display": "Managerial Analytics"
         },
         "MAT_SCI": {
             "id": "074",
-            "display": "Materials Science & Engineering",
-            "color": "emerald"
+            "display": "Materials Science & Engineering"
         },
         "MMSS": {
             "id": "075",
-            "display": "Math Methods in the Social Sciences",
-            "color": "teal"
+            "display": "Math Methods in the Social Sciences"
         },
         "MATH": {
             "id": "076",
-            "display": "Mathematics",
-            "color": "cyan"
+            "display": "Mathematics"
         },
         "MECH_ENG": {
             "id": "077",
-            "display": "Mechanical Engineering",
-            "color": "sky"
+            "display": "Mechanical Engineering"
         },
         "MENA": {
             "id": "078",
-            "display": "Middle East and North African Studies",
-            "color": "blue"
+            "display": "Middle East and North African Studies"
         },
         "MUSIC": {
             "id": "079",
-            "display": "Music",
-            "color": "indigo"
+            "display": "Music"
         },
         "MUS_COMP": {
             "id": "080",
-            "display": "Music Composition",
-            "color": "violet"
+            "display": "Music Composition"
         },
         "MUSIC_ED": {
             "id": "081",
-            "display": "Music Education",
-            "color": "purple"
+            "display": "Music Education"
         },
         "MUS_TECH": {
             "id": "082",
-            "display": "Music Technology",
-            "color": "fuchsia"
+            "display": "Music Technology"
         },
         "MUS_THRY": {
             "id": "083",
-            "display": "Music Theory",
-            "color": "pink"
+            "display": "Music Theory"
         },
         "MUSICOL": {
             "id": "084",
-            "display": "Musicology",
-            "color": "rose"
+            "display": "Musicology"
         },
         "NAV_SCI": {
             "id": "085",
-            "display": "Naval Science",
-            "color": "red"
+            "display": "Naval Science"
         },
         "NEUROSCI": {
             "id": "086",
-            "display": "Neuroscience",
-            "color": "orange"
+            "display": "Neuroscience"
         },
         "NICO": {
             "id": "087",
-            "display": "Northwestern Institute for Complex Systems",
-            "color": "amber"
+            "display": "Northwestern Institute for Complex Systems"
         },
         "PERF_ST": {
             "id": "088",
-            "display": "Performance Studies",
-            "color": "yellow"
+            "display": "Performance Studies"
         },
         "PERSIAN": {
             "id": "089",
-            "display": "Persian",
-            "color": "lime"
+            "display": "Persian"
         },
         "PRDV": {
             "id": "090",
-            "display": "Personal Development",
-            "color": "green"
+            "display": "Personal Development"
         },
         "PHIL": {
             "id": "091",
-            "display": "Philosophy",
-            "color": "emerald"
+            "display": "Philosophy"
         },
         "PHYSICS": {
             "id": "092",
-            "display": "Physics",
-            "color": "teal"
+            "display": "Physics"
         },
         "PIANO": {
             "id": "093",
-            "display": "Piano",
-            "color": "cyan"
+            "display": "Piano"
         },
         "POLISH": {
             "id": "094",
-            "display": "Polish",
-            "color": "sky"
+            "display": "Polish"
         },
         "POLI_SCI": {
             "id": "095",
-            "display": "Political Science",
-            "color": "blue"
+            "display": "Political Science"
         },
         "PORT": {
             "id": "096",
-            "display": "Portuguese",
-            "color": "indigo"
+            "display": "Portuguese"
         },
         "PSYCH": {
             "id": "097",
-            "display": "Psychology",
-            "color": "violet"
+            "display": "Psychology"
         },
         "RTVF": {
             "id": "098",
-            "display": "Radio/Television/Film",
-            "color": "purple"
+            "display": "Radio/Television/Film"
         },
         "RELIGION": {
             "id": "099",
-            "display": "Religious Studies",
-            "color": "fuchsia"
+            "display": "Religious Studies"
         },
         "RUSSIAN": {
             "id": "100",
-            "display": "Russian",
-            "color": "pink"
+            "display": "Russian"
         },
         "SESP": {
             "id": "101",
-            "display": "School of Education & Social Policy Core",
-            "color": "rose"
+            "display": "School of Education & Social Policy Core"
         },
         "SHC": {
             "id": "102",
-            "display": "Science in Human Culture",
-            "color": "red"
+            "display": "Science in Human Culture"
         },
         "DSGN": {
             "id": "103",
-            "display": "Segal Design Institute",
-            "color": "orange"
+            "display": "Segal Design Institute"
         },
         "SLAVIC": {
             "id": "104",
-            "display": "Slavic Languages & Literature",
-            "color": "amber"
+            "display": "Slavic Languages & Literature"
         },
         "SOC_POL": {
             "id": "105",
-            "display": "Social Policy",
-            "color": "yellow"
+            "display": "Social Policy"
         },
         "SOCIOL": {
             "id": "106",
-            "display": "Sociology",
-            "color": "lime"
+            "display": "Sociology"
         },
         "SPANISH": {
             "id": "107",
-            "display": "Spanish",
-            "color": "green"
+            "display": "Spanish"
         },
         "STAT": {
             "id": "108",
-            "display": "Statistics",
-            "color": "emerald"
+            "display": "Statistics"
         },
         "STRINGS": {
             "id": "109",
-            "display": "String Instruments",
-            "color": "teal"
+            "display": "String Instruments"
         },
         "SWAHILI": {
             "id": "110",
-            "display": "Swahili",
-            "color": "cyan"
+            "display": "Swahili"
         },
         "TEACH_ED": {
             "id": "111",
-            "display": "Teacher Education",
-            "color": "sky"
+            "display": "Teacher Education"
         },
         "THEATRE": {
             "id": "112",
-            "display": "Theatre",
-            "color": "blue"
+            "display": "Theatre"
         },
         "TRANS": {
             "id": "113",
-            "display": "Transportation",
-            "color": "indigo"
+            "display": "Transportation"
         },
         "TURKISH": {
             "id": "114",
-            "display": "Turkish",
-            "color": "violet"
+            "display": "Turkish"
         },
         "VOICE": {
             "id": "115",
-            "display": "Voice & Opera",
-            "color": "purple"
+            "display": "Voice & Opera"
         },
         "WIND_PER": {
             "id": "116",
-            "display": "Wind & Percussion",
-            "color": "fuchsia"
+            "display": "Wind & Percussion"
         },
         "YIDDISH": {
             "id": "117",
-            "display": "Yiddish",
-            "color": "pink"
+            "display": "Yiddish"
         },
         "PLACEHOLDER": {
             "id": "118",
-            "display": "Placeholder",
-            "color": "gray"
+            "display": "Placeholder"
         },
         "ACCT": {
             "id": "119",
-            "display": "Accounting and Information Systems",
-            "color": "rose"
+            "display": "Accounting and Information Systems"
         },
         "MORS": {
             "id": "120",
-            "display": "Management and Organizations",
-            "color": "red"
+            "display": "Management and Organizations"
         },
         "MECS": {
             "id": "121",
-            "display": "Managerial Economics and Strategy",
-            "color": "orange"
+            "display": "Managerial Economics and Strategy"
         },
         "FINC": {
             "id": "122",
-            "display": "Finance",
-            "color": "amber"
+            "display": "Finance"
         },
         "MKTG": {
             "id": "123",
-            "display": "Marketing",
-            "color": "yellow"
+            "display": "Marketing"
         },
         "OPNS": {
             "id": "124",
-            "display": "Operations Management",
-            "color": "lime"
+            "display": "Operations Management"
         },
         "HDSP": {
             "id": "125",
-            "display": "Human Development & Social Policy",
-            "color": "green"
+            "display": "Human Development & Social Policy"
         },
         "COUN": {
             "id": "126",
-            "display": "Counseling",
-            "color": "emerald"
+            "display": "Counseling"
         },
         "MS_ED": {
             "id": "127",
-            "display": "MS in Education & Social Policy",
-            "color": "teal"
+            "display": "MS in Education & Social Policy"
         },
         "MS_HE": {
             "id": "128",
-            "display": "MS in Higher Education Administration and Policy",
-            "color": "cyan"
+            "display": "MS in Higher Education Administration and Policy"
         },
         "MS_FT": {
             "id": "129",
-            "display": "MS in Marital & Family Therapy",
-            "color": "sky"
+            "display": "MS in Marital & Family Therapy"
         },
         "IBIS": {
             "id": "130",
-            "display": "Interdisciplinary Biological Sciences Program",
-            "color": "blue"
+            "display": "Interdisciplinary Biological Sciences Program"
         },
         "NEUROBIO": {
             "id": "131",
-            "display": "Neurobiology & Physiology",
-            "color": "indigo"
+            "display": "Neurobiology & Physiology"
         },
         "MSC": {
             "id": "132",
-            "display": "Master of Science in Communication",
-            "color": "violet"
+            "display": "Master of Science in Communication"
         },
         "TH&DRAMA": {
             "id": "133",
-            "display": "Theatre & Drama",
-            "color": "purple"
+            "display": "Theatre & Drama"
         },
         "MEM": {
             "id": "134",
-            "display": "Master of Engineering Management",
-            "color": "fuchsia"
+            "display": "Master of Engineering Management"
         },
         "INF_TECH": {
             "id": "135",
-            "display": "Information Technology",
-            "color": "pink"
+            "display": "Information Technology"
         },
         "PROJ_MGT": {
             "id": "136",
-            "display": "Project Management",
-            "color": "rose"
+            "display": "Project Management"
         },
         "LIT": {
             "id": "137",
-            "display": "Literature",
-            "color": "red"
+            "display": "Literature"
         },
         "NUIN": {
             "id": "138",
-            "display": "Neuroscience",
-            "color": "orange"
+            "display": "Neuroscience"
         },
         "IPLS": {
             "id": "139",
-            "display": "Liberal Studies",
-            "color": "amber"
+            "display": "Liberal Studies"
         },
         "CIC": {
             "id": "140",
-            "display": "CIC Traveling Scholar",
-            "color": "yellow"
+            "display": "CIC Traveling Scholar"
         },
         "TGS": {
             "id": "141",
-            "display": "TGS General Registrations",
-            "color": "lime"
+            "display": "TGS General Registrations"
         },
         "GARR": {
             "id": "142",
-            "display": "",
-            "color": "green"
+            "display": ""
         },
         "DGP": {
             "id": "143",
-            "display": "Driskill Graduate Program in Life Sciences",
-            "color": "emerald"
+            "display": "Driskill Graduate Program in Life Sciences"
         },
         "CLIN_PSY": {
             "id": "144",
-            "display": "Clinical Psychology",
-            "color": "teal"
+            "display": "Clinical Psychology"
         },
         "GENET_CN": {
             "id": "145",
-            "display": "Genetic Counseling",
-            "color": "cyan"
+            "display": "Genetic Counseling"
         },
         "PUB_HLTH": {
             "id": "146",
-            "display": "Public Health",
-            "color": "sky"
+            "display": "Public Health"
         },
         "BUS_LAW": {
             "id": "147",
-            "display": "Business Law",
-            "color": "blue"
+            "display": "Business Law"
         },
         "FINANCE": {
             "id": "148",
-            "display": "Finance",
-            "color": "indigo"
+            "display": "Finance"
         },
         "ORG_BEH": {
             "id": "149",
-            "display": "Organizational Behavior",
-            "color": "violet"
+            "display": "Organizational Behavior"
         },
         "ADVT": {
             "id": "150",
-            "display": "Advertising",
-            "color": "purple"
+            "display": "Advertising"
         },
         "JRN_WRIT": {
             "id": "151",
-            "display": "Journalistic Writing",
-            "color": "fuchsia"
+            "display": "Journalistic Writing"
         },
         "MUS_HIST": {
             "id": "152",
-            "display": "Music History & Literature",
-            "color": "pink"
+            "display": "Music History & Literature"
         },
         "CIS": {
             "id": "153",
-            "display": "Computer Information Systems",
-            "color": "rose"
+            "display": "Computer Information Systems"
         },
         "MSTP": {
             "id": "154",
-            "display": "Medical Scientist Training",
-            "color": "red"
+            "display": "Medical Scientist Training"
         },
         "BIOSTAT": {
             "id": "155",
-            "display": "Biostatistics",
-            "color": "orange"
+            "display": "Biostatistics"
         },
         "MEDMULT": {
             "id": "156",
-            "display": "Medical Multidisciplinary Courses",
-            "color": "amber"
+            "display": "Medical Multidisciplinary Courses"
         },
         "MSCI": {
             "id": "157",
-            "display": "Master of Science in Clinical Investigation",
-            "color": "yellow"
+            "display": "Master of Science in Clinical Investigation"
         },
         "MS_LOC": {
             "id": "158",
-            "display": "Learning & Organizational Change",
-            "color": "lime"
+            "display": "Learning & Organizational Change"
         },
         "MPD": {
             "id": "159",
-            "display": "Master of Product Development",
-            "color": "green"
+            "display": "Master of Product Development"
         },
         "ACCOUNT": {
             "id": "160",
-            "display": "Accounting",
-            "color": "emerald"
+            "display": "Accounting"
         },
         "MTS": {
             "id": "161",
-            "display": "Media, Technology & Society",
-            "color": "teal"
+            "display": "Media, Technology & Society"
         },
         "MCW": {
             "id": "162",
-            "display": "Master of Creative Writing",
-            "color": "cyan"
+            "display": "Master of Creative Writing"
         },
         "MBIOTECH": {
             "id": "163",
-            "display": "Masters in Biotechnology Program",
-            "color": "sky"
+            "display": "Masters in Biotechnology Program"
         },
         "MPPA": {
             "id": "164",
-            "display": "Master of Public Policy & Administration",
-            "color": "blue"
+            "display": "Master of Public Policy & Administration"
         },
         "PBC": {
             "id": "165",
-            "display": "Plant Biology & Conservation",
-            "color": "indigo"
+            "display": "Plant Biology & Conservation"
         },
         "MSA": {
             "id": "166",
-            "display": "Master of Arts in Sports Administration",
-            "color": "violet"
+            "display": "Master of Arts in Sports Administration"
         },
         "HQS": {
             "id": "167",
-            "display": "Healthcare Quality and Patient  Safety",
-            "color": "purple"
+            "display": "Healthcare Quality and Patient  Safety"
         },
         "MHB": {
             "id": "168",
-            "display": "Medical Humanities and Bioethics",
-            "color": "fuchsia"
+            "display": "Medical Humanities and Bioethics"
         },
         "ADV_FINC": {
             "id": "169",
-            "display": "Advanced Topics in Financial Planning",
-            "color": "pink"
+            "display": "Advanced Topics in Financial Planning"
         },
         "APPRAIS": {
             "id": "170",
-            "display": "Appraisal of Fine & Decorative Art",
-            "color": "rose"
+            "display": "Appraisal of Fine & Decorative Art"
         },
         "ART_THER": {
             "id": "171",
-            "display": "Art Therapy",
-            "color": "red"
+            "display": "Art Therapy"
         },
         "BUS_ADM": {
             "id": "172",
-            "display": "Business Administration",
-            "color": "orange"
+            "display": "Business Administration"
         },
         "BUS_ALYS": {
             "id": "173",
-            "display": "Business Analyst",
-            "color": "amber"
+            "display": "Business Analyst"
         },
         "CASH_MGT": {
             "id": "174",
-            "display": "Cash Management Fundamentals",
-            "color": "yellow"
+            "display": "Cash Management Fundamentals"
         },
         "FN_PLAN": {
             "id": "175",
-            "display": "Financial Planing Cert",
-            "color": "lime"
+            "display": "Financial Planing Cert"
         },
         "MGMT_ACT": {
             "id": "176",
-            "display": "Management Accountants",
-            "color": "green"
+            "display": "Management Accountants"
         },
         "CONN_ART": {
             "id": "177",
-            "display": "Connoisseurship Fine & Decorative Art",
-            "color": "emerald"
+            "display": "Connoisseurship Fine & Decorative Art"
         },
         "CRT_TRES": {
             "id": "178",
-            "display": "Certified Treasury Professional",
-            "color": "teal"
+            "display": "Certified Treasury Professional"
         },
         "DIV_MED": {
             "id": "179",
-            "display": "Divorce Mediation Training Program",
-            "color": "cyan"
+            "display": "Divorce Mediation Training Program"
         },
         "ESL_PROF": {
             "id": "180",
-            "display": "ESL for Professionals",
-            "color": "sky"
+            "display": "ESL for Professionals"
         },
         "FOREN": {
             "id": "181",
-            "display": "Forensics",
-            "color": "blue"
+            "display": "Forensics"
         },
         "FRAUD": {
             "id": "182",
-            "display": "Investigation and Prevention of Commercial Fraud",
-            "color": "indigo"
+            "display": "Investigation and Prevention of Commercial Fraud"
         },
         "HIST_PRE": {
             "id": "183",
-            "display": "Historic Preservation",
-            "color": "violet"
+            "display": "Historic Preservation"
         },
         "HORT": {
             "id": "184",
-            "display": "Landscaping(Hort)",
-            "color": "purple"
+            "display": "Landscaping(Hort)"
         },
         "ISPM": {
             "id": "185",
-            "display": "Information Systems Project Management",
-            "color": "fuchsia"
+            "display": "Information Systems Project Management"
         },
         "LAND_DM": {
             "id": "186",
-            "display": "Residential Landscape Design",
-            "color": "pink"
+            "display": "Residential Landscape Design"
         },
         "LEAD_ART": {
             "id": "187",
-            "display": "Art of  Leadership Development",
-            "color": "rose"
+            "display": "Art of  Leadership Development"
         },
         "LESI": {
             "id": "188",
-            "display": "Legal English Summer Institute",
-            "color": "red"
+            "display": "Legal English Summer Institute"
         },
         "MED_SKIL": {
             "id": "189",
-            "display": "Mediation Skills Training Program",
-            "color": "orange"
+            "display": "Mediation Skills Training Program"
         },
         "MUSEUM": {
             "id": "190",
-            "display": "Museum Studies",
-            "color": "amber"
+            "display": "Museum Studies"
         },
         "PHIL_NP": {
             "id": "191",
-            "display": "Philanthropy and Nonprofit Fundraising",
-            "color": "yellow"
+            "display": "Philanthropy and Nonprofit Fundraising"
         },
         "PROJ_PMI": {
             "id": "192",
-            "display": "Project Management",
-            "color": "lime"
+            "display": "Project Management"
         },
         "TRADE": {
             "id": "193",
-            "display": "Futures and Option Trading Courses",
-            "color": "green"
+            "display": "Futures and Option Trading Courses"
         },
         "SUM_GCTY": {
             "id": "194",
-            "display": "Summer Institute Green City",
-            "color": "emerald"
+            "display": "Summer Institute Green City"
         },
         "SUM_NEG": {
             "id": "195",
-            "display": "Summer Institute Negotiation",
-            "color": "teal"
+            "display": "Summer Institute Negotiation"
         },
         "NSWC": {
             "id": "196",
-            "display": "Northwestern Summer Writers Conference",
-            "color": "cyan"
+            "display": "Northwestern Summer Writers Conference"
         },
         "SUM_PLAW": {
             "id": "197",
-            "display": "Summer Institute Pre Law",
-            "color": "sky"
+            "display": "Summer Institute Pre Law"
         },
         "FN_EXTND": {
             "id": "198",
-            "display": "CFP Extended",
-            "color": "blue"
+            "display": "CFP Extended"
         },
         "CRT_FRAU": {
             "id": "199",
-            "display": "Certified Fraud Examiner Exam Review",
-            "color": "indigo"
+            "display": "Certified Fraud Examiner Exam Review"
         },
         "AP_INST": {
             "id": "200",
-            "display": "AP Institute",
-            "color": "violet"
+            "display": "AP Institute"
         },
         "MHI": {
             "id": "201",
-            "display": "MS in Health Informatics",
-            "color": "purple"
+            "display": "MS in Health Informatics"
         },
         "SPS": {
             "id": "202",
-            "display": "School of Professional Studies",
-            "color": "fuchsia"
+            "display": "School of Professional Studies"
         },
         "ACE_IBS": {
             "id": "203",
-            "display": "American Culture & English",
-            "color": "pink"
+            "display": "American Culture & English"
         },
         "CISSP": {
             "id": "204",
-            "display": "Cert IS Security Professional",
-            "color": "rose"
+            "display": "Cert IS Security Professional"
         },
         "ISM": {
             "id": "205",
-            "display": "Information Security Management",
-            "color": "red"
+            "display": "Information Security Management"
         },
         "MDVL_ST": {
             "id": "206",
-            "display": "Medieval Studies",
-            "color": "orange"
+            "display": "Medieval Studies"
         },
         "LEADERS": {
             "id": "207",
-            "display": "Leadership",
-            "color": "amber"
+            "display": "Leadership"
         },
         "COACH": {
             "id": "208",
-            "display": "Summer Institute in Coaching",
-            "color": "yellow"
+            "display": "Summer Institute in Coaching"
         },
         "COG_HLTH": {
             "id": "209",
-            "display": "Women and Cognitive Health",
-            "color": "lime"
+            "display": "Women and Cognitive Health"
         },
         "PSED": {
             "id": "210",
-            "display": "Predictive Science and Engineering",
-            "color": "green"
+            "display": "Predictive Science and Engineering"
         },
         "ENR_AGT": {
             "id": "211",
-            "display": "Enrolled Agent",
-            "color": "emerald"
+            "display": "Enrolled Agent"
         },
         "HSR": {
             "id": "212",
-            "display": "Health Services and Outcomes Research",
-            "color": "teal"
+            "display": "Health Services and Outcomes Research"
         },
         "IN_FOCUS": {
             "id": "213",
-            "display": "IN_FOCUS",
-            "color": "cyan"
+            "display": "IN_FOCUS"
         },
         "PFT": {
             "id": "214",
-            "display": "Pension Fund Trustee",
-            "color": "sky"
+            "display": "Pension Fund Trustee"
         },
         "CLIN_RES": {
             "id": "215",
-            "display": "Clinical Research & Regulatory Administration",
-            "color": "blue"
+            "display": "Clinical Research & Regulatory Administration"
         },
         "RESEARCH": {
             "id": "216",
-            "display": "McCormick Research",
-            "color": "indigo"
+            "display": "McCormick Research"
         },
         "MED_INF": {
             "id": "217",
-            "display": "Medical Informatics",
-            "color": "violet"
+            "display": "Medical Informatics"
         },
         "PREDICT": {
             "id": "218",
-            "display": "Master of Science Predictive Analytics",
-            "color": "purple"
+            "display": "Master of Science Predictive Analytics"
         },
         "APP_PHYS": {
             "id": "219",
-            "display": "Applied Physics",
-            "color": "fuchsia"
+            "display": "Applied Physics"
         },
         "CME": {
             "id": "220",
-            "display": "Chicago Metropolitan Exchange Program",
-            "color": "pink"
+            "display": "Chicago Metropolitan Exchange Program"
         },
         "JW_LEAD": {
             "id": "221",
-            "display": "Jewish Leadership",
-            "color": "rose"
+            "display": "Jewish Leadership"
         },
         "MSIA": {
             "id": "222",
-            "display": "Master of Science in Analytics",
-            "color": "red"
+            "display": "Master of Science in Analytics"
         },
         "MNJI": {
             "id": "223",
-            "display": "Medill Northwestern Journalism Institute",
-            "color": "orange"
+            "display": "Medill Northwestern Journalism Institute"
         },
         "NHSI": {
             "id": "224",
-            "display": "National High School Institute",
-            "color": "amber"
+            "display": "National High School Institute"
         },
         "SPANPORT": {
             "id": "225",
-            "display": "Spanish and Portuguese",
-            "color": "yellow"
+            "display": "Spanish and Portuguese"
         },
         "MSRC": {
             "id": "226",
-            "display": "Master of Regulatory Compliance",
-            "color": "lime"
+            "display": "Master of Regulatory Compliance"
         },
         "CHSS": {
             "id": "227",
-            "display": "Comparative & Historical Social Science",
-            "color": "green"
+            "display": "Comparative & Historical Social Science"
         },
         "HSIP": {
             "id": "228",
-            "display": "Health Sciences Integrated Program",
-            "color": "emerald"
+            "display": "Health Sciences Integrated Program"
         },
         "MOB_APP": {
             "id": "229",
-            "display": "Mobile Application Developer",
-            "color": "teal"
+            "display": "Mobile Application Developer"
         },
         "CRT_INT": {
             "id": "230",
-            "display": "Certified Internal Auditor",
-            "color": "cyan"
+            "display": "Certified Internal Auditor"
         },
         "ATHL_PRA": {
             "id": "231",
-            "display": "Athletic Practicum",
-            "color": "sky"
+            "display": "Athletic Practicum"
         },
         "PRED_BUS": {
             "id": "232",
-            "display": "Predictive Business Analytics",
-            "color": "blue"
+            "display": "Predictive Business Analytics"
         },
         "MSGH": {
             "id": "233",
-            "display": "Master of Science Global Health",
-            "color": "indigo"
+            "display": "Master of Science Global Health"
         },
         "MUS_WKSP": {
             "id": "234",
-            "display": "Music Workshop",
-            "color": "violet"
+            "display": "Music Workshop"
         },
         "MSLCE": {
             "id": "235",
-            "display": "MS Leadership for Creative Enterprises",
-            "color": "purple"
+            "display": "MS Leadership for Creative Enterprises"
         },
         "HLTH_COM": {
             "id": "236",
-            "display": "Health Communication",
-            "color": "fuchsia"
+            "display": "Health Communication"
         },
         "BUS_ANLY": {
             "id": "237",
-            "display": "Business Analytics",
-            "color": "pink"
+            "display": "Business Analytics"
         },
         "BUS_DM": {
             "id": "238",
-            "display": "Business Analytics for Decision Makers",
-            "color": "rose"
+            "display": "Business Analytics for Decision Makers"
         },
         "SHRM": {
             "id": "239",
-            "display": "Society of Human Resource Management",
-            "color": "red"
+            "display": "Society of Human Resource Management"
         },
         "MS_IDS": {
             "id": "240",
-            "display": "Master of Science Information Design & Strategy",
-            "color": "orange"
+            "display": "Master of Science Information Design & Strategy"
         },
         "CRD": {
             "id": "241",
-            "display": "Comparative Race and Diaspora",
-            "color": "amber"
+            "display": "Comparative Race and Diaspora"
         },
         "BIO_TECH": {
             "id": "242",
-            "display": "Fostering Innovation in Biotechnology",
-            "color": "yellow"
+            "display": "Fostering Innovation in Biotechnology"
         },
         "PR_PM_IN": {
             "id": "243",
-            "display": "Project Management- IN",
-            "color": "lime"
+            "display": "Project Management- IN"
         },
         "PRO_HLTH": {
             "id": "244",
-            "display": "Professional Health",
-            "color": "green"
+            "display": "Professional Health"
         },
         "GAMS": {
             "id": "245",
-            "display": "Global Avant-garde and Modernist Studies",
-            "color": "emerald"
+            "display": "Global Avant-garde and Modernist Studies"
         },
         "REPR_SCI": {
             "id": "246",
-            "display": "Reproductive Science and Medicine",
-            "color": "teal"
+            "display": "Reproductive Science and Medicine"
         },
         "DATA_SCI": {
             "id": "247",
-            "display": "Data Science",
-            "color": "cyan"
+            "display": "Data Science"
         },
         "SAI": {
             "id": "248",
-            "display": "Sound Arts and Industries",
-            "color": "sky"
+            "display": "Sound Arts and Industries"
         },
         "CODING": {
             "id": "249",
-            "display": "Coding Boot Camp",
-            "color": "blue"
+            "display": "Coding Boot Camp"
         },
         "KPHD": {
             "id": "250",
-            "display": "Interdisciplinary Seminar",
-            "color": "indigo"
+            "display": "Interdisciplinary Seminar"
         },
         "HC_COM": {
             "id": "251",
-            "display": "Healthcare Compliance",
-            "color": "violet"
+            "display": "Healthcare Compliance"
         },
         "HBMI": {
             "id": "252",
-            "display": "Health and Biomedical Informatics",
-            "color": "purple"
+            "display": "Health and Biomedical Informatics"
         },
         "BADM_IN": {
             "id": "253",
-            "display": "Predictive Bus Analytics for Decision Makers-IN",
-            "color": "fuchsia"
+            "display": "Predictive Bus Analytics for Decision Makers-IN"
         },
         "DMS_IN": {
             "id": "254",
-            "display": "Digital Marketing Strategy IN",
-            "color": "pink"
+            "display": "Digital Marketing Strategy IN"
         },
         "DSDV_IN": {
             "id": "255",
-            "display": "Data Sci, Design & Visuali IN",
-            "color": "rose"
+            "display": "Data Sci, Design & Visuali IN"
         },
         "DATA_BC": {
             "id": "256",
-            "display": "Data Science Boot Camp",
-            "color": "red"
+            "display": "Data Science Boot Camp"
         },
         "MSDS": {
             "id": "257",
-            "display": "Master of Data Science",
-            "color": "orange"
+            "display": "Master of Data Science"
         },
         "SU_CODE": {
             "id": "258",
-            "display": "Summer Coding Boot Camp",
-            "color": "amber"
+            "display": "Summer Coding Boot Camp"
         },
         "MSAI": {
             "id": "259",
-            "display": "Artificial Intelligence",
-            "color": "yellow"
+            "display": "Artificial Intelligence"
         },
         "QARS": {
             "id": "260",
-            "display": "Quality Assurance & Regulatory Science",
-            "color": "lime"
+            "display": "Quality Assurance & Regulatory Science"
         },
         "QSB": {
             "id": "261",
-            "display": "Quantitative and Systems Biology",
-            "color": "green"
+            "display": "Quantitative and Systems Biology"
         },
         "CYBER_BC": {
             "id": "262",
-            "display": "Cybersecurity Boot Camp",
-            "color": "emerald"
+            "display": "Cybersecurity Boot Camp"
         },
         "JAVA_BC": {
             "id": "263",
-            "display": "Java Programming Boot Camp",
-            "color": "teal"
+            "display": "Java Programming Boot Camp"
         },
         "MSHA": {
             "id": "264",
-            "display": "Master of Science in Health Analytics",
-            "color": "cyan"
+            "display": "Master of Science in Health Analytics"
         },
         "FNTEC_BC": {
             "id": "265",
-            "display": "FinTech Boot Camp",
-            "color": "sky"
+            "display": "FinTech Boot Camp"
         },
         "MS_DSP": {
             "id": "266",
-            "display": "Master of Data Science Programme",
-            "color": "blue"
+            "display": "Master of Data Science Programme"
         },
         "EPI_BIO": {
             "id": "267",
-            "display": "Epidemiology & Biostatistics",
-            "color": "indigo"
+            "display": "Epidemiology & Biostatistics"
         },
         "MBAI": {
             "id": "268",
-            "display": "Bus/Artificial Intelligence",
-            "color": "violet"
+            "display": "Bus/Artificial Intelligence"
         },
         "UXUI_BC": {
             "id": "269",
-            "display": "User Experience/ Interface Design Boot Camp",
-            "color": "purple"
+            "display": "User Experience/ Interface Design Boot Camp"
         },
         "SE_POL": {
             "id": "270",
-            "display": "Social & Economic Policy",
-            "color": "fuchsia"
+            "display": "Social & Economic Policy"
         }
     },
     "major_ids": {
@@ -79091,15 +78820,5 @@
         "268": "MBAI",
         "269": "UXUI_BC",
         "270": "SE_POL"
-    },
-    "shortcuts": {
-        "cs": ["COMP_SCI"],
-        "ea": ["GEN_ENG 205", "GEN_ENG 206"],
-        "dtc": ["DSGN 106", "ENGLISH 106"],
-        "bio": ["BIOL_SCI"],
-        "ee": ["ELEC_ENG"],
-        "bme": ["BMD_ENG"],
-        "meche": ["MECH_ENG"],
-        "me": ["MECH_ENG"]
     }
 }

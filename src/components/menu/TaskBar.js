@@ -22,19 +22,26 @@ class TaskBar extends React.Component {
     render() {
         return (
 
-            <div className="grid grid-cols-3 px-4 gap-4 text-xs">
+            <div className='grid grid-cols-3 px-4 gap-4 text-xs'>
 
-                <TaskBarButton name="About" color="purple" action={() => {
+                <TaskBarButton name='About' color='purple' action={() => {
 
                     this.props.alert({
                         title: 'Plan Northwestern',
-                        subtitle: `version ${this.props.version} by Dilan N`,
+                        customSubtitle: (
+                            <p className='text-md font-light text-gray-500 dark:text-gray-400'>
+                                version {this.props.version} by <a className='text-purple-500 dark:text-purple-300 opacity-100 hover:opacity-60 transition-all duration-150'
+                                                                    href='https://dilanxd.com'
+                                                                    target='_blank'
+                                                                    rel='noreferrer'>Dilan N</a>
+                            </p>
+                        ),
                         message: 'An easy and organized way to plan out your classes at Northwestern. Data is all saved in the URL, so save the link to your plan to access it later or share with friends.',
                         confirmButton: 'View on GitHub',
                         confirmButtonColor: 'purple',
                         cancelButton: 'Close',
                         iconBackgroundColor: 'purple',
-                        icon: (<InformationCircleIcon className="h-6 w-6 text-purple-600" aria-hidden="true" />),
+                        icon: (<InformationCircleIcon className='h-6 w-6 text-purple-600' aria-hidden='true' />),
                         action: () => {
                             window.open('https://github.com/dilanx/plan-northwestern', '_blank');
                         },
@@ -63,7 +70,7 @@ class TaskBar extends React.Component {
 
                 }}/>
 
-                <TaskBarButton name="Save / Share" color="emerald" action={() => {
+                <TaskBarButton name='Save / Share' color='emerald' action={() => {
                     this.props.alert({
                         title: 'Ready to share!',
                         message: 'All of your plan data is stored in the URL. When you make changes to your plan, the URL is updated to reflect those changes. Save it somewhere, or share with a friend!',
@@ -71,7 +78,7 @@ class TaskBar extends React.Component {
                         confirmButtonColor: 'emerald',
                         cancelButton: 'Close',
                         iconBackgroundColor: 'emerald',
-                        icon: (<SaveIcon className="h-6 w-6 text-emerald-600" aria-hidden="true" />),
+                        icon: (<SaveIcon className='h-6 w-6 text-emerald-600' aria-hidden='true' />),
                         textView: window.location.href,
                         action: () => {
                             navigator.clipboard.writeText(window.location.href);
@@ -79,7 +86,7 @@ class TaskBar extends React.Component {
                     });
                 }}/>
 
-                <TaskBarButton name="Add Year" color="cyan" action={() => {
+                <TaskBarButton name='Add Year' color='cyan' action={() => {
                     if (this.props.allowAddYear) {
                         this.props.alert({
                             title: 'Add a year?',
@@ -88,7 +95,7 @@ class TaskBar extends React.Component {
                             confirmButtonColor: 'cyan',
                             cancelButton: 'Close',
                             iconBackgroundColor: 'cyan',
-                            icon: (<PlusIcon className="h-6 w-6 text-cyan-600" aria-hidden="true" />),
+                            icon: (<PlusIcon className='h-6 w-6 text-cyan-600' aria-hidden='true' />),
                             action: () => {
                                 this.props.addYear();
                             }
@@ -100,19 +107,19 @@ class TaskBar extends React.Component {
                             confirmButton: 'Close',
                             confirmButtonColor: 'cyan',
                             iconBackgroundColor: 'cyan',
-                            icon: (<ExclamationIcon className="h-6 w-6 text-cyan-600" aria-hidden="true" />),
+                            icon: (<ExclamationIcon className='h-6 w-6 text-cyan-600' aria-hidden='true' />),
                         });
                     }
                 }}/>
 
-                <TaskBarButton name="Settings" color="yellow" action={() => {
+                <TaskBarButton name='Settings' color='yellow' action={() => {
                     this.props.alert({
                         title: 'Settings',
-                        message: 'Customize your Plan Northwestern experience! These settings are not saved in the URL but are saved in your browser.',
+                        message: `Customize your Plan Northwestern experience! These settings are saved in your browser and not in the URL.`,
                         confirmButton: 'Close',
                         confirmButtonColor: 'yellow',
                         iconBackgroundColor: 'yellow',
-                        icon: (<CogIcon className="h-6 w-6 text-yellow-600" aria-hidden="true" />),
+                        icon: (<CogIcon className='h-6 w-6 text-yellow-600' aria-hidden='true' />),
                         switches: this.props.switches,
                         setSwitch: this.props.setSwitch,
                         options: [
@@ -159,7 +166,7 @@ class TaskBar extends React.Component {
                             {
                                 name: 'clear_plan',
                                 title: 'Clear plan',
-                                description: `Clear your current plan data.`,
+                                description: `Clear all of your current plan data, which includes everything for each year and everything in My List. Make sure to save the current URL somewhere if you don't want to lose it.`,
                                 buttonTextOn: 'Clear',
                                 requireConfirmation: true,
                                 singleAction: () => {
@@ -170,23 +177,9 @@ class TaskBar extends React.Component {
                     })
                 }}/>
 
-                <TaskBarButton name="Contribute course data" color="red" active={this.props.switches.contribution} span="2" action={() => {
-                    this.props.setSwitch('contribution', !this.props.switches.contribution);
+                <TaskBarButton name='My List' color='indigo' active={this.props.switches.favorites} span='2' action={() => {
+                    this.props.setSwitch('favorites', !this.props.switches.favorites);
                 }}/>
-
-                {/* <TaskBarButton name="Settings" color="blue" action={() => {
-                    this.props.alert({
-                        title: 'Settings',
-                        message: `Features like summer classes, more than 4 years, and more are coming soon. Oh also, I found this cool library for drag-and-drop online so I hope to make it possible to drag courses into the quarter you want.`,
-                        confirmButton: 'Close',
-                        confirmButtonColor: 'blue',
-                        iconBackgroundColor: 'blue',
-                        icon: (<CogIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />),
-                    })
-                }}/> */}
-
-                
-
 
             </div>
         )

@@ -1,5 +1,147 @@
 import courses from './data/courses.json';
 
+function loadData(params) {
+
+    let data = [[[], [], []], [[], [], []], [[], [], []], [[], [], []]];
+    let favoritesNoCredit = new Set();
+    let favoritesForCredit = new Set();
+
+    let loadedSomething = false;
+
+    try {
+
+        for (let pair of params.entries()) {
+
+            let key = pair[0];
+            let value = pair[1];
+
+            if (key.startsWith('y')) {
+
+                loadedSomething = true;
+                
+                let year = parseInt(key.substring(1).split('q')[0]);
+                let quarter = parseInt(key.split('q')[1]);
+                let classes = value.split(',');
+                let classData = [];
+
+                for (let id of classes) {
+                    let sp = id.split('_');
+                    let subjId = sp[0];
+                    let num = sp[1];
+                    let subj = courses.major_ids[subjId];
+                    let courseId = subj + ' ' + num;
+
+                    let course = CourseManager.getCourse(courseId);
+                    if (course == null) return { malformed: true };
+                    classData.push(course);
+                }
+
+                classData.sort((a, b) => {
+                    return a.id.localeCompare(b.id);
+                });
+
+                while (data.length < year + 1) {
+                    data.push([[], [], []]);
+                }
+    
+                while (data[year].length < quarter + 1) {
+                    data[year].push([]);
+                }
+
+                data[year][quarter] = classData;
+
+            }
+
+            if (key.startsWith('f')) {
+
+                loadedSomething = true;
+
+                let classesLists = value.split(';');
+                for (let i = 0; i < classesLists.length; i++) {
+                    let classes = classesLists[i].split(',');
+                    for (let id of classes) {
+                        if (id === '') continue;
+                        let sp = id.split('_');
+                        let subjId = sp[0];
+                        let num = sp[1];
+                        let subj = courses.major_ids[subjId];
+                        let courseId = subj + ' ' + num;
+                        if (i === 0) favoritesNoCredit.add(CourseManager.getCourse(courseId));
+                        else favoritesForCredit.add(CourseManager.getCourse(courseId));
+                    }
+                }
+
+            }
+        }
+
+    } catch (e) {
+        return { malformed: true };
+    }
+
+    if (!loadedSomething) return { empty: true };
+
+    return {
+        data: data,
+        favorites: {
+            noCredit: favoritesNoCredit,
+            forCredit: favoritesForCredit
+        }
+    };
+
+}
+
+function saveData(data, favorites) {
+    
+    let params = new URLSearchParams();
+
+    for (let y = 0; y < data.length; y++) {
+        for (let q = 0; q < data[y].length; q++) {
+            let classes = data[y][q].map(course => {
+                let sp = course.id.split(' ');
+                let subj = sp[0];
+                let num = sp[1];
+                let subjId = courses.majors[subj].id;
+                return subjId + '_' + num;
+            }).join(',');
+
+            if (classes.length > 0) params.set(`y${y}q${q}`, classes);
+        }
+    }
+
+    
+    let favoritesNoCredit = Array.from(favorites.noCredit);
+    let favoritesForCredit = Array.from(favorites.forCredit);
+
+    if (favoritesNoCredit.length > 0 || favoritesForCredit.length > 0) {
+
+        let conv = course => {
+            let courseId = course.id;
+            let sp = courseId.split(' ');
+            let subj = sp[0];
+            let num = sp[1];
+            let subjId = courses.majors[subj].id;
+            return subjId + '_' + num;
+        }
+
+        params.set('f', favoritesNoCredit.map(conv).join(',') + ';' + favoritesForCredit.map(conv).join(','));
+
+    }
+
+    return params;
+
+}
+
+function countCourseUnitsInHundreds(data) {
+    let total = 0;
+    data.forEach(course => {
+        total += parseFloat(course.units) * 100;
+        if (total % 100 === 2) total -= 2;
+        if (total % 50 === 1) total -= 1;
+        if (total % 50 === 49) total += 1;
+    })
+    return total;
+}
+
 let CourseManager = {
 
     data: courses,
@@ -64,33 +206,34 @@ let CourseManager = {
 
     },
 
-    getTotalCredits: data => {
+    getTotalCredits: (data, favoritesForCredit) => {
 
         let total = 0;
 
         for (let y = 0; y < data.length; y++) {
             for (let q = 0; q < data[y].length; q++) {
-                for (let c = 0; c < data[y][q].length; c++) {
-                    total += parseFloat(data[y][q][c].units);
-                }
+                total += countCourseUnitsInHundreds(data[y][q]);
+                if (total % 100 === 2) total -= 2;
+                if (total % 50 === 1) total -= 1;
+                if (total % 50 === 49) total += 1;
             }
         }
 
-        return Math.round(total * 100) / 100;
+        total += countCourseUnitsInHundreds(favoritesForCredit);
+        if (total % 100 === 2) total -= 2;
+        if (total % 50 === 1) total -= 1;
+        if (total % 50 === 49) total += 1;
+
+        return total / 100;
 
     },
 
+    getExtraCredits: favoritesForCredit => {
+        return countCourseUnitsInHundreds(favoritesForCredit) / 100;
+    },
+
     getQuarterCredits: quarter => {
-
-        let total = 0;
-
-        for (let c = 0; c < quarter.length; c++) {
-            total += parseFloat(quarter[c].units);
-        }
-
-
-        return Math.round(total * 100) / 100;
-
+        return countCourseUnitsInHundreds(quarter) / 100;
     },
 
     duplicateCourse: (course, data) => {
@@ -126,109 +269,48 @@ let CourseManager = {
         return courses.majors[subj].color;
     },
 
-    loadData: (key, val, data) => {
+    load: fallbackToStorage => {
 
-        try {
+        let data = CourseManager.loadFromURL();
 
-            let year = parseInt(key.substring(1).split('q')[0]);
-            let quarter = parseInt(key.split('q')[1]);
-            let classes = val.split(',');
-            let classData = [];
-
-            let failed = false;
-            classes.forEach(name => {
-
-                let sp = name.split('_');
-
-                let id = sp[0];
-                let num = sp[1];
-
-                let subj = courses.major_ids[id];
-
-                let course = subj + ' ' + num;
-
-                let c = CourseManager.getCourse(course);
-                if (c == null) {
-                    failed = true;
-                    return;
-                }
-
-                if (sp.length > 2) {
-                    let more = [];
-                    for (let i = 2; i < sp.length; i++) {
-                        more.push(sp[i]);
-                    }
-                    c.more = more;
-                }
-
-                classData.push(c);
-
-            });
-
-            classData.sort((a, b) => {
-                return a.id.localeCompare(b.id);
-            });
-
-            if (failed) return null;
-
-            while (data.length < year + 1) {
-                data.push([[], [], []]);
-            }
-
-            while (data[year].length < quarter + 1) {
-                data[year].push([]);
-            }
-
-            data[year][quarter] = classData;
-
+        if (data.malformed) {
             return data;
-
-        } catch (e) {
-            console.error(e);
-            return null;
-
         }
+
+        if (data.empty && fallbackToStorage) {
+            let storageData = CourseManager.loadFromStorage();
+            if (storageData.data && storageData.favorites) {
+                CourseManager.save(storageData.data, storageData.favorites, false);
+            }
+            return storageData;
+        }
+
+        return data;
 
     },
 
-    saveData: (data, saveToStorage) => {
+    loadFromURL: () => {
+        let search = window.location.search;
+        let params = new URLSearchParams(search);
+        return loadData(params);
+    },
 
-        let params = new URLSearchParams();
+    loadFromStorage: () => {
+        let dataStr = localStorage.getItem('data');
+        if (dataStr == null) return { empty: true };
+        let params = new URLSearchParams(dataStr);
+        return loadData(params);
+    },
 
-        for (let i = 0; i < data.length; i++) {
-            for (let j = 0; j < data[i].length; j++) {
-                let classes = data[i][j].map(course => {
+    save: (data, favorites, saveToStorage) => {
 
-                    let sp = course.id.split(' ');
+        let params = saveData(data, favorites);
+        let paramsStr = params.toString();
 
-                    let subj = sp[0];
-                    let num = sp[1];
-
-                    let id = courses.majors[subj].id;
-
-                    let name = id + '_' + num;
-
-                    if (course.more) {
-                        for (let m = 0; m < course.more.length; m++) {
-                            name += '_' + course.more[m];
-                        }
-                    }
-
-
-                    return name;
-
-                }).join(',');
-
-                if (classes.length > 0) params.set(`y${i}q${j}`, classes);
-            }
-        }
-
-        let dataStr = params.toString();
-
-        window.history.replaceState({}, '', `${window.location.pathname}?${dataStr}`);
+        window.history.replaceState({}, '', `${window.location.pathname}?${paramsStr}`);
 
         if (saveToStorage) {
-            localStorage.setItem('data', dataStr);
+            localStorage.setItem('data', paramsStr);
         }
 
     }
@@ -236,52 +318,3 @@ let CourseManager = {
 }
 
 export default CourseManager;
-
-/*
-old encoding system but the URLs are too long
-will probably delete this from this file later
-
-function encodeCourse(courseName) {
-
-    let encoded = '';
-
-    for (let i = 0; i < courseName.length; i++) {
-
-        let char = courseName[i];
-
-        let encodedChar = char.charCodeAt(0).toString(16);
-
-        if (encodedChar.length === 1) {
-            encodedChar = '0' + encodedChar;
-        }
-
-        encoded += encodedChar;
-
-    }
-
-    return encoded;
-
-}
-
-function decodeCourse(encodedCourse) {
-
-    let decoded = '';
-
-    for (let i = 0; i < encodedCourse.length; i += 2) {
-
-        if (i + 2 > encodedCourse.length) {
-            break;
-        }
-
-        let encodedChar = encodedCourse[i] + encodedCourse[i + 1];
-
-        let char = String.fromCharCode(parseInt(encodedChar, 16));
-
-        decoded += char;
-
-    }
-
-    return decoded;
-
-}
-*/

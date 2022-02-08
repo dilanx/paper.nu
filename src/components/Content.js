@@ -20,11 +20,14 @@ class Content extends React.Component {
                     }}
                     moveCourse={this.props.moveCourse}
                     addSummerQuarter={this.props.addSummerQuarter}
+                    favorites={this.props.favorites}
+                    addFavorite={this.props.addFavorite}
+                    delFavorite={this.props.delFavorite}
                 />;
             })
         }
         return (
-            <div className="bg-white dark:bg-gray-800">
+            <div className='bg-white dark:bg-gray-800'>
                 {years}
             </div>
         );

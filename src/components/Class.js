@@ -1,8 +1,9 @@
-import React from "react";
+import React from 'react';
 import { DragSource } from 'react-dnd';
 import CourseManager from '../CourseManager.js';
 import Utility from '../Utility.js';
-import { InformationCircleIcon, TrashIcon, DocumentIcon } from '@heroicons/react/outline';
+import { TrashIcon, DocumentIcon, BookmarkIcon } from '@heroicons/react/outline';
+import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/solid';
 
 const classSource = {
 
@@ -40,7 +41,7 @@ class Class extends React.Component {
                 confirmButton: 'Close',
                 confirmButtonColor: color,
                 iconBackground: color,
-                icon: (<DocumentIcon className={`h-6 w-6 text-${color}-600`} aria-hidden="true" />),
+                icon: (<DocumentIcon className={`h-6 w-6 text-${color}-600`} aria-hidden='true' />),
             })
             return;
         }
@@ -66,6 +67,18 @@ class Class extends React.Component {
             )
         }
 
+        extras.push(
+            {
+                title: 'UNITS',
+                content: course.units
+            }
+        )
+
+        let delCourse = this.props.delCourse;
+        let favorites = this.props.favorites;
+        let addFavorite = this.props.addFavorite;
+        let delFavorite = this.props.delFavorite;
+
         this.props.alert({
             title: course.id,
             subtitle: course.name,
@@ -73,8 +86,40 @@ class Class extends React.Component {
             confirmButton: 'Close',
             confirmButtonColor: color,
             iconBackgroundColor: color,
-            icon: (<DocumentIcon className={`h-6 w-6 text-${color}-600`} aria-hidden="true" />),
-            extras: extras
+            icon: (<DocumentIcon className={`h-6 w-6 text-${color}-600`} aria-hidden='true' />),
+            extras: extras,
+            editButtons: [
+                {
+                    toggle: {
+                        data: favorites.noCredit,
+                        key: course,
+                        enabled: {
+                            title: 'Remove from My List',
+                            icon: (<BookmarkIconSolid className='w-6 h-6' />),
+                            action: () => {
+                                delFavorite(course, false);
+                            }
+                        },
+                        disabled: {
+                            title: 'Add to My List',
+                            icon: (<BookmarkIcon className='w-6 h-6' />),
+                            action: () => {
+                                addFavorite(course, false);
+                            }
+                        }
+                    },
+                    color: 'indigo'
+                },
+                {
+                    title: 'Remove course',
+                    icon: <TrashIcon className='w-6 h-6' />,
+                    color: 'red',
+                    action: () => {
+                        delCourse();
+                    },
+                    close: true
+                }
+            ]
         })
     }
 
@@ -88,13 +133,14 @@ class Class extends React.Component {
         let showMoreInfo = this.props.switches.more_info && !this.props.switches.compact;
 
         let isPlaceholder = course.placeholder;
+        let units = parseFloat(course.units);
 
         return connectDragSource(
             <div className={`p-2 rounded-lg bg-opacity-60 bg-${color}-100 dark:bg-gray-800
-            border-2 border-${color}-300 border-opacity-60 overflow-hidden whitespace-nowrap
-            hover:shadow-md transition ease-in-out duration-300 transform hover:-translate-y-1 group ${isDragging ? 'cursor-grab' : 'cursor-default'}
-            compact:px-2 compact:py-0.5`}>
-                <p className={`text-md ${isPlaceholder ? 'font-normal' : 'font-bold'} text-black dark:text-gray-50 compact:text-sm`}>
+            border-2 border-${color}-300 border-opacity-60 overflow-visible w-full text-left compact:px-2 compact:py-05
+            hover:shadow-md transition ease-in-out duration-300 transform hover:-translate-y-1 group ${isDragging ? 'cursor-grab' : 'cursor-pointer'}`}
+                    onClick={() => this.openInfo()}>
+                <p className={`text-md ${isPlaceholder ? 'font-normal' : 'font-bold'} text-black dark:text-gray-50 compact:text-sm overflow-hidden whitespace-nowrap`}>
                     {isPlaceholder ? course.name : course.id}
                 </p>
                 <p className={`text-xs ${isPlaceholder ? 'font-light' : 'font-normal'} text-black dark:text-gray-50 overflow-hidden w-full block whitespace-nowrap overflow-ellipsis compact:hidden`} title={course.name}>
@@ -103,44 +149,40 @@ class Class extends React.Component {
                 {showMoreInfo &&
                     <div>
                         {course.prereqs &&
-                            <div className="mt-4 text-gray-500 dark:text-gray-400">
-                                <p className="text-xs font-bold">
+                            <div className='mt-4 text-gray-500 dark:text-gray-400'>
+                                <p className='text-xs font-bold'>
                                     PREREQUISITES
                                 </p>
-                                <p className="m-0 p-0 text-xs font-light whitespace-normal">
+                                <p className='m-0 p-0 text-xs font-light whitespace-normal'>
                                     {course.prereqs}
                                 </p>
                             </div>
                         }
                         {course.distros &&
-                            <div className="mt-4 text-gray-500 dark:text-gray-400">
-                                <p className="text-xs font-bold">
+                            <div className='mt-4 text-gray-500 dark:text-gray-400'>
+                                <p className='text-xs font-bold'>
                                     DISTRIBUTION AREAS
                                 </p>
-                                <p className="m-0 p-0 text-xs font-light whitespace-normal">
+                                <p className='m-0 p-0 text-xs font-light whitespace-normal'>
                                     {Utility.convertDistros(course.distros).join(', ')}
                                 </p>
                             </div>
                         }
+                        <div className='mt-1'>
+                            <p className='text-xs text-right text-gray-500 dark:text-gray-400 font-light'>
+                                <span className='font-medium'>{units}</span> {units === 1 ? 'unit' : 'units'}
+                            </p>
+                        </div>
                     </div>
                 }
-                <div className="absolute top-3 bottom-3 compact:top-0.5 compact:bottom-0.5 right-1 px-2 flex flex-row gap-2">
-                    <button className="text-gray-500 dark:text-white text-xs opacity-40 hover:text-blue-500 dark:hover:text-blue-500 hover:opacity-100
-                    transition-all duration-150 hidden group-hover:block" onClick={() => {
-                        this.openInfo();
-                    }}>
-                        <InformationCircleIcon className="w-6 h-6 compact:w-5 compact:h-5"/>
-                        
-                    </button>
-                    <button className="text-gray-500 dark:text-white text-xs opacity-40 hover:text-red-500 dark:hover:text-red-500 hover:opacity-100
-                    transition-all duration-150 hidden group-hover:block" onClick={() => {
-                        this.props.delCourse();
-                    }}>
-                        <TrashIcon className="w-6 h-6 compact:w-5 compact:h-5"/>
-                        
-                    </button>
-                </div>
-                
+                <button className='absolute -top-2 -right-2 p-0.5 rounded-full bg-gray-200 hover:bg-red-100 dark:bg-gray-700
+                        text-gray-500 dark:text-white text-xs opacity-80 hover:text-red-400 dark:hover:text-red-400 hover:opacity-100
+                        transition-all duration-150 hidden group-hover:block z-20' onClick={e => {
+                            e.stopPropagation();
+                            this.props.delCourse();
+                        }}>
+                    <TrashIcon className='w-5 h-5'/>
+                </button>
             </div>
         );
     }

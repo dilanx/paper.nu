@@ -6,7 +6,7 @@ let Utility = {
         };
         let keys = Object.keys(localStorage);
         for (let i = 0; i < keys.length; i++) {
-            if (keys[i].startsWith("switch_")) {
+            if (keys[i].startsWith('switch_')) {
                 let val = localStorage.getItem(keys[i]);
                 let switchId = keys[i].substring(7);
                 if (val === 'true') val = true;
@@ -56,6 +56,9 @@ let Utility = {
                     break;
                 case 6:
                     strings.push('Literature and Fine Arts')
+                    break;
+                case 7:
+                    strings.push('Interdisciplinary Studies')
                     break;
                 default:
                     strings.push('Unknown')

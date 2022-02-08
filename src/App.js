@@ -1,6 +1,6 @@
 import React from 'react';
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import Content from './components/Content.js';
 import CourseManager from './CourseManager.js';
 import Utility from './Utility.js';
@@ -8,11 +8,11 @@ import Info from './components/menu/Info.js';
 import TaskBar from './components/menu/TaskBar.js';
 import Search from './components/search/Search.js';
 import StatsBar from './components/menu/StatsBar.js';
-import Contribution from './components/contribution/Contribution.js';
 import Alert from './components/menu/Alert.js';
+import Favorites from './components/favorites/Favorites.js';
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '1.0.0 beta';
+const VERSION = '1.1.0';
 
 class App extends React.Component {
 
@@ -20,62 +20,37 @@ class App extends React.Component {
         super(props);
 
         let defaultSwitches = Utility.loadSwitchesFromStorage();
-
-        let data = [[[], [], []], [[], [], []], [[], [], []], [[], [], []]];
-        let search = window.location.search;
-        let params = new URLSearchParams(search);
-        let failed = false;
-        let loadedAny = false;
-        params.forEach((val, key) => {
-            if (key.startsWith('y')) {
-                loadedAny = true;
-                if (failed) return;
-                let newData = CourseManager.loadData(key, val, data);
-                if (newData == null) {
-                    failed = true;
-                    return;
-                }
-                data = newData;
-            }
-        })
-
-        if (!loadedAny && defaultSwitches.save_to_storage) {
-            let dataStr = localStorage.getItem('data');
-            let params = new URLSearchParams(dataStr);
-            if (dataStr != null) {
-                if (failed) return;
-                params.forEach((val, key) => {
-                    if (key.startsWith('y')) {
-                        loadedAny = true;
-                        if (failed) return;
-                        let newData = CourseManager.loadData(key, val, data);
-                        if (newData == null) {
-                            failed = true;
-                            return;
-                        }
-                        data = newData;
-                    }
-                })
-                CourseManager.saveData(data, false);
-            }
-        }
-
         let defaultAlert = null;
 
-        if (failed) {
-            data = [[[], [], []], [[], [], []], [[], [], []], [[], [], []]];
+        let data = [[[], [], []], [[], [], []], [[], [], []], [[], [], []]];
+        let favorites = {
+            noCredit: new Set(),
+            forCredit: new Set()
+        }
+
+        let res = CourseManager.load(defaultSwitches.save_to_storage);
+
+        if (!res.malformed) {
+            
+            if (!res.empty) {
+                data = res.data;
+                favorites = res.favorites;
+            }
+            
+        } else {
             defaultAlert = {
                 title: 'Unable to load plan.',
-                message: `The plan URL you entered is not valid. Ensure that it hasn't been manualy modified.`,
+                message: `The plan URL you entered is not valid. Ensure that it hasn't been manually modified.`,
                 confirmButton: 'What a shame.',
                 confirmButtonColor: 'red',
                 iconBackgroundColor: 'red',
-                icon: (<ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />)
+                icon: (<ExclamationIcon className='h-6 w-6 text-red-600' aria-hidden='true' />)
             }
         }
 
         this.state = {
             data: data,
+            favorites: favorites,
             alert: defaultAlert,
             switches: defaultSwitches
         }
@@ -112,17 +87,18 @@ class App extends React.Component {
             return a.id.localeCompare(b.id);
         });
         this.setState({data: data});
-        CourseManager.saveData(data, this.state.switches.save_to_storage);
+        CourseManager.save(data, this.state.favorites, this.state.switches.save_to_storage);
     }
 
     addCourse(course, year, quarter) {
 
         let data = this.state.data;
         let isPlaceholder = course.placeholder;
+        let repeatable = course.repeatable;
 
         let exists = CourseManager.duplicateCourse(course, data);
 
-        if (exists && !isPlaceholder) {
+        if (!repeatable && exists && !isPlaceholder) {
             this.showAlert({
                 title: 'Course already planned.',
                 message: `You already have ${course.id} on your plan during the ${Utility.convertQuarter(exists.quarter).title.toLowerCase()} quarter of your ${Utility.convertYear(exists.year).toLowerCase()} year.`,
@@ -130,7 +106,7 @@ class App extends React.Component {
                 confirmButton: 'Add anyway',
                 confirmButtonColor: 'red',
                 iconBackgroundColor: 'red',
-                icon: (<ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />),
+                icon: (<ExclamationIcon className='h-6 w-6 text-red-600' aria-hidden='true' />),
                 action: () => {
                     this.actuallyAddCourse(course, year, quarter);
                 }
@@ -148,7 +124,7 @@ class App extends React.Component {
                 confirmButton: 'Add anyway',
                 confirmButtonColor: 'red',
                 iconBackgroundColor: 'red',
-                icon: (<ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />),
+                icon: (<ExclamationIcon className='h-6 w-6 text-red-600' aria-hidden='true' />),
                 action: () => {
                     this.actuallyAddCourse(course, year, quarter);
                 }
@@ -164,18 +140,42 @@ class App extends React.Component {
         let data = this.state.data;
         data[year][quarter].splice(courseIndex, 1);
         this.setState({data: data});
-        CourseManager.saveData(data, this.state.switches.save_to_storage);
+        CourseManager.save(data, this.state.favorites, this.state.switches.save_to_storage);
     }
 
     moveCourse(course, oldYear, oldQuarter, newYear, newQuarter) {
         let data = this.state.data;
-        for (let c = 0; c < data[oldYear][oldQuarter].length; c++) {
-            if (data[oldYear][oldQuarter][c].id === course.id) {
-                this.delCourse(c, oldYear, oldQuarter);
-                break;
+        if (oldYear !== -1) {
+            for (let c = 0; c < data[oldYear][oldQuarter].length; c++) {
+                if (data[oldYear][oldQuarter][c].id === course.id) {
+                    this.delCourse(c, oldYear, oldQuarter);
+                    break;
+                }
             }
         }
         this.addCourse(course, newYear, newQuarter);
+    }
+
+    addFavorite(course, forCredit) {
+        let favorites = this.state.favorites;
+        if (forCredit) {
+            favorites.forCredit.add(course);
+        } else {
+            favorites.noCredit.add(course);
+        }
+        this.setState({favorites: favorites});
+        CourseManager.save(this.state.data, favorites, this.state.switches.save_to_storage);
+    }
+
+    delFavorite(course, forCredit) {
+        let favorites = this.state.favorites;
+        if (forCredit) {
+            favorites.forCredit.delete(course);
+        } else {
+            favorites.noCredit.delete(course);
+        }
+        this.setState({favorites: favorites});
+        CourseManager.save(this.state.data, favorites, this.state.switches.save_to_storage);
     }
 
     render() {
@@ -198,12 +198,12 @@ class App extends React.Component {
                             }
                     }/>}
 
-                    <div className="bg-white dark:bg-gray-800 grid grid-cols-1 md:grid-cols-8">
-                        <div className="col-span-2 px-4 h-192 md:h-screen flex flex-col">
+                    <div className='bg-white dark:bg-gray-800 grid grid-cols-1 md:grid-cols-8'>
+                        <div className='col-span-2 px-4 h-192 md:h-screen flex flex-col'>
                             <Info version={VERSION}/>
                             <TaskBar
                                 alert={alertData => {
-                                    this.showAlert(alertData)
+                                    this.showAlert(alertData);
                                 }}
                                 allowAddYear={this.state.data.length < 10}
                                 addYear={() => {
@@ -215,36 +215,58 @@ class App extends React.Component {
                                 switches={this.state.switches}
                                 setSwitch={(key, val, save=false) => {this.setSwitch(key, val, save)}}
                                 clearData={() => {
-                                    this.setState({data: [[[], [], []], [[], [], []], [[], [], []], [[], [], []]]});
-                                    CourseManager.saveData(this.state.data, this.state.switches.save_to_storage);
+                                    this.setState({
+                                            data: [[[], [], []], [[], [], []], [[], [], []], [[], [], []]],
+                                            favorites: {
+                                                forCredit: new Set(),
+                                                noCredit: new Set()
+                                            }
+                                        });
+                                    CourseManager.save(this.state.data, this.state.favorites, this.state.switches.save_to_storage);
                                 }}
                             />
                             <Search
                                 data={this.state.data}
+                                favorites={this.state.favorites}
                                 addCourse={(course, year, quarter) => {
                                     this.addCourse(course, year, quarter);
+                                }}
+                                addFavorite={(course, forCredit) => {
+                                    this.addFavorite(course, forCredit);
+                                }}
+                                delFavorite={(course, forCredit) => {
+                                    this.delFavorite(course, forCredit);
                                 }}
                             />
                             <StatsBar
                                 data={this.state.data}
+                                favorites={this.state.favorites}
                             />
                         </div>
                         
                         <div className={`${this.state.switches.compact ? 'compact-mode ' : ''} col-span-6 block pt-0 h-screen md:overflow-y-scroll no-scrollbar`}>
-                            {this.state.switches.contribution &&
-                                <Contribution
-                                alert={alertData => {
-                                    this.showAlert(alertData)
-                                }}/>
-                                
+                            {this.state.switches.favorites &&
+                                <Favorites
+                                    favorites={this.state.favorites}
+                                    switches={this.state.switches}
+                                    alert={alertData => {
+                                        this.showAlert(alertData);
+                                    }}
+                                    addFavorite={(course, forCredit) => {
+                                        this.addFavorite(course, forCredit);
+                                    }}
+                                    delFavorite={(course, forCredit) => {
+                                        this.delFavorite(course, forCredit);
+                                    }}
+                                />
                             }
-                            
                             <Content
                                 content={this.state.data}
+                                favorites={this.state.favorites}
                                 switches={this.state.switches}
                                 setSwitch={(key, val) => {this.setSwitch(key, val)}}
                                 alert={alertData => {
-                                    this.showAlert(alertData)
+                                    this.showAlert(alertData);
                                 }}
                                 addCourse={(course, year, quarter) => {
                                     this.addCourse(course, year, quarter);
@@ -255,16 +277,23 @@ class App extends React.Component {
                                 moveCourse={(course, oldYear, oldQuarter, newYear, newQuarter) => {
                                     this.moveCourse(course, oldYear, oldQuarter, newYear, newQuarter);
                                 }}
+                                addFavorite={(course, forCredit) => {
+                                    this.addFavorite(course, forCredit);
+                                }}
+                                delFavorite={(course, forCredit) => {
+                                    this.delFavorite(course, forCredit);
+                                }}
+                                
                                 addSummerQuarter={year => {
 
                                     this.showAlert({
                                         title: 'Add summer quarter to this year?',
                                         message: `This will add a summer quarter to your ${Utility.convertYear(year).toLowerCase()} year. You can remove it by removing all classes from that quarter and refreshing the page.`,
                                         confirmButton: 'Add quarter',
-                                        confirmButtonColor: 'blue',
+                                        confirmButtonColor: 'yellow',
                                         cancelButton: 'Close',
-                                        iconBackgroundColor: 'blue',
-                                        icon: (<PlusIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />),
+                                        iconBackgroundColor: 'yellow',
+                                        icon: (<PlusIcon className='h-6 w-6 text-yellow-600' aria-hidden='true' />),
                                         action: () => {
                                             let data = this.state.data;
                                             data[year].push([]);
