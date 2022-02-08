@@ -47,6 +47,15 @@ class TaskBar extends React.Component {
                         },
                         options: [
                             {
+                                name: 'about_change_log',
+                                title: `What's new?`,
+                                description: `Check out what changes have been made in the latest update.`,
+                                buttonTextOn: `View the change log`,
+                                singleAction: () => {
+                                    window.open('https://github.com/dilanx/plan-northwestern/blob/main/CHANGELOG.md', '_blank');
+                                }
+                            },
+                            {
                                 name: 'about_coming_soon',
                                 title: 'Coming soon',
                                 description: `Check out what's been requested and what I'm working on on the GitHub issues page. Check this out before you send feedback in case someone else has already requested it.`,

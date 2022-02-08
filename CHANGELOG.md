@@ -21,7 +21,7 @@
 * Rounding issues that arose among 0.33, 0.34, and 0.5 courses (especially when combined) have been fixed.
 * Course data contribution was removed. It wasn't really added in the first place anyway, though.
 * Added a calendar icon next to the name and as a favicon.
-* Made my name in the about menu a link to my website. Why not, right?
+* Added a button that links to this change log in the 'About' menu. Also, clicking on my name links you to my website. Why not, right?
 
 ### 1.0.0
 *2021-12-22*
