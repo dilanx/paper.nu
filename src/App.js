@@ -12,7 +12,7 @@ import Alert from './components/menu/Alert.js';
 import Favorites from './components/favorites/Favorites.js';
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '1.1.0';
+const VERSION = '1.1.1';
 
 class App extends React.Component {
 
@@ -198,7 +198,7 @@ class App extends React.Component {
                             }
                     }/>}
 
-                    <div className='bg-white dark:bg-gray-800 grid grid-cols-1 md:grid-cols-8'>
+                    <div className='bg-white dark:bg-gray-800 grid grid-cols-1 lg:grid-cols-8'>
                         <div className='col-span-2 px-4 h-192 md:h-screen flex flex-col'>
                             <Info version={VERSION}/>
                             <TaskBar
