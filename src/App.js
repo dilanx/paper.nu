@@ -12,7 +12,7 @@ import Alert from './components/menu/Alert.js';
 import Favorites from './components/favorites/Favorites.js';
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '1.1.1';
+const VERSION = '1.1.2';
 
 class App extends React.Component {
 
@@ -244,7 +244,7 @@ class App extends React.Component {
                             />
                         </div>
                         
-                        <div className={`${this.state.switches.compact ? 'compact-mode ' : ''} col-span-6 block pt-0 h-screen md:overflow-y-scroll no-scrollbar`}>
+                        <div className={`${this.state.switches.compact ? 'compact-mode ' : ''} col-span-6 block pt-0 lg:h-screen lg:overflow-y-scroll no-scrollbar`}>
                             {this.state.switches.favorites &&
                                 <Favorites
                                     favorites={this.state.favorites}

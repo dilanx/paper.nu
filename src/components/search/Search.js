@@ -253,7 +253,7 @@ class Search extends React.Component {
 
         return (
             <div className='border-4 border-gray-400 dark:border-gray-500 mt-4 mb-2 rounded-lg shadow-lg h-full
-            overflow-y-scroll overscroll-contain no-scrollbar'>
+            overflow-y-scroll no-scrollbar'>
                 {!singleClassView && searchField}
                 {!singleClassView && results}
 

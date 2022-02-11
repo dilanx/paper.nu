@@ -1,8 +1,13 @@
 # Plan Northwestern Change Log
 
+### 1.1.2
+*2022-02-11*
+* Made it way easier to scroll through search and your plan on mobile devices and at smaller window sizes.
+* Fixed some UI bugs.
+
 ### 1.1.1
 *2022-02-11*
-* Certain window sizes made the UI too crushed. Now, the UI will switch to its 'vertical' mode (as seen on mobile devices) at a bit larger of a window size than before.
+* Certain window sizes made the UI look too crushed. Now, the UI will switch to its 'vertical' mode (as seen on mobile devices) at a bit larger of a window size than before.
 
 ### 1.1.0
 *2022-02-08*
