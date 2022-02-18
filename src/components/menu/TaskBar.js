@@ -1,4 +1,5 @@
 import React from 'react';
+import Utility from '../../Utility.js';
 import { SaveIcon, PlusIcon, InformationCircleIcon, ExclamationIcon, CogIcon } from '@heroicons/react/outline';
 
 function TaskBarButton(props) {
@@ -138,7 +139,12 @@ class TaskBar extends React.Component {
                                 description: `Become one with the night.`,
                                 buttonTextOn: 'Enabled',
                                 buttonTextOff: 'Disabled',
-                                saveToStorage: true
+                                saveToStorage: true,
+                                bonusAction: newSwitch => {
+                                    let color = newSwitch ? Utility.BACKGROUND_DARK : Utility.BACKGROUND_LIGHT;
+                                    document.body.style.backgroundColor = color;
+                                    document.querySelector('meta[name="theme-color"]').setAttribute('content', color);
+                                }
                             },
                             {
                                 name: 'compact',

@@ -1,5 +1,10 @@
 # Plan Northwestern Change Log
 
+### 1.1.3
+*2022-02-18*
+* The color of the deepest background, the one behind the main UI, now matches the color of the main UI background, which changes as you toggle dark mode.
+* Some other small changes were made.
+
 ### 1.1.2
 *2022-02-11*
 * Made it way easier to scroll through search and your plan on mobile devices and at smaller window sizes.

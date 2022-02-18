@@ -60,7 +60,7 @@ class Search extends React.Component {
                     <MiniContentBlock
                         icon={<SearchIcon className='w-6 h-6'/>}
                         title='Search'
-                        text="Use the search bar to search across every undergraduate course at Northwestern."
+                        text="Use the search bar to search across every course at Northwestern."
                     />
                     <MiniContentBlock
                         icon={<BookOpenIcon className='w-6 h-6'/>}

@@ -60,6 +60,9 @@ export default function Alert(props) {
                             m-1 p-2 w-full rounded-md shadow-md'
                                     onClick={() => {
                                         props.setSwitch(option.name, false, option.saveToStorage);
+                                        if (option.bonusAction) {
+                                            option.bonusAction(false);
+                                        }
                                     }}>
                                 {option.buttonTextOn}
                             </button>
@@ -68,6 +71,9 @@ export default function Alert(props) {
                                     m-1 p-2 w-full rounded-md shadow-md'
                                     onClick={() => {
                                         props.setSwitch(option.name, true, option.saveToStorage);
+                                        if (option.bonusAction) {
+                                            option.bonusAction(true);
+                                        }
                                     }}>
                                 {option.buttonTextOff}
                             </button>

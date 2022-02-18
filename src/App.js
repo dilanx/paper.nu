@@ -12,7 +12,7 @@ import Alert from './components/menu/Alert.js';
 import Favorites from './components/favorites/Favorites.js';
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '1.1.2';
+const VERSION = '1.1.3';
 
 class App extends React.Component {
 
@@ -46,6 +46,14 @@ class App extends React.Component {
                 iconBackgroundColor: 'red',
                 icon: (<ExclamationIcon className='h-6 w-6 text-red-600' aria-hidden='true' />)
             }
+        }
+
+        if (defaultSwitches.dark) {
+            document.body.style.backgroundColor = Utility.BACKGROUND_DARK;
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', Utility.BACKGROUND_DARK);
+        } else {
+            document.body.style.backgroundColor = Utility.BACKGROUND_LIGHT;
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', Utility.BACKGROUND_LIGHT);
         }
 
         this.state = {

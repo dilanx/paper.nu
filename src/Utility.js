@@ -1,5 +1,8 @@
 let Utility = {
 
+    BACKGROUND_LIGHT: '#FFFFFF',
+    BACKGROUND_DARK: '#262626',
+
     loadSwitchesFromStorage: () => {
         let switches = {
             save_to_storage: true
