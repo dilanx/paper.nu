@@ -1,11 +1,10 @@
 let Utility = {
-
     BACKGROUND_LIGHT: '#FFFFFF',
     BACKGROUND_DARK: '#262626',
 
     loadSwitchesFromStorage: () => {
         let switches = {
-            save_to_storage: true
+            save_to_storage: true,
         };
         let keys = Object.keys(localStorage);
         for (let i = 0; i < keys.length; i++) {
@@ -27,55 +26,51 @@ let Utility = {
     getDistroAcronym: distroString => {
         let distro = distroString.split(' ');
         let acronym = '';
-        distro.forEach(d => acronym += d[0]);
+        distro.forEach(d => (acronym += d[0]));
         return acronym;
     },
 
     convertDistros: distros => {
-
         let strings = [];
 
         if (!distros) return strings;
 
         for (let i = 0; i < distros.length; i++) {
-
             let d = parseInt(distros[i]);
 
             switch (d) {
                 case 1:
-                    strings.push('Natural Sciences')
+                    strings.push('Natural Sciences');
                     break;
                 case 2:
-                    strings.push('Formal Studies')
+                    strings.push('Formal Studies');
                     break;
                 case 3:
-                    strings.push('Social and Behavioral Sciences')
+                    strings.push('Social and Behavioral Sciences');
                     break;
                 case 4:
-                    strings.push('Historical Studies')
+                    strings.push('Historical Studies');
                     break;
                 case 5:
-                    strings.push('Ethics and Values')
+                    strings.push('Ethics and Values');
                     break;
                 case 6:
-                    strings.push('Literature and Fine Arts')
+                    strings.push('Literature and Fine Arts');
                     break;
                 case 7:
-                    strings.push('Interdisciplinary Studies')
+                    strings.push('Interdisciplinary Studies');
                     break;
                 default:
-                    strings.push('Unknown')
+                    strings.push('Unknown');
                     break;
             }
-
         }
 
         return strings;
-
     },
 
     convertYear: num => {
-        switch(num) {
+        switch (num) {
             case 0:
                 return 'FIRST';
             case 1:
@@ -104,13 +99,13 @@ let Utility = {
     convertQuarter: num => {
         switch (num) {
             case 0:
-                return {title: 'FALL', color: 'orange'};
+                return { title: 'FALL', color: 'orange' };
             case 1:
-                return {title: 'WINTER', color: 'sky'};
+                return { title: 'WINTER', color: 'sky' };
             case 2:
-                return {title: 'SPRING', color: 'lime'};
+                return { title: 'SPRING', color: 'lime' };
             case 3:
-                return {title: 'SUMMER', color: 'yellow'};
+                return { title: 'SUMMER', color: 'yellow' };
             default:
                 return 'UNKNOWN';
         }
@@ -131,8 +126,7 @@ let Utility = {
             default:
                 return 'gray';
         }
-    }
-
-}
+    },
+};
 
 export default Utility;

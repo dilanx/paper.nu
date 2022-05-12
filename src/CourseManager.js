@@ -1,24 +1,25 @@
 import courses from './data/courses.json';
 
 function loadData(params) {
-
-    let data = [[[], [], []], [[], [], []], [[], [], []], [[], [], []]];
+    let data = [
+        [[], [], []],
+        [[], [], []],
+        [[], [], []],
+        [[], [], []],
+    ];
     let favoritesNoCredit = new Set();
     let favoritesForCredit = new Set();
 
     let loadedSomething = false;
 
     try {
-
         for (let pair of params.entries()) {
-
             let key = pair[0];
             let value = pair[1];
 
             if (key.startsWith('y')) {
-
                 loadedSomething = true;
-                
+
                 let year = parseInt(key.substring(1).split('q')[0]);
                 let quarter = parseInt(key.split('q')[1]);
                 let classes = value.split(',');
@@ -43,17 +44,15 @@ function loadData(params) {
                 while (data.length < year + 1) {
                     data.push([[], [], []]);
                 }
-    
+
                 while (data[year].length < quarter + 1) {
                     data[year].push([]);
                 }
 
                 data[year][quarter] = classData;
-
             }
 
             if (key.startsWith('f')) {
-
                 loadedSomething = true;
 
                 let classesLists = value.split(';');
@@ -66,14 +65,18 @@ function loadData(params) {
                         let num = sp[1];
                         let subj = courses.major_ids[subjId];
                         let courseId = subj + ' ' + num;
-                        if (i === 0) favoritesNoCredit.add(CourseManager.getCourse(courseId));
-                        else favoritesForCredit.add(CourseManager.getCourse(courseId));
+                        if (i === 0)
+                            favoritesNoCredit.add(
+                                CourseManager.getCourse(courseId)
+                            );
+                        else
+                            favoritesForCredit.add(
+                                CourseManager.getCourse(courseId)
+                            );
                     }
                 }
-
             }
         }
-
     } catch (e) {
         return { malformed: true };
     }
@@ -84,36 +87,34 @@ function loadData(params) {
         data: data,
         favorites: {
             noCredit: favoritesNoCredit,
-            forCredit: favoritesForCredit
-        }
+            forCredit: favoritesForCredit,
+        },
     };
-
 }
 
 function saveData(data, favorites) {
-    
     let params = new URLSearchParams();
 
     for (let y = 0; y < data.length; y++) {
         for (let q = 0; q < data[y].length; q++) {
-            let classes = data[y][q].map(course => {
-                let sp = course.id.split(' ');
-                let subj = sp[0];
-                let num = sp[1];
-                let subjId = courses.majors[subj].id;
-                return subjId + '_' + num;
-            }).join(',');
+            let classes = data[y][q]
+                .map(course => {
+                    let sp = course.id.split(' ');
+                    let subj = sp[0];
+                    let num = sp[1];
+                    let subjId = courses.majors[subj].id;
+                    return subjId + '_' + num;
+                })
+                .join(',');
 
             if (classes.length > 0) params.set(`y${y}q${q}`, classes);
         }
     }
 
-    
     let favoritesNoCredit = Array.from(favorites.noCredit);
     let favoritesForCredit = Array.from(favorites.forCredit);
 
     if (favoritesNoCredit.length > 0 || favoritesForCredit.length > 0) {
-
         let conv = course => {
             let courseId = course.id;
             let sp = courseId.split(' ');
@@ -121,14 +122,17 @@ function saveData(data, favorites) {
             let num = sp[1];
             let subjId = courses.majors[subj].id;
             return subjId + '_' + num;
-        }
+        };
 
-        params.set('f', favoritesNoCredit.map(conv).join(',') + ';' + favoritesForCredit.map(conv).join(','));
-
+        params.set(
+            'f',
+            favoritesNoCredit.map(conv).join(',') +
+                ';' +
+                favoritesForCredit.map(conv).join(',')
+        );
     }
 
     return params;
-
 }
 
 function countCourseUnitsInHundreds(data) {
@@ -138,22 +142,19 @@ function countCourseUnitsInHundreds(data) {
         if (total % 100 === 2) total -= 2;
         if (total % 50 === 1) total -= 1;
         if (total % 50 === 49) total += 1;
-    })
+    });
     return total;
 }
 
 let CourseManager = {
-
     data: courses,
 
     getDistroFulfillment: data => {
-
         let df = [[[], [], [], [], [], []]];
 
         for (let y = 0; y < data.length; y++) {
             for (let q = 0; q < data[y].length; q++) {
                 for (let c = 0; c < data[y][q].length; c++) {
-
                     let course = data[y][q][c];
                     if (!course.distros) continue;
                     let distroStr = course.distros;
@@ -161,17 +162,13 @@ let CourseManager = {
                     let dfl = df.length;
                     for (let i = 0; i < dfl; i++) {
                         for (let d = 0; d < distroStr.length; d++) {
-
                             // deep copy lol
                             let thisDf = JSON.parse(JSON.stringify(df[i]));
                             let di = parseInt(distroStr[d]) - 1;
                             thisDf[di].push(course.id);
                             df.push(thisDf);
-
                         }
-                        
                     }
-
                 }
             }
         }
@@ -181,13 +178,11 @@ let CourseManager = {
     },
 
     getDistroPositions: data => {
-        
         let distroPos = [[], [], [], [], [], []];
 
         for (let y = 0; y < data.length; y++) {
             for (let q = 0; q < data[y].length; q++) {
                 for (let c = 0; c < data[y][q].length; c++) {
-
                     let more = data[y][q][c].more;
                     if (!more) continue;
 
@@ -197,17 +192,14 @@ let CourseManager = {
                             break;
                         }
                     }
-
                 }
             }
         }
 
         return distroPos;
-
     },
 
     getTotalCredits: (data, favoritesForCredit) => {
-
         let total = 0;
 
         for (let y = 0; y < data.length; y++) {
@@ -225,7 +217,6 @@ let CourseManager = {
         if (total % 50 === 49) total += 1;
 
         return total / 100;
-
     },
 
     getExtraCredits: favoritesForCredit => {
@@ -237,22 +228,20 @@ let CourseManager = {
     },
 
     duplicateCourse: (course, data) => {
-
         for (let y = 0; y < data.length; y++) {
             for (let q = 0; q < data[y].length; q++) {
                 for (let c = 0; c < data[y][q].length; c++) {
                     if (data[y][q][c].id === course.id) {
                         return {
                             year: y,
-                            quarter: q
-                        }
+                            quarter: q,
+                        };
                     }
                 }
             }
         }
 
         return null;
-
     },
 
     getCourse: name => {
@@ -270,7 +259,6 @@ let CourseManager = {
     },
 
     load: fallbackToStorage => {
-
         let data = CourseManager.loadFromURL();
 
         if (data.malformed) {
@@ -280,13 +268,16 @@ let CourseManager = {
         if (data.empty && fallbackToStorage) {
             let storageData = CourseManager.loadFromStorage();
             if (storageData.data && storageData.favorites) {
-                CourseManager.save(storageData.data, storageData.favorites, false);
+                CourseManager.save(
+                    storageData.data,
+                    storageData.favorites,
+                    false
+                );
             }
             return storageData;
         }
 
         return data;
-
     },
 
     loadFromURL: () => {
@@ -303,18 +294,19 @@ let CourseManager = {
     },
 
     save: (data, favorites, saveToStorage) => {
-
         let params = saveData(data, favorites);
         let paramsStr = params.toString();
 
-        window.history.replaceState({}, '', `${window.location.pathname}?${paramsStr}`);
+        window.history.replaceState(
+            {},
+            '',
+            `${window.location.pathname}?${paramsStr}`
+        );
 
         if (saveToStorage) {
             localStorage.setItem('data', paramsStr);
         }
-
-    }
-
-}
+    },
+};
 
 export default CourseManager;
