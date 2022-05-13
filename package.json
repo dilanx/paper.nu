@@ -19,8 +19,8 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "export NODE_OPTIONS=--openssl-legacy-provider && craco start",
-    "build": "export NODE_OPTIONS=--openssl-legacy-provider && craco build",
+    "start": "react-scripts --openssl-legacy-provider start",
+    "build": "react-scripts build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
@@ -43,10 +43,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "autoprefixer": "^9.8.8",
-    "postcss": "^7.0.39",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17"
   }
 }
