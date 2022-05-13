@@ -4,7 +4,6 @@
   "private": true,
   "homepage": "https://plan-nu.com",
   "dependencies": {
-    "@craco/craco": "^5.9.0",
     "@headlessui/react": "^1.4.2",
     "@heroicons/react": "^1.0.5",
     "@testing-library/jest-dom": "^5.11.4",
