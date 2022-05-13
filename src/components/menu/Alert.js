@@ -33,6 +33,7 @@ export default function Alert(props) {
                     </p>
                 </div>
             );
+            i++;
         });
     }
 
