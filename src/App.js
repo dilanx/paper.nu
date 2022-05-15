@@ -12,7 +12,7 @@ import Alert from './components/menu/Alert.js';
 import Favorites from './components/favorites/Favorites.js';
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
-const VERSION = '1.1.3';
+const VERSION = '1.2.0';
 
 class App extends React.Component {
     constructor(props) {
@@ -258,12 +258,6 @@ class App extends React.Component {
                                 alert={alertData => {
                                     this.showAlert(alertData);
                                 }}
-                                allowAddYear={this.state.data.length < 10}
-                                addYear={() => {
-                                    let data = this.state.data;
-                                    data.push([[], [], []]);
-                                    this.setState({ data: data });
-                                }}
                                 version={VERSION}
                                 switches={this.state.switches}
                                 setSwitch={(key, val, save = false) => {
@@ -339,6 +333,12 @@ class App extends React.Component {
                                 }}
                                 alert={alertData => {
                                     this.showAlert(alertData);
+                                }}
+                                allowAddYear={this.state.data.length < 10}
+                                addYear={() => {
+                                    let data = this.state.data;
+                                    data.push([[], [], []]);
+                                    this.setState({ data: data });
                                 }}
                                 addCourse={(course, year, quarter) => {
                                     this.addCourse(course, year, quarter);

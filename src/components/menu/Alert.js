@@ -62,7 +62,7 @@ export default function Alert(props) {
                             (enabled ? (
                                 <button
                                     className="block mx-auto bg-emerald-400 text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
-                            m-1 p-2 w-full rounded-md shadow-md"
+                                    m-1 p-2 w-full rounded-md shadow-md"
                                     onClick={() => {
                                         props.setSwitch(
                                             option.name,

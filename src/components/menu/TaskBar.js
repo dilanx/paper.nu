@@ -2,9 +2,7 @@ import React from 'react';
 import Utility from '../../Utility.js';
 import {
     SaveIcon,
-    PlusIcon,
     InformationCircleIcon,
-    ExclamationIcon,
     CogIcon,
 } from '@heroicons/react/outline';
 
@@ -144,47 +142,6 @@ class TaskBar extends React.Component {
                                 );
                             },
                         });
-                    }}
-                />
-
-                <TaskBarButton
-                    name="Add Year"
-                    color="cyan"
-                    action={() => {
-                        if (this.props.allowAddYear) {
-                            this.props.alert({
-                                title: 'Add a year?',
-                                message:
-                                    'This will add another year to your plan. You can remove it by removing all classes from that year and refreshing the page.',
-                                confirmButton: 'Add year',
-                                confirmButtonColor: 'cyan',
-                                cancelButton: 'Close',
-                                iconBackgroundColor: 'cyan',
-                                icon: (
-                                    <PlusIcon
-                                        className="h-6 w-6 text-cyan-600"
-                                        aria-hidden="true"
-                                    />
-                                ),
-                                action: () => {
-                                    this.props.addYear();
-                                },
-                            });
-                        } else {
-                            this.props.alert({
-                                title: `Can't add another year :(`,
-                                message: `You can't add more than 10 years.`,
-                                confirmButton: 'Close',
-                                confirmButtonColor: 'cyan',
-                                iconBackgroundColor: 'cyan',
-                                icon: (
-                                    <ExclamationIcon
-                                        className="h-6 w-6 text-cyan-600"
-                                        aria-hidden="true"
-                                    />
-                                ),
-                            });
-                        }
                     }}
                 />
 
