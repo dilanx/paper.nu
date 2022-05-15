@@ -5,7 +5,7 @@ export default function Alert(props) {
     let [isOpen, setIsOpen] = useState(true);
     let [confirmation, setConfirmation] = useState({});
 
-    let cancelButtonRef = useRef(null);
+    let dontAutoFocusButton = useRef(null);
 
     function close() {
         setIsOpen(false);
@@ -164,7 +164,7 @@ export default function Alert(props) {
             onClose={() => {
                 close();
             }}
-            initialFocus={cancelButtonRef}
+            initialFocus={dontAutoFocusButton}
             className={`${
                 props.switches.dark ? 'dark' : ''
             } fixed z-10 inset-0 overflow-y-auto`}
@@ -181,6 +181,7 @@ export default function Alert(props) {
                     <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 dark:bg-gray-700">
                         <div className="sm:flex sm:items-start">
                             <div
+                                ref={dontAutoFocusButton}
                                 className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-${data.iconBackgroundColor}-100 sm:mx-0 sm:h-10 sm:w-10`}
                             >
                                 {data.icon}
@@ -228,18 +229,11 @@ export default function Alert(props) {
                         </div>
                     )}
 
-                    {/* {data.topRightButton &&
-                        <button className='absolute top-3 right-3 text-xs font-bold px-2 py-0.5 rounded-lg
-                                bg-gray-300 dark:bg-gray-800 hover:bg-red-200 dark:hover:bg-red-700 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-300
-                                transition-all duration-150' onClick={() => {data.topRightButton.action(); close();}}>
-                            {data.topRightButton.text}
-                        </button>
-                    } */}
-
                     <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse dark:bg-gray-800">
                         <button
                             type="button"
-                            className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-${data.confirmButtonColor}-500 text-base font-medium text-white
+                            className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 
+                            bg-${data.confirmButtonColor}-500 text-base font-medium text-white
                             hover:bg-${data.confirmButtonColor}-600 focus:bg-${data.confirmButtonColor}-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm`}
                             onClick={() => {
                                 confirm();
@@ -249,11 +243,10 @@ export default function Alert(props) {
                         </button>
                         {data.cancelButton && (
                             <button
-                                ref={cancelButtonRef}
                                 type="button"
                                 className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2
                                 bg-white text-base font-medium text-gray-700 hover:bg-gray-100 focus:bg-gray-200 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm
-                                dark:bg-gray-500 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 dark:focus:bg-gray-700"
+                                dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600 dark:focus:bg-gray-500"
                                 onClick={() => {
                                     close();
                                 }}

@@ -1,5 +1,13 @@
 # Plan Northwestern Change Log
 
+### 1.2.0
+
+_2022-05-XX_
+
+-   Made some small UI changes.
+-   Updated all project dependencies to their latest versions.
+    -   This was a breaking change for [React DnD](https://react-dnd.github.io/react-dnd/about), so parts of draggable components and their destinations had to be redone.
+
 ### 1.1.3
 
 _2022-02-18_
