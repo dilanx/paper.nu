@@ -44,11 +44,7 @@ function FavoritesList(props) {
         });
     } else {
         classes = (
-            <div
-                className={`text-center col-span-1 ${
-                    props.credit ? '' : 'lg:col-span-2'
-                } overflow-hidden whitespace-normal`}
-            >
+            <div className={`text-center overflow-hidden whitespace-normal`}>
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                     {props.credit
                         ? `Classes here are counted towards total credit (like classes you've received AP/IB credit for).`
@@ -68,9 +64,7 @@ function FavoritesList(props) {
     return (
         <div
             ref={drop}
-            className={`relative rounded-lg col-span-1 ${
-                props.credit ? '' : 'lg:col-span-2'
-            } px-8 pt-4 pb-8 border-2
+            className={`compact-mode relative m-4 rounded-lg px-4 pt-4 pb-8 border-2
                     ${
                         isOver
                             ? 'border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50'
@@ -81,18 +75,12 @@ function FavoritesList(props) {
                                 : 'border-indigo-500'
                         }`
                     }
-                    space-y-3 h-full shadow-lg`}
+                    space-y-3 shadow-lg`}
         >
             <p className="text-center font-bold text-md m-0 p-0 text-gray-600 dark:text-gray-400">
                 {props.credit ? 'FOR CREDIT' : 'BOOKMARKED COURSES'}
             </p>
-            <div
-                className={`grid grid-cols-1 gap-3 ${
-                    props.credit ? '' : 'lg:grid-cols-2'
-                }`}
-            >
-                {classes}
-            </div>
+            <div>{classes}</div>
             {props.credit && props.switches.quarter_units && (
                 <p className="absolute right-2 top-0 text-right text-xs p-0 m-0 text-gray-400 font-normal">
                     <span className="font-medium">{units}</span> {unitString}

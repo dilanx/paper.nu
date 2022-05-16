@@ -10,6 +10,7 @@ import Search from './components/search/Search.js';
 import StatsBar from './components/menu/StatsBar.js';
 import Alert from './components/menu/Alert.js';
 import Favorites from './components/favorites/Favorites.js';
+import Plans from './components/account/Plans.js';
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
 const VERSION = '1.2.0';
@@ -19,6 +20,7 @@ class App extends React.Component {
         super(props);
 
         let defaultSwitches = Utility.loadSwitchesFromStorage();
+        defaultSwitches.tab = 'Search';
         let defaultAlert = null;
 
         let data = [
@@ -229,6 +231,7 @@ class App extends React.Component {
     }
 
     render() {
+        let tab = this.state.switches.tab;
         return (
             <DndProvider backend={HTML5Backend}>
                 <div className={`${this.state.switches.dark ? 'dark' : ''}`}>
@@ -254,6 +257,38 @@ class App extends React.Component {
                     <div className="bg-white dark:bg-gray-800 grid grid-cols-1 lg:grid-cols-8">
                         <div className="col-span-2 px-4 h-192 md:h-screen flex flex-col">
                             <Info version={VERSION} />
+                            <Search
+                                data={this.state.data}
+                                favorites={this.state.favorites}
+                                switches={this.state.switches}
+                                addCourse={(course, year, quarter) => {
+                                    this.addCourse(course, year, quarter);
+                                }}
+                                addFavorite={(course, forCredit) => {
+                                    this.addFavorite(course, forCredit);
+                                }}
+                                delFavorite={(course, forCredit) => {
+                                    this.delFavorite(course, forCredit);
+                                }}
+                            />
+                            {tab === 'My List' && (
+                                <Favorites
+                                    favorites={this.state.favorites}
+                                    switches={this.state.switches}
+                                    alert={alertData => {
+                                        this.showAlert(alertData);
+                                    }}
+                                    addFavorite={(course, forCredit) => {
+                                        this.addFavorite(course, forCredit);
+                                    }}
+                                    delFavorite={(course, forCredit) => {
+                                        this.delFavorite(course, forCredit);
+                                    }}
+                                />
+                            )}
+                            {tab === 'Plans' && (
+                                <Plans switches={this.state.switches} />
+                            )}
                             <TaskBar
                                 alert={alertData => {
                                     this.showAlert(alertData);
@@ -283,23 +318,6 @@ class App extends React.Component {
                                     );
                                 }}
                             />
-                            <Search
-                                data={this.state.data}
-                                favorites={this.state.favorites}
-                                addCourse={(course, year, quarter) => {
-                                    this.addCourse(course, year, quarter);
-                                }}
-                                addFavorite={(course, forCredit) => {
-                                    this.addFavorite(course, forCredit);
-                                }}
-                                delFavorite={(course, forCredit) => {
-                                    this.delFavorite(course, forCredit);
-                                }}
-                            />
-                            <StatsBar
-                                data={this.state.data}
-                                favorites={this.state.favorites}
-                            />
                         </div>
 
                         <div
@@ -309,21 +327,6 @@ class App extends React.Component {
                                     : ''
                             } col-span-6 block pt-0 lg:h-screen lg:overflow-y-scroll no-scrollbar`}
                         >
-                            {this.state.switches.favorites && (
-                                <Favorites
-                                    favorites={this.state.favorites}
-                                    switches={this.state.switches}
-                                    alert={alertData => {
-                                        this.showAlert(alertData);
-                                    }}
-                                    addFavorite={(course, forCredit) => {
-                                        this.addFavorite(course, forCredit);
-                                    }}
-                                    delFavorite={(course, forCredit) => {
-                                        this.delFavorite(course, forCredit);
-                                    }}
-                                />
-                            )}
                             <Content
                                 content={this.state.data}
                                 favorites={this.state.favorites}

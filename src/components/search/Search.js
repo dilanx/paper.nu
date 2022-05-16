@@ -8,6 +8,8 @@ import {
     ArrowRightIcon,
     SaveIcon,
     DotsHorizontalIcon,
+    CollectionIcon,
+    ExternalLinkIcon,
 } from '@heroicons/react/outline';
 
 const SEARCH_RESULT_LIMIT = 100;
@@ -59,12 +61,7 @@ class Search extends React.Component {
                     <MiniContentBlock
                         icon={<SearchIcon className="w-6 h-6" />}
                         title="Search"
-                        text="Use the search bar to search across every course at Northwestern."
-                    />
-                    <MiniContentBlock
-                        icon={<BookOpenIcon className="w-6 h-6" />}
-                        title="Learn"
-                        text="Get information like the course description, prerequisites, and more, all from right here."
+                        text="Use the search bar to search across every course at Northwestern and view detailed information for each one."
                     />
                     <MiniContentBlock
                         icon={<ArrowRightIcon className="w-6 h-6" />}
@@ -72,9 +69,14 @@ class Search extends React.Component {
                         text="Drag courses from this search area into the quarter you want. Alternatively, you can click on the course and select the quarter you want to add it to."
                     />
                     <MiniContentBlock
-                        icon={<SaveIcon className="w-6 h-6" />}
-                        title="Save and share"
-                        text="The URL updates as you modify your plan. Save it somewhere or share it with others."
+                        icon={<CollectionIcon className="w-6 h-6" />}
+                        title="Save"
+                        text="Easily create an account to save multiple plans and access them from anywhere."
+                    />
+                    <MiniContentBlock
+                        icon={<ExternalLinkIcon className="w-6 h-6" />}
+                        title="Share"
+                        text="The URL updates as you modify your plan. Share it with others and they'll have a copy that they can view and edit."
                     />
                 </div>
             );
@@ -168,6 +170,9 @@ class Search extends React.Component {
                     select={classData => {
                         this.setState({ current: classData });
                     }}
+                    bookmarks={this.props.favorites.noCredit}
+                    addFavorite={this.props.addFavorite}
+                    delFavorite={this.props.delFavorite}
                 />
             );
         }
@@ -310,8 +315,10 @@ class Search extends React.Component {
 
         return (
             <div
-                className="border-4 border-gray-400 dark:border-gray-500 mt-4 mb-2 rounded-lg shadow-lg h-full
-            overflow-y-scroll no-scrollbar"
+                className={`${
+                    this.props.switches.tab === 'Search' ? '' : 'hidden '
+                }border-4 border-gray-400 dark:border-gray-500 my-2 rounded-lg shadow-lg h-full
+                overflow-y-scroll no-scrollbar`}
             >
                 {!singleClassView && searchField}
                 {!singleClassView && results}
