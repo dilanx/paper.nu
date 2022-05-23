@@ -30,14 +30,4 @@ function Favorites(props) {
     );
 }
 
-class FavoritesX extends React.Component {
-    render() {
-        return (
-            <div className="relative block p-4 border-4 border-indigo-200 rounded-lg m-5 shadow-sm bg-white dark:bg-gray-800">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12"></div>
-            </div>
-        );
-    }
-}
-
 export default Favorites;

@@ -3,14 +3,14 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Content from './components/Content.js';
 import CourseManager from './CourseManager.js';
+import Account from './Account.js';
 import Utility from './Utility.js';
 import Info from './components/menu/Info.js';
 import TaskBar from './components/menu/TaskBar.js';
 import Search from './components/search/Search.js';
-import StatsBar from './components/menu/StatsBar.js';
 import Alert from './components/menu/Alert.js';
 import Favorites from './components/favorites/Favorites.js';
-import Plans from './components/account/Plans.js';
+import Plans from './components/account/AccountPlans.js';
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 
 const VERSION = '1.2.0';
@@ -34,7 +34,34 @@ class App extends React.Component {
             forCredit: new Set(),
         };
 
-        let res = CourseManager.load(defaultSwitches.save_to_storage);
+        let params = new URLSearchParams(props.search);
+        if (params.has('code')) {
+            if (!Account.isLoggedIn()) {
+                let response = Account.login(params.get('code'));
+                if (!response.success) {
+                    defaultAlert = Utility.accountAlert(
+                        'account_initial_login',
+                        response.error
+                    );
+                }
+            }
+            params.delete('code');
+        }
+        if (params.has('state')) {
+            let uiState = params.get('state').split(',');
+            if (uiState.includes('view_plans')) {
+                defaultSwitches.tab = 'Plans';
+            }
+            params.delete('state');
+        }
+
+        window.history.replaceState(
+            {},
+            '',
+            `${window.location.pathname}?${params.toString()}`
+        );
+
+        let res = CourseManager.load(params, defaultSwitches.save_to_storage);
 
         if (!res.malformed) {
             if (!res.empty) {
@@ -42,19 +69,21 @@ class App extends React.Component {
                 favorites = res.favorites;
             }
         } else {
-            defaultAlert = {
-                title: 'Unable to load plan.',
-                message: `The plan URL you entered is not valid. Ensure that it hasn't been manually modified.`,
-                confirmButton: 'What a shame.',
-                confirmButtonColor: 'red',
-                iconBackgroundColor: 'red',
-                icon: (
-                    <ExclamationIcon
-                        className="h-6 w-6 text-red-600"
-                        aria-hidden="true"
-                    />
-                ),
-            };
+            if (!defaultAlert) {
+                defaultAlert = {
+                    title: 'Unable to load plan.',
+                    message: `The plan URL you entered is not valid. Ensure that it hasn't been manually modified.`,
+                    confirmButton: 'What a shame.',
+                    confirmButtonColor: 'red',
+                    iconBackgroundColor: 'red',
+                    icon: (
+                        <ExclamationIcon
+                            className="h-6 w-6 text-red-600"
+                            aria-hidden="true"
+                        />
+                    ),
+                };
+            }
         }
 
         if (defaultSwitches.dark) {
@@ -287,7 +316,12 @@ class App extends React.Component {
                                 />
                             )}
                             {tab === 'Plans' && (
-                                <Plans switches={this.state.switches} />
+                                <Plans
+                                    switches={this.state.switches}
+                                    alert={alertData => {
+                                        this.showAlert(alertData);
+                                    }}
+                                />
                             )}
                             <TaskBar
                                 alert={alertData => {

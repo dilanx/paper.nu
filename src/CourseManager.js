@@ -1,4 +1,5 @@
 import courses from './data/courses.json';
+import Account from './Account.js';
 
 function loadData(params) {
     let data = [
@@ -258,8 +259,8 @@ let CourseManager = {
         return courses.majors[subj].color;
     },
 
-    load: fallbackToStorage => {
-        let data = CourseManager.loadFromURL();
+    load: (params, fallbackToStorage) => {
+        let data = CourseManager.loadFromURL(params);
 
         if (data.malformed) {
             return data;
@@ -280,9 +281,7 @@ let CourseManager = {
         return data;
     },
 
-    loadFromURL: () => {
-        let search = window.location.search;
-        let params = new URLSearchParams(search);
+    loadFromURL: params => {
         return loadData(params);
     },
 

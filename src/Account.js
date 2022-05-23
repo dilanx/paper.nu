@@ -5,6 +5,7 @@ const PLANS_URL = 'https://auth.dilanxd.com/plan-nu/plans';
 var plans = null;
 
 async function authLogin(authorizationCode) {
+    localStorage.removeItem('t');
     if (!authorizationCode) {
         let url = new URL(window.location.href);
         url.searchParams.set('state', 'view_plans');
@@ -92,6 +93,16 @@ let Account = {
         return await authLogout();
     },
     getPlans: async (reload = false) => {
+        return {
+            abcde: {
+                name: 'plan',
+                lastUpdated: 123456,
+            },
+            fghij: {
+                name: 'plan2',
+                lastUpdated: 123456,
+            },
+        };
         if (plans && !reload) {
             return plans;
         }
@@ -100,6 +111,9 @@ let Account = {
             plans = response;
         }
         return response;
+    },
+    delPlan: async planId => {
+        let response = await planOperation(planId, 'DELETE');
     },
 };
 

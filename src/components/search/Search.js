@@ -4,9 +4,7 @@ import AddButtons from './AddButtons.js';
 import CourseManager from '../../CourseManager.js';
 import {
     SearchIcon,
-    BookOpenIcon,
     ArrowRightIcon,
-    SaveIcon,
     DotsHorizontalIcon,
     CollectionIcon,
     ExternalLinkIcon,

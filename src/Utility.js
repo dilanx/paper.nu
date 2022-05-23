@@ -1,3 +1,5 @@
+import { ExclamationIcon } from '@heroicons/react/outline';
+
 let Utility = {
     BACKGROUND_LIGHT: '#FFFFFF',
     BACKGROUND_DARK: '#262626',
@@ -126,6 +128,29 @@ let Utility = {
             default:
                 return 'gray';
         }
+    },
+
+    errorAlert: (from, error) => {
+        return {
+            title: "Well, this isn't good...",
+            message: `Oh nooo this wasn't supposed to happen. An unexpected error occurred.
+                      Check out the site status to see if what you're experiencing is a known issue.
+                      If it's not, please let me know. Make sure to note the error message below.`,
+            confirmButton: 'View status',
+            confirmButtonColor: 'red',
+            cancelButton: 'Close',
+            iconBackgroundColor: 'red',
+            icon: (
+                <ExclamationIcon
+                    className="h-6 w-6 text-red-600"
+                    aria-hidden="true"
+                />
+            ),
+            textView: error + ' - ' + from,
+            action: () => {
+                window.open('https://status.dilanxd.com', '_blank');
+            },
+        };
     },
 };
 

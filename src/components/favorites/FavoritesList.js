@@ -74,13 +74,12 @@ function FavoritesList(props) {
                                 ? 'border-indigo-800 dark:border-indigo-400'
                                 : 'border-indigo-500'
                         }`
-                    }
-                    space-y-3 shadow-lg`}
+                    } space-y-3 shadow-lg`}
         >
             <p className="text-center font-bold text-md m-0 p-0 text-gray-600 dark:text-gray-400">
                 {props.credit ? 'FOR CREDIT' : 'BOOKMARKED COURSES'}
             </p>
-            <div>{classes}</div>
+            <div className="space-y-2">{classes}</div>
             {props.credit && props.switches.quarter_units && (
                 <p className="absolute right-2 top-0 text-right text-xs p-0 m-0 text-gray-400 font-normal">
                     <span className="font-medium">{units}</span> {unitString}

@@ -9,34 +9,6 @@ import {
     CollectionIcon,
 } from '@heroicons/react/outline';
 
-function TaskBarButton(props) {
-    return (
-        <button
-            className={`border-2 rounded-md border-gray-400 bg-gray-50 text-gray-600
-                hover:border-${props.color}-500 hover:bg-${
-                props.color
-            }-50 hover:text-${props.color}-500
-                dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400
-                dark:hover:border-${props.color}-500 dark:hover:bg-${
-                props.color
-            }-800 dark:hover:text-${props.color}-100
-                transition-all duration-150 ${
-                    props.span ? `col-span-${props.span}` : ''
-                }
-                ${
-                    props.active
-                        ? `border-${props.color}-400 bg-${props.color}-50 text-${props.color}-400 dark:border-${props.color}-600 dark:bg-${props.color}-900 dark:text-${props.color}-200`
-                        : ``
-                }`}
-            onClick={() => {
-                props.action();
-            }}
-        >
-            {props.name}
-        </button>
-    );
-}
-
 function MiniButton(props) {
     return (
         <button
@@ -299,7 +271,7 @@ function TaskBar(props) {
                                 buttonTextOn: 'Clear',
                                 requireConfirmation: true,
                                 singleAction: () => {
-                                    this.props.clearData();
+                                    props.clearData();
                                 },
                             },
                         ],
@@ -309,39 +281,6 @@ function TaskBar(props) {
             <TabBar switches={props.switches} setSwitch={props.setSwitch} />
         </div>
     );
-}
-
-class TaskBarX extends React.Component {
-    render() {
-        return (
-            <div className="grid grid-cols-3 px-4 gap-4 text-xs">
-                <TaskBarButton
-                    name="Save / Share"
-                    color="emerald"
-                    action={() => {}}
-                />
-
-                <TaskBarButton
-                    name="Settings"
-                    color="yellow"
-                    action={() => {}}
-                />
-
-                <TaskBarButton
-                    name="My List"
-                    color="indigo"
-                    active={this.props.switches.favorites}
-                    span="2"
-                    action={() => {
-                        this.props.setSwitch(
-                            'favorites',
-                            !this.props.switches.favorites
-                        );
-                    }}
-                />
-            </div>
-        );
-    }
 }
 
 export default TaskBar;

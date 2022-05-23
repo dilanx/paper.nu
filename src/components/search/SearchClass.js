@@ -82,7 +82,7 @@ function SearchClass(props) {
             </div>
             {props.bookmarks && (
                 <button
-                    className="absolute -top-2 -right-2 p-1 rounded-full bg-gray-200 hover:bg-red-100 dark:bg-gray-700
+                    className="absolute -top-2 -right-2 p-1 rounded-full bg-gray-200 hover:bg-indigo-100 dark:bg-gray-700
                     text-gray-500 dark:text-white text-xs opacity-80 hover:text-indigo-400 dark:hover:text-indigo-400 hover:opacity-100
                     transition-all duration-150 hidden group-hover:block z-20"
                     onClick={e => {
