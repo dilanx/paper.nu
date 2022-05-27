@@ -23,8 +23,8 @@
     "tailwindcss": "^3.0.24"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts --openssl-legacy-provider build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",

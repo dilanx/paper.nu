@@ -1,16 +1,31 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
-import Class from '../Class.js';
-import CourseManager from '../../CourseManager.js';
+import Class from '../Class';
+import CourseManager from '../../CourseManager';
+import {
+    CourseDragItem,
+    FavoritesData,
+    PlanModificationFunctions,
+} from '../../types/PlanTypes';
+import { UserOptions } from '../../types/BaseTypes';
+import { Alert } from '../../types/AlertTypes';
 
-function FavoritesList(props) {
+interface FavoritesListProps {
+    credit: boolean;
+    favorites: FavoritesData;
+    alert: Alert;
+    f: PlanModificationFunctions;
+    switches: UserOptions;
+}
+
+function FavoritesList(props: FavoritesListProps) {
     const [{ isOver }, drop] = useDrop(() => ({
         accept: 'Class',
-        drop: (item, monitor) => {
+        drop: (item: CourseDragItem, monitor) => {
             if (monitor.didDrop()) {
                 return;
             }
-            props.addFavorite(item.course, props.credit);
+            props.f.addFavorite(item.course, props.credit);
         },
         collect: monitor => ({ isOver: monitor.isOver() }),
     }));
@@ -18,27 +33,18 @@ function FavoritesList(props) {
     let content = props.credit
         ? Array.from(props.favorites.forCredit)
         : Array.from(props.favorites.noCredit);
-    let classes = [];
+    let classes: JSX.Element[] | JSX.Element = [];
     if (content.length > 0) {
         classes = content.map((classData, index) => {
             return (
                 <Class
                     course={classData}
-                    key={index}
-                    yi={-1}
-                    qi={-1}
-                    alert={props.alert}
-                    switches={props.switches}
                     favorites={props.favorites}
-                    delCourse={() => {
-                        props.delFavorite(classData, props.credit);
-                    }}
-                    addFavorite={() => {
-                        props.addFavorite(classData, false);
-                    }}
-                    delFavorite={() => {
-                        props.delFavorite(classData, false);
-                    }}
+                    alert={props.alert}
+                    location={{ year: -1, quarter: props.credit ? 1 : 0 }}
+                    f={props.f}
+                    switches={props.switches}
+                    key={index}
                 />
             );
         });
@@ -54,7 +60,7 @@ function FavoritesList(props) {
         );
     }
 
-    let units = CourseManager.getExtraCredits(content);
+    let units = CourseManager.getQuarterCredits(content);
 
     let unitString = 'units';
     if (units === 1) {
@@ -80,7 +86,7 @@ function FavoritesList(props) {
                 {props.credit ? 'FOR CREDIT' : 'BOOKMARKED COURSES'}
             </p>
             <div className="space-y-2">{classes}</div>
-            {props.credit && props.switches.quarter_units && (
+            {props.credit && props.switches.get.quarter_units && (
                 <p className="absolute right-2 top-0 text-right text-xs p-0 m-0 text-gray-400 font-normal">
                     <span className="font-medium">{units}</span> {unitString}
                 </p>

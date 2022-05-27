@@ -1,12 +1,12 @@
 import React from 'react';
-import AccountPlan from './AccountPlan.js';
-import AccountPlanMessage from './AccountPlanMessage.js';
+import AccountPlan from './AccountPlan';
+import AccountPlanMessage from './AccountPlanMessage';
 import {
     CollectionIcon,
     RefreshIcon,
     ExclamationIcon,
 } from '@heroicons/react/outline';
-import Account from '../../Account.js';
+import Account from '../../Account';
 
 class Plans extends React.Component {
     constructor(props) {

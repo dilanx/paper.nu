@@ -1,17 +1,34 @@
 import React from 'react';
-import Utility from '../../Utility.js';
+import Utility from '../../Utility';
 import { useDrag } from 'react-dnd';
 import { BookmarkIcon } from '@heroicons/react/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/solid';
+import {
+    Course,
+    CourseDragItem,
+    FavoritesData,
+    PlanModificationFunctions,
+} from '../../types/PlanTypes';
+import { Color } from '../../types/BaseTypes';
 
 const PLACEHOLDER_MESSAGE = `Don't know which specific class to take from a certain requirement category? Use a placeholder! Search for 'placeholder' to view all.`;
 
-function SearchClass(props) {
+interface SearchClassProps {
+    course: Course;
+    color: Color;
+    select?: (course: Course) => void;
+    favorites?: FavoritesData;
+    f?: PlanModificationFunctions;
+}
+
+function SearchClass(props: SearchClassProps) {
     let course = props.course;
+
+    let item: CourseDragItem = { course };
 
     const [{ isDragging }, drag] = useDrag(() => ({
         type: 'Class',
-        item: { course },
+        item,
         collect: monitor => ({ isDragging: monitor.isDragging() }),
     }));
 
@@ -31,6 +48,7 @@ function SearchClass(props) {
 
     let isPlaceholder = course.placeholder;
     let units = parseFloat(course.units);
+    let isFavorite = props.favorites?.noCredit.has(course);
     return (
         <div
             ref={drag}
@@ -80,21 +98,21 @@ function SearchClass(props) {
                     {units === 1 ? 'unit' : 'units'}
                 </p>
             </div>
-            {props.bookmarks && (
+            {!props.select && (
                 <button
                     className="absolute -top-2 -right-2 p-1 rounded-full bg-gray-200 hover:bg-indigo-100 dark:bg-gray-700
                     text-gray-500 dark:text-white text-xs opacity-80 hover:text-indigo-400 dark:hover:text-indigo-400 hover:opacity-100
                     transition-all duration-150 hidden group-hover:block z-20"
                     onClick={e => {
                         e.stopPropagation();
-                        if (props.bookmarks.has(course)) {
-                            props.delFavorite(course, false);
+                        if (isFavorite) {
+                            props.f?.removeFavorite(course, false);
                         } else {
-                            props.addFavorite(course, false);
+                            props.f?.addFavorite(course, false);
                         }
                     }}
                 >
-                    {props.bookmarks.has(course) ? (
+                    {isFavorite ? (
                         <BookmarkIconSolid className="w-5 h-5" />
                     ) : (
                         <BookmarkIcon className="w-5 h-5" />

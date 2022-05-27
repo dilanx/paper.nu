@@ -1,43 +1,47 @@
-import React from 'react';
-import Year from './Year.js';
-import CourseManager from '../CourseManager.js';
-import Utility from '../Utility.js';
 import { PlusIcon } from '@heroicons/react/outline';
+import React from 'react';
+import CourseManager from '../CourseManager';
+import { Alert } from '../types/AlertTypes';
+import { UserOptions } from '../types/BaseTypes';
+import {
+    PlanData,
+    PlanModificationFunctions,
+    PlanSpecialFunctions,
+} from '../types/PlanTypes';
+import Utility from '../Utility';
+import Year from './Year';
 
-class Content extends React.Component {
+interface ContentProps {
+    data: PlanData;
+    f: PlanModificationFunctions;
+    f2: PlanSpecialFunctions;
+    alert: Alert;
+    switches: UserOptions;
+}
+
+class Content extends React.Component<ContentProps> {
     render() {
-        let content = this.props.content;
-        let years = [];
-        if (content) {
-            years = content.map((year, index) => {
+        let content = this.props.data;
+        let years: JSX.Element[] = [];
+        if (content.courses) {
+            years = content.courses.map((year, index) => {
                 return (
                     <Year
-                        title={Utility.convertYear(index) + ' YEAR'}
-                        content={year}
-                        yi={index}
-                        key={index}
+                        data={year}
+                        favorites={this.props.data.favorites}
+                        year={index}
+                        f={this.props.f}
+                        f2={this.props.f2}
                         alert={this.props.alert}
                         switches={this.props.switches}
-                        addCourse={(course, quarter) => {
-                            this.props.addCourse(course, index, quarter);
-                        }}
-                        delCourse={(courseIndex, quarter) => {
-                            this.props.delCourse(courseIndex, index, quarter);
-                        }}
-                        moveCourse={this.props.moveCourse}
-                        addSummerQuarter={this.props.addSummerQuarter}
-                        favorites={this.props.favorites}
-                        addFavorite={this.props.addFavorite}
-                        delFavorite={this.props.delFavorite}
+                        title={Utility.convertYear(index)}
+                        key={index}
                     />
                 );
             });
         }
 
-        let units = CourseManager.getTotalCredits(
-            this.props.content,
-            this.props.favorites.forCredit
-        );
+        let units = CourseManager.getTotalCredits(content);
 
         let unitString = 'units';
         if (units === 1) {
@@ -54,7 +58,7 @@ class Content extends React.Component {
                             {unitString}
                         </p>
                     </div>
-                    {this.props.allowAddYear && (
+                    {content.courses.length < 10 && (
                         <button
                             className="block px-5 py-1 bg-gray-200 text-gray-400 hover:bg-gray-300 hover:text-gray-500
                         dark:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-300 transition-all duration-150 rounded-lg shadow-sm"
@@ -74,7 +78,7 @@ class Content extends React.Component {
                                         />
                                     ),
                                     action: () => {
-                                        this.props.addYear();
+                                        this.props.f2.addYear();
                                     },
                                 });
                             }}

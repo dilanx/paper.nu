@@ -1,14 +1,37 @@
 import React from 'react';
-import Quarter from './Quarter.js';
-import Utility from '../Utility.js';
+import Quarter from './Quarter';
+import Utility from '../Utility';
 import {
     PlusIcon,
     ChevronUpIcon,
     ChevronDownIcon,
 } from '@heroicons/react/outline';
+import {
+    Course,
+    FavoritesData,
+    PlanModificationFunctions,
+    PlanSpecialFunctions,
+} from '../types/PlanTypes';
+import { Alert } from '../types/AlertTypes';
+import { UserOptions } from '../types/BaseTypes';
 
-class Year extends React.Component {
-    constructor(props) {
+interface YearProps {
+    data: Course[][];
+    favorites: FavoritesData;
+    year: number;
+    f: PlanModificationFunctions;
+    f2: PlanSpecialFunctions;
+    alert: Alert;
+    switches: UserOptions;
+    title: string;
+}
+
+interface YearState {
+    hidden: boolean;
+}
+
+class Year extends React.Component<YearProps, YearState> {
+    constructor(props: YearProps) {
         super(props);
 
         this.state = {
@@ -17,32 +40,23 @@ class Year extends React.Component {
     }
 
     render() {
-        let content = this.props.content;
+        let content = this.props.data;
 
-        let quarters = [];
+        let quarters: JSX.Element[] = [];
         if (content) {
             quarters = content.map((quarter, index) => {
                 let { title, color } = Utility.convertQuarter(index);
                 return (
                     <Quarter
-                        title={title}
-                        color={color}
-                        content={quarter}
-                        key={index}
-                        yi={this.props.yi}
-                        qi={index}
+                        data={quarter}
+                        favorites={this.props.favorites}
+                        location={{ year: this.props.year, quarter: index }}
+                        f={this.props.f}
                         alert={this.props.alert}
                         switches={this.props.switches}
-                        addCourse={course => {
-                            this.props.addCourse(course, index);
-                        }}
-                        delCourse={courseIndex => {
-                            this.props.delCourse(courseIndex, index);
-                        }}
-                        moveCourse={this.props.moveCourse}
-                        favorites={this.props.favorites}
-                        addFavorite={this.props.addFavorite}
-                        delFavorite={this.props.delFavorite}
+                        title={title}
+                        color={color}
+                        key={index}
                     />
                 );
             });
@@ -77,7 +91,7 @@ class Year extends React.Component {
                             className="inline-block p-1 bg-transparent hover:text-yellow-300 dark:hover:text-yellow-300"
                             title="Add summer quarter"
                             onClick={() => {
-                                this.props.addSummerQuarter(this.props.yi);
+                                this.props.f2.addSummerQuarter(this.props.year);
                             }}
                         >
                             <PlusIcon className="w-6 h-6" />

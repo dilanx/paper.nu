@@ -1,7 +1,20 @@
 import React from 'react';
-import FavoritesList from './FavoritesList.js';
+import { Alert } from '../../types/AlertTypes';
+import { UserOptions } from '../../types/BaseTypes';
+import {
+    FavoritesData,
+    PlanModificationFunctions,
+} from '../../types/PlanTypes';
+import FavoritesList from './FavoritesList';
 
-function Favorites(props) {
+interface FavoritesProps {
+    favorites: FavoritesData;
+    alert: Alert;
+    f: PlanModificationFunctions;
+    switches: UserOptions;
+}
+
+function Favorites(props: FavoritesProps) {
     return (
         <div
             className="border-4 border-indigo-300 my-2 rounded-lg shadow-lg h-full
@@ -12,19 +25,17 @@ function Favorites(props) {
             </p>
             <FavoritesList
                 credit={false}
-                alert={props.alert}
-                switches={props.switches}
                 favorites={props.favorites}
-                addFavorite={props.addFavorite}
-                delFavorite={props.delFavorite}
+                alert={props.alert}
+                f={props.f}
+                switches={props.switches}
             />
             <FavoritesList
                 credit={true}
-                alert={props.alert}
-                switches={props.switches}
                 favorites={props.favorites}
-                addFavorite={props.addFavorite}
-                delFavorite={props.delFavorite}
+                alert={props.alert}
+                f={props.f}
+                switches={props.switches}
             />
         </div>
     );

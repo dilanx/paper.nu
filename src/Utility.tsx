@@ -1,39 +1,52 @@
 import { ExclamationIcon } from '@heroicons/react/outline';
+import {
+    Color,
+    ReadUserOptions,
+    UserOptions,
+    UserOptionValue,
+} from './types/BaseTypes';
 
 let Utility = {
     BACKGROUND_LIGHT: '#FFFFFF',
     BACKGROUND_DARK: '#262626',
 
-    loadSwitchesFromStorage: () => {
-        let switches = {
+    loadSwitchesFromStorage: (
+        setSwitchFunction: (
+            key: string,
+            val: UserOptionValue,
+            save: boolean | undefined
+        ) => void
+    ): UserOptions => {
+        let switches: ReadUserOptions = {
             save_to_storage: true,
         };
         let keys = Object.keys(localStorage);
         for (let i = 0; i < keys.length; i++) {
             if (keys[i].startsWith('switch_')) {
-                let val = localStorage.getItem(keys[i]);
+                let val = localStorage.getItem(keys[i]) === 'true';
                 let switchId = keys[i].substring(7);
-                if (val === 'true') val = true;
-                else if (val === 'false') val = false;
                 switches[switchId] = val;
             }
         }
-        return switches;
+        return {
+            set: setSwitchFunction,
+            get: switches,
+        };
     },
 
-    saveSwitchToStorage: (key, val) => {
+    saveSwitchToStorage: (key: string, val: string) => {
         localStorage.setItem('switch_' + key, val);
     },
 
-    getDistroAcronym: distroString => {
+    getDistroAcronym: (distroString: string) => {
         let distro = distroString.split(' ');
         let acronym = '';
         distro.forEach(d => (acronym += d[0]));
         return acronym;
     },
 
-    convertDistros: distros => {
-        let strings = [];
+    convertDistros: (distros: string | undefined) => {
+        let strings: string[] = [];
 
         if (!distros) return strings;
 
@@ -71,34 +84,34 @@ let Utility = {
         return strings;
     },
 
-    convertYear: num => {
+    convertYear: (num: number) => {
         switch (num) {
             case 0:
-                return 'FIRST';
+                return 'FIRST YEAR';
             case 1:
-                return 'SECOND';
+                return 'SECOND YEAR';
             case 2:
-                return 'THIRD';
+                return 'THIRD YEAR';
             case 3:
-                return 'FOURTH';
+                return 'FOURTH YEAR';
             case 4:
-                return 'FIFTH';
+                return 'FIFTH YEAR';
             case 5:
-                return 'SIXTH';
+                return 'SIXTH YEAR';
             case 6:
-                return 'SEVENTH';
+                return 'SEVENTH YEAR';
             case 7:
-                return 'EIGHTH';
+                return 'EIGHTH YEAR';
             case 8:
-                return 'NINTH';
+                return 'NINTH YEAR';
             case 9:
-                return 'TENTH';
+                return 'TENTH YEAR';
             default:
-                return 'UNKNOWN';
+                return 'AAH TOO MANY YEARS NOOOO';
         }
     },
 
-    convertQuarter: num => {
+    convertQuarter: (num: number): { title: string; color: Color } => {
         switch (num) {
             case 0:
                 return { title: 'FALL', color: 'orange' };
@@ -109,11 +122,11 @@ let Utility = {
             case 3:
                 return { title: 'SUMMER', color: 'yellow' };
             default:
-                return 'UNKNOWN';
+                return { title: 'LOL WHAT??', color: 'gray' };
         }
     },
 
-    prereqColor: num => {
+    prereqColor: (num: number) => {
         switch (num) {
             case 0:
                 return 'red';
@@ -130,7 +143,7 @@ let Utility = {
         }
     },
 
-    errorAlert: (from, error) => {
+    errorAlert: (from: string, error: Error) => {
         return {
             title: "Well, this isn't good...",
             message: `Oh nooo this wasn't supposed to happen. An unexpected error occurred.

@@ -1,6 +1,14 @@
-import Utility from '../../Utility.js';
+import { Color } from '../../types/BaseTypes';
+import { Course } from '../../types/PlanTypes';
+import Utility from '../../Utility';
 
-function AddButton(props) {
+interface AddButtonProps {
+    color: Color;
+    action: () => void;
+    text: string;
+}
+
+function AddButton(props: AddButtonProps) {
     return (
         <button
             className={`text-center bg-${props.color}-400 text-white font-medium p-2 block
@@ -14,7 +22,13 @@ function AddButton(props) {
     );
 }
 
-function AddButtonSection(props) {
+interface AddButtonSectionProps {
+    title: string;
+    size: number;
+    action: (quarter: number) => void;
+}
+
+function AddButtonSection(props: AddButtonSectionProps) {
     let withSummer = (
         <div className="grid grid-cols-4 gap-0">
             <AddButton
@@ -84,17 +98,21 @@ function AddButtonSection(props) {
     );
 }
 
-export default function AddButtons(props) {
-    let data = props.data;
+interface AddButtonsProps {
+    courses: Course[][][];
+    action: (year: number, quarter: number) => void;
+}
 
-    let years = data.length;
+function AddButtons(props: AddButtonsProps) {
+    let courses = props.courses;
+    let years = courses.length;
 
     let sections = [];
     for (let y = 0; y < years; y++) {
         sections.push(
             <AddButtonSection
                 title={`${Utility.convertYear(y)} YEAR`}
-                size={data[y].length}
+                size={courses[y].length}
                 action={quarter => {
                     props.action(y, quarter);
                 }}
@@ -103,5 +121,7 @@ export default function AddButtons(props) {
         );
     }
 
-    return <div className="">{sections}</div>;
+    return <div>{sections}</div>;
 }
+
+export default AddButtons;

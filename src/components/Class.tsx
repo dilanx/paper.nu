@@ -1,15 +1,36 @@
-import React from 'react';
 import { useDrag } from 'react-dnd';
-import CourseManager from '../CourseManager.js';
-import Utility from '../Utility.js';
+import {
+    Course,
+    CourseLocation,
+    FavoritesData,
+    PlanModificationFunctions,
+    CourseDragItem,
+} from '../types/PlanTypes';
+import {
+    Alert,
+    NontoggleableAlertDataEditButton,
+    ToggleableAlertDataEditButton,
+} from '../types/AlertTypes';
+import CourseManager from '../CourseManager';
+import Utility from '../Utility';
 import {
     TrashIcon,
     DocumentIcon,
     BookmarkIcon,
 } from '@heroicons/react/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/solid';
+import { UserOptions } from '../types/BaseTypes';
 
-function openInfo(props) {
+interface ClassProps {
+    course: Course;
+    favorites: FavoritesData;
+    alert: Alert;
+    location: CourseLocation;
+    f: PlanModificationFunctions;
+    switches: UserOptions;
+}
+
+function openInfo(props: ClassProps) {
     let course = props.course;
     let color = CourseManager.getCourseColor(course.id);
 
@@ -20,7 +41,7 @@ function openInfo(props) {
             message: `If you aren't sure which course to take to fulfill a certain requirement, you can use a placeholder! Search using 'placeholder' or by requirement category to find placeholders.`,
             confirmButton: 'Close',
             confirmButtonColor: color,
-            iconBackground: color,
+            iconBackgroundColor: color,
             icon: (
                 <DocumentIcon
                     className={`h-6 w-6 text-${color}-600`}
@@ -53,10 +74,43 @@ function openInfo(props) {
         content: course.units,
     });
 
-    let delCourse = props.delCourse;
-    let favorites = props.favorites;
-    let addFavorite = props.addFavorite;
-    let delFavorite = props.delFavorite;
+    const favorites = props.favorites;
+    const { removeCourse, addFavorite, removeFavorite } = props.f;
+
+    const favoriteToggle: ToggleableAlertDataEditButton<Course> = {
+        toggle: true,
+        data: favorites.noCredit,
+        key: course,
+        enabled: {
+            title: 'Remove from My List',
+            icon: <BookmarkIconSolid className="w-6 h-6" />,
+            color: 'indigo',
+            action: () => {
+                removeFavorite(course, false);
+            },
+        },
+        disabled: {
+            title: 'Add to My List',
+            icon: <BookmarkIcon className="w-6 h-6" />,
+            color: 'indigo',
+            action: () => {
+                addFavorite(course, false);
+            },
+        },
+    };
+
+    const remove: NontoggleableAlertDataEditButton = {
+        toggle: false,
+        buttonData: {
+            title: 'Remove course',
+            icon: <TrashIcon className="w-6 h-6" />,
+            color: 'red',
+            action: () => {
+                removeCourse(course, props.location);
+            },
+            close: true,
+        },
+    };
 
     props.alert({
         title: course.id,
@@ -72,55 +126,27 @@ function openInfo(props) {
             />
         ),
         extras: extras,
-        editButtons: [
-            {
-                toggle: {
-                    data: favorites.noCredit,
-                    key: course,
-                    enabled: {
-                        title: 'Remove from My List',
-                        icon: <BookmarkIconSolid className="w-6 h-6" />,
-                        action: () => {
-                            delFavorite(course, false);
-                        },
-                    },
-                    disabled: {
-                        title: 'Add to My List',
-                        icon: <BookmarkIcon className="w-6 h-6" />,
-                        action: () => {
-                            addFavorite(course, false);
-                        },
-                    },
-                },
-                color: 'indigo',
-            },
-            {
-                title: 'Remove course',
-                icon: <TrashIcon className="w-6 h-6" />,
-                color: 'red',
-                action: () => {
-                    delCourse();
-                },
-                close: true,
-            },
-        ],
+        editButtons: [favoriteToggle, remove],
     });
 }
 
-function Class(props) {
+function Class(props: ClassProps) {
     let course = props.course;
+
+    const dragItem: CourseDragItem = {
+        course: course,
+        from: props.location,
+    };
 
     const [{ isDragging }, drag] = useDrag(() => ({
         type: 'Class',
-        item: {
-            course,
-            from: { year: props.yi, quarter: props.qi },
-        },
+        item: dragItem,
         collect: monitor => ({ isDragging: monitor.isDragging() }),
     }));
 
     let color = CourseManager.getCourseColor(course.id);
-    let showMoreInfo = props.switches.more_info && !props.switches.compact;
+    let showMoreInfo =
+        props.switches.get.more_info && !props.switches.get.compact;
     let isPlaceholder = course.placeholder;
     let units = parseFloat(course.units);
 
@@ -185,7 +211,7 @@ function Class(props) {
                         transition-all duration-150 hidden group-hover:block z-20"
                 onClick={e => {
                     e.stopPropagation();
-                    props.delCourse();
+                    props.f.removeCourse(course, props.location);
                 }}
             >
                 <TrashIcon className="w-5 h-5" />

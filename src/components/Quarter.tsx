@@ -1,50 +1,58 @@
-import React from 'react';
-import Class from './Class.js';
-import CourseManager from '../CourseManager.js';
 import { useDrop } from 'react-dnd';
+import CourseManager from '../CourseManager';
+import { Alert } from '../types/AlertTypes';
+import { Color, UserOptions } from '../types/BaseTypes';
+import {
+    CourseDragItem,
+    CourseLocation,
+    Course,
+    PlanModificationFunctions,
+    FavoritesData,
+} from '../types/PlanTypes';
+import Class from './Class';
 
-function Quarter(props) {
+interface QuarterProps {
+    data: Course[];
+    favorites: FavoritesData;
+    location: CourseLocation;
+    f: PlanModificationFunctions;
+    alert: Alert;
+    switches: UserOptions;
+    title: string;
+    color: Color;
+}
+
+function Quarter(props: QuarterProps) {
     const [{ isOver }, drop] = useDrop(() => ({
         accept: 'Class',
-        drop: (item, monitor) => {
+        drop: (item: CourseDragItem, monitor) => {
             if (monitor.didDrop()) {
                 return;
             }
             if (item.from) {
-                props.moveCourse(
-                    item.course,
-                    item.from.year,
-                    item.from.quarter,
-                    props.yi,
-                    props.qi
-                );
+                props.f.moveCourse(item.course, item.from, props.location);
             } else {
-                props.addCourse(item.course);
+                props.f.addCourse(item.course, props.location);
             }
             return { moved: true };
         },
         collect: monitor => ({ isOver: monitor.isOver() }),
     }));
 
-    let content = props.content;
-    let classes = [];
-    if (content) {
-        if (content.length > 0) {
-            classes = content.map((classData, index) => {
+    let courses = props.data;
+    let classes: JSX.Element[] | JSX.Element = [];
+    if (courses) {
+        if (courses.length > 0) {
+            classes = courses.map((classData, index) => {
                 return (
                     <Class
                         course={classData}
-                        key={index}
-                        yi={props.yi}
-                        qi={props.qi}
-                        alert={props.alert}
-                        switches={props.switches}
                         favorites={props.favorites}
-                        addFavorite={props.addFavorite}
-                        delFavorite={props.delFavorite}
-                        delCourse={() => {
-                            props.delCourse(index);
-                        }}
+                        alert={props.alert}
+                        location={props.location}
+                        f={props.f}
+                        switches={props.switches}
+                        key={index}
                     />
                 );
             });
@@ -65,7 +73,7 @@ function Quarter(props) {
         }
     }
 
-    let units = CourseManager.getQuarterCredits(content);
+    let units = CourseManager.getQuarterCredits(courses);
 
     let unitString = 'units';
     if (units === 1) {
@@ -87,7 +95,7 @@ function Quarter(props) {
                 {props.title}
             </p>
             {classes}
-            {props.switches.quarter_units && (
+            {props.switches.get.quarter_units && (
                 <p className="absolute right-2 top-0 text-right text-xs p-0 m-0 text-gray-400 font-normal">
                     <span className="font-medium">{units}</span> {unitString}
                 </p>

@@ -1,9 +1,26 @@
 import { useState, useRef } from 'react';
 import { Dialog } from '@headlessui/react';
+import {
+    AlertData,
+    AlertDataEditButtonData,
+    editButtonIsToggleable,
+} from '../../types/AlertTypes';
+import { UserOptions } from '../../types/BaseTypes';
 
-export default function Alert(props) {
+interface AlertProps {
+    data: AlertData;
+    switches: UserOptions;
+    onConfirm: () => void;
+    onClose: () => void;
+}
+
+interface AlertConfirmationState {
+    [key: string]: boolean;
+}
+
+export default function Alert(props: AlertProps) {
     let [isOpen, setIsOpen] = useState(true);
-    let [confirmation, setConfirmation] = useState({});
+    let [confirmation, setConfirmation] = useState<AlertConfirmationState>({});
 
     let dontAutoFocusButton = useRef(null);
 
@@ -19,7 +36,7 @@ export default function Alert(props) {
 
     let data = props.data;
 
-    let extraList = [];
+    let extraList: JSX.Element[] = [];
     if (data.extras) {
         let i = 0;
         data.extras.forEach(extra => {
@@ -37,13 +54,14 @@ export default function Alert(props) {
         });
     }
 
-    let optionList = [];
+    let optionList: JSX.Element[] = [];
 
     if (data.options) {
         let i = 0;
         data.options.forEach(option => {
             let enabled = false;
-            if (!option.singleAction) enabled = props.switches[option.name];
+            if (!option.singleAction)
+                enabled = props.switches.get[option.name] as boolean;
             optionList.push(
                 <div
                     className="grid grid-cols-1 sm:grid-cols-5 p-2 m-2"
@@ -64,7 +82,7 @@ export default function Alert(props) {
                                     className="block mx-auto bg-emerald-400 text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
                                     m-1 p-2 w-full rounded-md shadow-md"
                                     onClick={() => {
-                                        props.setSwitch(
+                                        props.switches.set(
                                             option.name,
                                             false,
                                             option.saveToStorage
@@ -81,7 +99,7 @@ export default function Alert(props) {
                                     className="block mx-auto bg-red-400 text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
                                     m-1 p-2 w-full rounded-md shadow-md"
                                     onClick={() => {
-                                        props.setSwitch(
+                                        props.switches.set(
                                             option.name,
                                             true,
                                             option.saveToStorage
@@ -112,7 +130,8 @@ export default function Alert(props) {
                                             return;
                                         }
                                     }
-                                    option.singleAction();
+                                    if (option.singleAction)
+                                        option.singleAction();
                                     setConfirmation({
                                         ...confirmation,
                                         [option.name]: false,
@@ -131,24 +150,29 @@ export default function Alert(props) {
         });
     }
 
-    let editButtonList = [];
+    let editButtonList: JSX.Element[] = [];
 
     if (data.editButtons) {
         let i = 0;
         data.editButtons.forEach(editButton => {
-            let dataSet = editButton;
-            if (editButton.toggle) {
-                let t = editButton.toggle;
-                dataSet = t.data.has(t.key) ? t.enabled : t.disabled;
+            let dataSet: AlertDataEditButtonData;
+
+            if (editButtonIsToggleable(editButton)) {
+                dataSet = editButton.data.has(editButton.key)
+                    ? editButton.enabled
+                    : editButton.disabled;
+            } else {
+                dataSet = editButton.buttonData;
             }
+
             editButtonList.push(
                 <button
-                    className={`text-gray-500 hover:text-${editButton.color}-400 transition-all duration-150`}
+                    className={`text-gray-500 hover:text-${dataSet.color}-400 transition-all duration-150`}
                     key={`edit-button-${i}`}
                     title={dataSet.title}
                     onClick={() => {
                         dataSet.action();
-                        if (editButton.close) close();
+                        if (dataSet.close) close();
                     }}
                 >
                     {dataSet.icon}
@@ -166,7 +190,7 @@ export default function Alert(props) {
             }}
             initialFocus={dontAutoFocusButton}
             className={`${
-                props.switches.dark ? 'dark' : ''
+                props.switches.get.dark ? 'dark' : ''
             } fixed z-10 inset-0 overflow-y-auto`}
         >
             <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">

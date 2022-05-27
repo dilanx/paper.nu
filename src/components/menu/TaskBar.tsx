@@ -1,5 +1,5 @@
 import React from 'react';
-import Utility from '../../Utility.js';
+import Utility from '../../Utility';
 import {
     ExternalLinkIcon,
     InformationCircleIcon,
@@ -8,8 +8,17 @@ import {
     BookmarkIcon,
     CollectionIcon,
 } from '@heroicons/react/outline';
+import { Color, UserOptions } from '../../types/BaseTypes';
+import { Alert } from '../../types/AlertTypes';
+import { PlanSpecialFunctions } from '../../types/PlanTypes';
 
-function MiniButton(props) {
+interface MiniButtonProps {
+    icon: (props: React.ComponentProps<'svg'>) => JSX.Element;
+    color: Color;
+    action: () => void;
+}
+
+function MiniButton(props: MiniButtonProps) {
     return (
         <button
             className={`p-1 border-2 border-gray-400 dark:border-gray-500 rounded-lg text-gray-500 dark:text-gray-300
@@ -24,13 +33,21 @@ function MiniButton(props) {
     );
 }
 
-const TabBarButtonColors = {
+const TabBarButtonColors: { [key: string]: Color } = {
     Search: 'gray',
     'My List': 'indigo',
     Plans: 'rose',
 };
 
-function TabBarButton(props) {
+interface TaskBarButtonProps {
+    name: string;
+    selected: string;
+    switches: UserOptions;
+    color: Color;
+    content: JSX.Element;
+}
+
+function TabBarButton(props: TaskBarButtonProps) {
     return (
         <button
             className={`px-2 py-1 ${
@@ -41,7 +58,7 @@ function TabBarButton(props) {
                     transition-all duration-150`
             } flex items-center gap-1`}
             onClick={() => {
-                props.setSwitch('tab', props.name);
+                props.switches.set('tab', props.name, false);
             }}
         >
             {props.content}
@@ -49,30 +66,34 @@ function TabBarButton(props) {
     );
 }
 
-function TabBar(props) {
-    let color = TabBarButtonColors[props.switches.tab];
+interface TabBarProps {
+    switches: UserOptions;
+}
+
+function TabBar(props: TabBarProps) {
+    let color = TabBarButtonColors[props.switches.get.tab as string];
     return (
         <div
             className={`flex border-2 border-${color}-400 dark:border-${color}-500 rounded-lg overflow-hidden bg-${color}-400 dark:bg-${color}-500`}
         >
             <TabBarButton
                 name="Search"
-                selected={props.switches.tab}
-                setSwitch={props.setSwitch}
+                selected={props.switches.get.tab as string}
+                switches={props.switches}
                 color={TabBarButtonColors['Search']}
                 content={<SearchIcon className="w-5 h-5" />}
             />
             <TabBarButton
                 name="My List"
-                selected={props.switches.tab}
-                setSwitch={props.setSwitch}
+                selected={props.switches.get.tab as string}
+                switches={props.switches}
                 color={TabBarButtonColors['My List']}
                 content={<BookmarkIcon className="w-5 h-5" />}
             />
             <TabBarButton
                 name="Plans"
-                selected={props.switches.tab}
-                setSwitch={props.setSwitch}
+                selected={props.switches.get.tab as string}
+                switches={props.switches}
                 color={TabBarButtonColors['Plans']}
                 content={
                     <>
@@ -87,7 +108,14 @@ function TabBar(props) {
     );
 }
 
-function TaskBar(props) {
+interface TaskBarProps {
+    alert: Alert;
+    version: string;
+    switches: UserOptions;
+    f2: PlanSpecialFunctions;
+}
+
+function TaskBar(props: TaskBarProps) {
     return (
         <div className="flex mx-auto mt-2 mb-4 gap-2">
             <MiniButton
@@ -209,8 +237,6 @@ function TaskBar(props) {
                                 aria-hidden="true"
                             />
                         ),
-                        switches: props.switches,
-                        setSwitch: props.setSwitch,
                         options: [
                             {
                                 name: 'dark',
@@ -228,7 +254,7 @@ function TaskBar(props) {
                                         .querySelector(
                                             'meta[name="theme-color"]'
                                         )
-                                        .setAttribute('content', color);
+                                        ?.setAttribute('content', color);
                                 },
                             },
                             {
@@ -271,14 +297,14 @@ function TaskBar(props) {
                                 buttonTextOn: 'Clear',
                                 requireConfirmation: true,
                                 singleAction: () => {
-                                    props.clearData();
+                                    props.f2.clearData();
                                 },
                             },
                         ],
                     });
                 }}
             />
-            <TabBar switches={props.switches} setSwitch={props.setSwitch} />
+            <TabBar switches={props.switches} />
         </div>
     );
 }
