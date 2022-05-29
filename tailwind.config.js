@@ -34,6 +34,16 @@ module.exports = {
                 128: '32rem',
                 192: '48rem',
             },
+            animation: {
+                'reverse-spin': 'reverse-spin 1s linear infinite',
+            },
+            keyframes: {
+                'reverse-spin': {
+                    from: {
+                        transform: 'rotate(360deg)',
+                    },
+                },
+            },
         },
     },
     plugins: [

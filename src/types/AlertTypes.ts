@@ -56,11 +56,16 @@ export interface AlertData {
     options?: AlertDataOption[];
     editButtons?: AlertDataEditButton[];
     textView?: string;
+    textInput?: {
+        placeholder?: string;
+        match?: RegExp;
+        matchError?: string;
+    };
     confirmButton: string;
     confirmButtonColor: string;
     iconBackgroundColor: string;
     cancelButton?: string;
-    action?: () => void;
+    action?: (inputText?: string) => void;
 }
 
 export interface Alert {

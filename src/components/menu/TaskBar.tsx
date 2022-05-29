@@ -7,6 +7,7 @@ import {
     SearchIcon,
     BookmarkIcon,
     CollectionIcon,
+    RefreshIcon,
 } from '@heroicons/react/outline';
 import { Color, UserOptions } from '../../types/BaseTypes';
 import { Alert } from '../../types/AlertTypes';
@@ -45,6 +46,7 @@ interface TaskBarButtonProps {
     switches: UserOptions;
     color: Color;
     content: JSX.Element;
+    disableClick?: boolean;
 }
 
 function TabBarButton(props: TaskBarButtonProps) {
@@ -54,10 +56,15 @@ function TabBarButton(props: TaskBarButtonProps) {
                 props.name === props.selected
                     ? `bg-${props.color}-400 dark:bg-${props.color}-500 text-white`
                     : `bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-300
-                    hover:bg-${props.color}-100 hover:text-${props.color}-600 dark:hover:text-${props.color}-400
-                    transition-all duration-150`
+                    hover:bg-${props.color}-100 hover:text-${
+                          props.color
+                      }-600 dark:hover:text-${props.color}-400
+                    transition-all duration-150 ${
+                        props.name === 'Loading' ? 'cursor-not-allowed' : ''
+                    }`
             } flex items-center gap-1`}
             onClick={() => {
+                if (props.disableClick) return;
                 props.switches.set('tab', props.name, false);
             }}
         >
@@ -68,6 +75,7 @@ function TabBarButton(props: TaskBarButtonProps) {
 
 interface TabBarProps {
     switches: UserOptions;
+    tabLoading: boolean;
 }
 
 function TabBar(props: TabBarProps) {
@@ -76,34 +84,49 @@ function TabBar(props: TabBarProps) {
         <div
             className={`flex border-2 border-${color}-400 dark:border-${color}-500 rounded-lg overflow-hidden bg-${color}-400 dark:bg-${color}-500`}
         >
-            <TabBarButton
-                name="Search"
-                selected={props.switches.get.tab as string}
-                switches={props.switches}
-                color={TabBarButtonColors['Search']}
-                content={<SearchIcon className="w-5 h-5" />}
-            />
-            <TabBarButton
-                name="My List"
-                selected={props.switches.get.tab as string}
-                switches={props.switches}
-                color={TabBarButtonColors['My List']}
-                content={<BookmarkIcon className="w-5 h-5" />}
-            />
-            <TabBarButton
-                name="Plans"
-                selected={props.switches.get.tab as string}
-                switches={props.switches}
-                color={TabBarButtonColors['Plans']}
-                content={
-                    <>
-                        <CollectionIcon className="w-5 h-5" />
-                        <p className="lg:hidden xl:block m-0 text-sm lg:text-xs w-20 lg:w-12 overflow-hidden whitespace-nowrap text-ellipsis">
-                            Log in
-                        </p>
-                    </>
-                }
-            />
+            {props.tabLoading ? (
+                <TabBarButton
+                    name="Loading"
+                    selected="None"
+                    switches={props.switches}
+                    color={color}
+                    content={
+                        <RefreshIcon className="w-5 h-5 animate-reverse-spin" />
+                    }
+                    disableClick={true}
+                />
+            ) : (
+                <>
+                    <TabBarButton
+                        name="Search"
+                        selected={props.switches.get.tab as string}
+                        switches={props.switches}
+                        color={TabBarButtonColors['Search']}
+                        content={<SearchIcon className="w-5 h-5" />}
+                    />
+                    <TabBarButton
+                        name="My List"
+                        selected={props.switches.get.tab as string}
+                        switches={props.switches}
+                        color={TabBarButtonColors['My List']}
+                        content={<BookmarkIcon className="w-5 h-5" />}
+                    />
+                    <TabBarButton
+                        name="Plans"
+                        selected={props.switches.get.tab as string}
+                        switches={props.switches}
+                        color={TabBarButtonColors['Plans']}
+                        content={
+                            <>
+                                <CollectionIcon className="w-5 h-5" />
+                                <p className="lg:hidden xl:block m-0 text-sm lg:text-xs w-20 lg:w-12 overflow-hidden whitespace-nowrap text-ellipsis">
+                                    Log in
+                                </p>
+                            </>
+                        }
+                    />
+                </>
+            )}
         </div>
     );
 }
@@ -113,6 +136,7 @@ interface TaskBarProps {
     version: string;
     switches: UserOptions;
     f2: PlanSpecialFunctions;
+    tabLoading: boolean;
 }
 
 function TaskBar(props: TaskBarProps) {
@@ -304,7 +328,7 @@ function TaskBar(props: TaskBarProps) {
                     });
                 }}
             />
-            <TabBar switches={props.switches} />
+            <TabBar switches={props.switches} tabLoading={props.tabLoading} />
         </div>
     );
 }

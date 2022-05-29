@@ -1,40 +1,155 @@
 import React from 'react';
-import AccountPlan from './AccountPlan';
+import AccountPlanData from './AccountPlan';
 import AccountPlanMessage from './AccountPlanMessage';
 import {
     CollectionIcon,
     RefreshIcon,
     ExclamationIcon,
+    PlusIcon,
+    TrashIcon,
 } from '@heroicons/react/outline';
 import Account from '../../Account';
+import {
+    AccountModificationFunctions,
+    AccountPlansData,
+    PlanId,
+} from '../../types/AccountTypes';
+import { Alert } from '../../types/AlertTypes';
+import Utility from '../../Utility';
+import AccountPlan from './AccountPlan';
+import PlanError from '../../classes/PlanError';
 
-class Plans extends React.Component {
-    constructor(props) {
+interface PlansProps {
+    alert: Alert;
+}
+
+interface PlansState {
+    plans?: AccountPlansData;
+    loading: boolean;
+    loggedIn: boolean;
+    fa: AccountModificationFunctions;
+}
+
+class Plans extends React.Component<PlansProps, PlansState> {
+    constructor(props: PlansProps) {
         super(props);
 
+        let self = this;
+
+        let fa: AccountModificationFunctions = {
+            activatePlan: (planId: PlanId) => {
+                self.activatePlan(planId);
+            },
+            removePlan: (planId: PlanId, planName: string) => {
+                self.removePlan(planId, planName);
+            },
+        };
+
         this.state = {
-            plans: [],
             loading: true,
             loggedIn: false,
+            fa,
         };
     }
 
     componentDidMount() {
         if (Account.isLoggedIn()) {
             this.setState({ loggedIn: true });
-            Account.getPlans().then(response => {
-                if (response.error) {
-                    // TODO add error message here
-                    return;
-                }
-
-                this.setState({
-                    plans: response,
-                    loading: false,
-                    loggedIn: true,
+            Account.getPlans()
+                .then(response => {
+                    this.setState({
+                        plans: response,
+                        loading: false,
+                        loggedIn: true,
+                    });
+                })
+                .catch((error: PlanError) => {
+                    this.props.alert(
+                        Utility.errorAlert('account_get_plans', error.message)
+                    );
                 });
-            });
         }
+    }
+
+    activatePlan(planId: PlanId) {}
+
+    addPlan() {
+        let self = this;
+
+        this.props.alert({
+            title: 'Creating a new plan...',
+            message: `Let's add a new plan to your account! You'll need to give it a name.`,
+            cancelButton: 'Cancel',
+            confirmButton: 'Create',
+            confirmButtonColor: 'rose',
+            iconBackgroundColor: 'rose',
+            icon: (
+                <PlusIcon
+                    className="h-6 w-6 text-rose-600"
+                    aria-hidden="true"
+                />
+            ),
+            textInput: {
+                placeholder: 'Name',
+                match: /^[\w\-\s]{1,10}$/,
+                matchError: 'Alphanumeric, hyphens and spaces, 1-10 chars',
+            },
+            action: name => {
+                self.setState({ loading: true });
+                Account.createPlan(name)
+                    .then(res => {
+                        self.setState({
+                            plans: res,
+                            loading: false,
+                        });
+                    })
+                    .catch((error: PlanError) => {
+                        self.props.alert(
+                            Utility.errorAlert(
+                                'account_create_plan',
+                                error.message
+                            )
+                        );
+                    });
+            },
+        });
+    }
+
+    removePlan(planId: PlanId, planName: string) {
+        let self = this;
+
+        this.props.alert({
+            title: 'Delete this plan?',
+            message: `Are you sure you want to delete ${planName} from your account? If it's active right now, it'll stay there, but it won't be linked to your account anymore.`,
+            cancelButton: 'Cancel',
+            confirmButton: 'Delete',
+            confirmButtonColor: 'red',
+            iconBackgroundColor: 'red',
+            icon: (
+                <ExclamationIcon
+                    className="h-6 w-6 text-red-600"
+                    aria-hidden="true"
+                />
+            ),
+            action: () => {
+                self.setState({ loading: true });
+                Account.deletePlan(planId)
+                    .then(res => {
+                        self.setState({
+                            plans: res,
+                            loading: false,
+                        });
+                    })
+                    .catch((error: PlanError) => {
+                        self.props.alert(
+                            Utility.errorAlert(
+                                'account_remove_plan',
+                                error.message
+                            )
+                        );
+                    });
+            },
+        });
     }
 
     render() {
@@ -46,38 +161,10 @@ class Plans extends React.Component {
                 let plan = this.state.plans[planId];
                 return (
                     <AccountPlan
-                        name={plan.name}
-                        lastUpdated={plan.lastUpdated}
-                        delPlan={() => {
-                            this.props.alert({
-                                title: 'Delete this plan?',
-                                message: `Are you sure you want to delete ${plan.name} from your account? If it's active right now, it'll stay there, but it won't be linked to your account anymore.`,
-                                cancelButton: 'Cancel',
-                                confirmButton: 'Delete',
-                                confirmButtonColor: 'red',
-                                iconBackgroundColor: 'red',
-                                icon: (
-                                    <ExclamationIcon
-                                        className="h-6 w-6 text-red-600"
-                                        aria-hidden="true"
-                                    />
-                                ),
-                                action: () => {
-                                    self.setState({ loading: true });
-                                    Account.delPlan(planId).then(response => {
-                                        if (response.error) {
-                                            // TODO add error message here
-                                            return;
-                                        }
-
-                                        self.setState({
-                                            plans: response,
-                                        });
-                                    });
-                                },
-                            });
-                        }}
-                        key={`plan-${i}`}
+                        id={planId}
+                        plan={plan}
+                        fa={self.state.fa}
+                        key={`account-plan-${i}`}
                     />
                 );
             });
@@ -107,7 +194,7 @@ class Plans extends React.Component {
                 {this.state.loading && (
                     <AccountPlanMessage
                         icon={
-                            <RefreshIcon className="w-12 h-12 animate-spin" />
+                            <RefreshIcon className="w-12 h-12 animate-reverse-spin" />
                         }
                         title="Almost ready..."
                         description="Your plans are loading."

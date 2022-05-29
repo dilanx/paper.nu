@@ -10,7 +10,7 @@ import { UserOptions } from '../../types/BaseTypes';
 interface AlertProps {
     data: AlertData;
     switches: UserOptions;
-    onConfirm: () => void;
+    onConfirm: (inputText?: string) => void;
     onClose: () => void;
 }
 
@@ -21,6 +21,7 @@ interface AlertConfirmationState {
 export default function Alert(props: AlertProps) {
     let [isOpen, setIsOpen] = useState(true);
     let [confirmation, setConfirmation] = useState<AlertConfirmationState>({});
+    let [inputText, setInputText] = useState('');
 
     let dontAutoFocusButton = useRef(null);
 
@@ -31,7 +32,7 @@ export default function Alert(props: AlertProps) {
 
     function confirm() {
         setIsOpen(false);
-        props.onConfirm();
+        props.onConfirm(props.data.textInput ? inputText : undefined);
     }
 
     let data = props.data;
@@ -182,6 +183,12 @@ export default function Alert(props: AlertProps) {
         });
     }
 
+    let okay = true;
+
+    if (data.textInput?.match) {
+        okay = data.textInput.match.test(inputText);
+    }
+
     return (
         <Dialog
             open={isOpen}
@@ -234,9 +241,44 @@ export default function Alert(props: AlertProps) {
                                     </p>
                                 </div>
                                 {extraList.length > 0 && extraList}
+                                {data.textInput && (
+                                    <div>
+                                        <input
+                                            type="text"
+                                            className={`bg-gray-200 dark:bg-gray-800 text-black dark:text-white
+                                                mt-4 p-1 px-4 font-mono text-sm rounded-md md:w-96 overflow-scroll whitespace-nowrap overscroll-contain no-scrollbar 
+                                                outline-none border-2 border-gray-200 hover:border-gray-400 transition-all duration-150 
+                                                ${
+                                                    inputText.length === 0 ||
+                                                    !data.textInput.match
+                                                        ? 'focus:border-gray-500'
+                                                        : okay
+                                                        ? 'focus:border-green-500'
+                                                        : 'focus:border-red-500'
+                                                }`}
+                                            placeholder={
+                                                data.textInput.placeholder
+                                            }
+                                            onChange={event => {
+                                                setInputText(
+                                                    event.target.value
+                                                );
+                                            }}
+                                        />
+                                        <p className="text-sm text-red-500 mx-2 my-1">
+                                            {!okay &&
+                                                inputText.length > 0 &&
+                                                data.textInput.matchError}
+                                        </p>
+                                    </div>
+                                )}
                                 {data.textView && (
                                     <div>
-                                        <p className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white mt-4 p-1 px-4 font-mono text-sm rounded-md md:w-96 overflow-scroll whitespace-nowrap overscroll-contain no-scrollbar">
+                                        <p
+                                            className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white
+                                            mt-4 p-1 px-4 font-mono text-sm rounded-md md:w-96 overflow-scroll whitespace-nowrap
+                                            overscroll-contain no-scrollbar"
+                                        >
                                             {data.textView}
                                         </p>
                                     </div>
@@ -257,8 +299,14 @@ export default function Alert(props: AlertProps) {
                         <button
                             type="button"
                             className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 
-                            bg-${data.confirmButtonColor}-500 text-base font-medium text-white
-                            hover:bg-${data.confirmButtonColor}-600 focus:bg-${data.confirmButtonColor}-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm`}
+                                ${
+                                    okay
+                                        ? `bg-${data.confirmButtonColor}-500 hover:bg-${data.confirmButtonColor}-600 focus:bg-${data.confirmButtonColor}-700`
+                                        : `bg-${data.confirmButtonColor}-300 cursor-not-allowed`
+                                } 
+                                 text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm 
+                                 transition-all duration-150`}
+                            disabled={!okay}
                             onClick={() => {
                                 confirm();
                             }}

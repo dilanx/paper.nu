@@ -1,10 +1,12 @@
 import { ExclamationIcon } from '@heroicons/react/outline';
+import { AlertData } from './types/AlertTypes';
 import {
     Color,
     ReadUserOptions,
     UserOptions,
     UserOptionValue,
 } from './types/BaseTypes';
+import { PlanErrorLocation } from './types/ErrorTypes';
 
 let Utility = {
     BACKGROUND_LIGHT: '#FFFFFF',
@@ -143,7 +145,7 @@ let Utility = {
         }
     },
 
-    errorAlert: (from: string, error: Error) => {
+    errorAlert: (from: PlanErrorLocation, error: string): AlertData => {
         return {
             title: "Well, this isn't good...",
             message: `Oh nooo this wasn't supposed to happen. An unexpected error occurred.

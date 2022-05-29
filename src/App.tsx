@@ -21,6 +21,7 @@ import {
 } from './types/PlanTypes';
 import { AlertData } from './types/AlertTypes';
 import { UserOptions, UserOptionValue } from './types/BaseTypes';
+import Account from './Account';
 
 const VERSION = '1.2.0';
 
@@ -34,20 +35,21 @@ interface AppState {
     alertData?: AlertData;
     f: PlanModificationFunctions;
     f2: PlanSpecialFunctions;
+    loadingLogin: boolean;
 }
 
 class App extends React.Component<AppProps, AppState> {
     constructor(props: AppProps) {
         super(props);
 
-        // Use get when setting default switches since no state yet
         let defaultSwitches = Utility.loadSwitchesFromStorage(
             (key, value, save) => {
                 this.setSwitch(key, value, save);
             }
         );
         defaultSwitches.get.tab = 'Search';
-        let defaultAlert: AlertData | undefined = undefined;
+
+        let app = this;
 
         let data: PlanData = {
             courses: [
@@ -62,24 +64,80 @@ class App extends React.Component<AppProps, AppState> {
             },
         };
 
-        let params = new URLSearchParams(props.search);
+        let f: PlanModificationFunctions = {
+            addCourse: (course, location) => {
+                app.addCourse(course, location);
+            },
+            removeCourse: (courseIndex, location) => {
+                app.removeCourse(courseIndex, location);
+            },
+            moveCourse: (course, oldLocation, newLocation) => {
+                app.moveCourse(course, oldLocation, newLocation);
+            },
+            addFavorite: (course, forCredit) => {
+                app.addFavorite(course, forCredit);
+            },
+            removeFavorite: (course, forCredit) => {
+                app.removeFavorite(course, forCredit);
+            },
+        };
+
+        let f2: PlanSpecialFunctions = {
+            addSummerQuarter: year => {
+                app.addSummerQuarter(year);
+            },
+            addYear: () => {
+                app.addYear();
+            },
+            clearData: () => {
+                app.clearData();
+            },
+        };
+
+        if (defaultSwitches.get.dark) {
+            document.body.style.backgroundColor = Utility.BACKGROUND_DARK;
+            document
+                .querySelector('meta[name="theme-color"]')
+                ?.setAttribute('content', Utility.BACKGROUND_DARK);
+        } else {
+            document.body.style.backgroundColor = Utility.BACKGROUND_LIGHT;
+            document
+                .querySelector('meta[name="theme-color"]')
+                ?.setAttribute('content', Utility.BACKGROUND_LIGHT);
+        }
+
+        this.state = {
+            data: data,
+            switches: defaultSwitches,
+            f,
+            f2,
+            loadingLogin: true,
+        };
+    }
+
+    componentDidMount() {
+        let switches = this.state.switches;
+        let data = this.state.data;
+        let defaultAlert: AlertData | undefined = undefined;
+
+        let params = new URLSearchParams(this.props.search);
         if (params.has('code')) {
-            // if (!Account.isLoggedIn()) {
-            //     Account.login(params.get('code')).then(response => {
-            //         if (!response?.success) {
-            //             defaultAlert = Utility.errorAlert(
-            //                 'account_initial_login',
-            //                 response.error
-            //             );
-            //         }
-            //     });
-            // }
+            this.setState({ loadingLogin: true });
+            Account.login(params.get('code')!).then(response => {
+                if (!response?.success) {
+                    defaultAlert = Utility.errorAlert(
+                        'account_initial_login',
+                        response.data as string
+                    );
+                }
+                this.setState({ loadingLogin: false });
+            });
             params.delete('code');
         }
         if (params.has('state')) {
             let uiState = params.get('state')!.split(',');
             if (uiState.includes('view_plans')) {
-                defaultSwitches.get.tab = 'Plans';
+                switches.set('tab', 'Plans');
             }
             params.delete('state');
         }
@@ -92,7 +150,7 @@ class App extends React.Component<AppProps, AppState> {
 
         let res = CourseManager.load(
             params,
-            defaultSwitches.get.save_to_storage as boolean
+            switches.get.save_to_storage as boolean
         );
 
         if (res !== 'malformed') {
@@ -117,55 +175,7 @@ class App extends React.Component<AppProps, AppState> {
             }
         }
 
-        if (defaultSwitches.get.dark) {
-            document.body.style.backgroundColor = Utility.BACKGROUND_DARK;
-            document
-                .querySelector('meta[name="theme-color"]')
-                ?.setAttribute('content', Utility.BACKGROUND_DARK);
-        } else {
-            document.body.style.backgroundColor = Utility.BACKGROUND_LIGHT;
-            document
-                .querySelector('meta[name="theme-color"]')
-                ?.setAttribute('content', Utility.BACKGROUND_LIGHT);
-        }
-
-        let f: PlanModificationFunctions = {
-            addCourse: (course, location) => {
-                this.addCourse(course, location);
-            },
-            removeCourse: (courseIndex, location) => {
-                this.removeCourse(courseIndex, location);
-            },
-            moveCourse: (course, oldLocation, newLocation) => {
-                this.moveCourse(course, oldLocation, newLocation);
-            },
-            addFavorite: (course, forCredit) => {
-                this.addFavorite(course, forCredit);
-            },
-            removeFavorite: (course, forCredit) => {
-                this.removeFavorite(course, forCredit);
-            },
-        };
-
-        let f2: PlanSpecialFunctions = {
-            addSummerQuarter: year => {
-                this.addSummerQuarter(year);
-            },
-            addYear: () => {
-                this.addYear();
-            },
-            clearData: () => {
-                this.clearData();
-            },
-        };
-
-        this.state = {
-            data: data,
-            alertData: defaultAlert,
-            switches: defaultSwitches,
-            f,
-            f2,
-        };
+        this.setState({ data, alertData: defaultAlert });
     }
 
     setSwitch(key: string, val: UserOptionValue, save = false) {
@@ -395,10 +405,10 @@ class App extends React.Component<AppProps, AppState> {
                         <Alert
                             data={this.state.alertData}
                             switches={this.state.switches}
-                            onConfirm={() => {
+                            onConfirm={(inputText?: string) => {
                                 let alertData = this.state.alertData;
                                 if (alertData?.action) {
-                                    alertData.action();
+                                    alertData.action(inputText);
                                 }
                                 this.postShowAlert();
                             }}
@@ -442,6 +452,7 @@ class App extends React.Component<AppProps, AppState> {
                                 version={VERSION}
                                 switches={this.state.switches}
                                 f2={this.state.f2}
+                                tabLoading={this.state.loadingLogin}
                             />
                         </div>
 

@@ -5,7 +5,7 @@ export interface ReadUserOptions {
 }
 
 export interface UserOptions {
-    set: (key: string, val: UserOptionValue, save: boolean | undefined) => void;
+    set: (key: string, val: UserOptionValue, save?: boolean) => void;
     get: ReadUserOptions;
 }
 
