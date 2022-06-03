@@ -60,6 +60,7 @@ export interface AlertData {
         placeholder?: string;
         match?: RegExp;
         matchError?: string;
+        focusByDefault?: boolean;
     };
     confirmButton: string;
     confirmButtonColor: string;

@@ -19,8 +19,8 @@ function loadData(params: URLSearchParams): PlanData | 'malformed' | 'empty' {
         [[], [], []],
     ];
 
-    let favoritesNoCredit = new Set<Course>();
-    let favoritesForCredit = new Set<Course>();
+    let bookmarksNoCredit = new Set<Course>();
+    let bookmarksForCredit = new Set<Course>();
 
     let loadedSomething = false;
 
@@ -77,8 +77,8 @@ function loadData(params: URLSearchParams): PlanData | 'malformed' | 'empty' {
 
                         let course = CourseManager.getCourse(courseId);
                         if (course == null) return 'malformed';
-                        if (i === 0) favoritesNoCredit.add(course);
-                        else favoritesForCredit.add(course);
+                        if (i === 0) bookmarksNoCredit.add(course);
+                        else bookmarksForCredit.add(course);
                     }
                 }
             }
@@ -91,14 +91,14 @@ function loadData(params: URLSearchParams): PlanData | 'malformed' | 'empty' {
 
     return {
         courses: allCourseData,
-        favorites: {
-            noCredit: favoritesNoCredit,
-            forCredit: favoritesForCredit,
+        bookmarks: {
+            noCredit: bookmarksNoCredit,
+            forCredit: bookmarksForCredit,
         },
     };
 }
 
-function saveData({ courses, favorites }: PlanData) {
+function saveData({ courses, bookmarks }: PlanData) {
     let params = new URLSearchParams();
 
     for (let y = 0; y < courses.length; y++) {
@@ -117,10 +117,10 @@ function saveData({ courses, favorites }: PlanData) {
         }
     }
 
-    let favoritesNoCredit = Array.from(favorites.noCredit);
-    let favoritesForCredit = Array.from(favorites.forCredit);
+    let bookmarksNoCredit = Array.from(bookmarks.noCredit);
+    let bookmarksForCredit = Array.from(bookmarks.forCredit);
 
-    if (favoritesNoCredit.length > 0 || favoritesForCredit.length > 0) {
+    if (bookmarksNoCredit.length > 0 || bookmarksForCredit.length > 0) {
         let conv = (course: Course) => {
             let courseId = course.id;
             let sp = courseId.split(' ');
@@ -132,9 +132,9 @@ function saveData({ courses, favorites }: PlanData) {
 
         params.set(
             'f',
-            favoritesNoCredit.map(conv).join(',') +
+            bookmarksNoCredit.map(conv).join(',') +
                 ';' +
-                favoritesForCredit.map(conv).join(',')
+                bookmarksForCredit.map(conv).join(',')
         );
     }
 
@@ -233,7 +233,7 @@ let CourseManager = {
         };
     },
 
-    getTotalCredits: ({ courses, favorites: { forCredit } }: PlanData) => {
+    getTotalCredits: ({ courses, bookmarks: { forCredit } }: PlanData) => {
         let total = 0;
 
         for (let y = 0; y < courses.length; y++) {

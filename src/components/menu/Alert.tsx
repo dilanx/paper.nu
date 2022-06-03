@@ -23,7 +23,7 @@ export default function Alert(props: AlertProps) {
     let [confirmation, setConfirmation] = useState<AlertConfirmationState>({});
     let [inputText, setInputText] = useState('');
 
-    let dontAutoFocusButton = useRef(null);
+    let initialFocus = useRef(null);
 
     function close() {
         setIsOpen(false);
@@ -195,7 +195,7 @@ export default function Alert(props: AlertProps) {
             onClose={() => {
                 close();
             }}
-            initialFocus={dontAutoFocusButton}
+            initialFocus={initialFocus}
             className={`${
                 props.switches.get.dark ? 'dark' : ''
             } fixed z-10 inset-0 overflow-y-auto`}
@@ -212,7 +212,7 @@ export default function Alert(props: AlertProps) {
                     <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 dark:bg-gray-700">
                         <div className="sm:flex sm:items-start">
                             <div
-                                ref={dontAutoFocusButton}
+                                ref={initialFocus}
                                 className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-${data.iconBackgroundColor}-100 sm:mx-0 sm:h-10 sm:w-10`}
                             >
                                 {data.icon}
@@ -244,6 +244,11 @@ export default function Alert(props: AlertProps) {
                                 {data.textInput && (
                                     <div>
                                         <input
+                                            ref={
+                                                data.textInput.focusByDefault
+                                                    ? initialFocus
+                                                    : undefined
+                                            }
                                             type="text"
                                             className={`bg-gray-200 dark:bg-gray-800 text-black dark:text-white
                                                 mt-4 p-1 px-4 font-mono text-sm rounded-md md:w-96 overflow-scroll whitespace-nowrap overscroll-contain no-scrollbar 

@@ -135,7 +135,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                     select={course => {
                         this.setState({ current: course });
                     }}
-                    favorites={this.props.data.favorites}
+                    bookmarks={this.props.data.bookmarks}
                     f={this.props.f}
                     key={course.id}
                 />
@@ -193,7 +193,7 @@ class Search extends React.Component<SearchProps, SearchState> {
 
         let selectedClass = null;
         let addButtons = null;
-        let favoritesButtons = null;
+        let bookmarksButtons = null;
         let exitButton = null;
 
         let current = this.state.current;
@@ -219,9 +219,9 @@ class Search extends React.Component<SearchProps, SearchState> {
                 />
             );
 
-            let favorites = this.props.data.favorites;
+            let bookmarks = this.props.data.bookmarks;
 
-            favoritesButtons = (
+            bookmarksButtons = (
                 <div className="py-2">
                     <p className="text-center text-gray-500 font-bold p-2 text-sm">
                         MY LIST
@@ -231,14 +231,14 @@ class Search extends React.Component<SearchProps, SearchState> {
                             transition-all duration-150 rounded-md shadow-lg"
                         onClick={() => {
                             if (!current) return;
-                            if (favorites.noCredit.has(current)) {
+                            if (bookmarks.noCredit.has(current)) {
                                 this.props.f.removeFavorite(current, false);
                             } else {
                                 this.props.f.addFavorite(current, false);
                             }
                         }}
                     >
-                        {favorites.noCredit.has(current)
+                        {bookmarks.noCredit.has(current)
                             ? 'Remove from bookmarks'
                             : 'Add to bookmarks'}
                     </button>
@@ -247,14 +247,14 @@ class Search extends React.Component<SearchProps, SearchState> {
                             transition-all duration-150 rounded-md shadow-lg"
                         onClick={() => {
                             if (!current) return;
-                            if (favorites.forCredit.has(current)) {
+                            if (bookmarks.forCredit.has(current)) {
                                 this.props.f.removeFavorite(current, true);
                             } else {
                                 this.props.f.addFavorite(current, true);
                             }
                         }}
                     >
-                        {favorites.forCredit.has(current)
+                        {bookmarks.forCredit.has(current)
                             ? 'Remove for credit'
                             : 'Add for credit'}
                     </button>
@@ -286,7 +286,7 @@ class Search extends React.Component<SearchProps, SearchState> {
 
                 {singleClassView && selectedClass}
                 {singleClassView && addButtons}
-                {singleClassView && favoritesButtons}
+                {singleClassView && bookmarksButtons}
                 {singleClassView && exitButton}
             </div>
         );

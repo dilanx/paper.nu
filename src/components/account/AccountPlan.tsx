@@ -14,10 +14,9 @@ function AccountPlan(props: AccountPlanProps) {
     let id = props.id;
     let plan = props.plan;
     return (
-        <button
+        <div
             className="block border-2 border-rose-400 bg-rose-50 dark:bg-gray-800 w-full my-4 text-left px-4 py-8 rounded-lg text-black
-            hover:shadow-md transition ease-in-out duration-300 transform hover:-translate-y-1 group
-            focus:shadow-inner focus:translate-y-0"
+            hover:shadow-md transition ease-in-out duration-300 transform hover:-translate-y-1 group cursor-pointer"
             onClick={() => props.fa.activatePlan(id)}
         >
             <p className="text-lg font-semibold text-black dark:text-white">
@@ -35,12 +34,12 @@ function AccountPlan(props: AccountPlanProps) {
                         transition-all duration-150 hidden group-hover:block z-20"
                 onClick={e => {
                     e.stopPropagation();
-                    props.fa.removePlan(id, plan.name);
+                    props.fa.deletePlan(id, plan.name);
                 }}
             >
                 <TrashIcon className="w-5 h-5" />
             </button>
-        </button>
+        </div>
     );
 }
 

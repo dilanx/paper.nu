@@ -28,5 +28,5 @@ export interface AccountPlanData {
 
 export interface AccountModificationFunctions {
     activatePlan: (planId: PlanId) => void;
-    removePlan: (planId: PlanId, planName: string) => void;
+    deletePlan: (planId: PlanId, planName: string) => void;
 }

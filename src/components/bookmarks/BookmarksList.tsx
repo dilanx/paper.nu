@@ -4,21 +4,21 @@ import Class from '../Class';
 import CourseManager from '../../CourseManager';
 import {
     CourseDragItem,
-    FavoritesData,
+    BookmarksData,
     PlanModificationFunctions,
 } from '../../types/PlanTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import { Alert } from '../../types/AlertTypes';
 
-interface FavoritesListProps {
+interface BookmarksListProps {
     credit: boolean;
-    favorites: FavoritesData;
+    bookmarks: BookmarksData;
     alert: Alert;
     f: PlanModificationFunctions;
     switches: UserOptions;
 }
 
-function FavoritesList(props: FavoritesListProps) {
+function BookmarksList(props: BookmarksListProps) {
     const [{ isOver }, drop] = useDrop(() => ({
         accept: 'Class',
         drop: (item: CourseDragItem, monitor) => {
@@ -31,15 +31,15 @@ function FavoritesList(props: FavoritesListProps) {
     }));
 
     let content = props.credit
-        ? Array.from(props.favorites.forCredit)
-        : Array.from(props.favorites.noCredit);
+        ? Array.from(props.bookmarks.forCredit)
+        : Array.from(props.bookmarks.noCredit);
     let classes: JSX.Element[] | JSX.Element = [];
     if (content.length > 0) {
         classes = content.map((classData, index) => {
             return (
                 <Class
                     course={classData}
-                    favorites={props.favorites}
+                    bookmarks={props.bookmarks}
                     alert={props.alert}
                     location={{ year: -1, quarter: props.credit ? 1 : 0 }}
                     f={props.f}
@@ -95,4 +95,4 @@ function FavoritesList(props: FavoritesListProps) {
     );
 }
 
-export default FavoritesList;
+export default BookmarksList;

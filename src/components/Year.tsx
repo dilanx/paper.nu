@@ -8,7 +8,7 @@ import {
 } from '@heroicons/react/outline';
 import {
     Course,
-    FavoritesData,
+    BookmarksData,
     PlanModificationFunctions,
     PlanSpecialFunctions,
 } from '../types/PlanTypes';
@@ -17,7 +17,7 @@ import { UserOptions } from '../types/BaseTypes';
 
 interface YearProps {
     data: Course[][];
-    favorites: FavoritesData;
+    bookmarks: BookmarksData;
     year: number;
     f: PlanModificationFunctions;
     f2: PlanSpecialFunctions;
@@ -49,7 +49,7 @@ class Year extends React.Component<YearProps, YearState> {
                 return (
                     <Quarter
                         data={quarter}
-                        favorites={this.props.favorites}
+                        bookmarks={this.props.bookmarks}
                         location={{ year: this.props.year, quarter: index }}
                         f={this.props.f}
                         alert={this.props.alert}

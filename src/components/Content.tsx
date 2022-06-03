@@ -28,7 +28,7 @@ class Content extends React.Component<ContentProps> {
                 return (
                     <Year
                         data={year}
-                        favorites={this.props.data.favorites}
+                        bookmarks={this.props.data.bookmarks}
                         year={index}
                         f={this.props.f}
                         f2={this.props.f2}

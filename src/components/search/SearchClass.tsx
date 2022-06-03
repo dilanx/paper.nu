@@ -6,7 +6,7 @@ import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/solid';
 import {
     Course,
     CourseDragItem,
-    FavoritesData,
+    BookmarksData,
     PlanModificationFunctions,
 } from '../../types/PlanTypes';
 import { Color } from '../../types/BaseTypes';
@@ -17,7 +17,7 @@ interface SearchClassProps {
     course: Course;
     color: Color;
     select?: (course: Course) => void;
-    favorites?: FavoritesData;
+    bookmarks?: BookmarksData;
     f?: PlanModificationFunctions;
 }
 
@@ -48,7 +48,7 @@ function SearchClass(props: SearchClassProps) {
 
     let isPlaceholder = course.placeholder;
     let units = parseFloat(course.units);
-    let isFavorite = props.favorites?.noCredit.has(course);
+    let isFavorite = props.bookmarks?.noCredit.has(course);
     return (
         <div
             ref={drag}

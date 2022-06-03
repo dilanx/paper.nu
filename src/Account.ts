@@ -10,7 +10,7 @@ const TOKEN_URL = 'https://auth.dilanxd.com/authenticate/token';
 const LOGOUT_URL = 'https://auth.dilanxd.com/authenticate/logout';
 const PLANS_URL = 'https://auth.dilanxd.com/plan-nu/plans';
 
-var plans: AccountPlansData = {};
+var plans: AccountPlansData | undefined = undefined;
 
 async function authLogin(
     authorizationCode?: string
@@ -18,7 +18,6 @@ async function authLogin(
     localStorage.removeItem('t');
     if (!authorizationCode) {
         let url = new URL(window.location.href);
-        url.searchParams.set('state', 'view_plans');
         window.open(
             `https://auth.dilanxd.com/authenticate?redirect=${encodeURIComponent(
                 url.toString()
@@ -80,8 +79,9 @@ async function authLogout(): Promise<ConnectionResponse> {
 async function planOperation(
     endpoint: string,
     method: string,
-    body?: object
-): Promise<AccountPlansData> {
+    body?: object,
+    autoAuth?: boolean
+): Promise<AccountPlansData | undefined> {
     try {
         const response = await fetch(PLANS_URL + '/' + endpoint, {
             method: method,
@@ -92,13 +92,18 @@ async function planOperation(
             body: body ? JSON.stringify(body) : undefined,
         });
         if (response.status === 401) {
-            authLogin();
-            throw new PlanError('Authorization Error');
+            if (autoAuth ?? true) authLogin();
+            return;
         }
 
         let res = await response.json();
         if (!response.ok) {
             throw new PlanError(res.error as string);
+        }
+
+        if (method === 'GET') {
+            plans = res;
+            console.log('file: Account.ts ~ line 106 ~ plans', plans);
         }
 
         return res as AccountPlansData;
@@ -113,6 +118,9 @@ let Account = {
     },
     login: (authorizationCode?: string) => authLogin(authorizationCode),
     logout: () => authLogout(),
+    init: () => {
+        return planOperation('', 'GET', undefined, false);
+    },
     getPlans: (reload = false) => {
         if (plans && !reload) {
             return Promise.resolve(plans);

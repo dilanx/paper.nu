@@ -9,10 +9,10 @@ export interface RawCourseData {
 
 export interface PlanData {
     courses: Course[][][];
-    favorites: FavoritesData;
+    bookmarks: BookmarksData;
 }
 
-export interface FavoritesData {
+export interface BookmarksData {
     noCredit: Set<Course>;
     forCredit: Set<Course>;
 }

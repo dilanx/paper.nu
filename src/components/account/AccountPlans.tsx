@@ -1,10 +1,8 @@
 import React from 'react';
-import AccountPlanData from './AccountPlan';
 import AccountPlanMessage from './AccountPlanMessage';
 import {
     CollectionIcon,
     RefreshIcon,
-    ExclamationIcon,
     PlusIcon,
     TrashIcon,
 } from '@heroicons/react/outline';
@@ -19,19 +17,22 @@ import Utility from '../../Utility';
 import AccountPlan from './AccountPlan';
 import PlanError from '../../classes/PlanError';
 
-interface PlansProps {
+interface AccountPlansProps {
     alert: Alert;
 }
 
-interface PlansState {
+interface AccountPlansState {
     plans?: AccountPlansData;
     loading: boolean;
     loggedIn: boolean;
     fa: AccountModificationFunctions;
 }
 
-class Plans extends React.Component<PlansProps, PlansState> {
-    constructor(props: PlansProps) {
+class AccountPlans extends React.Component<
+    AccountPlansProps,
+    AccountPlansState
+> {
+    constructor(props: AccountPlansProps) {
         super(props);
 
         let self = this;
@@ -40,8 +41,8 @@ class Plans extends React.Component<PlansProps, PlansState> {
             activatePlan: (planId: PlanId) => {
                 self.activatePlan(planId);
             },
-            removePlan: (planId: PlanId, planName: string) => {
-                self.removePlan(planId, planName);
+            deletePlan: (planId: PlanId, planName: string) => {
+                self.deletePlan(planId, planName);
             },
         };
 
@@ -56,9 +57,10 @@ class Plans extends React.Component<PlansProps, PlansState> {
         if (Account.isLoggedIn()) {
             this.setState({ loggedIn: true });
             Account.getPlans()
-                .then(response => {
+                .then(res => {
+                    if (!res) return;
                     this.setState({
-                        plans: response,
+                        plans: res,
                         loading: false,
                         loggedIn: true,
                     });
@@ -73,7 +75,7 @@ class Plans extends React.Component<PlansProps, PlansState> {
 
     activatePlan(planId: PlanId) {}
 
-    addPlan() {
+    createPlan() {
         let self = this;
 
         this.props.alert({
@@ -93,11 +95,22 @@ class Plans extends React.Component<PlansProps, PlansState> {
                 placeholder: 'Name',
                 match: /^[\w\-\s]{1,10}$/,
                 matchError: 'Alphanumeric, hyphens and spaces, 1-10 chars',
+                focusByDefault: true,
             },
             action: name => {
+                if (!name) {
+                    self.props.alert(
+                        Utility.errorAlert(
+                            'account_create_plan',
+                            'No Plan Name'
+                        )
+                    );
+                    return;
+                }
                 self.setState({ loading: true });
                 Account.createPlan(name)
                     .then(res => {
+                        if (!res) return;
                         self.setState({
                             plans: res,
                             loading: false,
@@ -115,18 +128,18 @@ class Plans extends React.Component<PlansProps, PlansState> {
         });
     }
 
-    removePlan(planId: PlanId, planName: string) {
+    deletePlan(planId: PlanId, planName: string) {
         let self = this;
 
         this.props.alert({
             title: 'Delete this plan?',
-            message: `Are you sure you want to delete ${planName} from your account? If it's active right now, it'll stay there, but it won't be linked to your account anymore.`,
+            message: `Are you sure you want to delete your plan named '${planName}' from your account? If it's active right now, it'll stay there, but it won't be linked to your account anymore.`,
             cancelButton: 'Cancel',
             confirmButton: 'Delete',
             confirmButtonColor: 'red',
             iconBackgroundColor: 'red',
             icon: (
-                <ExclamationIcon
+                <TrashIcon
                     className="h-6 w-6 text-red-600"
                     aria-hidden="true"
                 />
@@ -143,7 +156,7 @@ class Plans extends React.Component<PlansProps, PlansState> {
                     .catch((error: PlanError) => {
                         self.props.alert(
                             Utility.errorAlert(
-                                'account_remove_plan',
+                                'account_delete_plan',
                                 error.message
                             )
                         );
@@ -153,12 +166,12 @@ class Plans extends React.Component<PlansProps, PlansState> {
     }
 
     render() {
-        let plans = null;
+        let plans: JSX.Element[] = [];
 
         if (this.state.plans) {
             let self = this;
             plans = Object.keys(this.state.plans).map((planId, i) => {
-                let plan = this.state.plans[planId];
+                let plan = this.state.plans![planId];
                 return (
                     <AccountPlan
                         id={planId}
@@ -178,7 +191,7 @@ class Plans extends React.Component<PlansProps, PlansState> {
                 <p className="text-center text-2xl text-rose-300 font-bold my-4">
                     PLANS
                 </p>
-                {!this.state.loggedIn && (
+                {!this.state.loggedIn ? (
                     <AccountPlanMessage
                         icon={<CollectionIcon className="w-12 h-12" />}
                         title="Save your plans"
@@ -190,8 +203,7 @@ class Plans extends React.Component<PlansProps, PlansState> {
                             },
                         }}
                     />
-                )}
-                {this.state.loading && (
+                ) : this.state.loading ? (
                     <AccountPlanMessage
                         icon={
                             <RefreshIcon className="w-12 h-12 animate-reverse-spin" />
@@ -199,13 +211,27 @@ class Plans extends React.Component<PlansProps, PlansState> {
                         title="Almost ready..."
                         description="Your plans are loading."
                     />
-                )}
-                {!this.state.loading && (
-                    <div className="block m-4">{plans}</div>
+                ) : plans.length === 0 ? (
+                    <AccountPlanMessage
+                        icon={<PlusIcon className="w-12 h-12" />}
+                        title="Create your first plan"
+                        description="Your account is all set up! Now, you can create your first plan.
+                            Any current plan data you have loaded right now will stay, and you'll have the option to save it to your new plan."
+                        button={{
+                            text: 'Create a plan',
+                            action: () => {
+                                this.createPlan();
+                            },
+                        }}
+                    />
+                ) : (
+                    <>
+                        <div className="block m-4">{plans}</div>
+                    </>
                 )}
             </div>
         );
     }
 }
 
-export default Plans;
+export default AccountPlans;

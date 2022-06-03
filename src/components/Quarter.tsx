@@ -7,13 +7,13 @@ import {
     CourseLocation,
     Course,
     PlanModificationFunctions,
-    FavoritesData,
+    BookmarksData,
 } from '../types/PlanTypes';
 import Class from './Class';
 
 interface QuarterProps {
     data: Course[];
-    favorites: FavoritesData;
+    bookmarks: BookmarksData;
     location: CourseLocation;
     f: PlanModificationFunctions;
     alert: Alert;
@@ -47,7 +47,7 @@ function Quarter(props: QuarterProps) {
                 return (
                     <Class
                         course={classData}
-                        favorites={props.favorites}
+                        bookmarks={props.bookmarks}
                         alert={props.alert}
                         location={props.location}
                         f={props.f}

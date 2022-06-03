@@ -9,8 +9,8 @@ import Info from './components/menu/Info';
 import TaskBar from './components/menu/TaskBar';
 import Search from './components/search/Search';
 import Alert from './components/menu/Alert';
-import Favorites from './components/favorites/Favorites';
-//import Plans from './components/account/AccountPlans';
+import Bookmarks from './components/bookmarks/Bookmarks';
+import AccountPlans from './components/account/AccountPlans';
 import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
 import {
     Course,
@@ -22,6 +22,7 @@ import {
 import { AlertData } from './types/AlertTypes';
 import { UserOptions, UserOptionValue } from './types/BaseTypes';
 import Account from './Account';
+import PlanError from './classes/PlanError';
 
 const VERSION = '1.2.0';
 
@@ -58,7 +59,7 @@ class App extends React.Component<AppProps, AppState> {
                 [[], [], []],
                 [[], [], []],
             ],
-            favorites: {
+            bookmarks: {
                 noCredit: new Set<Course>(),
                 forCredit: new Set<Course>(),
             },
@@ -111,7 +112,7 @@ class App extends React.Component<AppProps, AppState> {
             switches: defaultSwitches,
             f,
             f2,
-            loadingLogin: true,
+            loadingLogin: false,
         };
     }
 
@@ -124,22 +125,32 @@ class App extends React.Component<AppProps, AppState> {
         if (params.has('code')) {
             this.setState({ loadingLogin: true });
             Account.login(params.get('code')!).then(response => {
-                if (!response?.success) {
+                if (!response.success) {
                     defaultAlert = Utility.errorAlert(
-                        'account_initial_login',
+                        'account_initial_login_code',
                         response.data as string
                     );
                 }
                 this.setState({ loadingLogin: false });
+                this.setSwitch('tab', 'Plans');
+                this.setSwitch('active_plan', 'None');
             });
             params.delete('code');
-        }
-        if (params.has('state')) {
-            let uiState = params.get('state')!.split(',');
-            if (uiState.includes('view_plans')) {
-                switches.set('tab', 'Plans');
+        } else {
+            if (Account.isLoggedIn()) {
+                this.setState({ loadingLogin: true });
+                Account.init()
+                    .then(() => {
+                        this.setState({ loadingLogin: false });
+                        this.setSwitch('active_plan', 'None');
+                    })
+                    .catch((error: PlanError) => {
+                        defaultAlert = Utility.errorAlert(
+                            'account_initial_login',
+                            error.message
+                        );
+                    });
             }
-            params.delete('state');
         }
 
         window.history.replaceState(
@@ -301,16 +312,16 @@ class App extends React.Component<AppProps, AppState> {
     }
 
     addFavorite(course: Course, forCredit: boolean) {
-        let favorites = this.state.data.favorites;
+        let bookmarks = this.state.data.bookmarks;
         if (forCredit) {
-            favorites.forCredit.add(course);
+            bookmarks.forCredit.add(course);
         } else {
-            favorites.noCredit.add(course);
+            bookmarks.noCredit.add(course);
         }
         this.setState(prevState => ({
             data: {
                 ...prevState.data,
-                favorites: favorites,
+                bookmarks: bookmarks,
             },
         }));
         CourseManager.save(
@@ -320,18 +331,18 @@ class App extends React.Component<AppProps, AppState> {
     }
 
     removeFavorite(course: Course, forCredit: boolean) {
-        let favorites = this.state.data.favorites;
+        let bookmarks = this.state.data.bookmarks;
         if (forCredit) {
-            favorites.forCredit.delete(course);
+            bookmarks.forCredit.delete(course);
         } else {
-            favorites.noCredit.delete(course);
+            bookmarks.noCredit.delete(course);
         }
 
         this.setState(
             prevState => ({
                 data: {
                     ...prevState.data,
-                    favorites: favorites,
+                    bookmarks: bookmarks,
                 },
             }),
             () => {
@@ -374,23 +385,27 @@ class App extends React.Component<AppProps, AppState> {
     }
 
     clearData() {
-        this.setState({
-            data: {
-                courses: [
-                    [[], [], []],
-                    [[], [], []],
-                    [[], [], []],
-                    [[], [], []],
-                ],
-                favorites: {
-                    forCredit: new Set<Course>(),
-                    noCredit: new Set<Course>(),
+        this.setState(
+            {
+                data: {
+                    courses: [
+                        [[], [], []],
+                        [[], [], []],
+                        [[], [], []],
+                        [[], [], []],
+                    ],
+                    bookmarks: {
+                        forCredit: new Set<Course>(),
+                        noCredit: new Set<Course>(),
+                    },
                 },
             },
-        });
-        CourseManager.save(
-            this.state.data,
-            this.state.switches.get.save_to_storage as boolean
+            () => {
+                CourseManager.save(
+                    this.state.data,
+                    this.state.switches.get.save_to_storage as boolean
+                );
+            }
         );
     }
 
@@ -427,8 +442,8 @@ class App extends React.Component<AppProps, AppState> {
                                 f={this.state.f}
                             />
                             {tab === 'My List' && (
-                                <Favorites
-                                    favorites={this.state.data.favorites}
+                                <Bookmarks
+                                    bookmarks={this.state.data.bookmarks}
                                     alert={alertData => {
                                         this.showAlert(alertData);
                                     }}
@@ -436,15 +451,13 @@ class App extends React.Component<AppProps, AppState> {
                                     switches={this.state.switches}
                                 />
                             )}
-                            {/* {tab === 'Plans' && (
-                                TODO implement plans
-                                <Plans
-                                    switches={this.state.switches}
+                            {tab === 'Plans' && (
+                                <AccountPlans
                                     alert={alertData => {
                                         this.showAlert(alertData);
                                     }}
                                 />
-                            )} */}
+                            )}
                             <TaskBar
                                 alert={alertData => {
                                     this.showAlert(alertData);

@@ -2,7 +2,7 @@ import { useDrag } from 'react-dnd';
 import {
     Course,
     CourseLocation,
-    FavoritesData,
+    BookmarksData,
     PlanModificationFunctions,
     CourseDragItem,
 } from '../types/PlanTypes';
@@ -23,7 +23,7 @@ import { UserOptions } from '../types/BaseTypes';
 
 interface ClassProps {
     course: Course;
-    favorites: FavoritesData;
+    bookmarks: BookmarksData;
     alert: Alert;
     location: CourseLocation;
     f: PlanModificationFunctions;
@@ -74,12 +74,12 @@ function openInfo(props: ClassProps) {
         content: course.units,
     });
 
-    const favorites = props.favorites;
+    const bookmarks = props.bookmarks;
     const { removeCourse, addFavorite, removeFavorite } = props.f;
 
     const favoriteToggle: ToggleableAlertDataEditButton<Course> = {
         toggle: true,
-        data: favorites.noCredit,
+        data: bookmarks.noCredit,
         key: course,
         enabled: {
             title: 'Remove from My List',

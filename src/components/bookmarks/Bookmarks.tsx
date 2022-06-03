@@ -2,19 +2,19 @@ import React from 'react';
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {
-    FavoritesData,
+    BookmarksData,
     PlanModificationFunctions,
 } from '../../types/PlanTypes';
-import FavoritesList from './FavoritesList';
+import BookmarksList from './BookmarksList';
 
-interface FavoritesProps {
-    favorites: FavoritesData;
+interface BookmarksProps {
+    bookmarks: BookmarksData;
     alert: Alert;
     f: PlanModificationFunctions;
     switches: UserOptions;
 }
 
-function Favorites(props: FavoritesProps) {
+function Bookmarks(props: BookmarksProps) {
     return (
         <div
             className="border-4 border-indigo-300 my-2 rounded-lg shadow-lg h-full
@@ -23,16 +23,16 @@ function Favorites(props: FavoritesProps) {
             <p className="text-center text-2xl text-indigo-300 font-bold my-4">
                 MY LIST
             </p>
-            <FavoritesList
+            <BookmarksList
                 credit={false}
-                favorites={props.favorites}
+                bookmarks={props.bookmarks}
                 alert={props.alert}
                 f={props.f}
                 switches={props.switches}
             />
-            <FavoritesList
+            <BookmarksList
                 credit={true}
-                favorites={props.favorites}
+                bookmarks={props.bookmarks}
                 alert={props.alert}
                 f={props.f}
                 switches={props.switches}
@@ -41,4 +41,4 @@ function Favorites(props: FavoritesProps) {
     );
 }
 
-export default Favorites;
+export default Bookmarks;

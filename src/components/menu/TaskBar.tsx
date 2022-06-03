@@ -91,7 +91,12 @@ function TabBar(props: TabBarProps) {
                     switches={props.switches}
                     color={color}
                     content={
-                        <RefreshIcon className="w-5 h-5 animate-reverse-spin" />
+                        <>
+                            <RefreshIcon className="w-5 h-5 animate-reverse-spin" />
+                            <p className="lg:hidden xl:block m-0 text-sm lg:text-xs w-20 lg:w-12 overflow-hidden whitespace-nowrap text-ellipsis">
+                                Loading
+                            </p>
+                        </>
                     }
                     disableClick={true}
                 />
@@ -120,7 +125,7 @@ function TabBar(props: TabBarProps) {
                             <>
                                 <CollectionIcon className="w-5 h-5" />
                                 <p className="lg:hidden xl:block m-0 text-sm lg:text-xs w-20 lg:w-12 overflow-hidden whitespace-nowrap text-ellipsis">
-                                    Log in
+                                    {props.switches.get.active_plan ?? 'Log in'}
                                 </p>
                             </>
                         }
