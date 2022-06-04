@@ -9,6 +9,7 @@ interface AccountPlanProps {
     id: PlanId;
     plan: AccountPlanData;
     fa: AccountModificationFunctions;
+    active: boolean;
 }
 function AccountPlan(props: AccountPlanProps) {
     let id = props.id;
@@ -39,6 +40,17 @@ function AccountPlan(props: AccountPlanProps) {
             >
                 <TrashIcon className="w-5 h-5" />
             </button>
+            {props.active ? (
+                <p className="absolute bottom-1 right-2 font-bold text-green-400">
+                    ACTIVE
+                </p>
+            ) : (
+                !plan.content && (
+                    <p className="absolute bottom-1 right-2 font-bold text-rose-300">
+                        EMPTY
+                    </p>
+                )
+            )}
         </div>
     );
 }

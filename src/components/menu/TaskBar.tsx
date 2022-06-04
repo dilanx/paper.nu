@@ -12,6 +12,7 @@ import {
 import { Color, UserOptions } from '../../types/BaseTypes';
 import { Alert } from '../../types/AlertTypes';
 import { PlanSpecialFunctions } from '../../types/PlanTypes';
+import Account from '../../Account';
 
 interface MiniButtonProps {
     icon: (props: React.ComponentProps<'svg'>) => JSX.Element;
@@ -125,7 +126,10 @@ function TabBar(props: TabBarProps) {
                             <>
                                 <CollectionIcon className="w-5 h-5" />
                                 <p className="lg:hidden xl:block m-0 text-sm lg:text-xs w-20 lg:w-12 overflow-hidden whitespace-nowrap text-ellipsis">
-                                    {props.switches.get.active_plan ?? 'Log in'}
+                                    {Account.getPlanName(
+                                        props.switches.get
+                                            .active_plan_id as string
+                                    )}
                                 </p>
                             </>
                         }

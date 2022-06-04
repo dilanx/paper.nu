@@ -5,6 +5,7 @@ import {
     RefreshIcon,
     PlusIcon,
     TrashIcon,
+    LogoutIcon,
 } from '@heroicons/react/outline';
 import Account from '../../Account';
 import {
@@ -16,9 +17,13 @@ import { Alert } from '../../types/AlertTypes';
 import Utility from '../../Utility';
 import AccountPlan from './AccountPlan';
 import PlanError from '../../classes/PlanError';
+import { PlanData } from '../../types/PlanTypes';
 
 interface AccountPlansProps {
+    data: PlanData;
     alert: Alert;
+    activatePlan: (planId: string) => void;
+    activePlanId: string;
 }
 
 interface AccountPlansState {
@@ -165,6 +170,26 @@ class AccountPlans extends React.Component<
         });
     }
 
+    logOut() {
+        this.props.alert({
+            title: 'Logging out...',
+            message: `Are you sure you want to log out? Make sure your changes are saved!`,
+            cancelButton: 'Cancel',
+            confirmButton: 'Log out',
+            confirmButtonColor: 'rose',
+            iconBackgroundColor: 'rose',
+            icon: (
+                <LogoutIcon
+                    className="h-6 w-6 text-rose-600"
+                    aria-hidden="true"
+                />
+            ),
+            action: () => {
+                Account.logOut();
+            },
+        });
+    }
+
     render() {
         let plans: JSX.Element[] = [];
 
@@ -177,6 +202,7 @@ class AccountPlans extends React.Component<
                         id={planId}
                         plan={plan}
                         fa={self.state.fa}
+                        active={planId === self.props.activePlanId}
                         key={`account-plan-${i}`}
                     />
                 );
@@ -199,7 +225,7 @@ class AccountPlans extends React.Component<
                         button={{
                             text: 'Log in',
                             action: () => {
-                                Account.login();
+                                Account.logIn();
                             },
                         }}
                     />
@@ -226,7 +252,30 @@ class AccountPlans extends React.Component<
                     />
                 ) : (
                     <>
+                        <p className="mx-8 text-center text-sm text-gray-500">
+                            Select a plan to activate it.
+                        </p>
                         <div className="block m-4">{plans}</div>
+                        {plans.length < 5 && (
+                            <button
+                                className="block mx-auto my-2 px-8 py-1 bg-rose-300 text-white hover:bg-rose-400
+                                dark:bg-rose-700 dark:hover:bg-rose-600 dark:hover:text-rose-300 transition-all duration-150 rounded-lg shadow-sm"
+                                onClick={() => {
+                                    this.createPlan();
+                                }}
+                            >
+                                Create another plan
+                            </button>
+                        )}
+                        <button
+                            className="block mx-auto my-2 px-8 py-1 bg-gray-200 text-gray-400 hover:bg-gray-300 hover:text-gray-500
+                            dark:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-300 transition-all duration-150 rounded-lg shadow-sm"
+                            onClick={() => {
+                                this.logOut();
+                            }}
+                        >
+                            Log out
+                        </button>
                     </>
                 )}
             </div>

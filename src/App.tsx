@@ -124,7 +124,7 @@ class App extends React.Component<AppProps, AppState> {
         let params = new URLSearchParams(this.props.search);
         if (params.has('code')) {
             this.setState({ loadingLogin: true });
-            Account.login(params.get('code')!).then(response => {
+            Account.logIn(params.get('code')!).then(response => {
                 if (!response.success) {
                     defaultAlert = Utility.errorAlert(
                         'account_initial_login_code',
@@ -133,7 +133,7 @@ class App extends React.Component<AppProps, AppState> {
                 }
                 this.setState({ loadingLogin: false });
                 this.setSwitch('tab', 'Plans');
-                this.setSwitch('active_plan', 'None');
+                this.setSwitch('active_plan_id', '0');
             });
             params.delete('code');
         } else {
@@ -142,7 +142,7 @@ class App extends React.Component<AppProps, AppState> {
                 Account.init()
                     .then(() => {
                         this.setState({ loadingLogin: false });
-                        this.setSwitch('active_plan', 'None');
+                        this.setSwitch('active_plan_id', '0');
                     })
                     .catch((error: PlanError) => {
                         defaultAlert = Utility.errorAlert(
@@ -409,6 +409,8 @@ class App extends React.Component<AppProps, AppState> {
         );
     }
 
+    activateAccountPlan(planId: string) {}
+
     render() {
         let tab = this.state.switches.get.tab;
         return (
@@ -453,9 +455,15 @@ class App extends React.Component<AppProps, AppState> {
                             )}
                             {tab === 'Plans' && (
                                 <AccountPlans
+                                    data={this.state.data}
                                     alert={alertData => {
                                         this.showAlert(alertData);
                                     }}
+                                    activatePlan={planId => {}}
+                                    activePlanId={
+                                        this.state.switches.get
+                                            .active_plan_id as string
+                                    }
                                 />
                             )}
                             <TaskBar

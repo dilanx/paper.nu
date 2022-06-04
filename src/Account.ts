@@ -7,7 +7,6 @@ import {
 } from './types/AccountTypes';
 
 const TOKEN_URL = 'https://auth.dilanxd.com/authenticate/token';
-const LOGOUT_URL = 'https://auth.dilanxd.com/authenticate/logout';
 const PLANS_URL = 'https://auth.dilanxd.com/plan-nu/plans';
 
 var plans: AccountPlansData | undefined = undefined;
@@ -60,20 +59,15 @@ async function obtainAccessToken(
 }
 
 async function authLogout(): Promise<ConnectionResponse> {
-    try {
-        const response = await fetch(LOGOUT_URL);
-        const data = await response.json();
-        if (!response.ok) {
-            return {
-                success: false,
-                data: data.error,
-            };
-        }
-        localStorage.removeItem('t');
-        return { success: true, data: '' };
-    } catch (error) {
-        return { success: false, data: 'Connection Failure' };
-    }
+    localStorage.removeItem('t');
+    let url = new URL(window.location.href);
+    window.open(
+        `https://auth.dilanxd.com/authenticate/logout?redirect=${encodeURIComponent(
+            url.toString()
+        )}`,
+        '_self'
+    );
+    return { success: true, data: '' };
 }
 
 async function planOperation(
@@ -101,11 +95,7 @@ async function planOperation(
             throw new PlanError(res.error as string);
         }
 
-        if (method === 'GET') {
-            plans = res;
-            console.log('file: Account.ts ~ line 106 ~ plans', plans);
-        }
-
+        plans = res;
         return res as AccountPlansData;
     } catch (error) {
         throw new PlanError('Connection Failure');
@@ -116,8 +106,8 @@ let Account = {
     isLoggedIn: () => {
         return !!localStorage.getItem('t');
     },
-    login: (authorizationCode?: string) => authLogin(authorizationCode),
-    logout: () => authLogout(),
+    logIn: (authorizationCode?: string) => authLogin(authorizationCode),
+    logOut: () => authLogout(),
     init: () => {
         return planOperation('', 'GET', undefined, false);
     },
@@ -132,6 +122,14 @@ let Account = {
     },
     deletePlan: (planId: PlanId) => {
         return planOperation(planId, 'DELETE');
+    },
+    getPlanName: (planId?: PlanId) => {
+        if (!planId) return 'Log in';
+        if (planId === '0') return 'None';
+        if (!plans) {
+            return 'err';
+        }
+        return plans[planId].name;
     },
 };
 
