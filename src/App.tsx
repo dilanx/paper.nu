@@ -84,7 +84,7 @@ class App extends React.Component<AppProps, AppState> {
         };
 
         let f2: PlanSpecialFunctions = {
-            addSummerQuarter: year => {
+            addSummerQuarter: (year) => {
                 app.addSummerQuarter(year);
             },
             addYear: () => {
@@ -122,9 +122,15 @@ class App extends React.Component<AppProps, AppState> {
         let defaultAlert: AlertData | undefined = undefined;
 
         let params = new URLSearchParams(this.props.search);
-        if (params.has('code')) {
+
+        let code = params.get('code');
+        params.delete('code');
+        let state = params.get('state');
+        params.delete('state');
+
+        if (code && state) {
             this.setState({ loadingLogin: true });
-            Account.logIn(params.get('code')!).then(response => {
+            Account.logIn(code, state).then((response) => {
                 if (!response.success) {
                     defaultAlert = Utility.errorAlert(
                         'account_initial_login_code',
@@ -135,7 +141,6 @@ class App extends React.Component<AppProps, AppState> {
                 this.setSwitch('tab', 'Plans');
                 this.setSwitch('active_plan_id', '0');
             });
-            params.delete('code');
         } else {
             if (Account.isLoggedIn()) {
                 this.setState({ loadingLogin: true });
@@ -318,7 +323,7 @@ class App extends React.Component<AppProps, AppState> {
         } else {
             bookmarks.noCredit.add(course);
         }
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             data: {
                 ...prevState.data,
                 bookmarks: bookmarks,
@@ -339,7 +344,7 @@ class App extends React.Component<AppProps, AppState> {
         }
 
         this.setState(
-            prevState => ({
+            (prevState) => ({
                 data: {
                     ...prevState.data,
                     bookmarks: bookmarks,
@@ -446,7 +451,7 @@ class App extends React.Component<AppProps, AppState> {
                             {tab === 'My List' && (
                                 <Bookmarks
                                     bookmarks={this.state.data.bookmarks}
-                                    alert={alertData => {
+                                    alert={(alertData) => {
                                         this.showAlert(alertData);
                                     }}
                                     f={this.state.f}
@@ -456,10 +461,10 @@ class App extends React.Component<AppProps, AppState> {
                             {tab === 'Plans' && (
                                 <AccountPlans
                                     data={this.state.data}
-                                    alert={alertData => {
+                                    alert={(alertData) => {
                                         this.showAlert(alertData);
                                     }}
-                                    activatePlan={planId => {}}
+                                    activatePlan={(planId) => {}}
                                     activePlanId={
                                         this.state.switches.get
                                             .active_plan_id as string
@@ -467,7 +472,7 @@ class App extends React.Component<AppProps, AppState> {
                                 />
                             )}
                             <TaskBar
-                                alert={alertData => {
+                                alert={(alertData) => {
                                     this.showAlert(alertData);
                                 }}
                                 version={VERSION}
@@ -488,7 +493,7 @@ class App extends React.Component<AppProps, AppState> {
                                 data={this.state.data}
                                 f={this.state.f}
                                 f2={this.state.f2}
-                                alert={alertData => {
+                                alert={(alertData) => {
                                     this.showAlert(alertData);
                                 }}
                                 switches={this.state.switches}

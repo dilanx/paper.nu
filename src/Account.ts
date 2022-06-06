@@ -5,6 +5,7 @@ import {
     ConnectionResponse,
     PlanId,
 } from './types/AccountTypes';
+import Utility from './Utility';
 
 const TOKEN_URL = 'https://auth.dilanxd.com/authenticate/token';
 const PLANS_URL = 'https://auth.dilanxd.com/plan-nu/plans';
@@ -12,19 +13,31 @@ const PLANS_URL = 'https://auth.dilanxd.com/plan-nu/plans';
 var plans: AccountPlansData | undefined = undefined;
 
 async function authLogin(
-    authorizationCode?: string
+    authorizationCode?: string,
+    state?: string
 ): Promise<ConnectionResponse> {
     localStorage.removeItem('t');
     if (!authorizationCode) {
         let url = new URL(window.location.href);
+        let state = Utility.generateRandomString(32);
+        localStorage.setItem('t_s', state);
         window.open(
-            `https://auth.dilanxd.com/authenticate?redirect=${encodeURIComponent(
-                url.toString()
-            )}`,
+            'https://auth.dilanxd.com/authenticate?client_id=' +
+                process.env.REACT_APP_PUBLIC_CLIENT_ID +
+                '&redirect_uri=' +
+                encodeURIComponent(url.toString()) +
+                '&state=' +
+                state,
             '_self'
         );
         return { success: true, data: '' };
     }
+
+    if (state !== localStorage.getItem('t_s')) {
+        return { success: false, data: 'State Mismatch' };
+    }
+
+    localStorage.removeItem('t_s');
 
     let token = await obtainAccessToken(authorizationCode);
 
@@ -45,7 +58,10 @@ async function obtainAccessToken(
         const response = await fetch(TOKEN_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code: authorizationCode }),
+            body: JSON.stringify({
+                client_id: process.env.REACT_APP_PUBLIC_CLIENT_ID,
+                code: authorizationCode,
+            }),
         });
 
         const data = (await response.json()) as AuthenticationResponseToken;
@@ -62,7 +78,7 @@ async function authLogout(): Promise<ConnectionResponse> {
     localStorage.removeItem('t');
     let url = new URL(window.location.href);
     window.open(
-        `https://auth.dilanxd.com/authenticate/logout?redirect=${encodeURIComponent(
+        `https://auth.dilanxd.com/authenticate/logout?redirect_uri=${encodeURIComponent(
             url.toString()
         )}`,
         '_self'
@@ -106,7 +122,9 @@ let Account = {
     isLoggedIn: () => {
         return !!localStorage.getItem('t');
     },
-    logIn: (authorizationCode?: string) => authLogin(authorizationCode),
+    logIn: (authorizationCode?: string, state?: string) => {
+        return authLogin(authorizationCode, state);
+    },
     logOut: () => authLogout(),
     init: () => {
         return planOperation('', 'GET', undefined, false);

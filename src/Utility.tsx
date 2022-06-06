@@ -43,7 +43,7 @@ let Utility = {
     getDistroAcronym: (distroString: string) => {
         let distro = distroString.split(' ');
         let acronym = '';
-        distro.forEach(d => (acronym += d[0]));
+        distro.forEach((d) => (acronym += d[0]));
         return acronym;
     },
 
@@ -166,6 +166,20 @@ let Utility = {
                 window.open('https://status.dilanxd.com', '_blank');
             },
         };
+    },
+
+    generateRandomString: (length: number) => {
+        let text = '';
+        let possible =
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+        for (let i = 0; i < length; i++) {
+            text += possible.charAt(
+                Math.floor(Math.random() * possible.length)
+            );
+        }
+
+        return text;
     },
 };
 
