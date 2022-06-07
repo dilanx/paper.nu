@@ -62,7 +62,7 @@ class AccountPlans extends React.Component<
         if (Account.isLoggedIn()) {
             this.setState({ loggedIn: true });
             Account.getPlans()
-                .then(res => {
+                .then((res) => {
                     if (!res) return;
                     this.setState({
                         plans: res,
@@ -78,7 +78,9 @@ class AccountPlans extends React.Component<
         }
     }
 
-    activatePlan(planId: PlanId) {}
+    activatePlan(planId: PlanId) {
+        this.props.activatePlan(planId);
+    }
 
     createPlan() {
         let self = this;
@@ -102,7 +104,7 @@ class AccountPlans extends React.Component<
                 matchError: 'Alphanumeric, hyphens and spaces, 1-10 chars',
                 focusByDefault: true,
             },
-            action: name => {
+            action: (name) => {
                 if (!name) {
                     self.props.alert(
                         Utility.errorAlert(
@@ -114,7 +116,7 @@ class AccountPlans extends React.Component<
                 }
                 self.setState({ loading: true });
                 Account.createPlan(name)
-                    .then(res => {
+                    .then((res) => {
                         if (!res) return;
                         self.setState({
                             plans: res,
@@ -152,7 +154,7 @@ class AccountPlans extends React.Component<
             action: () => {
                 self.setState({ loading: true });
                 Account.deletePlan(planId)
-                    .then(res => {
+                    .then((res) => {
                         self.setState({
                             plans: res,
                             loading: false,

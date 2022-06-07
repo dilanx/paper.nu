@@ -415,7 +415,13 @@ class App extends React.Component<{}, AppState> {
         );
     }
 
-    activateAccountPlan(planId: string) {}
+    activateAccountPlan(planId: string) {
+        let plans = Account.getPlans();
+        console.log(
+            'file: AccountPlans.tsx ~ line 83 ~ activatePlan ~ plans',
+            plans
+        );
+    }
 
     render() {
         let tab = this.state.switches.get.tab;
@@ -465,7 +471,9 @@ class App extends React.Component<{}, AppState> {
                                     alert={(alertData) => {
                                         this.showAlert(alertData);
                                     }}
-                                    activatePlan={(planId) => {}}
+                                    activatePlan={(planId) => {
+                                        this.activateAccountPlan(planId);
+                                    }}
                                     activePlanId={
                                         this.state.switches.get
                                             .active_plan_id as string
