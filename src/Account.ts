@@ -37,8 +37,6 @@ async function authLogin(
         return { success: false, data: 'State Mismatch' };
     }
 
-    localStorage.removeItem('t_s');
-
     let token = await obtainAccessToken(authorizationCode);
 
     if (token.error || !token.access_token) {

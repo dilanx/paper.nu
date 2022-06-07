@@ -26,10 +26,6 @@ import PlanError from './classes/PlanError';
 
 const VERSION = '1.2.0';
 
-interface AppProps {
-    search: string;
-}
-
 interface AppState {
     data: PlanData;
     switches: UserOptions;
@@ -39,8 +35,8 @@ interface AppState {
     loadingLogin: boolean;
 }
 
-class App extends React.Component<AppProps, AppState> {
-    constructor(props: AppProps) {
+class App extends React.Component<{}, AppState> {
+    constructor(props: {}) {
         super(props);
 
         let defaultSwitches = Utility.loadSwitchesFromStorage(
@@ -121,7 +117,7 @@ class App extends React.Component<AppProps, AppState> {
         let data = this.state.data;
         let defaultAlert: AlertData | undefined = undefined;
 
-        let params = new URLSearchParams(this.props.search);
+        let params = new URLSearchParams(window.location.search);
 
         let code = params.get('code');
         params.delete('code');
@@ -132,14 +128,17 @@ class App extends React.Component<AppProps, AppState> {
             this.setState({ loadingLogin: true });
             Account.logIn(code, state).then((response) => {
                 if (!response.success) {
-                    defaultAlert = Utility.errorAlert(
-                        'account_initial_login_code',
-                        response.data as string
+                    this.showAlert(
+                        Utility.errorAlert(
+                            'account_initial_login_code',
+                            response.data as string
+                        )
                     );
+                } else {
+                    this.setSwitch('tab', 'Plans');
+                    this.setSwitch('active_plan_id', '0');
                 }
                 this.setState({ loadingLogin: false });
-                this.setSwitch('tab', 'Plans');
-                this.setSwitch('active_plan_id', '0');
             });
         } else {
             if (Account.isLoggedIn()) {
@@ -150,9 +149,11 @@ class App extends React.Component<AppProps, AppState> {
                         this.setSwitch('active_plan_id', '0');
                     })
                     .catch((error: PlanError) => {
-                        defaultAlert = Utility.errorAlert(
-                            'account_initial_login',
-                            error.message
+                        this.showAlert(
+                            Utility.errorAlert(
+                                'account_initial_login',
+                                error.message
+                            )
                         );
                     });
             }
