@@ -36,8 +36,12 @@ let Utility = {
         };
     },
 
-    saveSwitchToStorage: (key: string, val: string) => {
-        localStorage.setItem('switch_' + key, val);
+    saveSwitchToStorage: (key: string, val?: string) => {
+        if (val) {
+            localStorage.setItem('switch_' + key, val);
+        } else {
+            localStorage.removeItem('switch_' + key);
+        }
     },
 
     getDistroAcronym: (distroString: string) => {

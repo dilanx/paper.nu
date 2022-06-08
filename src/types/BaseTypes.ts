@@ -1,4 +1,4 @@
-export type UserOptionValue = boolean | string | number;
+export type UserOptionValue = boolean | string | number | undefined;
 
 export interface ReadUserOptions {
     [key: string]: UserOptionValue;

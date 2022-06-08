@@ -1,4 +1,6 @@
+import Account from './Account';
 import JSONCourseData from './data/courses.json';
+import { UserOptions } from './types/BaseTypes';
 import {
     RawCourseData,
     PlanData,
@@ -104,7 +106,7 @@ function saveData({ courses, bookmarks }: PlanData) {
     for (let y = 0; y < courses.length; y++) {
         for (let q = 0; q < courses[y].length; q++) {
             let classes = courses[y][q]
-                .map(course => {
+                .map((course) => {
                     let sp = course.id.split(' ');
                     let subj = sp[0];
                     let num = sp[1];
@@ -143,7 +145,7 @@ function saveData({ courses, bookmarks }: PlanData) {
 
 function countCourseUnitsInHundreds(courseList: Course[] | Set<Course>) {
     let total = 0;
-    courseList.forEach(course => {
+    courseList.forEach((course) => {
         total += parseFloat(course.units) * 100;
         if (total % 100 === 2) total -= 2;
         if (total % 50 === 1) total -= 1;
@@ -165,7 +167,7 @@ let CourseManager = {
             let shortcuts = courseData.shortcuts[firstWord];
             let remainder = query.substring(firstWord.length + 1);
             terms = shortcuts.map(
-                shortcut =>
+                (shortcut) =>
                     shortcut.toLowerCase().replace(/-|_/g, ' ') +
                     ' ' +
                     remainder
@@ -185,7 +187,7 @@ let CourseManager = {
         let courseIdResults: Course[] = [];
         let courseNameResults: Course[] = [];
 
-        courseData.courses.forEach(course => {
+        courseData.courses.forEach((course) => {
             for (let term of terms) {
                 if (
                     course.id.toLowerCase().replace(/-|_/g, ' ').includes(term)
@@ -288,21 +290,43 @@ let CourseManager = {
         return courseData.majors[subj].color;
     },
 
-    load: (params: URLSearchParams, fallbackToStorage: boolean) => {
+    load: async (params: URLSearchParams, switches: UserOptions) => {
+        let activePlanId: string | undefined = undefined; // switches.get.active_plan_id as string | undefined;
+        let accountPlans = Account.isLoggedIn() && (await Account.init());
+
+        // Try to load from URL
         let data = CourseManager.loadFromURL(params);
 
-        if (data === 'malformed') {
-            return data;
-        }
-
-        if (data === 'empty' && fallbackToStorage) {
-            let storageData = CourseManager.loadFromStorage();
-            if (storageData !== 'malformed' && storageData !== 'empty') {
-                CourseManager.save(storageData as PlanData, false);
+        if (switches.get.save_to_storage) {
+            // Try to load from account
+            if (data === 'empty') {
+                let storedPlanId = switches.get.active_plan_id as
+                    | string
+                    | undefined;
+                if (
+                    accountPlans &&
+                    storedPlanId &&
+                    storedPlanId !== '0' &&
+                    storedPlanId in accountPlans
+                ) {
+                    data = CourseManager.loadFromString(
+                        accountPlans[storedPlanId].content
+                    );
+                    activePlanId = storedPlanId;
+                }
             }
-            return storageData;
+
+            // Try to load from storage
+            if (data === 'empty') {
+                data = CourseManager.loadFromStorage();
+            }
+
+            if (data !== 'malformed' && data !== 'empty') {
+                CourseManager.save(data, false);
+            }
         }
 
+        switches.set('active_plan_id', activePlanId);
         return data;
     },
 
@@ -312,12 +336,25 @@ let CourseManager = {
 
     loadFromStorage: () => {
         let dataStr = localStorage.getItem('data');
-        if (dataStr == null) return 'empty';
+        if (!dataStr) return 'empty';
         let params = new URLSearchParams(dataStr);
         return loadData(params);
     },
 
-    save: (data: PlanData, saveToStorage: boolean) => {
+    loadFromString: (dataStr?: string) => {
+        if (!dataStr) return 'empty';
+        return loadData(new URLSearchParams(dataStr));
+    },
+
+    getDataString: (data: PlanData) => {
+        return saveData(data).toString();
+    },
+
+    save: (
+        data: PlanData,
+        saveToStorage: boolean,
+        compareAgainstDataString?: string
+    ) => {
         let params = saveData(data);
         let paramsStr = params.toString();
 
@@ -330,6 +367,12 @@ let CourseManager = {
         if (saveToStorage) {
             localStorage.setItem('data', paramsStr);
         }
+
+        if (compareAgainstDataString) {
+            return paramsStr === compareAgainstDataString;
+        }
+
+        return true;
     },
 };
 

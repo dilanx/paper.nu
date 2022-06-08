@@ -33,6 +33,7 @@ interface AppState {
     f: PlanModificationFunctions;
     f2: PlanSpecialFunctions;
     loadingLogin: boolean;
+    accountPlanDataString?: string;
 }
 
 class App extends React.Component<{}, AppState> {
@@ -114,9 +115,6 @@ class App extends React.Component<{}, AppState> {
 
     componentDidMount() {
         let switches = this.state.switches;
-        let data = this.state.data;
-        let defaultAlert: AlertData | undefined = undefined;
-
         let params = new URLSearchParams(window.location.search);
 
         let code = params.get('code');
@@ -136,27 +134,10 @@ class App extends React.Component<{}, AppState> {
                     );
                 } else {
                     this.setSwitch('tab', 'Plans');
-                    this.setSwitch('active_plan_id', '0');
+                    this.setSwitch('active_plan_id', '0', true);
                 }
                 this.setState({ loadingLogin: false });
             });
-        } else {
-            if (Account.isLoggedIn()) {
-                this.setState({ loadingLogin: true });
-                Account.init()
-                    .then(() => {
-                        this.setState({ loadingLogin: false });
-                        this.setSwitch('active_plan_id', '0');
-                    })
-                    .catch((error: PlanError) => {
-                        this.showAlert(
-                            Utility.errorAlert(
-                                'account_initial_login',
-                                error.message
-                            )
-                        );
-                    });
-            }
         }
 
         window.history.replaceState(
@@ -165,34 +146,37 @@ class App extends React.Component<{}, AppState> {
             `${window.location.pathname}?${params.toString()}`
         );
 
-        let res = CourseManager.load(
-            params,
-            switches.get.save_to_storage as boolean
-        );
+        this.setState({ loadingLogin: true });
+        CourseManager.load(params, switches)
+            .then((res) => {
+                this.setState({ loadingLogin: false });
+                if (res === 'malformed') {
+                    this.showAlert({
+                        title: 'Unable to load plan.',
+                        message: `The plan you're trying to access is not valid. If you're loading it through a URL, ensure that it hasn't been manually modified.`,
+                        confirmButton: 'What a shame.',
+                        confirmButtonColor: 'red',
+                        iconBackgroundColor: 'red',
+                        icon: (
+                            <ExclamationIcon
+                                className="h-6 w-6 text-red-600"
+                                aria-hidden="true"
+                            />
+                        ),
+                    });
+                    return;
+                }
+                if (res === 'empty') {
+                    return;
+                }
 
-        if (res !== 'malformed') {
-            if (res !== 'empty') {
-                data = res;
-            }
-        } else {
-            if (!defaultAlert) {
-                defaultAlert = {
-                    title: 'Unable to load plan.',
-                    message: `The plan URL you entered is not valid. Ensure that it hasn't been manually modified.`,
-                    confirmButton: 'What a shame.',
-                    confirmButtonColor: 'red',
-                    iconBackgroundColor: 'red',
-                    icon: (
-                        <ExclamationIcon
-                            className="h-6 w-6 text-red-600"
-                            aria-hidden="true"
-                        />
-                    ),
-                };
-            }
-        }
-
-        this.setState({ data, alertData: defaultAlert });
+                this.setState({ data: res });
+            })
+            .catch((error: PlanError) => {
+                this.showAlert(
+                    Utility.errorAlert('account_initial_login', error.message)
+                );
+            });
     }
 
     setSwitch(key: string, val: UserOptionValue, save = false) {
@@ -200,7 +184,7 @@ class App extends React.Component<{}, AppState> {
         switches.get[key] = val;
         this.setState({ switches: switches });
         if (save) {
-            Utility.saveSwitchToStorage(key, val.toString());
+            Utility.saveSwitchToStorage(key, val?.toString());
         }
     }
 
@@ -223,7 +207,8 @@ class App extends React.Component<{}, AppState> {
         this.setState({ data: data });
         CourseManager.save(
             data,
-            this.state.switches.get.save_to_storage as boolean
+            this.state.switches.get.save_to_storage as boolean,
+            this.state.accountPlanDataString
         );
     }
 
@@ -415,12 +400,38 @@ class App extends React.Component<{}, AppState> {
         );
     }
 
+    actuallyActivateAccountPlan(planId: string, content: string | undefined) {
+        // if (content) {
+        // }
+    }
+
     activateAccountPlan(planId: string) {
-        let plans = Account.getPlans();
-        console.log(
-            'file: AccountPlans.tsx ~ line 83 ~ activatePlan ~ plans',
-            plans
-        );
+        // Account.getPlans().then((plans) => {
+        //     if (!plans) {
+        //         this.showAlert(
+        //             Utility.errorAlert(
+        //                 'account_activate_plan',
+        //                 'Activate Plan, Undefined Plans'
+        //             )
+        //         );
+        //         return;
+        //     }
+        //     let plan = plans[planId];
+        //     if (!plan) {
+        //         this.showAlert(
+        //             Utility.errorAlert(
+        //                 'account_activate_plan',
+        //                 'Activate Undefined Plan'
+        //             )
+        //         );
+        //         return;
+        //     }
+        //     let content = plan.content;
+        //     if (!content) {
+        //         this.setSwitch('active_plan_id', planId, true);
+        //         return;
+        //     }
+        // });
     }
 
     render() {
