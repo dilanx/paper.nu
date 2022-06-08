@@ -11,7 +11,12 @@ import Search from './components/search/Search';
 import Alert from './components/menu/Alert';
 import Bookmarks from './components/bookmarks/Bookmarks';
 import AccountPlans from './components/account/AccountPlans';
-import { ExclamationIcon, PlusIcon } from '@heroicons/react/outline';
+import {
+    ExclamationIcon,
+    PlusIcon,
+    RefreshIcon,
+    SaveIcon,
+} from '@heroicons/react/outline';
 import {
     Course,
     CourseLocation,
@@ -33,7 +38,9 @@ interface AppState {
     f: PlanModificationFunctions;
     f2: PlanSpecialFunctions;
     loadingLogin: boolean;
-    accountPlanDataString?: string;
+    unsavedChanges: boolean;
+    loadingUpdate: boolean;
+    originalDataString: string;
 }
 
 class App extends React.Component<{}, AppState> {
@@ -110,6 +117,9 @@ class App extends React.Component<{}, AppState> {
             f,
             f2,
             loadingLogin: false,
+            unsavedChanges: false,
+            loadingUpdate: false,
+            originalDataString: '',
         };
     }
 
@@ -134,7 +144,7 @@ class App extends React.Component<{}, AppState> {
                     );
                 } else {
                     this.setSwitch('tab', 'Plans');
-                    this.setSwitch('active_plan_id', '0', true);
+                    this.setSwitch('active_plan_id', 'None', true);
                 }
                 this.setState({ loadingLogin: false });
             });
@@ -148,9 +158,9 @@ class App extends React.Component<{}, AppState> {
 
         this.setState({ loadingLogin: true });
         CourseManager.load(params, switches)
-            .then((res) => {
+            .then(({ data, activePlanId, originalDataString }) => {
                 this.setState({ loadingLogin: false });
-                if (res === 'malformed') {
+                if (data === 'malformed') {
                     this.showAlert({
                         title: 'Unable to load plan.',
                         message: `The plan you're trying to access is not valid. If you're loading it through a URL, ensure that it hasn't been manually modified.`,
@@ -166,17 +176,30 @@ class App extends React.Component<{}, AppState> {
                     });
                     return;
                 }
-                if (res === 'empty') {
+                this.setSwitch('active_plan_id', activePlanId, true);
+                this.setState({ originalDataString });
+                if (data === 'empty') {
                     return;
                 }
-
-                this.setState({ data: res });
+                this.setState({ data });
             })
             .catch((error: PlanError) => {
                 this.showAlert(
                     Utility.errorAlert('account_initial_login', error.message)
                 );
             });
+    }
+
+    componentDidUpdate(_: Readonly<{}>, prevState: Readonly<AppState>) {
+        if (prevState.unsavedChanges !== this.state.unsavedChanges) {
+            if (this.state.unsavedChanges) {
+                window.onbeforeunload = () => {
+                    return true;
+                };
+            } else {
+                window.onbeforeunload = null;
+            }
+        }
     }
 
     setSwitch(key: string, val: UserOptionValue, save = false) {
@@ -204,12 +227,14 @@ class App extends React.Component<{}, AppState> {
             if (b.placeholder) return -1;
             return a.id.localeCompare(b.id);
         });
-        this.setState({ data: data });
-        CourseManager.save(
+        this.setState({
             data,
-            this.state.switches.get.save_to_storage as boolean,
-            this.state.accountPlanDataString
-        );
+            unsavedChanges: CourseManager.save(
+                data,
+                this.state.switches,
+                this.state.originalDataString
+            ),
+        });
     }
 
     addCourse(course: Course, { year, quarter }: CourseLocation) {
@@ -284,11 +309,14 @@ class App extends React.Component<{}, AppState> {
             data.courses[year][quarter].indexOf(course),
             1
         );
-        this.setState({ data: data });
-        CourseManager.save(
+        this.setState({
             data,
-            this.state.switches.get.save_to_storage as boolean
-        );
+            unsavedChanges: CourseManager.save(
+                data,
+                this.state.switches,
+                this.state.originalDataString
+            ),
+        });
     }
 
     moveCourse(
@@ -309,16 +337,20 @@ class App extends React.Component<{}, AppState> {
         } else {
             bookmarks.noCredit.add(course);
         }
-        this.setState((prevState) => ({
-            data: {
+        this.setState((prevState) => {
+            const data = {
                 ...prevState.data,
                 bookmarks: bookmarks,
-            },
-        }));
-        CourseManager.save(
-            this.state.data,
-            this.state.switches.get.save_to_storage as boolean
-        );
+            };
+            return {
+                data,
+                unsavedChanges: CourseManager.save(
+                    data,
+                    this.state.switches,
+                    prevState.originalDataString
+                ),
+            };
+        });
     }
 
     removeFavorite(course: Course, forCredit: boolean) {
@@ -329,20 +361,20 @@ class App extends React.Component<{}, AppState> {
             bookmarks.noCredit.delete(course);
         }
 
-        this.setState(
-            (prevState) => ({
-                data: {
-                    ...prevState.data,
-                    bookmarks: bookmarks,
-                },
-            }),
-            () => {
-                CourseManager.save(
-                    this.state.data,
-                    this.state.switches.get.save_to_storage as boolean
-                );
-            }
-        );
+        this.setState((prevState) => {
+            const data = {
+                ...prevState.data,
+                bookmarks: bookmarks,
+            };
+            return {
+                data,
+                unsavedChanges: CourseManager.save(
+                    data,
+                    prevState.switches,
+                    prevState.originalDataString
+                ),
+            };
+        });
     }
 
     addSummerQuarter(year: number) {
@@ -376,62 +408,152 @@ class App extends React.Component<{}, AppState> {
     }
 
     clearData() {
-        this.setState(
-            {
-                data: {
-                    courses: [
-                        [[], [], []],
-                        [[], [], []],
-                        [[], [], []],
-                        [[], [], []],
-                    ],
-                    bookmarks: {
-                        forCredit: new Set<Course>(),
-                        noCredit: new Set<Course>(),
-                    },
-                },
+        let data = {
+            courses: [
+                [[], [], []],
+                [[], [], []],
+                [[], [], []],
+                [[], [], []],
+            ],
+            bookmarks: {
+                forCredit: new Set<Course>(),
+                noCredit: new Set<Course>(),
             },
-            () => {
-                CourseManager.save(
-                    this.state.data,
-                    this.state.switches.get.save_to_storage as boolean
-                );
-            }
-        );
-    }
-
-    actuallyActivateAccountPlan(planId: string, content: string | undefined) {
-        // if (content) {
-        // }
+        };
+        this.setState({
+            data,
+            unsavedChanges: CourseManager.save(
+                data,
+                this.state.switches,
+                this.state.originalDataString
+            ),
+        });
     }
 
     activateAccountPlan(planId: string) {
-        // Account.getPlans().then((plans) => {
-        //     if (!plans) {
-        //         this.showAlert(
-        //             Utility.errorAlert(
-        //                 'account_activate_plan',
-        //                 'Activate Plan, Undefined Plans'
-        //             )
-        //         );
-        //         return;
-        //     }
-        //     let plan = plans[planId];
-        //     if (!plan) {
-        //         this.showAlert(
-        //             Utility.errorAlert(
-        //                 'account_activate_plan',
-        //                 'Activate Undefined Plan'
-        //             )
-        //         );
-        //         return;
-        //     }
-        //     let content = plan.content;
-        //     if (!content) {
-        //         this.setSwitch('active_plan_id', planId, true);
-        //         return;
-        //     }
-        // });
+        Account.getPlans()
+            .then((plans) => {
+                if (!plans) {
+                    this.showAlert(
+                        Utility.errorAlert(
+                            'account_activate_plan',
+                            'Undefined Plans'
+                        )
+                    );
+                    return;
+                }
+                let plan = plans[planId];
+                if (!plan) {
+                    this.showAlert(
+                        Utility.errorAlert(
+                            'account_activate_plan',
+                            'Undefined Plan'
+                        )
+                    );
+                    return;
+                }
+                let data = CourseManager.loadFromString(plan.content);
+                if (data === 'malformed') {
+                    this.showAlert(
+                        Utility.errorAlert(
+                            'account_activate_plan',
+                            'Malformed Plan'
+                        )
+                    );
+                    return;
+                }
+
+                if (data === 'empty') {
+                    this.setSwitch('active_plan_id', planId, true);
+                    this.setState({
+                        originalDataString: plan.content,
+                        unsavedChanges: window.location.search.length > 0,
+                    });
+                    return;
+                }
+
+                let confirmNonAccountOverwrite =
+                    this.state.switches.get.active_plan_id === 'None' &&
+                    window.location.search.length > 0;
+
+                this.discardChanges(() => {
+                    this.setSwitch('active_plan_id', planId, true);
+                    this.setState(
+                        {
+                            data: data as PlanData,
+                            originalDataString: plan.content,
+                        },
+                        () => CourseManager.save(data as PlanData)
+                    );
+                }, confirmNonAccountOverwrite);
+            })
+            .catch((error: PlanError) => {
+                this.showAlert(
+                    Utility.errorAlert('account_activate_plan', error.message)
+                );
+            });
+    }
+
+    deactivatePlan() {
+        this.discardChanges(() => {
+            this.setSwitch('active_plan_id', 'None', true);
+        });
+    }
+
+    updatePlan() {
+        let activePlanId = this.state.switches.get.active_plan_id;
+        if (!activePlanId || activePlanId === 'None') {
+            this.showAlert(
+                Utility.errorAlert('account_update_plan', 'No Active Plan')
+            );
+            return;
+        }
+        this.setState({ loadingUpdate: true });
+        Account.updatePlan(
+            activePlanId as string,
+            CourseManager.getDataString(this.state.data)
+        )
+            .catch((error: PlanError) => {
+                this.showAlert(
+                    Utility.errorAlert('account_update_plan', error.message)
+                );
+            })
+            .finally(() => {
+                this.setState({ loadingUpdate: false, unsavedChanges: false });
+            });
+    }
+
+    discardChanges(
+        action: () => void,
+        confirmNonAccountOverwrite: boolean = false
+    ) {
+        let message = confirmNonAccountOverwrite
+            ? 'It looks like you have some data on your plan already. Activating this non-empty plan will overwrite that data. Are you sure?'
+            : 'It looks like you have some unsaved changes. Navigating away will cause them not to be saved to your account. Are you sure?';
+
+        if (confirmNonAccountOverwrite || this.state.unsavedChanges) {
+            this.showAlert({
+                title: 'Hold on...',
+                message,
+                confirmButton: 'Yes, continue',
+                confirmButtonColor: 'red',
+                cancelButton: 'Go back',
+                iconBackgroundColor: 'red',
+                icon: (
+                    <ExclamationIcon
+                        className="h-6 w-6 text-red-600"
+                        aria-hidden="true"
+                    />
+                ),
+                action: () => {
+                    this.setState({ unsavedChanges: false });
+                    action();
+                },
+            });
+            return;
+        }
+
+        action();
     }
 
     render() {
@@ -439,7 +561,9 @@ class App extends React.Component<{}, AppState> {
         return (
             <DndProvider backend={HTML5Backend}>
                 <div
-                    className={`${this.state.switches.get.dark ? 'dark' : ''}`}
+                    className={`${
+                        this.state.switches.get.dark ? 'dark' : ''
+                    } relative`}
                 >
                     {this.state.alertData && (
                         <Alert
@@ -485,6 +609,9 @@ class App extends React.Component<{}, AppState> {
                                     activatePlan={(planId) => {
                                         this.activateAccountPlan(planId);
                                     }}
+                                    deactivatePlan={() => {
+                                        this.deactivatePlan();
+                                    }}
                                     activePlanId={
                                         this.state.switches.get
                                             .active_plan_id as string
@@ -520,6 +647,38 @@ class App extends React.Component<{}, AppState> {
                             />
                         </div>
                     </div>
+                    {this.state.unsavedChanges && (
+                        <div className="fixed bottom-8 right-12">
+                            <button
+                                className={`flex items-center gap-2 rainbow-border-button shadow-lg opacity-75 hover:opacity-100 focus:before:bg-none focus:before:bg-emerald-400
+                                after:bg-gray-100 text-black dark:after:bg-gray-700 dark:text-white ${
+                                    this.state.loadingUpdate
+                                        ? 'before:bg-none before:bg-emerald-400'
+                                        : ''
+                                }`}
+                                onClick={() => {
+                                    this.updatePlan();
+                                }}
+                                disabled={this.state.loadingUpdate}
+                            >
+                                {this.state.loadingUpdate ? (
+                                    <>
+                                        <RefreshIcon className="h-6 w-6 inline-block animate-reverse-spin" />
+                                        <p className="inline-block text-lg font-extrabold">
+                                            SAVING
+                                        </p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <SaveIcon className="h-6 w-6 inline-block" />
+                                        <p className="inline-block text-lg font-extrabold">
+                                            SAVE
+                                        </p>
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    )}
                 </div>
             </DndProvider>
         );

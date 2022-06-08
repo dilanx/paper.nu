@@ -11,7 +11,6 @@ import Account from '../../Account';
 import {
     AccountModificationFunctions,
     AccountPlansData,
-    PlanId,
 } from '../../types/AccountTypes';
 import { Alert } from '../../types/AlertTypes';
 import Utility from '../../Utility';
@@ -23,6 +22,7 @@ interface AccountPlansProps {
     data: PlanData;
     alert: Alert;
     activatePlan: (planId: string) => void;
+    deactivatePlan: () => void;
     activePlanId: string;
 }
 
@@ -43,10 +43,13 @@ class AccountPlans extends React.Component<
         let self = this;
 
         let fa: AccountModificationFunctions = {
-            activatePlan: (planId: PlanId) => {
+            activatePlan: (planId: string) => {
                 self.activatePlan(planId);
             },
-            deletePlan: (planId: PlanId, planName: string) => {
+            deactivatePlan: () => {
+                self.deactivatePlan();
+            },
+            deletePlan: (planId: string, planName: string) => {
                 self.deletePlan(planId, planName);
             },
         };
@@ -78,8 +81,12 @@ class AccountPlans extends React.Component<
         }
     }
 
-    activatePlan(planId: PlanId) {
+    activatePlan(planId: string) {
         this.props.activatePlan(planId);
+    }
+
+    deactivatePlan() {
+        this.props.deactivatePlan();
     }
 
     createPlan() {
@@ -135,7 +142,7 @@ class AccountPlans extends React.Component<
         });
     }
 
-    deletePlan(planId: PlanId, planName: string) {
+    deletePlan(planId: string, planName: string) {
         let self = this;
 
         this.props.alert({
@@ -255,7 +262,9 @@ class AccountPlans extends React.Component<
                 ) : (
                     <>
                         <p className="mx-8 text-center text-sm text-gray-500">
-                            Select a plan to activate it.
+                            Select a plan to activate it, and again to
+                            deactivate it. Activating empty plans won't
+                            overwrite current plan data.
                         </p>
                         <div className="block m-4">{plans}</div>
                         {plans.length < 5 && (

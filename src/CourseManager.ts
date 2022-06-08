@@ -292,15 +292,26 @@ let CourseManager = {
     },
 
     load: async (params: URLSearchParams, switches: UserOptions) => {
-        let activePlanId: string | undefined = undefined; // switches.get.active_plan_id as string | undefined;
+        let activePlanId: string | undefined = undefined;
+        let originalDataString: string = '';
         let accountPlans: AccountPlansData | undefined = undefined;
         if (Account.isLoggedIn()) {
             accountPlans = await Account.init();
-            activePlanId = '0';
+            activePlanId = 'None';
         }
 
-        // Try to load from URL
+        // Try to load from URL and match to account plan
         let data = CourseManager.loadFromURL(params);
+        if (accountPlans && data !== 'malformed' && data !== 'empty') {
+            let dataStr = params.toString();
+            for (let planId in accountPlans) {
+                if (accountPlans[planId].content === dataStr) {
+                    activePlanId = planId;
+                    originalDataString = dataStr;
+                    break;
+                }
+            }
+        }
 
         if (switches.get.save_to_storage) {
             // Try to load from account
@@ -309,10 +320,12 @@ let CourseManager = {
                     | string
                     | undefined;
                 if (accountPlans && storedPlanId) {
-                    data = CourseManager.loadFromString(
-                        accountPlans[storedPlanId]?.content
-                    );
-                    activePlanId = storedPlanId;
+                    if (storedPlanId in accountPlans) {
+                        let content = accountPlans[storedPlanId].content;
+                        data = CourseManager.loadFromString(content);
+                        activePlanId = storedPlanId;
+                        originalDataString = content;
+                    }
                 }
             }
 
@@ -322,12 +335,15 @@ let CourseManager = {
             }
 
             if (data !== 'malformed' && data !== 'empty') {
-                CourseManager.save(data, false);
+                CourseManager.save(data);
             }
         }
 
-        switches.set('active_plan_id', activePlanId);
-        return data;
+        return {
+            data,
+            activePlanId,
+            originalDataString,
+        };
     },
 
     loadFromURL: (params: URLSearchParams) => {
@@ -352,7 +368,7 @@ let CourseManager = {
 
     save: (
         data: PlanData,
-        saveToStorage: boolean,
+        switches?: UserOptions,
         compareAgainstDataString?: string
     ) => {
         let params = saveData(data);
@@ -364,15 +380,17 @@ let CourseManager = {
             `${window.location.pathname}?${paramsStr}`
         );
 
-        if (saveToStorage) {
+        if (switches?.get.save_to_storage) {
             localStorage.setItem('data', paramsStr);
         }
 
-        if (compareAgainstDataString) {
-            return paramsStr === compareAgainstDataString;
+        let activePlanId = switches?.get.active_plan_id as string | undefined;
+
+        if (activePlanId && activePlanId !== 'None') {
+            return paramsStr !== compareAgainstDataString;
         }
 
-        return true;
+        return false;
     },
 };
 

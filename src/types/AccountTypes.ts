@@ -13,20 +13,19 @@ export interface AuthenticationResponseToken {
     error?: string;
 }
 
-export type PlanId = string;
-
 export interface AccountPlansData {
-    [key: PlanId]: AccountPlanData;
+    [key: string]: AccountPlanData;
 }
 
 export interface AccountPlanData {
     name: string;
     createdAt: number;
-    content?: string;
+    content: string;
     lastUpdated?: number;
 }
 
 export interface AccountModificationFunctions {
-    activatePlan: (planId: PlanId) => void;
-    deletePlan: (planId: PlanId, planName: string) => void;
+    activatePlan: (planId: string) => void;
+    deactivatePlan: () => void;
+    deletePlan: (planId: string, planName: string) => void;
 }

@@ -2,11 +2,10 @@ import { TrashIcon } from '@heroicons/react/outline';
 import {
     AccountModificationFunctions,
     AccountPlanData,
-    PlanId,
 } from '../../types/AccountTypes';
 
 interface AccountPlanProps {
-    id: PlanId;
+    id: string;
     plan: AccountPlanData;
     fa: AccountModificationFunctions;
     active: boolean;
@@ -16,9 +15,21 @@ function AccountPlan(props: AccountPlanProps) {
     let plan = props.plan;
     return (
         <div
-            className="block border-2 border-rose-400 bg-rose-50 dark:bg-gray-800 w-full my-4 text-left px-4 py-8 rounded-lg text-black
-            hover:shadow-md transition ease-in-out duration-300 transform hover:-translate-y-1 group cursor-pointer"
-            onClick={() => props.fa.activatePlan(id)}
+            tabIndex={0}
+            className={`block border-2 ${
+                props.active
+                    ? 'border-emerald-400 bg-emerald-50'
+                    : 'border-rose-400 bg-rose-50'
+            }  dark:bg-gray-800 w-full my-4 text-left px-4 py-8 rounded-lg text-black
+            hover:shadow-md transition ease-in-out duration-300 transform hover:-translate-y-1
+            focus:shadow-inner focus:translate-y-0 group cursor-pointer`}
+            onClick={() => {
+                if (props.active) {
+                    props.fa.deactivatePlan();
+                } else {
+                    props.fa.activatePlan(id);
+                }
+            }}
         >
             <p className="text-lg font-semibold text-black dark:text-white">
                 {plan.name.toUpperCase()}
@@ -33,7 +44,7 @@ function AccountPlan(props: AccountPlanProps) {
                 className="absolute -top-2 -right-2 p-0.5 rounded-full bg-gray-200 hover:bg-red-100 dark:bg-gray-700
                         text-gray-500 dark:text-white text-xs opacity-80 hover:text-red-400 dark:hover:text-red-400 hover:opacity-100
                         transition-all duration-150 hidden group-hover:block z-20"
-                onClick={e => {
+                onClick={(e) => {
                     e.stopPropagation();
                     props.fa.deletePlan(id, plan.name);
                 }}

@@ -3,7 +3,6 @@ import {
     AccountPlansData,
     AuthenticationResponseToken,
     ConnectionResponse,
-    PlanId,
 } from './types/AccountTypes';
 import Utility from './Utility';
 
@@ -136,16 +135,19 @@ let Account = {
     createPlan: (name: string) => {
         return planOperation('', 'POST', { name });
     },
-    deletePlan: (planId: PlanId) => {
+    deletePlan: (planId: string) => {
         return planOperation(planId, 'DELETE');
     },
-    getPlanName: (planId?: PlanId) => {
+    updatePlan: (planId: string, content: string) => {
+        return planOperation(planId, 'PATCH', { content });
+    },
+    getPlanName: (planId?: string) => {
         if (!planId) return 'Log in';
-        if (planId === '0') return 'None';
+        if (planId === 'None') return 'None';
         if (!plans) {
             return 'err';
         }
-        return plans[planId].name;
+        return plans[planId].name.toUpperCase();
     },
 };
 

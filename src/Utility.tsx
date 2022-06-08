@@ -25,7 +25,13 @@ let Utility = {
         let keys = Object.keys(localStorage);
         for (let i = 0; i < keys.length; i++) {
             if (keys[i].startsWith('switch_')) {
-                let val = localStorage.getItem(keys[i]) === 'true';
+                let store = localStorage.getItem(keys[i]);
+                let val: UserOptionValue = undefined;
+                if (store != null) {
+                    if (store === 'true') val = true;
+                    else if (store === 'false') val = false;
+                    else val = store;
+                }
                 let switchId = keys[i].substring(7);
                 switches[switchId] = val;
             }

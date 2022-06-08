@@ -278,7 +278,7 @@ function TaskBar(props: TaskBarProps) {
                                 buttonTextOn: 'Enabled',
                                 buttonTextOff: 'Disabled',
                                 saveToStorage: true,
-                                bonusAction: newSwitch => {
+                                bonusAction: (newSwitch) => {
                                     let color = newSwitch
                                         ? Utility.BACKGROUND_DARK
                                         : Utility.BACKGROUND_LIGHT;
