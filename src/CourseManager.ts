@@ -1,5 +1,6 @@
 import Account from './Account';
 import JSONCourseData from './data/courses.json';
+import { AccountPlansData } from './types/AccountTypes';
 import { UserOptions } from './types/BaseTypes';
 import {
     RawCourseData,
@@ -292,7 +293,11 @@ let CourseManager = {
 
     load: async (params: URLSearchParams, switches: UserOptions) => {
         let activePlanId: string | undefined = undefined; // switches.get.active_plan_id as string | undefined;
-        let accountPlans = Account.isLoggedIn() && (await Account.init());
+        let accountPlans: AccountPlansData | undefined = undefined;
+        if (Account.isLoggedIn()) {
+            accountPlans = await Account.init();
+            activePlanId = '0';
+        }
 
         // Try to load from URL
         let data = CourseManager.loadFromURL(params);
@@ -303,14 +308,9 @@ let CourseManager = {
                 let storedPlanId = switches.get.active_plan_id as
                     | string
                     | undefined;
-                if (
-                    accountPlans &&
-                    storedPlanId &&
-                    storedPlanId !== '0' &&
-                    storedPlanId in accountPlans
-                ) {
+                if (accountPlans && storedPlanId) {
                     data = CourseManager.loadFromString(
-                        accountPlans[storedPlanId].content
+                        accountPlans[storedPlanId]?.content
                     );
                     activePlanId = storedPlanId;
                 }
