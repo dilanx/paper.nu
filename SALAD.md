@@ -58,7 +58,7 @@ Primarily me (Dilan), but also Andy if he wants!
 
 ## Will it be called Plan Northwestern or salad.nu? Or neither?
 
-Idk yet we'll see. The plan-nu.com domain might stay since plans are loaded through URLs that include that, whereas salad.nu doesn't store anything in its URL. Even if salad is completely merged into plan, I'd still put the salad name on there somewhere because it's good.
+Idk yet we'll see.
 
 ## The logos include generic icons found online, right? Maybe a new logo?
 
