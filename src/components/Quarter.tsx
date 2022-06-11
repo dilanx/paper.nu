@@ -8,6 +8,8 @@ import {
     Course,
     PlanModificationFunctions,
     BookmarksData,
+    CourseDropResult,
+    DropCollectedProps,
 } from '../types/PlanTypes';
 import Class from './Class';
 
@@ -23,9 +25,13 @@ interface QuarterProps {
 }
 
 function Quarter(props: QuarterProps) {
-    const [{ isOver }, drop] = useDrop(() => ({
+    const [{ isOver }, drop] = useDrop<
+        CourseDragItem,
+        CourseDropResult,
+        DropCollectedProps
+    >(() => ({
         accept: 'Class',
-        drop: (item: CourseDragItem, monitor) => {
+        drop: (item, monitor) => {
             if (monitor.didDrop()) {
                 return;
             }
@@ -36,7 +42,7 @@ function Quarter(props: QuarterProps) {
             }
             return { moved: true };
         },
-        collect: monitor => ({ isOver: monitor.isOver() }),
+        collect: (monitor) => ({ isOver: monitor.isOver() }),
     }));
 
     let courses = props.data;
@@ -52,7 +58,7 @@ function Quarter(props: QuarterProps) {
                         location={props.location}
                         f={props.f}
                         switches={props.switches}
-                        key={index}
+                        key={classData.id + '-' + index}
                     />
                 );
             });

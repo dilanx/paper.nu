@@ -219,32 +219,21 @@ class App extends React.Component<{}, AppState> {
         this.setState({ alertData: undefined });
     }
 
-    actuallyAddCourse(course: Course, year: number, quarter: number) {
-        let data = this.state.data;
-        data.courses[year][quarter].push(course);
-        data.courses[year][quarter].sort((a, b) => {
-            if (a.placeholder) return 1;
-            if (b.placeholder) return -1;
-            return a.id.localeCompare(b.id);
-        });
-        this.setState({
-            data,
-            unsavedChanges: CourseManager.save(
-                data,
-                this.state.switches,
-                this.state.originalDataString
-            ),
-        });
-    }
+    actuallyAddCourse(course: Course, year: number, quarter: number) {}
 
-    addCourse(course: Course, { year, quarter }: CourseLocation) {
+    courseConfirmationPrompts(
+        course: Course,
+        { year, quarter }: CourseLocation,
+        confirmationCallback: () => void,
+        ignoreExistCheck = false
+    ) {
         let data = this.state.data;
         let isPlaceholder = course.placeholder;
         let repeatable = course.repeatable;
 
         let exists = CourseManager.duplicateCourse(course, data);
 
-        if (!repeatable && exists && !isPlaceholder) {
+        if (!repeatable && exists && !isPlaceholder && !ignoreExistCheck) {
             this.showAlert({
                 title: 'Course already planned.',
                 message: `You already have ${
@@ -265,7 +254,7 @@ class App extends React.Component<{}, AppState> {
                     />
                 ),
                 action: () => {
-                    this.actuallyAddCourse(course, year, quarter);
+                    confirmationCallback();
                 },
             });
             return;
@@ -290,13 +279,35 @@ class App extends React.Component<{}, AppState> {
                     />
                 ),
                 action: () => {
-                    this.actuallyAddCourse(course, year, quarter);
+                    confirmationCallback();
                 },
             });
             return;
         }
 
-        this.actuallyAddCourse(course, year, quarter);
+        confirmationCallback();
+    }
+
+    addCourse(course: Course, location: CourseLocation) {
+        this.courseConfirmationPrompts(course, location, () => {
+            let data = this.state.data;
+            let { year, quarter } = location;
+            data.courses[year][quarter].push(course);
+            data.courses[year][quarter].sort((a, b) => {
+                if (a.placeholder) return 1;
+                if (b.placeholder) return -1;
+                return a.id.localeCompare(b.id);
+            });
+
+            this.setState({
+                data,
+                unsavedChanges: CourseManager.save(
+                    data,
+                    this.state.switches,
+                    this.state.originalDataString
+                ),
+            });
+        });
     }
 
     removeCourse(course: Course, { year, quarter }: CourseLocation) {
@@ -321,13 +332,43 @@ class App extends React.Component<{}, AppState> {
 
     moveCourse(
         course: Course,
-        { year: oy, quarter: oq }: CourseLocation,
+        oldLocation: CourseLocation,
         newLocation: CourseLocation
     ) {
-        if (oy !== -1) {
-            this.removeCourse(course, { year: oy, quarter: oq });
-        }
-        this.addCourse(course, newLocation);
+        let { year: oy, quarter: oq } = oldLocation;
+        let { year: ny, quarter: nq } = newLocation;
+        if (oy == ny && oq == nq) return;
+
+        this.courseConfirmationPrompts(
+            course,
+            newLocation,
+            () => {
+                if (oy >= 0) {
+                    let data = this.state.data;
+                    data.courses[oy][oq].splice(
+                        data.courses[oy][oq].indexOf(course),
+                        1
+                    );
+                }
+                let data = this.state.data;
+                data.courses[ny][nq].push(course);
+                data.courses[ny][nq].sort((a, b) => {
+                    if (a.placeholder) return 1;
+                    if (b.placeholder) return -1;
+                    return a.id.localeCompare(b.id);
+                });
+
+                this.setState({
+                    data,
+                    unsavedChanges: CourseManager.save(
+                        data,
+                        this.state.switches,
+                        this.state.originalDataString
+                    ),
+                });
+            },
+            true
+        );
     }
 
     addFavorite(course: Course, forCredit: boolean) {

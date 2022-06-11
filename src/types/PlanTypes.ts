@@ -59,6 +59,18 @@ export interface CourseDragItem {
     from?: CourseLocation;
 }
 
+export interface CourseDropResult {
+    moved: boolean;
+}
+
+export interface DragCollectProps {
+    isDragging: boolean;
+}
+
+export interface DropCollectedProps {
+    isOver: boolean;
+}
+
 export interface SearchResults {
     results: Course[];
     shortcut?: SearchShortcut;

@@ -56,7 +56,7 @@ class Year extends React.Component<YearProps, YearState> {
                         switches={this.props.switches}
                         title={title}
                         color={color}
-                        key={index}
+                        key={this.props.year + '-' + index}
                     />
                 );
             });
