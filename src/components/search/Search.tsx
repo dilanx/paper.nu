@@ -132,7 +132,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                 <SearchClass
                     course={course}
                     color={CourseManager.getCourseColor(course.id)}
-                    select={course => {
+                    select={(course) => {
                         this.setState({ current: course });
                     }}
                     bookmarks={this.props.data.bookmarks}
@@ -172,7 +172,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                 transition-all duration-150 text-black dark:text-white"
                     value={this.state.search}
                     placeholder="Search for classes..."
-                    onChange={event => {
+                    onChange={(event) => {
                         this.setState({ search: event.target.value });
                     }}
                 />
@@ -228,7 +228,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                     </p>
                     <button
                         className="block mx-auto bg-indigo-500 text-white font-medium w-4/5 p-0.5 my-2 opacity-100 hover:opacity-60
-                            transition-all duration-150 rounded-md shadow-lg"
+                            transition-all duration-150 rounded-md shadow-sm"
                         onClick={() => {
                             if (!current) return;
                             if (bookmarks.noCredit.has(current)) {
@@ -244,7 +244,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                     </button>
                     <button
                         className="block mx-auto bg-indigo-800 dark:bg-indigo-400 text-white font-medium w-4/5 p-0.5 my-2 opacity-100 hover:opacity-60
-                            transition-all duration-150 rounded-md shadow-lg"
+                            transition-all duration-150 rounded-md shadow-sm"
                         onClick={() => {
                             if (!current) return;
                             if (bookmarks.forCredit.has(current)) {
@@ -264,7 +264,7 @@ class Search extends React.Component<SearchProps, SearchState> {
             exitButton = (
                 <button
                     className="block mx-auto my-8 bg-gray-500 text-white font-medium
-                        w-4/5 p-2 opacity-100 hover:opacity-60 transition-all duration-150 rounded-md shadow-lg"
+                        w-4/5 p-2 opacity-100 hover:opacity-60 transition-all duration-150 rounded-md shadow-sm"
                     onClick={() => {
                         this.setState({ current: undefined });
                     }}

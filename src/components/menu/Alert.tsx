@@ -40,7 +40,7 @@ export default function Alert(props: AlertProps) {
     let extraList: JSX.Element[] = [];
     if (data.extras) {
         let i = 0;
-        data.extras.forEach(extra => {
+        data.extras.forEach((extra) => {
             extraList.push(
                 <div className="mt-4" key={`alert-extra-${i}`}>
                     <p className="text-xs text-gray-500 font-bold dark:text-gray-400">
@@ -59,7 +59,7 @@ export default function Alert(props: AlertProps) {
 
     if (data.options) {
         let i = 0;
-        data.options.forEach(option => {
+        data.options.forEach((option) => {
             let enabled = false;
             if (!option.singleAction)
                 enabled = props.switches.get[option.name] as boolean;
@@ -81,7 +81,7 @@ export default function Alert(props: AlertProps) {
                             (enabled ? (
                                 <button
                                     className="block mx-auto bg-emerald-400 text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
-                                    m-1 p-2 w-full rounded-md shadow-md"
+                                    m-1 p-2 w-full rounded-md shadow-sm"
                                     onClick={() => {
                                         props.switches.set(
                                             option.name,
@@ -98,7 +98,7 @@ export default function Alert(props: AlertProps) {
                             ) : (
                                 <button
                                     className="block mx-auto bg-red-400 text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
-                                    m-1 p-2 w-full rounded-md shadow-md"
+                                    m-1 p-2 w-full rounded-md shadow-sm"
                                     onClick={() => {
                                         props.switches.set(
                                             option.name,
@@ -155,7 +155,7 @@ export default function Alert(props: AlertProps) {
 
     if (data.editButtons) {
         let i = 0;
-        data.editButtons.forEach(editButton => {
+        data.editButtons.forEach((editButton) => {
             let dataSet: AlertDataEditButtonData;
 
             if (editButtonIsToggleable(editButton)) {
@@ -264,7 +264,7 @@ export default function Alert(props: AlertProps) {
                                             placeholder={
                                                 data.textInput.placeholder
                                             }
-                                            onChange={event => {
+                                            onChange={(event) => {
                                                 setInputText(
                                                     event.target.value
                                                 );
