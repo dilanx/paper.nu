@@ -2,11 +2,9 @@
 
 [Plan Northwestern](https://www.plan-nu.com), a 4 year course planning tool, and [salad.nu](https://www.salad.nu), a quarter course scheduling tool, will be integrated with each other this fall.
 
-I wrote some questions that I think people might ask.
-
 ## What's happening?
 
-salad.nu is a super useful tool for planning courses, but, other than for its course data, it hasn't been updated in a couple of years. Although Andy had a few updates planned back in 2020, he hasn't gotten around to it and has decided he wants to hand off the project to someone who'd like to maintain it rather than leave it without updates.
+salad.nu is a super useful tool for planning courses. Andy is graduating and handing off the project to someone who'd like to maintain it going forward.
 
 Plan Northwestern is still being updated and will soon have an optional account system that can allow users to save plans to an account rather than just saving really long URLs if they'd like. With this merge, salad.nu can take advantage of the account system and URL system, allowing for commonly requested features like multiple schedule support.
 
