@@ -44,11 +44,11 @@ Yay! Please let me know by [creating an issue](https://github.com/dilanx/plan-no
 
 ## Can I help?
 
-Yes, please. [You can sign up to help beta test the software here.](https://forms.gle/oqcm8q2qvX615Fry9) You'll get access to early versions and will be tasked with using it and finding any bugs and glitches. If you're interested in contributing and have experience with TypeScript and React (and optionally Tailwind CSS), contact me on Discord or by email.
+Yes, please. [You can sign up to help beta test the software here.](https://forms.gle/oqcm8q2qvX615Fry9) You'll get access to early versions and will be tasked with using it and finding any bugs and glitches. If you're interested in contributing and have experience with TypeScript and React (and optionally Tailwind CSS), contact me on Instagram or Discord.
 
 ## I'd like to talk about this more! How can I reach you?
 
-You can message me on Discord at Dilan#1000 (you'll need to join the [Northwestern Discord server](https://discord.gg/aERJFBAhyP) first). You can also email me at dilan@dilanxd.com.
+Feel free to get in touch by messaging me on Instagram at https://instagram.com/dilan4k. Alternatively, you can message me on Discord at Dilan#1000 (you'll need to join the [Northwestern Discord server](https://discord.gg/aERJFBAhyP) first).
 
 ## Isn't this kinda ambitious?
 
