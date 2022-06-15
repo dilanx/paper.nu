@@ -44,7 +44,7 @@ Yay! Please let me know by [creating an issue](https://github.com/dilanx/plan-no
 
 ## Can I help?
 
-Yes, please. You can sign up to help beta test the software [here](https://forms.gle/oqcm8q2qvX615Fry9). You'll get access to early versions and will be tasked with using it and finding any bugs and glitches. If you're interested in contributing and have experience with TypeScript and React (and optionally Tailwind CSS), contact me on Discord or by email.
+Yes, please. [You can sign up to help beta test the software here.](https://forms.gle/oqcm8q2qvX615Fry9) You'll get access to early versions and will be tasked with using it and finding any bugs and glitches. If you're interested in contributing and have experience with TypeScript and React (and optionally Tailwind CSS), contact me on Discord or by email.
 
 ## I'd like to talk about this more! How can I reach you?
 
