@@ -29,7 +29,7 @@ import { UserOptions, UserOptionValue } from './types/BaseTypes';
 import Account from './Account';
 import PlanError from './classes/PlanError';
 
-const VERSION = '1.2.0';
+const VERSION = process.env.REACT_APP_VERSION ?? 'UNKNOWN';
 
 interface AppState {
     data: PlanData;
