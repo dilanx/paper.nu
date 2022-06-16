@@ -124,7 +124,7 @@ class App extends React.Component<{}, AppState> {
     }
 
     componentDidMount() {
-        let switches = this.state.switches;
+        this.setState({ loadingLogin: true });
         let params = new URLSearchParams(window.location.search);
 
         let code = params.get('code');
@@ -132,8 +132,13 @@ class App extends React.Component<{}, AppState> {
         let state = params.get('state');
         params.delete('state');
 
+        window.history.replaceState(
+            {},
+            '',
+            `${window.location.pathname}?${params.toString()}`
+        );
+
         if (code && state) {
-            this.setState({ loadingLogin: true });
             Account.logIn(code, state).then((response) => {
                 if (!response.success) {
                     this.showAlert(
@@ -146,18 +151,19 @@ class App extends React.Component<{}, AppState> {
                     this.setSwitch('tab', 'Plans');
                     this.setSwitch('active_plan_id', 'None', true);
                 }
+                this.initializePlan(params, () => {
+                    this.setState({ loadingLogin: false });
+                });
+            });
+        } else {
+            this.initializePlan(params, () => {
                 this.setState({ loadingLogin: false });
             });
         }
+    }
 
-        window.history.replaceState(
-            {},
-            '',
-            `${window.location.pathname}?${params.toString()}`
-        );
-
-        this.setState({ loadingLogin: true });
-        CourseManager.load(params, switches)
+    initializePlan(params: URLSearchParams, callback: () => void) {
+        CourseManager.load(params, this.state.switches)
             .then(({ data, activePlanId, originalDataString }) => {
                 this.setState({ loadingLogin: false });
                 if (data === 'malformed') {
@@ -187,7 +193,8 @@ class App extends React.Component<{}, AppState> {
                 this.showAlert(
                     Utility.errorAlert('account_initial_login', error.message)
                 );
-            });
+            })
+            .finally(() => callback());
     }
 
     componentDidUpdate(_: Readonly<{}>, prevState: Readonly<AppState>) {
@@ -218,8 +225,6 @@ class App extends React.Component<{}, AppState> {
     postShowAlert() {
         this.setState({ alertData: undefined });
     }
-
-    actuallyAddCourse(course: Course, year: number, quarter: number) {}
 
     courseConfirmationPrompts(
         course: Course,
@@ -337,7 +342,7 @@ class App extends React.Component<{}, AppState> {
     ) {
         let { year: oy, quarter: oq } = oldLocation;
         let { year: ny, quarter: nq } = newLocation;
-        if (oy == ny && oq == nq) return;
+        if (oy === ny && oq === nq) return;
 
         this.courseConfirmationPrompts(
             course,
