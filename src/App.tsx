@@ -213,6 +213,13 @@ class App extends React.Component<{}, AppState> {
 
     setSwitch(key: string, val: UserOptionValue, save = false) {
         let switches = this.state.switches;
+        if (
+            key === 'active_plan_id' &&
+            val === 'None' &&
+            switches.get[key] !== val
+        ) {
+            this.setState({ unsavedChanges: false });
+        }
         switches.get[key] = val;
         this.setState({ switches: switches });
         if (save) {
@@ -648,6 +655,7 @@ class App extends React.Component<{}, AppState> {
                             {tab === 'Plans' && (
                                 <AccountPlans
                                     data={this.state.data}
+                                    switches={this.state.switches}
                                     alert={(alertData) => {
                                         this.showAlert(alertData);
                                     }}

@@ -17,9 +17,11 @@ import Utility from '../../Utility';
 import AccountPlan from './AccountPlan';
 import PlanError from '../../classes/PlanError';
 import { PlanData } from '../../types/PlanTypes';
+import { UserOptions } from '../../types/BaseTypes';
 
 interface AccountPlansProps {
     data: PlanData;
+    switches: UserOptions;
     alert: Alert;
     activatePlan: (planId: string) => void;
     deactivatePlan: () => void;
@@ -166,6 +168,14 @@ class AccountPlans extends React.Component<
                             plans: res,
                             loading: false,
                         });
+                        let switches = this.props.switches;
+                        if (switches.get.active_plan_id === planId) {
+                            this.props.switches.set(
+                                'active_plan_id',
+                                'None',
+                                true
+                            );
+                        }
                     })
                     .catch((error: PlanError) => {
                         self.props.alert(
