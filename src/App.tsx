@@ -203,10 +203,8 @@ class App extends React.Component<{}, AppState> {
                 window.onbeforeunload = () => {
                     return true;
                 };
-                document.title = '* ' + document.title;
             } else {
                 window.onbeforeunload = null;
-                document.title = document.title.replace(/\* /, '');
             }
         }
     }
