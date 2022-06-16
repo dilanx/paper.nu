@@ -9,6 +9,7 @@ import {
     CollectionIcon,
     ExternalLinkIcon,
 } from '@heroicons/react/outline';
+import { XCircleIcon } from '@heroicons/react/solid';
 import {
     Course,
     PlanData,
@@ -53,10 +54,13 @@ interface SearchState {
 }
 
 class Search extends React.Component<SearchProps, SearchState> {
+    searchFieldRef: React.RefObject<HTMLInputElement>;
+
     constructor(props: SearchProps) {
         super(props);
 
         this.state = { search: '' };
+        this.searchFieldRef = React.createRef();
     }
 
     searchMessage(title: string, subtitle: string) {
@@ -161,21 +165,38 @@ class Search extends React.Component<SearchProps, SearchState> {
 
     render() {
         let singleClassView = false;
+        let search = this.state.search;
 
         let { results, shortcut } = this.getResults();
 
+        // TODO working on search bar x
         let searchField = (
             <div className="sticky top-0 p-2 mb-2 bg-white dark:bg-gray-800 z-10 rounded-lg">
-                <input
-                    className="block mt-4 mb-2 mx-auto w-11/12 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 shadow-md
-                rounded-lg outline-none hover:border-gray-500 focus:border-black dark:hover:border-gray-400 dark:focus:border-white text-lg p-2 px-4
-                transition-all duration-150 text-black dark:text-white"
-                    value={this.state.search}
-                    placeholder="Search for classes..."
-                    onChange={(event) => {
-                        this.setState({ search: event.target.value });
-                    }}
-                />
+                <div className="block mt-4 mb-2 mx-auto w-11/12 relative">
+                    <input
+                        className="w-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 shadow-md
+                            rounded-lg outline-none hover:border-gray-500 focus:border-black dark:hover:border-gray-400 dark:focus:border-white text-lg p-2 px-4
+                            transition-all duration-150 text-black dark:text-white"
+                        ref={this.searchFieldRef}
+                        value={search}
+                        placeholder="Search for classes..."
+                        onChange={(event) => {
+                            this.setState({ search: event.target.value });
+                        }}
+                    />
+                    {search.length > 0 && (
+                        <button
+                            className="block absolute right-4 top-0 bottom-0 my-2 text-gray-400 hover:text-red-400 focus:text-red-300
+                                transition-colors duration-150"
+                            onClick={() => {
+                                this.setState({ search: '' });
+                                this.searchFieldRef.current?.focus();
+                            }}
+                        >
+                            <XCircleIcon className="w-5 h-5" />
+                        </button>
+                    )}
+                </div>
                 {shortcut && (
                     <p className="text-center text-sm m-0 p-0 text-gray-500 dark:text-gray-400">
                         replacing{' '}
