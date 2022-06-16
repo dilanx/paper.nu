@@ -7,7 +7,7 @@ module.exports = {
         {
             pattern:
                 /(border|bg|text)-(.*)-(50|100|200|300|400|500|600|700|800|900)/,
-            variants: ['hover', 'focus', 'dark:hover', 'dark:focus'],
+            variants: ['hover', 'focus', 'dark', 'dark:hover', 'dark:focus'],
         },
     ],
     darkMode: 'class',

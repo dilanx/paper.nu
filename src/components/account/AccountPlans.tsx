@@ -280,7 +280,7 @@ class AccountPlans extends React.Component<
                         {plans.length < 5 && (
                             <button
                                 className="block mx-auto my-2 px-8 py-1 bg-rose-300 text-white hover:bg-rose-400
-                                dark:bg-rose-700 dark:hover:bg-rose-600 dark:hover:text-rose-300 transition-all duration-150 rounded-lg shadow-sm"
+                                dark:bg-rose-800 dark:hover:bg-rose-600 transition-all duration-150 rounded-lg shadow-sm"
                                 onClick={() => {
                                     this.createPlan();
                                 }}

@@ -252,14 +252,15 @@ export default function Alert(props: AlertProps) {
                                             type="text"
                                             className={`bg-gray-200 dark:bg-gray-800 text-black dark:text-white
                                                 mt-4 p-1 px-4 font-mono text-sm rounded-md md:w-96 overflow-scroll whitespace-nowrap overscroll-contain no-scrollbar 
-                                                outline-none border-2 border-gray-200 hover:border-gray-400 transition-all duration-150 
+                                                outline-none border-2 border-gray-200 hover:border-gray-400 dark:border-gray-800 dark:hover:border-gray-500 
+                                                transition-all duration-150 
                                                 ${
                                                     inputText.length === 0 ||
                                                     !data.textInput.match
-                                                        ? 'focus:border-gray-500'
+                                                        ? 'focus:border-gray-500 dark:focus:border-gray-300'
                                                         : okay
-                                                        ? 'focus:border-green-500'
-                                                        : 'focus:border-red-500'
+                                                        ? 'focus:border-green-500 dark:focus:border-green-500'
+                                                        : 'focus:border-red-500 dark:focus:border-red-500'
                                                 }`}
                                             placeholder={
                                                 data.textInput.placeholder
@@ -304,13 +305,14 @@ export default function Alert(props: AlertProps) {
                         <button
                             type="button"
                             className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 
+                                bg-${data.confirmButtonColor}-500 
                                 ${
                                     okay
-                                        ? `bg-${data.confirmButtonColor}-500 hover:bg-${data.confirmButtonColor}-600 focus:bg-${data.confirmButtonColor}-700`
-                                        : `bg-${data.confirmButtonColor}-300 cursor-not-allowed`
+                                        ? `opacity-100 hover:bg-${data.confirmButtonColor}-600 focus:bg-${data.confirmButtonColor}-700`
+                                        : `opacity-75 cursor-not-allowed`
                                 } 
-                                 text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm 
-                                 transition-all duration-150`}
+                                text-base font-medium text-white outline-none sm:ml-3 sm:w-auto sm:text-sm 
+                                transition-all duration-150`}
                             disabled={!okay}
                             onClick={() => {
                                 confirm();
