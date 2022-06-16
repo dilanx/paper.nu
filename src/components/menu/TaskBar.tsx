@@ -316,6 +316,14 @@ function TaskBar(props: TaskBarProps) {
                                 saveToStorage: true,
                             },
                             {
+                                name: 'save_location_top',
+                                title: 'Save button location',
+                                description: `When editing a plan linked to your account that has unsaved changes, a save button appears at the bottom right of the window by default. You can move it to the top right if you'd prefer.`,
+                                buttonTextOn: 'Top right',
+                                buttonTextOff: 'Bottom right',
+                                saveToStorage: true,
+                            },
+                            {
                                 name: 'save_to_storage',
                                 title: 'Remember most recent plan',
                                 description: `If you visit this site without a full plan URL, your most recently modified plan will be loaded.`,

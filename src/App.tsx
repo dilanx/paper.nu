@@ -203,8 +203,10 @@ class App extends React.Component<{}, AppState> {
                 window.onbeforeunload = () => {
                     return true;
                 };
+                document.title = '* ' + document.title;
             } else {
                 window.onbeforeunload = null;
+                document.title = document.title.replace(/\* /, '');
             }
         }
     }
@@ -603,18 +605,15 @@ class App extends React.Component<{}, AppState> {
     }
 
     render() {
-        let tab = this.state.switches.get.tab;
+        let switches = this.state.switches;
+        let tab = switches.get.tab;
         return (
             <DndProvider backend={HTML5Backend}>
-                <div
-                    className={`${
-                        this.state.switches.get.dark ? 'dark' : ''
-                    } relative`}
-                >
+                <div className={`${switches.get.dark ? 'dark' : ''} relative`}>
                     {this.state.alertData && (
                         <Alert
                             data={this.state.alertData}
-                            switches={this.state.switches}
+                            switches={switches}
                             onConfirm={(inputText?: string) => {
                                 let alertData = this.state.alertData;
                                 if (alertData?.action) {
@@ -633,7 +632,7 @@ class App extends React.Component<{}, AppState> {
                             <Info />
                             <Search
                                 data={this.state.data}
-                                switches={this.state.switches}
+                                switches={switches}
                                 f={this.state.f}
                             />
                             {tab === 'My List' && (
@@ -643,7 +642,7 @@ class App extends React.Component<{}, AppState> {
                                         this.showAlert(alertData);
                                     }}
                                     f={this.state.f}
-                                    switches={this.state.switches}
+                                    switches={switches}
                                 />
                             )}
                             {tab === 'Plans' && (
@@ -659,8 +658,7 @@ class App extends React.Component<{}, AppState> {
                                         this.deactivatePlan();
                                     }}
                                     activePlanId={
-                                        this.state.switches.get
-                                            .active_plan_id as string
+                                        switches.get.active_plan_id as string
                                     }
                                 />
                             )}
@@ -669,7 +667,7 @@ class App extends React.Component<{}, AppState> {
                                     this.showAlert(alertData);
                                 }}
                                 version={VERSION}
-                                switches={this.state.switches}
+                                switches={switches}
                                 f2={this.state.f2}
                                 tabLoading={this.state.loadingLogin}
                             />
@@ -677,9 +675,7 @@ class App extends React.Component<{}, AppState> {
 
                         <div
                             className={`${
-                                this.state.switches.get.compact
-                                    ? 'compact-mode '
-                                    : ''
+                                switches.get.compact ? 'compact-mode ' : ''
                             } col-span-6 block pt-0 lg:h-screen lg:overflow-y-scroll no-scrollbar`}
                         >
                             <Content
@@ -689,12 +685,18 @@ class App extends React.Component<{}, AppState> {
                                 alert={(alertData) => {
                                     this.showAlert(alertData);
                                 }}
-                                switches={this.state.switches}
+                                switches={switches}
                             />
                         </div>
                     </div>
                     {this.state.unsavedChanges && (
-                        <div className="fixed bottom-8 right-12">
+                        <div
+                            className={`fixed right-12 ${
+                                switches.get.save_location_top
+                                    ? 'top-8'
+                                    : 'bottom-8'
+                            }`}
+                        >
                             <button
                                 className={`flex items-center gap-2 rainbow-border-button shadow-lg opacity-75 hover:opacity-100 focus:before:bg-none focus:before:bg-emerald-400
                                 after:bg-gray-100 text-black dark:after:bg-gray-700 dark:text-white ${
