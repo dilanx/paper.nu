@@ -5,6 +5,10 @@ import {
     ConnectionResponse,
 } from './types/AccountTypes';
 import Utility from './Utility';
+import debug from 'debug';
+var da = debug('account:auth');
+var dh = debug('account:http');
+var dp = debug('account:op');
 
 const TOKEN_URL = 'https://auth.dilanxd.com/authenticate/token';
 const PLANS_URL = 'https://auth.dilanxd.com/plan-nu/plans';
@@ -15,11 +19,13 @@ async function authLogin(
     authorizationCode?: string,
     state?: string
 ): Promise<ConnectionResponse> {
+    da('auth login');
     localStorage.removeItem('t');
     if (!authorizationCode) {
         let url = new URL(window.location.href);
         let state = Utility.generateRandomString(32);
         localStorage.setItem('t_s', state);
+        da('no auth code in query, new access token required, redirecting');
         window.open(
             'https://auth.dilanxd.com/authenticate?client_id=' +
                 process.env.REACT_APP_PUBLIC_CLIENT_ID +
@@ -45,6 +51,7 @@ async function authLogin(
         };
     }
     localStorage.setItem('t', token.access_token);
+    da('auth login successful');
     return { success: true, data: '' };
 }
 
@@ -52,6 +59,7 @@ async function obtainAccessToken(
     authorizationCode: string
 ): Promise<AuthenticationResponseToken> {
     try {
+        dh('POST token');
         const response = await fetch(TOKEN_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -72,6 +80,7 @@ async function obtainAccessToken(
 }
 
 async function authLogout(): Promise<ConnectionResponse> {
+    da('auth logout');
     localStorage.removeItem('t');
     let url = new URL(window.location.href);
     window.open(
@@ -89,6 +98,7 @@ async function planOperation(
     body?: object,
     autoAuth?: boolean
 ): Promise<AccountPlansData | undefined> {
+    dh('%s /%s (body: %o)', method, endpoint, body);
     try {
         const response = await fetch(PLANS_URL + '/' + endpoint, {
             method: method,
@@ -99,6 +109,7 @@ async function planOperation(
             body: body ? JSON.stringify(body) : undefined,
         });
         if (response.status === 401) {
+            dp('access token invalid, refresh required');
             if (autoAuth ?? true) authLogin();
             return;
         }
@@ -124,21 +135,28 @@ let Account = {
     },
     logOut: () => authLogout(),
     init: () => {
+        dp('initialize');
         return planOperation('', 'GET', undefined, false);
     },
     getPlans: (reload = false) => {
+        dp('get');
         if (plans && !reload) {
+            dp('cache hit');
             return Promise.resolve(plans);
         }
+        dp('cache miss');
         return planOperation('', 'GET');
     },
     createPlan: (name: string) => {
+        dp('create');
         return planOperation('', 'POST', { name });
     },
     deletePlan: (planId: string) => {
+        dp('delete');
         return planOperation(planId, 'DELETE');
     },
     updatePlan: (planId: string, content: string) => {
+        dp('update');
         return planOperation(planId, 'PATCH', { content });
     },
     getPlanName: (planId?: string) => {

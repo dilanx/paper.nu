@@ -77,7 +77,11 @@ function openInfo(props: ClassProps) {
     });
 
     const bookmarks = props.bookmarks;
-    const { removeCourse, addFavorite, removeFavorite } = props.f;
+    const {
+        removeCourse,
+        addBookmark: addFavorite,
+        removeBookmark: removeFavorite,
+    } = props.f;
 
     const favoriteToggle: ToggleableAlertDataEditButton<Course> = {
         toggle: true,

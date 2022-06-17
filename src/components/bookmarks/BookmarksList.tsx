@@ -25,9 +25,9 @@ function BookmarksList(props: BookmarksListProps) {
             if (monitor.didDrop()) {
                 return;
             }
-            props.f.addFavorite(item.course, props.credit);
+            props.f.addBookmark(item.course, props.credit);
         },
-        collect: monitor => ({ isOver: monitor.isOver() }),
+        collect: (monitor) => ({ isOver: monitor.isOver() }),
     }));
 
     let content = props.credit

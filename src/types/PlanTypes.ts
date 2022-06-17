@@ -44,8 +44,8 @@ export interface PlanModificationFunctions {
         oldLocation: CourseLocation,
         newLocation: CourseLocation
     ) => void;
-    addFavorite: (course: Course, forCredit: boolean) => void;
-    removeFavorite: (course: Course, forCredit: boolean) => void;
+    addBookmark: (course: Course, forCredit: boolean) => void;
+    removeBookmark: (course: Course, forCredit: boolean) => void;
 }
 
 export interface PlanSpecialFunctions {

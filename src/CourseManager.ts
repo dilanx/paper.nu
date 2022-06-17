@@ -10,6 +10,9 @@ import {
     SearchResults,
     SearchError,
 } from './types/PlanTypes';
+import debug from 'debug';
+var ds = debug('course-manager:ser');
+var dp = debug('course-manager:op');
 
 const courseData = JSONCourseData as RawCourseData;
 const SEARCH_RESULT_LIMIT = 100;
@@ -47,6 +50,7 @@ function loadData(params: URLSearchParams): PlanData | 'malformed' | 'empty' {
                     let course = CourseManager.getCourse(courseId);
                     if (course == null) return 'malformed';
                     classData.push(course);
+                    ds('course loaded: %s (y%dq%d)', courseId, year, quarter);
                 }
 
                 classData.sort((a, b) => {
@@ -80,8 +84,13 @@ function loadData(params: URLSearchParams): PlanData | 'malformed' | 'empty' {
 
                         let course = CourseManager.getCourse(courseId);
                         if (course == null) return 'malformed';
-                        if (i === 0) bookmarksNoCredit.add(course);
-                        else bookmarksForCredit.add(course);
+                        if (i === 0) {
+                            bookmarksNoCredit.add(course);
+                            ds('bookmark added: %s (credit = false)', courseId);
+                        } else {
+                            bookmarksForCredit.add(course);
+                            ds('bookmark added: %s (credit = true)', courseId);
+                        }
                     }
                 }
             }
@@ -115,7 +124,6 @@ function saveData({ courses, bookmarks }: PlanData) {
                     return subjId + '_' + num;
                 })
                 .join(',');
-
             if (classes.length > 0) params.set(`y${y}q${q}`, classes);
         }
     }
@@ -140,6 +148,8 @@ function saveData({ courses, bookmarks }: PlanData) {
                 bookmarksForCredit.map(conv).join(',')
         );
     }
+
+    ds('course data saved');
 
     return params;
 }
@@ -206,6 +216,7 @@ let CourseManager = {
         });
 
         let total = courseIdResults.length + courseNameResults.length;
+        dp('search: %s (%d results)', query, total);
         if (total === 0) return 'no_results';
 
         let limitExceeded = false;
@@ -301,14 +312,19 @@ let CourseManager = {
         }
 
         // Try to load from URL and match to account plan
+        dp('trying to load plan data from URL');
         let data = CourseManager.loadFromURL(params);
-        if (accountPlans && data !== 'malformed' && data !== 'empty') {
-            let dataStr = params.toString();
-            for (let planId in accountPlans) {
-                if (accountPlans[planId].content === dataStr) {
-                    activePlanId = planId;
-                    originalDataString = dataStr;
-                    break;
+        if (data !== 'malformed' && data !== 'empty') {
+            dp('URL load successful');
+            if (accountPlans) {
+                let dataStr = params.toString();
+                for (let planId in accountPlans) {
+                    if (accountPlans[planId].content === dataStr) {
+                        dp('matched to account plan: %s', planId);
+                        activePlanId = planId;
+                        originalDataString = dataStr;
+                        break;
+                    }
                 }
             }
         }
@@ -316,11 +332,15 @@ let CourseManager = {
         if (switches.get.save_to_storage) {
             // Try to load from account
             if (data === 'empty') {
+                dp(
+                    'nothing to load from URL, trying most recent account instead'
+                );
                 let storedPlanId = switches.get.active_plan_id as
                     | string
                     | undefined;
                 if (accountPlans && storedPlanId) {
                     if (storedPlanId in accountPlans) {
+                        dp('account load successful: %s', storedPlanId);
                         let content = accountPlans[storedPlanId].content;
                         data = CourseManager.loadFromString(content);
                         activePlanId = storedPlanId;
@@ -331,12 +351,19 @@ let CourseManager = {
 
             // Try to load from storage
             if (data === 'empty') {
+                dp('nothing to load from account, trying storage instead');
                 data = CourseManager.loadFromStorage();
             }
 
             if (data !== 'malformed' && data !== 'empty') {
                 CourseManager.save(data);
             }
+        }
+
+        if (data === 'empty') {
+            dp('no data to load');
+        } else {
+            dp('data loaded');
         }
 
         return {

@@ -169,7 +169,6 @@ class Search extends React.Component<SearchProps, SearchState> {
 
         let { results, shortcut } = this.getResults();
 
-        // TODO working on search bar x
         let searchField = (
             <div className="sticky top-0 p-2 mb-2 bg-white dark:bg-gray-800 z-10 rounded-lg">
                 <div className="block mt-4 mb-2 mx-auto w-11/12 relative">
@@ -253,9 +252,9 @@ class Search extends React.Component<SearchProps, SearchState> {
                         onClick={() => {
                             if (!current) return;
                             if (bookmarks.noCredit.has(current)) {
-                                this.props.f.removeFavorite(current, false);
+                                this.props.f.removeBookmark(current, false);
                             } else {
-                                this.props.f.addFavorite(current, false);
+                                this.props.f.addBookmark(current, false);
                             }
                         }}
                     >
@@ -269,9 +268,9 @@ class Search extends React.Component<SearchProps, SearchState> {
                         onClick={() => {
                             if (!current) return;
                             if (bookmarks.forCredit.has(current)) {
-                                this.props.f.removeFavorite(current, true);
+                                this.props.f.removeBookmark(current, true);
                             } else {
-                                this.props.f.addFavorite(current, true);
+                                this.props.f.addBookmark(current, true);
                             }
                         }}
                     >

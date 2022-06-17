@@ -29,7 +29,7 @@ function SearchClass(props: SearchClassProps) {
     const [{ isDragging }, drag] = useDrag(() => ({
         type: 'Class',
         item,
-        collect: monitor => ({ isDragging: monitor.isDragging() }),
+        collect: (monitor) => ({ isDragging: monitor.isDragging() }),
     }));
 
     let distros = [];
@@ -103,12 +103,12 @@ function SearchClass(props: SearchClassProps) {
                     className="absolute -top-2 -right-2 p-1 rounded-full bg-gray-200 hover:bg-indigo-100 dark:bg-gray-700
                     text-gray-500 dark:text-white text-xs opacity-80 hover:text-indigo-400 dark:hover:text-indigo-400 hover:opacity-100
                     transition-all duration-150 hidden group-hover:block z-20"
-                    onClick={e => {
+                    onClick={(e) => {
                         e.stopPropagation();
                         if (isFavorite) {
-                            props.f?.removeFavorite(course, false);
+                            props.f?.removeBookmark(course, false);
                         } else {
-                            props.f?.addFavorite(course, false);
+                            props.f?.addBookmark(course, false);
                         }
                     }}
                 >

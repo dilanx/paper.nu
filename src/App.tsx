@@ -28,6 +28,8 @@ import { AlertData } from './types/AlertTypes';
 import { UserOptions, UserOptionValue } from './types/BaseTypes';
 import Account from './Account';
 import PlanError from './classes/PlanError';
+import debug from 'debug';
+var d = debug('main');
 
 const VERSION = process.env.REACT_APP_VERSION ?? 'UNKNOWN';
 
@@ -79,11 +81,11 @@ class App extends React.Component<{}, AppState> {
             moveCourse: (course, oldLocation, newLocation) => {
                 app.moveCourse(course, oldLocation, newLocation);
             },
-            addFavorite: (course, forCredit) => {
-                app.addFavorite(course, forCredit);
+            addBookmark: (course, forCredit) => {
+                app.addBookmark(course, forCredit);
             },
-            removeFavorite: (course, forCredit) => {
-                app.removeFavorite(course, forCredit);
+            removeBookmark: (course, forCredit) => {
+                app.removeBookmark(course, forCredit);
             },
         };
 
@@ -139,6 +141,7 @@ class App extends React.Component<{}, AppState> {
         );
 
         if (code && state) {
+            d('query has code and state, logging in');
             Account.logIn(code, state).then((response) => {
                 if (!response.success) {
                     this.showAlert(
@@ -163,6 +166,7 @@ class App extends React.Component<{}, AppState> {
     }
 
     initializePlan(params: URLSearchParams, callback: () => void) {
+        d('plan initializing');
         CourseManager.load(params, this.state.switches)
             .then(({ data, activePlanId, originalDataString }) => {
                 this.setState({ loadingLogin: false });
@@ -194,16 +198,21 @@ class App extends React.Component<{}, AppState> {
                     Utility.errorAlert('account_initial_login', error.message)
                 );
             })
-            .finally(() => callback());
+            .finally(() => {
+                callback();
+                d('plan initialized');
+            });
     }
 
     componentDidUpdate(_: Readonly<{}>, prevState: Readonly<AppState>) {
         if (prevState.unsavedChanges !== this.state.unsavedChanges) {
             if (this.state.unsavedChanges) {
+                d('there are now unsaved changes');
                 window.onbeforeunload = () => {
                     return true;
                 };
             } else {
+                d('there are no longer unsaved changes');
                 window.onbeforeunload = null;
             }
         }
@@ -223,6 +232,7 @@ class App extends React.Component<{}, AppState> {
         if (save) {
             Utility.saveSwitchToStorage(key, val?.toString());
         }
+        d('switch set: %s = %s', key, val);
     }
 
     showAlert(alertData: AlertData) {
@@ -319,12 +329,13 @@ class App extends React.Component<{}, AppState> {
                     this.state.originalDataString
                 ),
             });
+            d('course added: %s (y%dq%d)', course.id, year, quarter);
         });
     }
 
     removeCourse(course: Course, { year, quarter }: CourseLocation) {
         if (year < 0) {
-            this.removeFavorite(course, quarter === 1);
+            this.removeBookmark(course, quarter === 1);
             return;
         }
         let data = this.state.data;
@@ -340,6 +351,7 @@ class App extends React.Component<{}, AppState> {
                 this.state.originalDataString
             ),
         });
+        d('course removed: %s (y%dq%d)', course.id, year, quarter);
     }
 
     moveCourse(
@@ -378,12 +390,20 @@ class App extends React.Component<{}, AppState> {
                         this.state.originalDataString
                     ),
                 });
+                d(
+                    'course moved: %s (y%dq%d) -> (y%dq%d)',
+                    course.id,
+                    oy,
+                    oq,
+                    ny,
+                    nq
+                );
             },
             true
         );
     }
 
-    addFavorite(course: Course, forCredit: boolean) {
+    addBookmark(course: Course, forCredit: boolean) {
         let bookmarks = this.state.data.bookmarks;
         if (forCredit) {
             bookmarks.forCredit.add(course);
@@ -404,9 +424,10 @@ class App extends React.Component<{}, AppState> {
                 ),
             };
         });
+        d('bookmark added: %s (credit = %s)', course.id, forCredit.toString());
     }
 
-    removeFavorite(course: Course, forCredit: boolean) {
+    removeBookmark(course: Course, forCredit: boolean) {
         let bookmarks = this.state.data.bookmarks;
         if (forCredit) {
             bookmarks.forCredit.delete(course);
@@ -428,6 +449,11 @@ class App extends React.Component<{}, AppState> {
                 ),
             };
         });
+        d(
+            'bookmark removed: %s (credit = %s)',
+            course.id,
+            forCredit.toString()
+        );
     }
 
     addSummerQuarter(year: number) {
@@ -450,6 +476,7 @@ class App extends React.Component<{}, AppState> {
                 let data = this.state.data;
                 data.courses[year].push([]);
                 this.setState({ data: data });
+                d('summer quarter added: y%d', year);
             },
         });
     }
@@ -458,6 +485,7 @@ class App extends React.Component<{}, AppState> {
         let data = this.state.data;
         data.courses.push([[], [], []]);
         this.setState({ data: data });
+        d('year added: y%d', data.courses.length);
     }
 
     clearData() {
@@ -481,9 +509,11 @@ class App extends React.Component<{}, AppState> {
                 this.state.originalDataString
             ),
         });
+        d('plan cleared');
     }
 
     activateAccountPlan(planId: string) {
+        d('plan activating: %s', planId);
         Account.getPlans()
             .then((plans) => {
                 if (!plans) {
@@ -522,6 +552,7 @@ class App extends React.Component<{}, AppState> {
                         originalDataString: plan.content,
                         unsavedChanges: window.location.search.length > 0,
                     });
+                    d('plan activated: %s (empty)', planId);
                     return;
                 }
 
@@ -536,7 +567,10 @@ class App extends React.Component<{}, AppState> {
                             data: data as PlanData,
                             originalDataString: plan.content,
                         },
-                        () => CourseManager.save(data as PlanData)
+                        () => {
+                            CourseManager.save(data as PlanData);
+                            d('plan activated: %s', planId);
+                        }
                     );
                 }, confirmNonAccountOverwrite);
             })
@@ -549,7 +583,9 @@ class App extends React.Component<{}, AppState> {
 
     deactivatePlan() {
         this.discardChanges(() => {
+            let planId = this.state.switches.get.active_plan_id;
             this.setSwitch('active_plan_id', 'None', true);
+            d('plan deactivated: %s', planId);
         });
     }
 
@@ -573,6 +609,7 @@ class App extends React.Component<{}, AppState> {
             })
             .finally(() => {
                 this.setState({ loadingUpdate: false, unsavedChanges: false });
+                d('plan updated');
             });
     }
 

@@ -13,6 +13,7 @@ import { Color, UserOptions } from '../../types/BaseTypes';
 import { Alert } from '../../types/AlertTypes';
 import { PlanSpecialFunctions } from '../../types/PlanTypes';
 import Account from '../../Account';
+import debugModule from 'debug';
 
 interface MiniButtonProps {
     icon: (props: React.ComponentProps<'svg'>) => JSX.Element;
@@ -339,6 +340,21 @@ function TaskBar(props: TaskBarProps) {
                                 requireConfirmation: true,
                                 singleAction: () => {
                                     props.f2.clearData();
+                                },
+                            },
+                            {
+                                name: 'debug',
+                                title: 'Debug mode',
+                                description: `Log messages will print into your browser's console (verbose log level is required).`,
+                                buttonTextOn: 'Enabled',
+                                buttonTextOff: 'Disabled',
+                                saveToStorage: true,
+                                bonusAction: (newSwitch) => {
+                                    if (newSwitch) {
+                                        debugModule.enable('*');
+                                    } else {
+                                        debugModule.disable();
+                                    }
                                 },
                             },
                         ],
