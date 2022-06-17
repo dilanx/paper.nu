@@ -32,7 +32,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeployrelease": "npm run build",
-    "deployrelease": "gh-pages -d build",
+    "deployrelease": "gh-pages -d build -b release-build",
     "predeploybeta": "npm run build",
     "deploybeta": "gh-pages -d build -b beta-build"
   },
