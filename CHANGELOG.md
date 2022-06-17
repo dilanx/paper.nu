@@ -4,12 +4,18 @@
 
 _2022-05-XX_
 
+-   **Accounts!** You can now optionally create an account and link up to 5 plans to it.
+    -   Sign in to Plan Northwestern using your auth.dilanxd.com account (supports Google authentication) from any device.
+    -   Seamlessly switch between different plans.
+    -   Make modifications like normal, except now you'll see a save button appear when there are unsaved changes.
+    -   Everything else remains the same (account is not required, plan URLs still work and are automatically updated as different plans are loaded).
 -   **Significant UI changes!** A lot of changes were made to the user interface to improve functionality and ease-of-use.
     -   The task bar buttons (what used to be the gray rounded-rectangle buttons at the top left) have been changed to icons instead of text and have been moved to the bottom of the screen. This allows the search box to be a bit larger (which can have a big impact on smaller screens when browsing courses). This also adds room for the new tab-switching system and looks a bit nicer (it's been moved to the bottom for the convenience of mobile users).
     -   My List has been moved from above the plan to a tab on the sidebar. This makes it easier to drag courses to and from your plan (especially on years lower on the screen because you'd have to scroll).
     -   Courses in My List are now compact so more can be seen at once, given the smaller view area.
     -   A bookmark button has been added to the corners of the classes that appear in the search results (when the class is hovered). This provides an easy way to bookmark courses since dragging them into your bookmarks list directly from the search box is no longer possible.
     -   The total unit count and the 'Add Year' button have been moved below the plan itself.
+    -   Added hover tooltips to most of the icon buttons.
     -   The guide that appears in the search box when empty has been updated to include the new accounts feature.
 -   Made some other small UI changes.
 -   Updated all project dependencies to their latest versions.
