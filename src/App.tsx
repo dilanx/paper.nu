@@ -321,6 +321,7 @@ class App extends React.Component<{}, AppState> {
                 return a.id.localeCompare(b.id);
             });
 
+            d('course added: %s (y%dq%d)', course.id, year, quarter);
             this.setState({
                 data,
                 unsavedChanges: CourseManager.save(
@@ -329,7 +330,6 @@ class App extends React.Component<{}, AppState> {
                     this.state.originalDataString
                 ),
             });
-            d('course added: %s (y%dq%d)', course.id, year, quarter);
         });
     }
 
@@ -343,6 +343,7 @@ class App extends React.Component<{}, AppState> {
             data.courses[year][quarter].indexOf(course),
             1
         );
+        d('course removed: %s (y%dq%d)', course.id, year, quarter);
         this.setState({
             data,
             unsavedChanges: CourseManager.save(
@@ -351,7 +352,6 @@ class App extends React.Component<{}, AppState> {
                 this.state.originalDataString
             ),
         });
-        d('course removed: %s (y%dq%d)', course.id, year, quarter);
     }
 
     moveCourse(
@@ -382,14 +382,6 @@ class App extends React.Component<{}, AppState> {
                     return a.id.localeCompare(b.id);
                 });
 
-                this.setState({
-                    data,
-                    unsavedChanges: CourseManager.save(
-                        data,
-                        this.state.switches,
-                        this.state.originalDataString
-                    ),
-                });
                 d(
                     'course moved: %s (y%dq%d) -> (y%dq%d)',
                     course.id,
@@ -398,6 +390,14 @@ class App extends React.Component<{}, AppState> {
                     ny,
                     nq
                 );
+                this.setState({
+                    data,
+                    unsavedChanges: CourseManager.save(
+                        data,
+                        this.state.switches,
+                        this.state.originalDataString
+                    ),
+                });
             },
             true
         );
@@ -410,6 +410,8 @@ class App extends React.Component<{}, AppState> {
         } else {
             bookmarks.noCredit.add(course);
         }
+
+        d('bookmark added: %s (credit = %s)', course.id, forCredit.toString());
         this.setState((prevState) => {
             const data = {
                 ...prevState.data,
@@ -424,7 +426,6 @@ class App extends React.Component<{}, AppState> {
                 ),
             };
         });
-        d('bookmark added: %s (credit = %s)', course.id, forCredit.toString());
     }
 
     removeBookmark(course: Course, forCredit: boolean) {
@@ -435,6 +436,11 @@ class App extends React.Component<{}, AppState> {
             bookmarks.noCredit.delete(course);
         }
 
+        d(
+            'bookmark removed: %s (credit = %s)',
+            course.id,
+            forCredit.toString()
+        );
         this.setState((prevState) => {
             const data = {
                 ...prevState.data,
@@ -449,11 +455,6 @@ class App extends React.Component<{}, AppState> {
                 ),
             };
         });
-        d(
-            'bookmark removed: %s (credit = %s)',
-            course.id,
-            forCredit.toString()
-        );
     }
 
     addSummerQuarter(year: number) {
@@ -501,6 +502,8 @@ class App extends React.Component<{}, AppState> {
                 noCredit: new Set<Course>(),
             },
         };
+
+        d('plan cleared');
         this.setState({
             data,
             unsavedChanges: CourseManager.save(
@@ -509,7 +512,6 @@ class App extends React.Component<{}, AppState> {
                 this.state.originalDataString
             ),
         });
-        d('plan cleared');
     }
 
     activateAccountPlan(planId: string) {
