@@ -98,7 +98,7 @@ function SearchClass(props: SearchClassProps) {
                     {units === 1 ? 'unit' : 'units'}
                 </p>
             </div>
-            {!props.select && (
+            {props.select && (
                 <button
                     className="absolute -top-2 -right-2 p-1 rounded-full bg-gray-200 hover:bg-indigo-100 dark:bg-gray-700
                     text-gray-500 dark:text-white text-xs opacity-80 hover:text-indigo-400 dark:hover:text-indigo-400 hover:opacity-100
