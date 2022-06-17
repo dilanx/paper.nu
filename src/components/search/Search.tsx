@@ -185,8 +185,8 @@ class Search extends React.Component<SearchProps, SearchState> {
                     />
                     {search.length > 0 && (
                         <button
-                            className="block absolute right-4 top-0 bottom-0 my-2 text-gray-400 hover:text-red-400 focus:text-red-300
-                                transition-colors duration-150"
+                            className="block absolute right-4 top-0 bottom-0 my-2 text-gray-300 hover:text-red-400 focus:text-red-300 
+                            dark:text-gray-600 dark:hover:text-red-400 dark:focus:text-red-500 transition-colors duration-150"
                             onClick={() => {
                                 this.setState({ search: '' });
                                 this.searchFieldRef.current?.focus();
