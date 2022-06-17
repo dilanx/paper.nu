@@ -18,20 +18,28 @@ import debugModule from 'debug';
 interface MiniButtonProps {
     icon: (props: React.ComponentProps<'svg'>) => JSX.Element;
     color: Color;
+    display: string;
     action: () => void;
 }
 
 function MiniButton(props: MiniButtonProps) {
+    let color = props.color;
     return (
         <button
             className={`p-1 border-2 border-gray-400 dark:border-gray-500 rounded-lg text-gray-500 dark:text-gray-300
-                hover:border-${props.color}-500 dark:hover:border-${props.color}-500 hover:bg-${props.color}-50 dark:hover:bg-gray-800
-                hover:text-${props.color}-500 dark:hover:text-${props.color}-400 transition-all duration-150`}
+                hover:border-${color}-500 dark:hover:border-${color}-500 hover:bg-${color}-50 dark:hover:bg-gray-800
+                hover:text-${color}-500 dark:hover:text-${color}-400 transition-all duration-150 relative group`}
             onClick={() => {
                 props.action();
             }}
         >
             <props.icon className="w-5 h-5" />
+            <div
+                className={`hidden group-hover:block absolute -top-10 left-1/2 -translate-x-1/2 p-1 border-2 rounded-md
+                    bg-${color}-50 dark:bg-gray-800 border-${color}-500 text-${color}-500 dark:text-${color}-300 text-sm font-medium`}
+            >
+                {props.display}
+            </div>
         </button>
     );
 }
@@ -52,25 +60,30 @@ interface TaskBarButtonProps {
 }
 
 function TabBarButton(props: TaskBarButtonProps) {
+    let color = props.color;
     return (
         <button
             className={`px-2 py-1 ${
                 props.name === props.selected
-                    ? `bg-${props.color}-400 dark:bg-${props.color}-500 text-white`
+                    ? `bg-${color}-400 dark:bg-${color}-500 text-white`
                     : `bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-300
-                    hover:bg-${props.color}-100 hover:text-${
-                          props.color
-                      }-600 dark:hover:text-${props.color}-400
+                    hover:bg-${color}-100 hover:text-${color}-600 dark:hover:text-${color}-400
                     transition-all duration-150 ${
                         props.name === 'Loading' ? 'cursor-not-allowed' : ''
                     }`
-            } flex items-center gap-1`}
+            } flex items-center gap-1 group`}
             onClick={() => {
                 if (props.disableClick) return;
                 props.switches.set('tab', props.name, false);
             }}
         >
             {props.content}
+            <div
+                className={`hidden group-hover:block absolute -top-10 left-1/2 -translate-x-1/2 p-1 border-2 rounded-md
+                    bg-${color}-50 dark:bg-gray-800 border-${color}-500 text-${color}-500 dark:text-${color}-300 text-sm font-medium`}
+            >
+                {props.name}
+            </div>
         </button>
     );
 }
@@ -83,60 +96,62 @@ interface TabBarProps {
 function TabBar(props: TabBarProps) {
     let color = TabBarButtonColors[props.switches.get.tab as string];
     return (
-        <div
-            className={`flex border-2 border-${color}-400 dark:border-${color}-500 rounded-lg overflow-hidden bg-${color}-400 dark:bg-${color}-500`}
-        >
-            {props.tabLoading ? (
-                <TabBarButton
-                    name="Loading"
-                    selected="None"
-                    switches={props.switches}
-                    color={color}
-                    content={
-                        <>
-                            <RefreshIcon className="w-5 h-5 animate-reverse-spin" />
-                            <p className="lg:hidden xl:block m-0 text-sm lg:text-xs w-20 lg:w-12 overflow-hidden whitespace-nowrap text-ellipsis">
-                                Loading
-                            </p>
-                        </>
-                    }
-                    disableClick={true}
-                />
-            ) : (
-                <>
+        <div className="relative">
+            <div
+                className={`flex border-2 border-${color}-400 dark:border-${color}-500 rounded-lg bg-${color}-400 dark:bg-${color}-500 overflow-hidden`}
+            >
+                {props.tabLoading ? (
                     <TabBarButton
-                        name="Search"
-                        selected={props.switches.get.tab as string}
+                        name="Loading"
+                        selected="None"
                         switches={props.switches}
-                        color={TabBarButtonColors['Search']}
-                        content={<SearchIcon className="w-5 h-5" />}
-                    />
-                    <TabBarButton
-                        name="My List"
-                        selected={props.switches.get.tab as string}
-                        switches={props.switches}
-                        color={TabBarButtonColors['My List']}
-                        content={<BookmarkIcon className="w-5 h-5" />}
-                    />
-                    <TabBarButton
-                        name="Plans"
-                        selected={props.switches.get.tab as string}
-                        switches={props.switches}
-                        color={TabBarButtonColors['Plans']}
+                        color={color}
                         content={
                             <>
-                                <CollectionIcon className="w-5 h-5" />
+                                <RefreshIcon className="w-5 h-5 animate-reverse-spin" />
                                 <p className="lg:hidden xl:block m-0 text-sm lg:text-xs w-20 lg:w-12 overflow-hidden whitespace-nowrap text-ellipsis">
-                                    {Account.getPlanName(
-                                        props.switches.get
-                                            .active_plan_id as string
-                                    )}
+                                    Loading
                                 </p>
                             </>
                         }
+                        disableClick={true}
                     />
-                </>
-            )}
+                ) : (
+                    <>
+                        <TabBarButton
+                            name="Search"
+                            selected={props.switches.get.tab as string}
+                            switches={props.switches}
+                            color={TabBarButtonColors['Search']}
+                            content={<SearchIcon className="w-5 h-5" />}
+                        />
+                        <TabBarButton
+                            name="My List"
+                            selected={props.switches.get.tab as string}
+                            switches={props.switches}
+                            color={TabBarButtonColors['My List']}
+                            content={<BookmarkIcon className="w-5 h-5" />}
+                        />
+                        <TabBarButton
+                            name="Plans"
+                            selected={props.switches.get.tab as string}
+                            switches={props.switches}
+                            color={TabBarButtonColors['Plans']}
+                            content={
+                                <>
+                                    <CollectionIcon className="w-5 h-5" />
+                                    <p className="lg:hidden xl:block m-0 text-sm lg:text-xs w-20 lg:w-12 overflow-hidden whitespace-nowrap text-ellipsis">
+                                        {Account.getPlanName(
+                                            props.switches.get
+                                                .active_plan_id as string
+                                        )}
+                                    </p>
+                                </>
+                            }
+                        />
+                    </>
+                )}
+            </div>
         </div>
     );
 }
@@ -155,6 +170,7 @@ function TaskBar(props: TaskBarProps) {
             <MiniButton
                 icon={InformationCircleIcon}
                 color="purple"
+                display="About"
                 action={() => {
                     props.alert({
                         title: 'Plan Northwestern',
@@ -233,6 +249,7 @@ function TaskBar(props: TaskBarProps) {
             <MiniButton
                 icon={ExternalLinkIcon}
                 color="green"
+                display="Share"
                 action={() => {
                     props.alert({
                         title: 'Ready to share!',
@@ -258,6 +275,7 @@ function TaskBar(props: TaskBarProps) {
             <MiniButton
                 icon={CogIcon}
                 color="yellow"
+                display="Settings"
                 action={() => {
                     props.alert({
                         title: 'Settings',

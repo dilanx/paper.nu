@@ -88,22 +88,22 @@ class Year extends React.Component<YearProps, YearState> {
                 <div className="absolute right-1 top-1 text-gray-300 dark:text-gray-500">
                     {quarters.length < 4 && (
                         <button
-                            className="inline-block p-1 bg-transparent hover:text-yellow-300 dark:hover:text-yellow-300"
-                            title="Add summer quarter"
+                            className="inline-block p-1 bg-transparent hover:text-yellow-300 dark:hover:text-yellow-300 relative group"
                             onClick={() => {
                                 this.props.f2.addSummerQuarter(this.props.year);
                             }}
                         >
                             <PlusIcon className="w-6 h-6" />
+                            <div
+                                className={`hidden group-hover:block absolute -bottom-10 right-0 p-1 w-48 border-2 rounded-md
+                                    bg-yellow-50 dark:bg-gray-800 border-yellow-500 text-yellow-500 dark:text-yellow-300 text-sm font-medium`}
+                            >
+                                Add summer quarter
+                            </div>
                         </button>
                     )}
                     <button
-                        className="inline-block p-1 bg-transparent hover:text-red-400 dark:hover:text-red-400"
-                        title={
-                            this.state.hidden
-                                ? "Show this year's courses"
-                                : "Hide this year's courses"
-                        }
+                        className="inline-block p-1 bg-transparent hover:text-red-400 dark:hover:text-red-400 relative group"
                         onClick={() => {
                             this.setState({ hidden: !this.state.hidden });
                         }}
@@ -113,6 +113,14 @@ class Year extends React.Component<YearProps, YearState> {
                         ) : (
                             <ChevronUpIcon className="w-6 h-6" />
                         )}
+                        <div
+                            className={`hidden group-hover:block absolute -bottom-10 right-0 p-1 w-40 border-2 rounded-md text-center
+                                bg-red-50 dark:bg-gray-800 border-red-500 text-red-500 dark:text-red-300 text-sm font-medium`}
+                        >
+                            {this.state.hidden
+                                ? "Show year's courses"
+                                : "Hide year's courses"}
+                        </div>
                     </button>
                 </div>
             </div>
