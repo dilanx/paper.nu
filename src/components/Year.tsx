@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import Quarter from './Quarter';
 import Utility from '../Utility';
 import {
@@ -29,6 +30,18 @@ interface YearProps {
 interface YearState {
     hidden: boolean;
 }
+
+const variants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            delayChildren: 0.5,
+            staggerChildren: 0.2,
+            when: 'beforeChildren',
+        },
+    },
+};
 
 class Year extends React.Component<YearProps, YearState> {
     constructor(props: YearProps) {
@@ -63,67 +76,73 @@ class Year extends React.Component<YearProps, YearState> {
         }
 
         return (
-            <div
-                className="relative p-4 border-4 border-gray-200 dark:border-gray-700 rounded-lg m-5 shadow-sm bg-white dark:bg-gray-800
-                    compact:border-0 compact:shadow-none compact:my-0 compact:py-2"
-            >
-                <p
-                    className={`text-center text-2xl text-gray-300 font-bold compact:text-sm compact:text-black dark:text-gray-500 ${
-                        this.state.hidden ? '' : 'pb-2'
-                    }`}
+            <motion.div initial="hidden" animate="visible" variants={variants}>
+                <div
+                    className="relative p-4 border-4 border-gray-200 dark:border-gray-700 rounded-lg m-5 shadow-sm bg-white dark:bg-gray-800
+                    compact:border-0 compact:shadow-none compact:my-0 compact:py-2 transition-all duration-150"
                 >
-                    {this.props.title}
-                </p>
-                {!this.state.hidden && (
-                    <div
-                        className={`grid grid-cols-1 ${
-                            quarters.length === 4
-                                ? 'lg:grid-cols-4'
-                                : 'lg:grid-cols-3'
-                        } gap-12`}
+                    <p
+                        className={`text-center text-2xl text-gray-300 font-bold compact:text-sm compact:text-black dark:text-gray-500 ${
+                            this.state.hidden ? '' : 'pb-2'
+                        }`}
                     >
-                        {quarters}
-                    </div>
-                )}
-                <div className="absolute right-1 top-1 text-gray-300 dark:text-gray-500">
-                    {quarters.length < 4 && (
+                        {this.props.title}
+                    </p>
+                    {!this.state.hidden && (
+                        <div
+                            className={`grid grid-cols-1 ${
+                                quarters.length === 4
+                                    ? 'lg:grid-cols-4'
+                                    : 'lg:grid-cols-3'
+                            } gap-12`}
+                        >
+                            {quarters}
+                        </div>
+                    )}
+                    <div className="absolute right-1 top-1 text-gray-300 dark:text-gray-500">
+                        {quarters.length < 4 && (
+                            <button
+                                className="inline-block p-1 bg-transparent hover:text-yellow-300 dark:hover:text-yellow-300 relative group"
+                                onClick={() => {
+                                    this.props.f2.addSummerQuarter(
+                                        this.props.year
+                                    );
+                                }}
+                            >
+                                <PlusIcon className="w-6 h-6" />
+                                <div
+                                    className={`hidden group-hover:block absolute -bottom-10 right-0 p-1 w-48 border-2 rounded-md
+                                    bg-yellow-50 dark:bg-gray-800 border-yellow-500 text-yellow-500 dark:text-yellow-300 text-sm font-medium`}
+                                >
+                                    Add summer quarter
+                                </div>
+                            </button>
+                        )}
                         <button
-                            className="inline-block p-1 bg-transparent hover:text-yellow-300 dark:hover:text-yellow-300 relative group"
+                            className="inline-block p-1 bg-transparent hover:text-red-400 dark:hover:text-red-400 relative group"
                             onClick={() => {
-                                this.props.f2.addSummerQuarter(this.props.year);
+                                this.setState({
+                                    hidden: !this.state.hidden,
+                                });
                             }}
                         >
-                            <PlusIcon className="w-6 h-6" />
+                            {this.state.hidden ? (
+                                <ChevronDownIcon className="w-6 h-6" />
+                            ) : (
+                                <ChevronUpIcon className="w-6 h-6" />
+                            )}
                             <div
-                                className={`hidden group-hover:block absolute -bottom-10 right-0 p-1 w-48 border-2 rounded-md
-                                    bg-yellow-50 dark:bg-gray-800 border-yellow-500 text-yellow-500 dark:text-yellow-300 text-sm font-medium`}
+                                className={`hidden group-hover:block absolute -bottom-10 right-0 p-1 w-40 border-2 rounded-md text-center
+                                bg-red-50 dark:bg-gray-800 border-red-500 text-red-500 dark:text-red-300 text-sm font-medium`}
                             >
-                                Add summer quarter
+                                {this.state.hidden
+                                    ? "Show year's courses"
+                                    : "Hide year's courses"}
                             </div>
                         </button>
-                    )}
-                    <button
-                        className="inline-block p-1 bg-transparent hover:text-red-400 dark:hover:text-red-400 relative group"
-                        onClick={() => {
-                            this.setState({ hidden: !this.state.hidden });
-                        }}
-                    >
-                        {this.state.hidden ? (
-                            <ChevronDownIcon className="w-6 h-6" />
-                        ) : (
-                            <ChevronUpIcon className="w-6 h-6" />
-                        )}
-                        <div
-                            className={`hidden group-hover:block absolute -bottom-10 right-0 p-1 w-40 border-2 rounded-md text-center
-                                bg-red-50 dark:bg-gray-800 border-red-500 text-red-500 dark:text-red-300 text-sm font-medium`}
-                        >
-                            {this.state.hidden
-                                ? "Show year's courses"
-                                : "Hide year's courses"}
-                        </div>
-                    </button>
+                    </div>
                 </div>
-            </div>
+            </motion.div>
         );
     }
 }

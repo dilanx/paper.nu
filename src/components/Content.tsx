@@ -18,7 +18,6 @@ interface ContentProps {
     alert: Alert;
     switches: UserOptions;
 }
-
 class Content extends React.Component<ContentProps> {
     render() {
         let content = this.props.data;

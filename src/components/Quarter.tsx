@@ -1,4 +1,5 @@
 import { useDrop } from 'react-dnd';
+import { motion } from 'framer-motion';
 import CourseManager from '../CourseManager';
 import { Alert } from '../types/AlertTypes';
 import { Color, UserOptions } from '../types/BaseTypes';
@@ -23,6 +24,18 @@ interface QuarterProps {
     title: string;
     color: Color;
 }
+
+const variants = {
+    hidden: { x: -20, opacity: 0 },
+    visible: {
+        x: 0,
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            when: 'beforeChildren',
+        },
+    },
+};
 
 function Quarter(props: QuarterProps) {
     const [{ isOver }, drop] = useDrop<
@@ -87,26 +100,29 @@ function Quarter(props: QuarterProps) {
     }
 
     return (
-        <div
-            ref={drop}
-            className={`relative block rounded-lg px-8 pt-4 pb-8 border-2
+        <motion.div variants={variants}>
+            <div
+                ref={drop}
+                className={`relative block rounded-lg px-8 pt-4 pb-8 border-2
             ${
                 isOver
                     ? `border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50`
                     : `border-solid bg-${props.color}-50 dark:bg-gray-800 border-${props.color}-400`
             }
                 space-y-3 h-full shadow-lg compact:py-2 compact:shadow-sm`}
-        >
-            <p className="text-center font-bold text-md m-0 p-0 text-gray-600 dark:text-gray-400 compact:text-sm">
-                {props.title}
-            </p>
-            {classes}
-            {props.switches.get.quarter_units && (
-                <p className="absolute right-2 top-0 text-right text-xs p-0 m-0 text-gray-400 font-normal">
-                    <span className="font-medium">{units}</span> {unitString}
+            >
+                <p className="text-center font-bold text-md m-0 p-0 text-gray-600 dark:text-gray-400 compact:text-sm">
+                    {props.title}
                 </p>
-            )}
-        </div>
+                {classes}
+                {props.switches.get.quarter_units && (
+                    <p className="absolute right-2 top-0 text-right text-xs p-0 m-0 text-gray-400 font-normal">
+                        <span className="font-medium">{units}</span>{' '}
+                        {unitString}
+                    </p>
+                )}
+            </div>
+        </motion.div>
     );
 }
 
