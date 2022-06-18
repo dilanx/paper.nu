@@ -17,6 +17,5 @@
         "jsx": "react-jsx",
         "downlevelIteration": true
     },
-    "include": ["src"],
-    "exclude": ["src/components/account"]
+    "include": ["src"]
 }
