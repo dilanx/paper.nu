@@ -17,6 +17,8 @@ _2022-05-XX_
     -   The total unit count and the 'Add Year' button have been moved below the plan itself.
     -   Added hover tooltips to most of the icon buttons.
     -   The guide that appears in the search box when empty has been updated to include the new accounts feature.
+-   **Animations!** Some animations have been added across the site to improve the user experience.
+    -   Many of the animations can be disabled with the new "Reduced motion" setting.
 -   Made some other small UI changes.
 -   Updated all project dependencies to their latest versions.
     -   This was a breaking change for [React DnD](https://react-dnd.github.io/react-dnd/about), so parts of draggable components and their destinations had to be redone.
