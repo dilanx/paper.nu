@@ -29,6 +29,7 @@ import { UserOptions, UserOptionValue } from './types/BaseTypes';
 import Account from './Account';
 import PlanError from './classes/PlanError';
 import debug from 'debug';
+import { MotionConfig } from 'framer-motion';
 var d = debug('main');
 
 const VERSION = process.env.REACT_APP_VERSION ?? 'UNKNOWN';
@@ -653,126 +654,137 @@ class App extends React.Component<{}, AppState> {
         let tab = switches.get.tab;
         return (
             <DndProvider backend={HTML5Backend}>
-                <div className={`${switches.get.dark ? 'dark' : ''} relative`}>
-                    {this.state.alertData && (
-                        <Alert
-                            data={this.state.alertData}
-                            switches={switches}
-                            onConfirm={(inputText?: string) => {
-                                let alertData = this.state.alertData;
-                                if (alertData?.action) {
-                                    alertData.action(inputText);
-                                }
-                                this.postShowAlert();
-                            }}
-                            onClose={() => {
-                                this.postShowAlert();
-                            }}
-                        />
-                    )}
-
-                    <div className="bg-white dark:bg-gray-800 grid grid-cols-1 lg:grid-cols-8">
-                        <div className="col-span-2 px-4 h-192 md:h-screen flex flex-col">
-                            <Info />
-                            <Search
-                                data={this.state.data}
+                <MotionConfig
+                    reducedMotion={
+                        switches.get.reduced_motion ? 'always' : 'never'
+                    }
+                >
+                    <div
+                        className={`${
+                            switches.get.dark ? 'dark' : ''
+                        } relative`}
+                    >
+                        {this.state.alertData && (
+                            <Alert
+                                data={this.state.alertData}
                                 switches={switches}
-                                f={this.state.f}
+                                onConfirm={(inputText?: string) => {
+                                    let alertData = this.state.alertData;
+                                    if (alertData?.action) {
+                                        alertData.action(inputText);
+                                    }
+                                    this.postShowAlert();
+                                }}
+                                onClose={() => {
+                                    this.postShowAlert();
+                                }}
                             />
-                            {tab === 'My List' && (
-                                <Bookmarks
-                                    bookmarks={this.state.data.bookmarks}
+                        )}
+
+                        <div className="bg-white dark:bg-gray-800 grid grid-cols-1 lg:grid-cols-8">
+                            <div className="col-span-2 px-4 h-192 md:h-screen flex flex-col">
+                                <Info />
+                                <Search
+                                    data={this.state.data}
+                                    switches={switches}
+                                    f={this.state.f}
+                                />
+                                {tab === 'My List' && (
+                                    <Bookmarks
+                                        bookmarks={this.state.data.bookmarks}
+                                        alert={(alertData) => {
+                                            this.showAlert(alertData);
+                                        }}
+                                        f={this.state.f}
+                                        switches={switches}
+                                    />
+                                )}
+                                {tab === 'Plans' && (
+                                    <AccountPlans
+                                        data={this.state.data}
+                                        switches={this.state.switches}
+                                        alert={(alertData) => {
+                                            this.showAlert(alertData);
+                                        }}
+                                        activatePlan={(planId) => {
+                                            this.activateAccountPlan(planId);
+                                        }}
+                                        deactivatePlan={() => {
+                                            this.deactivatePlan();
+                                        }}
+                                        activePlanId={
+                                            switches.get
+                                                .active_plan_id as string
+                                        }
+                                    />
+                                )}
+                                <TaskBar
                                     alert={(alertData) => {
                                         this.showAlert(alertData);
                                     }}
+                                    version={VERSION}
+                                    switches={switches}
+                                    f2={this.state.f2}
+                                    tabLoading={this.state.loadingLogin}
+                                />
+                            </div>
+
+                            <div
+                                className={`${
+                                    switches.get.compact ? 'compact-mode ' : ''
+                                } col-span-6 block pt-0 lg:h-screen lg:overflow-y-scroll no-scrollbar`}
+                            >
+                                <Content
+                                    data={this.state.data}
                                     f={this.state.f}
+                                    f2={this.state.f2}
+                                    alert={(alertData) => {
+                                        this.showAlert(alertData);
+                                    }}
                                     switches={switches}
                                 />
-                            )}
-                            {tab === 'Plans' && (
-                                <AccountPlans
-                                    data={this.state.data}
-                                    switches={this.state.switches}
-                                    alert={(alertData) => {
-                                        this.showAlert(alertData);
-                                    }}
-                                    activatePlan={(planId) => {
-                                        this.activateAccountPlan(planId);
-                                    }}
-                                    deactivatePlan={() => {
-                                        this.deactivatePlan();
-                                    }}
-                                    activePlanId={
-                                        switches.get.active_plan_id as string
-                                    }
-                                />
-                            )}
-                            <TaskBar
-                                alert={(alertData) => {
-                                    this.showAlert(alertData);
-                                }}
-                                version={VERSION}
-                                switches={switches}
-                                f2={this.state.f2}
-                                tabLoading={this.state.loadingLogin}
-                            />
+                            </div>
                         </div>
-
-                        <div
-                            className={`${
-                                switches.get.compact ? 'compact-mode ' : ''
-                            } col-span-6 block pt-0 lg:h-screen lg:overflow-y-scroll no-scrollbar`}
-                        >
-                            <Content
-                                data={this.state.data}
-                                f={this.state.f}
-                                f2={this.state.f2}
-                                alert={(alertData) => {
-                                    this.showAlert(alertData);
-                                }}
-                                switches={switches}
-                            />
-                        </div>
-                    </div>
-                    {this.state.unsavedChanges && (
-                        <div
-                            className={`fixed right-12 ${
-                                switches.get.save_location_top
-                                    ? 'top-8'
-                                    : 'bottom-8'
-                            }`}
-                        >
-                            <button
-                                className={`flex items-center gap-2 rainbow-border-button shadow-lg opacity-75 hover:opacity-100 focus:before:bg-none focus:before:bg-emerald-400
+                        {this.state.unsavedChanges && (
+                            <div
+                                className={`fixed right-12 ${
+                                    switches.get.save_location_top
+                                        ? 'top-8'
+                                        : 'bottom-8'
+                                }`}
+                            >
+                                <button
+                                    className={`flex items-center gap-2 rainbow-border-button shadow-lg opacity-75 hover:opacity-100 focus:before:bg-none focus:before:bg-emerald-400
                                 after:bg-gray-100 text-black dark:after:bg-gray-700 dark:text-white ${
                                     this.state.loadingUpdate
                                         ? 'before:bg-none before:bg-emerald-400'
                                         : ''
                                 }`}
-                                onClick={() => {
-                                    this.updatePlan();
-                                }}
-                                disabled={this.state.loadingUpdate}
-                            >
-                                {this.state.loadingUpdate ? (
-                                    <>
-                                        <RefreshIcon className="h-6 w-6 inline-block animate-reverse-spin" />
-                                        <p className="inline-block text-lg font-extrabold">
-                                            SAVING
-                                        </p>
-                                    </>
-                                ) : (
-                                    <>
-                                        <SaveIcon className="h-6 w-6 inline-block" />
-                                        <p className="inline-block text-lg font-extrabold">
-                                            SAVE
-                                        </p>
-                                    </>
-                                )}
-                            </button>
-                        </div>
-                    )}
-                </div>
+                                    onClick={() => {
+                                        this.updatePlan();
+                                    }}
+                                    disabled={this.state.loadingUpdate}
+                                >
+                                    {this.state.loadingUpdate ? (
+                                        <>
+                                            <RefreshIcon className="h-6 w-6 inline-block animate-reverse-spin" />
+                                            <p className="inline-block text-lg font-extrabold">
+                                                SAVING
+                                            </p>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <SaveIcon className="h-6 w-6 inline-block" />
+                                            <p className="inline-block text-lg font-extrabold">
+                                                SAVE
+                                            </p>
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </MotionConfig>
             </DndProvider>
         );
     }

@@ -361,6 +361,14 @@ function TaskBar(props: TaskBarProps) {
                                 },
                             },
                             {
+                                name: 'reduced_motion',
+                                title: 'Reduced motion',
+                                description: `With reduced motion enabled, all transform and layout animations across the site will be disabled.`,
+                                buttonTextOn: 'Enabled',
+                                buttonTextOff: 'Disabled',
+                                saveToStorage: true,
+                            },
+                            {
                                 name: 'debug',
                                 title: 'Debug mode',
                                 description: `Log messages will print into your browser's console (verbose log level is required).`,
