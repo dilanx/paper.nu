@@ -601,17 +601,19 @@ class App extends React.Component<{}, AppState> {
             return;
         }
         this.setState({ loadingUpdate: true });
-        Account.updatePlan(
-            activePlanId as string,
-            CourseManager.getDataString(this.state.data)
-        )
+        const dataStr = CourseManager.getDataString(this.state.data);
+        Account.updatePlan(activePlanId as string, dataStr)
             .catch((error: PlanError) => {
                 this.showAlert(
                     Utility.errorAlert('account_update_plan', error.message)
                 );
             })
             .finally(() => {
-                this.setState({ loadingUpdate: false, unsavedChanges: false });
+                this.setState({
+                    loadingUpdate: false,
+                    unsavedChanges: false,
+                    originalDataString: dataStr,
+                });
                 d('plan updated');
             });
     }
