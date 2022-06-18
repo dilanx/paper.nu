@@ -1,4 +1,5 @@
 import React from 'react';
+import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Content from './components/Content';
@@ -29,7 +30,6 @@ import { UserOptions, UserOptionValue } from './types/BaseTypes';
 import Account from './Account';
 import PlanError from './classes/PlanError';
 import debug from 'debug';
-import { MotionConfig } from 'framer-motion';
 var d = debug('main');
 
 const VERSION = process.env.REACT_APP_VERSION ?? 'UNKNOWN';
@@ -745,44 +745,49 @@ class App extends React.Component<{}, AppState> {
                                 />
                             </div>
                         </div>
-                        {this.state.unsavedChanges && (
-                            <div
-                                className={`fixed right-12 ${
-                                    switches.get.save_location_top
-                                        ? 'top-8'
-                                        : 'bottom-8'
-                                }`}
-                            >
-                                <button
-                                    className={`flex items-center gap-2 rainbow-border-button shadow-lg opacity-75 hover:opacity-100 focus:before:bg-none focus:before:bg-emerald-400
+                        <AnimatePresence>
+                            {this.state.unsavedChanges && (
+                                <motion.div
+                                    initial={{ x: 20, opacity: 0 }}
+                                    animate={{ x: 0, opacity: 1 }}
+                                    exit={{ x: 20, opacity: 0 }}
+                                    className={`fixed right-12 ${
+                                        switches.get.save_location_top
+                                            ? 'top-8'
+                                            : 'bottom-8'
+                                    }`}
+                                >
+                                    <button
+                                        className={`flex items-center gap-2 rainbow-border-button shadow-lg opacity-75 hover:opacity-100 focus:before:bg-none focus:before:bg-emerald-400
                                 after:bg-gray-100 text-black dark:after:bg-gray-700 dark:text-white ${
                                     this.state.loadingUpdate
                                         ? 'before:bg-none before:bg-emerald-400'
                                         : ''
                                 }`}
-                                    onClick={() => {
-                                        this.updatePlan();
-                                    }}
-                                    disabled={this.state.loadingUpdate}
-                                >
-                                    {this.state.loadingUpdate ? (
-                                        <>
-                                            <RefreshIcon className="h-6 w-6 inline-block animate-reverse-spin" />
-                                            <p className="inline-block text-lg font-extrabold">
-                                                SAVING
-                                            </p>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <SaveIcon className="h-6 w-6 inline-block" />
-                                            <p className="inline-block text-lg font-extrabold">
-                                                SAVE
-                                            </p>
-                                        </>
-                                    )}
-                                </button>
-                            </div>
-                        )}
+                                        onClick={() => {
+                                            this.updatePlan();
+                                        }}
+                                        disabled={this.state.loadingUpdate}
+                                    >
+                                        {this.state.loadingUpdate ? (
+                                            <>
+                                                <RefreshIcon className="h-6 w-6 inline-block animate-reverse-spin" />
+                                                <p className="inline-block text-lg font-extrabold">
+                                                    SAVING
+                                                </p>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <SaveIcon className="h-6 w-6 inline-block" />
+                                                <p className="inline-block text-lg font-extrabold">
+                                                    SAVE
+                                                </p>
+                                            </>
+                                        )}
+                                    </button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
                 </MotionConfig>
             </DndProvider>
