@@ -28,7 +28,13 @@ Once Plan Northwestern completes its update to v1.2.0, the integration will star
 
 - **Powerful search**
 
-  Plan Northwestern will bring its powerful search functionality to the course schedule. You'll be able to utilize search shortcuts to easily find the courses you're looking for. For example, typing 'cs 111' will bring up 'COMP_SCI 111-0', and typing 'ea 2' will bring up both 'GEN_ENG 205-2' and 'GEN_ENG 206-2'. There are a bunch more shortcuts, and adding new ones is as easy as [creating an issue](https://github.com/dilanx/plan-northwestern/issues) to let me know of your suggestions. The search functionality will be continuously improved on as time goes on. I'll be adding the ability to search by distro or by dependents (classes that have the searched class as a prereq), just to name a few.
+  Plan Northwestern will bring its powerful search functionality to the course schedule. You'll be able to utilize search shortcuts to easily find the courses you're looking for. For example, typing 'cs 111' will bring up 'COMP_SCI 111-0', and typing 'ea 2' will bring up both 'GEN_ENG 205-2' and 'GEN_ENG 206-2'. There are a bunch more shortcuts, and adding new ones is as easy as [creating an issue](https://github.com/dilanx/plan-northwestern/issues) to let me know of your suggestions. The search functionality will be continuously improved on as time goes on and will be structured in a way that makes it as simple yet also function as possible. Here are some upcoming advanced search options:
+  
+  - Search by Weinberg distro
+  - Search by dependents (the results are courses that require the searched course as a prereq)
+  - Search by time frame
+  - Search by instructor
+  - Search by location (maybe lol idk if this one is that useful)
 
 - **Custom course blocks**
 
