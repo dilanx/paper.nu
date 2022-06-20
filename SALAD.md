@@ -54,7 +54,7 @@ _All features listed above are tentative and may not be implemented exactly as d
 
 ## Plan Northwestern and salad.nu are so easy to use right now. Will all of this new stuff make it too complex?
 
-Not at all. A lot of the heavy work will be done for you in the background automatically. Your browser will still remember and load your most recent plan and schedule, and you won't even need an account. If you choose to make an account to save your stuff and access across devices, all you'd have to do is click the "log in" button and sign in with your existing Google account. All of your saved data will appear before your eyes, ready to use right away. You'll just need to use the sites as you normally would. New features that enhance the experience will only be where it's convenient and easy to use.
+Not at all. A lot of the heavy work will be done for you in the background automatically. Your browser will still remember and load your most recent plan and schedule, and you won't even need an account. If you choose to make an account to save your stuff and access across devices, all you'd have to do is click the "log in" button and sign in with your existing Google account. All of your saved data will appear before your eyes, ready to use right away. You'll just need to use the sites as you normally would. New features that enhance the experience will only be where they're convenient and easy to use.
 
 ## I have a good idea for a feature!
 
@@ -66,7 +66,7 @@ Yes, please. [You can sign up to help beta test the software here.](https://form
 
 ## I'd like to talk about this more! How can I reach you?
 
-Feel free to get in touch by messaging me on Instagram at https://instagram.com/dilan4k. Alternatively, you can message me on Discord at Dilan#1000 (you'll need to join the [Northwestern Discord server](https://discord.gg/aERJFBAhyP) first).
+Feel free to get in touch by messaging me on Instagram at https://instagram.com/dilan4k. Alternatively, you can message me on Discord at Dilan#1000 (you'll need to join the [Northwestern Discord server](https://discord.gg/aERJFBAhyP) first). You're always welcome to ask any questions you have about this project.
 
 ## Isn't this kinda ambitious?
 
