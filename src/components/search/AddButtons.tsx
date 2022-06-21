@@ -111,7 +111,7 @@ function AddButtons(props: AddButtonsProps) {
     for (let y = 0; y < years; y++) {
         sections.push(
             <AddButtonSection
-                title={`${Utility.convertYear(y)} YEAR`}
+                title={Utility.convertYear(y)}
                 size={courses[y].length}
                 action={(quarter) => {
                     props.action(y, quarter);
