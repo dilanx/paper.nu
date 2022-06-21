@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import AccountPlanMessage from './AccountPlanMessage';
 import {
     CollectionIcon,
@@ -229,7 +230,9 @@ class AccountPlans extends React.Component<
         }
 
         return (
-            <div
+            <motion.div
+                initial="hidden"
+                animate="visible"
                 className="border-4 border-rose-300 my-2 rounded-lg shadow-lg h-full
             overflow-y-scroll no-scrollbar"
             >
@@ -299,7 +302,7 @@ class AccountPlans extends React.Component<
                         </button>
                     </>
                 )}
-            </div>
+            </motion.div>
         );
     }
 }

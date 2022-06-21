@@ -1,4 +1,4 @@
-import React from 'react';
+import { motion } from 'framer-motion';
 import { useDrop } from 'react-dnd';
 import Class from '../Class';
 import CourseManager from '../../CourseManager';
@@ -17,6 +17,18 @@ interface BookmarksListProps {
     f: PlanModificationFunctions;
     switches: UserOptions;
 }
+
+const variants = {
+    hidden: { x: -20, opacity: 0 },
+    visible: {
+        x: 0,
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            when: 'beforeChildren',
+        },
+    },
+};
 
 function BookmarksList(props: BookmarksListProps) {
     const [{ isOver }, drop] = useDrop(() => ({
@@ -68,9 +80,10 @@ function BookmarksList(props: BookmarksListProps) {
     }
 
     return (
-        <div
-            ref={drop}
-            className={`compact-mode relative m-4 rounded-lg px-4 pt-4 pb-8 border-2
+        <motion.div initial="hidden" animate="visible" variants={variants}>
+            <div
+                ref={drop}
+                className={`compact-mode relative m-4 rounded-lg px-4 pt-4 pb-8 border-2
                     ${
                         isOver
                             ? 'border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50'
@@ -81,17 +94,19 @@ function BookmarksList(props: BookmarksListProps) {
                                 : 'border-indigo-500'
                         }`
                     } space-y-3 shadow-lg`}
-        >
-            <p className="text-center font-bold text-md m-0 p-0 text-gray-600 dark:text-gray-400">
-                {props.credit ? 'FOR CREDIT' : 'BOOKMARKED COURSES'}
-            </p>
-            <div className="space-y-2">{classes}</div>
-            {props.credit && props.switches.get.quarter_units && (
-                <p className="absolute right-2 top-0 text-right text-xs p-0 m-0 text-gray-400 font-normal">
-                    <span className="font-medium">{units}</span> {unitString}
+            >
+                <p className="text-center font-bold text-md m-0 p-0 text-gray-600 dark:text-gray-400">
+                    {props.credit ? 'FOR CREDIT' : 'BOOKMARKED COURSES'}
                 </p>
-            )}
-        </div>
+                <div className="space-y-2">{classes}</div>
+                {props.credit && props.switches.get.quarter_units && (
+                    <p className="absolute right-2 top-0 text-right text-xs p-0 m-0 text-gray-400 font-normal">
+                        <span className="font-medium">{units}</span>{' '}
+                        {unitString}
+                    </p>
+                )}
+            </div>
+        </motion.div>
     );
 }
 
