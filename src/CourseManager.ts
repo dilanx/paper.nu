@@ -306,6 +306,7 @@ let CourseManager = {
         let activePlanId: string | undefined = undefined;
         let originalDataString: string = '';
         let accountPlans: AccountPlansData | undefined = undefined;
+        let method: 'None' | 'URL' | 'Account' | 'Storage' = 'None';
         if (Account.isLoggedIn()) {
             accountPlans = await Account.init();
             activePlanId = 'None';
@@ -316,6 +317,7 @@ let CourseManager = {
         let data = CourseManager.loadFromURL(params);
         if (data !== 'malformed' && data !== 'empty') {
             dp('URL load successful');
+            method = 'URL';
             if (accountPlans) {
                 let dataStr = params.toString();
                 for (let planId in accountPlans) {
@@ -323,6 +325,7 @@ let CourseManager = {
                         dp('matched to account plan: %s', planId);
                         activePlanId = planId;
                         originalDataString = dataStr;
+                        method = 'Account';
                         break;
                     }
                 }
@@ -345,6 +348,7 @@ let CourseManager = {
                         data = CourseManager.loadFromString(content);
                         activePlanId = storedPlanId;
                         originalDataString = content;
+                        method = 'Account';
                     }
                 }
             }
@@ -353,6 +357,7 @@ let CourseManager = {
             if (data === 'empty') {
                 dp('nothing to load from account, trying storage instead');
                 data = CourseManager.loadFromStorage();
+                method = 'Storage';
             }
 
             if (data !== 'malformed' && data !== 'empty') {
@@ -370,6 +375,7 @@ let CourseManager = {
             data,
             activePlanId,
             originalDataString,
+            method,
         };
     },
 

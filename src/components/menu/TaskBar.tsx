@@ -1,5 +1,5 @@
 import React from 'react';
-import Utility from '../../Utility';
+import Utility from '../../utility/Utility';
 import {
     ExternalLinkIcon,
     InformationCircleIcon,
@@ -14,6 +14,7 @@ import { Alert } from '../../types/AlertTypes';
 import { PlanSpecialFunctions } from '../../types/PlanTypes';
 import Account from '../../Account';
 import debugModule from 'debug';
+import toast from 'react-hot-toast';
 
 interface MiniButtonProps {
     icon: (props: React.ComponentProps<'svg'>) => JSX.Element;
@@ -268,6 +269,7 @@ function TaskBar(props: TaskBarProps) {
                         textView: window.location.href,
                         action: () => {
                             navigator.clipboard.writeText(window.location.href);
+                            toast.success('URL copied to clipboard');
                         },
                     });
                 }}

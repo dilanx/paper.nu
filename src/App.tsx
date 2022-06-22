@@ -4,20 +4,14 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Content from './components/Content';
 import CourseManager from './CourseManager';
-//import Account from './Account';
-import Utility from './Utility';
+import Utility from './utility/Utility';
 import Info from './components/menu/Info';
 import TaskBar from './components/menu/TaskBar';
 import Search from './components/search/Search';
 import Alert from './components/menu/Alert';
 import Bookmarks from './components/bookmarks/Bookmarks';
 import AccountPlans from './components/account/AccountPlans';
-import {
-    ExclamationIcon,
-    PlusIcon,
-    RefreshIcon,
-    SaveIcon,
-} from '@heroicons/react/outline';
+import { ExclamationIcon, PlusIcon, SaveIcon } from '@heroicons/react/outline';
 import {
     Course,
     CourseLocation,
@@ -28,8 +22,9 @@ import {
 import { AlertData } from './types/AlertTypes';
 import { UserOptions, UserOptionValue } from './types/BaseTypes';
 import Account from './Account';
-import PlanError from './classes/PlanError';
+import PlanError from './utility/PlanError';
 import debug from 'debug';
+import toast, { Toaster } from 'react-hot-toast';
 var d = debug('main');
 
 const VERSION = process.env.REACT_APP_VERSION ?? 'UNKNOWN';
@@ -42,7 +37,6 @@ interface AppState {
     f2: PlanSpecialFunctions;
     loadingLogin: boolean;
     unsavedChanges: boolean;
-    loadingUpdate: boolean;
     originalDataString: string;
 }
 
@@ -121,7 +115,6 @@ class App extends React.Component<{}, AppState> {
             f2,
             loadingLogin: false,
             unsavedChanges: false,
-            loadingUpdate: false,
             originalDataString: '',
         };
     }
@@ -134,12 +127,30 @@ class App extends React.Component<{}, AppState> {
         params.delete('code');
         let state = params.get('state');
         params.delete('state');
+        let action = params.get('action');
+        params.delete('action');
 
         window.history.replaceState(
             {},
             '',
             `${window.location.pathname}?${params.toString()}`
         );
+
+        if (action) {
+            switch (action) {
+                case 'login':
+                    toast.success('Logged in');
+                    break;
+                case 'logout':
+                    toast.success('Logged out', {
+                        iconTheme: {
+                            primary: 'red',
+                            secondary: 'white',
+                        },
+                    });
+                    break;
+            }
+        }
 
         if (code && state) {
             d('query has code and state, logging in');
@@ -169,7 +180,7 @@ class App extends React.Component<{}, AppState> {
     initializePlan(params: URLSearchParams, callback: () => void) {
         d('plan initializing');
         CourseManager.load(params, this.state.switches)
-            .then(({ data, activePlanId, originalDataString }) => {
+            .then(({ data, activePlanId, originalDataString, method }) => {
                 this.setState({ loadingLogin: false });
                 if (data === 'malformed') {
                     this.showAlert({
@@ -191,6 +202,19 @@ class App extends React.Component<{}, AppState> {
                 this.setState({ originalDataString });
                 if (data === 'empty') {
                     return;
+                }
+                switch (method) {
+                    case 'URL':
+                        toast.success('Loaded plan from URL');
+                        break;
+                    case 'Account':
+                        toast.success(
+                            'Loaded plan: ' + Account.getPlanName(activePlanId)
+                        );
+                        break;
+                    case 'Storage':
+                        toast.success('Loaded recently edited plan.');
+                        break;
                 }
                 this.setState({ data });
             })
@@ -555,6 +579,9 @@ class App extends React.Component<{}, AppState> {
                         originalDataString: plan.content,
                         unsavedChanges: window.location.search.length > 0,
                     });
+                    toast.success(
+                        'Activated plan: ' + Account.getPlanName(planId)
+                    );
                     d('plan activated: %s (empty)', planId);
                     return;
                 }
@@ -572,6 +599,9 @@ class App extends React.Component<{}, AppState> {
                         },
                         () => {
                             CourseManager.save(data as PlanData);
+                            toast.success(
+                                'Activated plan: ' + Account.getPlanName(planId)
+                            );
                             d('plan activated: %s', planId);
                         }
                     );
@@ -588,6 +618,12 @@ class App extends React.Component<{}, AppState> {
         this.discardChanges(() => {
             let planId = this.state.switches.get.active_plan_id;
             this.setSwitch('active_plan_id', 'None', true);
+            toast.success('Deactivated plan', {
+                iconTheme: {
+                    primary: 'red',
+                    secondary: 'white',
+                },
+            });
             d('plan deactivated: %s', planId);
         });
     }
@@ -600,22 +636,27 @@ class App extends React.Component<{}, AppState> {
             );
             return;
         }
-        this.setState({ loadingUpdate: true });
+
         const dataStr = CourseManager.getDataString(this.state.data);
-        Account.updatePlan(activePlanId as string, dataStr)
-            .catch((error: PlanError) => {
-                this.showAlert(
-                    Utility.errorAlert('account_update_plan', error.message)
-                );
-            })
-            .finally(() => {
-                this.setState({
-                    loadingUpdate: false,
-                    unsavedChanges: false,
+        this.setState({ unsavedChanges: false });
+
+        let self = this;
+        toast.promise(Account.updatePlan(activePlanId as string, dataStr), {
+            loading: 'Saving...',
+            success: () => {
+                self.setState({
                     originalDataString: dataStr,
                 });
-                d('plan updated');
-            });
+                return 'Saved ' + Account.getPlanName(activePlanId as string);
+            },
+            error: (err) => {
+                this.setState({ unsavedChanges: true });
+                this.showAlert(
+                    Utility.errorAlert('account_update_plan', err.message)
+                );
+                return 'Something went wrong';
+            },
+        });
     }
 
     discardChanges(
@@ -654,18 +695,32 @@ class App extends React.Component<{}, AppState> {
     render() {
         let switches = this.state.switches;
         let tab = switches.get.tab;
+        let darkMode = switches.get.dark;
         return (
             <DndProvider backend={HTML5Backend}>
+                {switches.get.notifications && (
+                    <Toaster
+                        position="top-right"
+                        reverseOrder={false}
+                        toastOptions={{
+                            style: {
+                                minWidth: '12rem',
+                                fontSize: '0.875rem',
+                                fontWeight: '500',
+                                backgroundColor: darkMode
+                                    ? '#262626'
+                                    : undefined,
+                                color: darkMode ? '#ffffff' : undefined,
+                            },
+                        }}
+                    />
+                )}
                 <MotionConfig
                     reducedMotion={
                         switches.get.reduced_motion ? 'always' : 'never'
                     }
                 >
-                    <div
-                        className={`${
-                            switches.get.dark ? 'dark' : ''
-                        } relative`}
-                    >
+                    <div className={`${darkMode ? 'dark' : ''} relative`}>
                         {this.state.alertData && (
                             <Alert
                                 data={this.state.alertData}
@@ -760,32 +815,18 @@ class App extends React.Component<{}, AppState> {
                                     }`}
                                 >
                                     <button
-                                        className={`flex items-center gap-2 rainbow-border-button shadow-lg opacity-75 hover:opacity-100 focus:before:bg-none focus:before:bg-emerald-400
-                                after:bg-gray-100 text-black dark:after:bg-gray-700 dark:text-white ${
-                                    this.state.loadingUpdate
-                                        ? 'before:bg-none before:bg-emerald-400'
-                                        : ''
-                                }`}
+                                        className="flex items-center gap-2 rainbow-border-button shadow-lg opacity-75 hover:opacity-100 focus:before:bg-none focus:before:bg-emerald-400
+                                            after:bg-gray-100 text-black dark:after:bg-gray-700 dark:text-white"
                                         onClick={() => {
                                             this.updatePlan();
                                         }}
-                                        disabled={this.state.loadingUpdate}
                                     >
-                                        {this.state.loadingUpdate ? (
-                                            <>
-                                                <RefreshIcon className="h-6 w-6 inline-block animate-reverse-spin" />
-                                                <p className="inline-block text-lg font-extrabold">
-                                                    SAVING
-                                                </p>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <SaveIcon className="h-6 w-6 inline-block" />
-                                                <p className="inline-block text-lg font-extrabold">
-                                                    SAVE
-                                                </p>
-                                            </>
-                                        )}
+                                        <>
+                                            <SaveIcon className="h-6 w-6 inline-block" />
+                                            <p className="inline-block text-lg font-extrabold">
+                                                SAVE
+                                            </p>
+                                        </>
                                     </button>
                                 </motion.div>
                             )}

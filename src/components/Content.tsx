@@ -8,7 +8,7 @@ import {
     PlanModificationFunctions,
     PlanSpecialFunctions,
 } from '../types/PlanTypes';
-import Utility from '../Utility';
+import Utility from '../utility/Utility';
 import Year from './Year';
 
 interface ContentProps {

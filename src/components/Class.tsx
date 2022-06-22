@@ -15,7 +15,7 @@ import {
     ToggleableAlertDataEditButton,
 } from '../types/AlertTypes';
 import CourseManager from '../CourseManager';
-import Utility from '../Utility';
+import Utility from '../utility/Utility';
 import {
     TrashIcon,
     DocumentIcon,

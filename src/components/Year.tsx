@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Quarter from './Quarter';
-import Utility from '../Utility';
+import Utility from '../utility/Utility';
 import {
     PlusIcon,
     ChevronUpIcon,

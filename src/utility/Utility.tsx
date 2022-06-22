@@ -1,12 +1,12 @@
 import { ExclamationIcon } from '@heroicons/react/outline';
-import { AlertData } from './types/AlertTypes';
+import { AlertData } from '../types/AlertTypes';
 import {
     Color,
     ReadUserOptions,
     UserOptions,
     UserOptionValue,
-} from './types/BaseTypes';
-import { PlanErrorLocation } from './types/ErrorTypes';
+} from '../types/BaseTypes';
+import { PlanErrorLocation } from '../types/ErrorTypes';
 
 let Utility = {
     BACKGROUND_LIGHT: '#FFFFFF',
@@ -21,6 +21,7 @@ let Utility = {
     ): UserOptions => {
         let switches: ReadUserOptions = {
             save_to_storage: true,
+            notifications: true,
         };
         let keys = Object.keys(localStorage);
         for (let i = 0; i < keys.length; i++) {

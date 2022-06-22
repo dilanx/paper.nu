@@ -14,11 +14,12 @@ import {
     AccountPlansData,
 } from '../../types/AccountTypes';
 import { Alert } from '../../types/AlertTypes';
-import Utility from '../../Utility';
+import Utility from '../../utility/Utility';
 import AccountPlan from './AccountPlan';
-import PlanError from '../../classes/PlanError';
+import PlanError from '../../utility/PlanError';
 import { PlanData } from '../../types/PlanTypes';
 import { UserOptions } from '../../types/BaseTypes';
+import toast from 'react-hot-toast';
 
 interface AccountPlansProps {
     data: PlanData;
@@ -125,22 +126,25 @@ class AccountPlans extends React.Component<
                     return;
                 }
                 self.setState({ loading: true });
-                Account.createPlan(name)
-                    .then((res) => {
-                        if (!res) return;
+                toast.promise(Account.createPlan(name), {
+                    loading: 'Creating plan...',
+                    success: (res) => {
                         self.setState({
                             plans: res,
                             loading: false,
                         });
-                    })
-                    .catch((error: PlanError) => {
+                        return 'Created plan: ' + name.toUpperCase();
+                    },
+                    error: (error: PlanError) => {
                         self.props.alert(
                             Utility.errorAlert(
                                 'account_create_plan',
                                 error.message
                             )
                         );
-                    });
+                        return 'Something went wrong';
+                    },
+                });
             },
         });
     }
@@ -163,29 +167,44 @@ class AccountPlans extends React.Component<
             ),
             action: () => {
                 self.setState({ loading: true });
-                Account.deletePlan(planId)
-                    .then((res) => {
-                        self.setState({
-                            plans: res,
-                            loading: false,
-                        });
-                        let switches = this.props.switches;
-                        if (switches.get.active_plan_id === planId) {
-                            this.props.switches.set(
-                                'active_plan_id',
-                                'None',
-                                true
+                toast.promise(
+                    Account.deletePlan(planId),
+                    {
+                        loading: 'Deleting plan...',
+                        success: (res) => {
+                            self.setState({
+                                plans: res,
+                                loading: false,
+                            });
+                            let switches = this.props.switches;
+                            if (switches.get.active_plan_id === planId) {
+                                this.props.switches.set(
+                                    'active_plan_id',
+                                    'None',
+                                    true
+                                );
+                            }
+                            return 'Deleted plan: ' + planName;
+                        },
+                        error: (error: PlanError) => {
+                            self.props.alert(
+                                Utility.errorAlert(
+                                    'account_delete_plan',
+                                    error.message
+                                )
                             );
-                        }
-                    })
-                    .catch((error: PlanError) => {
-                        self.props.alert(
-                            Utility.errorAlert(
-                                'account_delete_plan',
-                                error.message
-                            )
-                        );
-                    });
+                            return 'Something went wrong';
+                        },
+                    },
+                    {
+                        success: {
+                            iconTheme: {
+                                primary: 'red',
+                                secondary: 'white',
+                            },
+                        },
+                    }
+                );
             },
         });
     }

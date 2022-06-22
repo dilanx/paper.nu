@@ -1,5 +1,5 @@
 import React from 'react';
-import Utility from '../../Utility';
+import Utility from '../../utility/Utility';
 import { useDrag } from 'react-dnd';
 import { BookmarkIcon } from '@heroicons/react/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/solid';

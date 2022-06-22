@@ -1,6 +1,6 @@
 import { Color } from '../../types/BaseTypes';
 import { Course } from '../../types/PlanTypes';
-import Utility from '../../Utility';
+import Utility from '../../utility/Utility';
 
 interface AddButtonProps {
     color: Color;

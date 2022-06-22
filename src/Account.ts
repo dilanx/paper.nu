@@ -1,10 +1,10 @@
-import PlanError from './classes/PlanError';
+import PlanError from './utility/PlanError';
 import {
     AccountPlansData,
     AuthenticationResponseToken,
     ConnectionResponse,
 } from './types/AccountTypes';
-import Utility from './Utility';
+import Utility from './utility/Utility';
 import debug from 'debug';
 var da = debug('account:auth');
 var dh = debug('account:http');
@@ -32,7 +32,8 @@ async function authLogin(
                 '&redirect_uri=' +
                 encodeURIComponent(url.toString()) +
                 '&state=' +
-                state,
+                state +
+                '&action=login',
             '_self'
         );
         return { success: true, data: '' };
@@ -86,7 +87,7 @@ async function authLogout(): Promise<ConnectionResponse> {
     window.open(
         `https://auth.dilanxd.com/authenticate/logout?redirect_uri=${encodeURIComponent(
             url.toString()
-        )}`,
+        )}&action=logout`,
         '_self'
     );
     return { success: true, data: '' };
