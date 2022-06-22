@@ -23,6 +23,7 @@ async function authLogin(
     localStorage.removeItem('t');
     if (!authorizationCode) {
         let url = new URL(window.location.href);
+        url.searchParams.set('action', 'login');
         let state = Utility.generateRandomString(32);
         localStorage.setItem('t_s', state);
         da('no auth code in query, new access token required, redirecting');
@@ -84,6 +85,7 @@ async function authLogout(): Promise<ConnectionResponse> {
     da('auth logout');
     localStorage.removeItem('t');
     let url = new URL(window.location.href);
+    url.searchParams.set('action', 'logout');
     window.open(
         `https://auth.dilanxd.com/authenticate/logout?redirect_uri=${encodeURIComponent(
             url.toString()
