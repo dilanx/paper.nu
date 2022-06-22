@@ -213,7 +213,7 @@ class App extends React.Component<{}, AppState> {
                         );
                         break;
                     case 'Storage':
-                        toast.success('Loaded recently edited plan.');
+                        toast.success('Loaded recently edited plan');
                         break;
                 }
                 this.setState({ data });
