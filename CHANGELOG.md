@@ -16,6 +16,7 @@ _2022-05-XX_
     -   A bookmark button has been added to the corners of the classes that appear in the search results (when the class is hovered). This provides an easy way to bookmark courses since dragging them into your bookmarks list directly from the search box is no longer possible.
     -   The total unit count and the 'Add Year' button have been moved below the plan itself.
     -   Added a button for clearing a specific year's courses to each year on the plan (next to the button for minimizing and the button for adding a summer quarter).
+    -   Added a button for clearing the search query.
     -   Added hover tooltips to most of the icon buttons.
     -   The guide that appears in the search box when empty has been updated to include the new accounts feature.
 -   **Animations!** Some animations have been added across the site to improve the user experience.
