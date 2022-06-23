@@ -7,14 +7,16 @@ import {
     SearchIcon,
     BookmarkIcon,
     CollectionIcon,
-    RefreshIcon,
+    PencilIcon,
+    DotsHorizontalIcon,
 } from '@heroicons/react/outline';
-import { Color, UserOptions } from '../../types/BaseTypes';
+import { Color, ColorMap, UserOptions } from '../../types/BaseTypes';
 import { Alert } from '../../types/AlertTypes';
 import { PlanSpecialFunctions } from '../../types/PlanTypes';
 import Account from '../../Account';
 import debugModule from 'debug';
 import toast from 'react-hot-toast';
+import { TabBar, TabBarButton } from './TabBar';
 
 interface MiniButtonProps {
     icon: (props: React.ComponentProps<'svg'>) => JSX.Element;
@@ -45,117 +47,11 @@ function MiniButton(props: MiniButtonProps) {
     );
 }
 
-const TabBarButtonColors: { [key: string]: Color } = {
+const TabBarButtonColors: ColorMap = {
     Search: 'gray',
     'My List': 'indigo',
     Plans: 'rose',
 };
-
-interface TaskBarButtonProps {
-    name: string;
-    selected: string;
-    switches: UserOptions;
-    color: Color;
-    content: JSX.Element;
-    disableClick?: boolean;
-}
-
-function TabBarButton(props: TaskBarButtonProps) {
-    let color = props.color;
-    return (
-        <button
-            className={`px-2 py-1 ${
-                props.name === props.selected
-                    ? `bg-${color}-400 dark:bg-${color}-500 text-white`
-                    : `bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-300
-                    hover:bg-${color}-100 hover:text-${color}-600 dark:hover:text-${color}-400
-                    transition-all duration-150 ${
-                        props.name === 'Loading' ? 'cursor-not-allowed' : ''
-                    }`
-            } flex items-center gap-1 group`}
-            onClick={() => {
-                if (props.disableClick) return;
-                props.switches.set('tab', props.name, false);
-            }}
-        >
-            {props.content}
-            <div
-                className={`hidden group-hover:block absolute -top-10 left-1/2 -translate-x-1/2 p-1 border-2 rounded-md
-                    bg-${color}-50 dark:bg-gray-800 border-${color}-500 text-${color}-500 dark:text-${color}-300 text-sm font-medium`}
-            >
-                {props.name}
-            </div>
-        </button>
-    );
-}
-
-interface TabBarProps {
-    switches: UserOptions;
-    tabLoading: boolean;
-}
-
-function TabBar(props: TabBarProps) {
-    let color = TabBarButtonColors[props.switches.get.tab as string];
-    return (
-        <div className="relative">
-            <div
-                className={`flex border-2 border-${color}-400 dark:border-${color}-500 rounded-lg bg-${color}-400 dark:bg-${color}-500 overflow-hidden`}
-            >
-                {props.tabLoading ? (
-                    <TabBarButton
-                        name="Loading"
-                        selected="None"
-                        switches={props.switches}
-                        color={color}
-                        content={
-                            <>
-                                <RefreshIcon className="w-5 h-5 animate-reverse-spin" />
-                                <p className="lg:hidden xl:block m-0 text-sm lg:text-xs w-20 lg:w-12 overflow-hidden whitespace-nowrap text-ellipsis">
-                                    Loading
-                                </p>
-                            </>
-                        }
-                        disableClick={true}
-                    />
-                ) : (
-                    <>
-                        <TabBarButton
-                            name="Search"
-                            selected={props.switches.get.tab as string}
-                            switches={props.switches}
-                            color={TabBarButtonColors['Search']}
-                            content={<SearchIcon className="w-5 h-5" />}
-                        />
-                        <TabBarButton
-                            name="My List"
-                            selected={props.switches.get.tab as string}
-                            switches={props.switches}
-                            color={TabBarButtonColors['My List']}
-                            content={<BookmarkIcon className="w-5 h-5" />}
-                        />
-                        <TabBarButton
-                            name="Plans"
-                            selected={props.switches.get.tab as string}
-                            switches={props.switches}
-                            color={TabBarButtonColors['Plans']}
-                            content={
-                                <>
-                                    <CollectionIcon className="w-5 h-5" />
-                                    <p className="lg:hidden xl:block m-0 text-sm lg:text-xs w-20 lg:w-12 overflow-hidden whitespace-nowrap text-ellipsis">
-                                        {Account.getPlanName(
-                                            props.switches.get
-                                                .active_plan_id as string
-                                        )}
-                                    </p>
-                                </>
-                            }
-                        />
-                    </>
-                )}
-            </div>
-        </div>
-    );
-}
 
 interface TaskBarProps {
     alert: Alert;
@@ -291,105 +187,168 @@ function TaskBar(props: TaskBarProps) {
                                 aria-hidden="true"
                             />
                         ),
-                        options: [
-                            {
-                                name: 'dark',
-                                title: 'Dark mode',
-                                description: `Become one with the night.`,
-                                buttonTextOn: 'Enabled',
-                                buttonTextOff: 'Disabled',
-                                saveToStorage: true,
-                                bonusAction: (newSwitch) => {
-                                    let color = newSwitch
-                                        ? Utility.BACKGROUND_DARK
-                                        : Utility.BACKGROUND_LIGHT;
-                                    document.body.style.backgroundColor = color;
-                                    document
-                                        .querySelector(
-                                            'meta[name="theme-color"]'
-                                        )
-                                        ?.setAttribute('content', color);
+                        tabs: {
+                            switchName: 'settings_tab',
+                            colorMap: {
+                                Appearance: 'orange',
+                                Advanced: 'gray',
+                            },
+                            tabs: [
+                                {
+                                    name: 'Appearance',
+                                    display: <PencilIcon className="w-5 h-5" />,
+                                    options: [
+                                        {
+                                            name: 'dark',
+                                            title: 'Dark mode',
+                                            description: `Become one with the night.`,
+                                            buttonTextOn: 'Enabled',
+                                            buttonTextOff: 'Disabled',
+                                            saveToStorage: true,
+                                            bonusAction: (newSwitch) => {
+                                                let color = newSwitch
+                                                    ? Utility.BACKGROUND_DARK
+                                                    : Utility.BACKGROUND_LIGHT;
+                                                document.body.style.backgroundColor =
+                                                    color;
+                                                document
+                                                    .querySelector(
+                                                        'meta[name="theme-color"]'
+                                                    )
+                                                    ?.setAttribute(
+                                                        'content',
+                                                        color
+                                                    );
+                                            },
+                                        },
+                                        {
+                                            name: 'compact',
+                                            title: 'Compact mode',
+                                            description: `It's a bit uglier I think, but you can view more on the screen at once without needing to scroll.`,
+                                            buttonTextOn: 'Enabled',
+                                            buttonTextOff: 'Disabled',
+                                            saveToStorage: true,
+                                        },
+                                        {
+                                            name: 'quarter_units',
+                                            title: 'Show units per quarter',
+                                            description:
+                                                'Reveal the unit count per quarter.',
+                                            buttonTextOn: 'Enabled',
+                                            buttonTextOff: 'Disabled',
+                                            saveToStorage: true,
+                                        },
+                                        {
+                                            name: 'more_info',
+                                            title: 'Show more info on classes',
+                                            description: `See prerequisites and distribution areas on the class items without having to click on their info button. The info won't display if compact mode is enabled.`,
+                                            buttonTextOn: 'Enabled',
+                                            buttonTextOff: 'Disabled',
+                                            saveToStorage: true,
+                                        },
+                                        {
+                                            name: 'save_location_top',
+                                            title: 'Save button location',
+                                            description: `When editing a plan linked to your account that has unsaved changes, a save button appears at the bottom right of the window by default. You can move it to the top right if you'd prefer.`,
+                                            buttonTextOn: 'Top right',
+                                            buttonTextOff: 'Bottom right',
+                                            saveToStorage: true,
+                                        },
+                                    ],
                                 },
-                            },
-                            {
-                                name: 'compact',
-                                title: 'Compact mode',
-                                description: `It's a bit uglier I think, but you can view more on the screen at once without needing to scroll.`,
-                                buttonTextOn: 'Enabled',
-                                buttonTextOff: 'Disabled',
-                                saveToStorage: true,
-                            },
-                            {
-                                name: 'quarter_units',
-                                title: 'Show units per quarter',
-                                description:
-                                    'Reveal the unit count per quarter.',
-                                buttonTextOn: 'Enabled',
-                                buttonTextOff: 'Disabled',
-                                saveToStorage: true,
-                            },
-                            {
-                                name: 'more_info',
-                                title: 'Show more info on classes',
-                                description: `See prerequisites and distribution areas on the class items without having to click on their info button. The info won't display if compact mode is enabled.`,
-                                buttonTextOn: 'Enabled',
-                                buttonTextOff: 'Disabled',
-                                saveToStorage: true,
-                            },
-                            {
-                                name: 'save_location_top',
-                                title: 'Save button location',
-                                description: `When editing a plan linked to your account that has unsaved changes, a save button appears at the bottom right of the window by default. You can move it to the top right if you'd prefer.`,
-                                buttonTextOn: 'Top right',
-                                buttonTextOff: 'Bottom right',
-                                saveToStorage: true,
-                            },
-                            {
-                                name: 'save_to_storage',
-                                title: 'Remember most recent plan',
-                                description: `If you visit this site without a full plan URL, your most recently modified plan will be loaded.`,
-                                buttonTextOn: 'Enabled',
-                                buttonTextOff: 'Disabled',
-                                saveToStorage: true,
-                            },
-                            {
-                                name: 'clear_plan',
-                                title: 'Clear plan',
-                                description: `Clear all of your current plan data, which includes everything for each year and everything in My List. Make sure to save the current URL somewhere if you don't want to lose it.`,
-                                buttonTextOn: 'Clear',
-                                requireConfirmation: true,
-                                singleAction: () => {
-                                    props.f2.clearData();
+                                {
+                                    name: 'Advanced',
+                                    display: (
+                                        <DotsHorizontalIcon className="w-5 h-5" />
+                                    ),
+                                    options: [
+                                        {
+                                            name: 'save_to_storage',
+                                            title: 'Remember most recent plan',
+                                            description: `If you visit this site without a full plan URL, your most recently modified plan will be loaded.`,
+                                            buttonTextOn: 'Enabled',
+                                            buttonTextOff: 'Disabled',
+                                            saveToStorage: true,
+                                        },
+                                        // {
+                                        //     name: 'clear_plan',
+                                        //     title: 'Clear plan',
+                                        //     description: `Clear all of your current plan data, which includes everything for each year and everything in My List. Make sure to save the current URL somewhere if you don't want to lose it.`,
+                                        //     buttonTextOn: 'Clear',
+                                        //     requireConfirmation: true,
+                                        //     singleAction: () => {
+                                        //         props.f2.clearData();
+                                        //     },
+                                        // },
+                                        {
+                                            name: 'reduced_motion',
+                                            title: 'Reduced motion',
+                                            description: `With reduced motion enabled, all transform and layout animations across the site will be disabled.`,
+                                            buttonTextOn: 'Enabled',
+                                            buttonTextOff: 'Disabled',
+                                            saveToStorage: true,
+                                        },
+                                        {
+                                            name: 'debug',
+                                            title: 'Debug mode',
+                                            description: `Log messages will print into your browser's console (verbose log level is required).`,
+                                            buttonTextOn: 'Enabled',
+                                            buttonTextOff: 'Disabled',
+                                            saveToStorage: true,
+                                            bonusAction: (newSwitch) => {
+                                                if (newSwitch) {
+                                                    debugModule.enable('*');
+                                                } else {
+                                                    debugModule.disable();
+                                                }
+                                            },
+                                        },
+                                    ],
                                 },
-                            },
-                            {
-                                name: 'reduced_motion',
-                                title: 'Reduced motion',
-                                description: `With reduced motion enabled, all transform and layout animations across the site will be disabled.`,
-                                buttonTextOn: 'Enabled',
-                                buttonTextOff: 'Disabled',
-                                saveToStorage: true,
-                            },
-                            {
-                                name: 'debug',
-                                title: 'Debug mode',
-                                description: `Log messages will print into your browser's console (verbose log level is required).`,
-                                buttonTextOn: 'Enabled',
-                                buttonTextOff: 'Disabled',
-                                saveToStorage: true,
-                                bonusAction: (newSwitch) => {
-                                    if (newSwitch) {
-                                        debugModule.enable('*');
-                                    } else {
-                                        debugModule.disable();
-                                    }
-                                },
-                            },
-                        ],
+                            ],
+                        },
                     });
                 }}
             />
-            <TabBar switches={props.switches} tabLoading={props.tabLoading} />
+            <TabBar
+                switches={props.switches}
+                switchName="tab"
+                tabLoading={props.tabLoading}
+                colorMap={TabBarButtonColors}
+            >
+                <TabBarButton
+                    name="Search"
+                    selected={props.switches.get.tab as string}
+                    switches={props.switches}
+                    switchName="tab"
+                    color={TabBarButtonColors['Search']}
+                >
+                    <SearchIcon className="w-5 h-5" />
+                </TabBarButton>
+                <TabBarButton
+                    name="My List"
+                    selected={props.switches.get.tab as string}
+                    switches={props.switches}
+                    switchName="tab"
+                    color={TabBarButtonColors['My List']}
+                >
+                    <BookmarkIcon className="w-5 h-5" />
+                </TabBarButton>
+                <TabBarButton
+                    name="Plans"
+                    selected={props.switches.get.tab as string}
+                    switches={props.switches}
+                    switchName="tab"
+                    color={TabBarButtonColors['Plans']}
+                >
+                    <CollectionIcon className="w-5 h-5" />
+                    <p className="lg:hidden xl:block m-0 text-sm lg:text-xs w-20 lg:w-12 overflow-hidden whitespace-nowrap text-ellipsis">
+                        {Account.getPlanName(
+                            props.switches.get.active_plan_id as string
+                        )}
+                    </p>
+                </TabBarButton>
+            </TabBar>
         </div>
     );
 }

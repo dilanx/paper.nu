@@ -6,6 +6,7 @@ import {
     editButtonIsToggleable,
 } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
+import { TabBar, TabBarButton } from './TabBar';
 
 interface AlertProps {
     data: AlertData;
@@ -54,11 +55,48 @@ export default function Alert(props: AlertProps) {
         });
     }
 
+    let options = data.options;
+
+    let tabBar: JSX.Element | undefined = undefined;
+
+    if (data.tabs) {
+        let tabs = data.tabs;
+        let selected = props.switches.get[tabs.switchName] as string;
+        tabBar = (
+            <TabBar
+                switches={props.switches}
+                switchName={tabs.switchName}
+                tabLoading={false}
+                colorMap={tabs.colorMap}
+            >
+                {tabs.tabs.map((tab) => {
+                    if (tab.name === selected) {
+                        options = tab.options;
+                    }
+                    return (
+                        <TabBarButton
+                            name={tab.name}
+                            selected={selected}
+                            switches={props.switches}
+                            switchName={tabs.switchName}
+                            color={tabs.colorMap[tab.name]}
+                            disableClick={tab.disableClick}
+                            tooltipBelow={true}
+                            key={`alert-tab-${tab.name}`}
+                        >
+                            {tab.display}
+                        </TabBarButton>
+                    );
+                })}
+            </TabBar>
+        );
+    }
+
     let optionList: JSX.Element[] = [];
 
-    if (data.options) {
+    if (options) {
         let i = 0;
-        data.options.forEach((option) => {
+        options.forEach((option) => {
             let enabled = false;
             if (!option.singleAction)
                 enabled = props.switches.get[option.name] as boolean;
@@ -210,7 +248,6 @@ export default function Alert(props: AlertProps) {
                 >
                     <div className="fixed inset-0 bg-black bg-opacity-25" />
                 </Transition.Child>
-
                 <div className="fixed inset-0 overflow-y-auto">
                     <div className="flex min-h-full items-center justify-center p-4 text-center">
                         <Transition.Child
@@ -314,9 +351,11 @@ export default function Alert(props: AlertProps) {
 
                                 {optionList.length > 0 && optionList}
 
-                                {editButtonList.length > 0 && (
+                                {(editButtonList.length > 0 || tabBar) && (
                                     <div className="absolute top-3 right-3 flex flex-row gap-1">
-                                        {editButtonList}
+                                        {tabBar}
+                                        {editButtonList.length > 0 &&
+                                            editButtonList}
                                     </div>
                                 )}
 

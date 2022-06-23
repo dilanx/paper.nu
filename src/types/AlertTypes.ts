@@ -1,3 +1,5 @@
+import { ColorMap } from './BaseTypes';
+
 export interface AlertDataExtra {
     title: string;
     content: string;
@@ -13,6 +15,13 @@ export interface AlertDataOption {
     buttonTextOff?: string;
     bonusAction?: (newSwitch: boolean) => void;
     requireConfirmation?: boolean;
+}
+
+export interface AlertDataTab {
+    name: string;
+    display: JSX.Element;
+    disableClick?: boolean;
+    options?: AlertDataOption[];
 }
 
 export interface AlertDataEditButtonData {
@@ -54,6 +63,11 @@ export interface AlertData {
     message: string;
     extras?: AlertDataExtra[];
     options?: AlertDataOption[];
+    tabs?: {
+        switchName: string;
+        colorMap: ColorMap;
+        tabs: AlertDataTab[];
+    };
     editButtons?: AlertDataEditButton[];
     textView?: string;
     textInput?: {

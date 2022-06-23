@@ -22,6 +22,7 @@ let Utility = {
         let switches: ReadUserOptions = {
             save_to_storage: true,
             notifications: true,
+            settings_tab: 'Appearance',
         };
         let keys = Object.keys(localStorage);
         for (let i = 0; i < keys.length; i++) {

@@ -36,3 +36,5 @@ export type Color =
     | 'fuchsia'
     | 'pink'
     | 'rose';
+
+export type ColorMap = { [key: string]: Color };
