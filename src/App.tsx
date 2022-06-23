@@ -730,7 +730,6 @@ class App extends React.Component<{}, AppState> {
                                     if (alertData?.action) {
                                         alertData.action(inputText);
                                     }
-                                    this.postShowAlert();
                                 }}
                                 onClose={() => {
                                     this.postShowAlert();
