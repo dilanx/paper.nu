@@ -283,7 +283,7 @@ function TaskBar(props: TaskBarProps) {
                                         {
                                             name: 'reduced_motion',
                                             title: 'Reduced motion',
-                                            description: `With reduced motion enabled, all transform and layout animations across the site will be disabled.`,
+                                            description: `With reduced motion enabled, most transform and layout animations across the site will be disabled.`,
                                             buttonTextOn: 'Enabled',
                                             buttonTextOff: 'Disabled',
                                             saveToStorage: true,
