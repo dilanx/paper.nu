@@ -203,17 +203,24 @@ export default function Alert(props: AlertProps) {
                 dataSet = editButton.buttonData;
             }
 
+            let color = dataSet.color;
+
             editButtonList.push(
                 <button
-                    className={`text-gray-500 hover:text-${dataSet.color}-400 transition-all duration-150`}
+                    className={`text-gray-500 hover:text-${color}-400 transition-all duration-150 relative group`}
                     key={`edit-button-${i}`}
-                    title={dataSet.title}
                     onClick={() => {
                         dataSet.action();
                         if (dataSet.close) close();
                     }}
                 >
                     {dataSet.icon}
+                    <div
+                        className={`hidden group-hover:block absolute -bottom-10 right-0 p-1 w-40 border-2 rounded-md
+                            bg-${color}-50 dark:bg-gray-800 border-${color}-500 text-${color}-500 dark:text-${color}-300 text-sm font-medium`}
+                    >
+                        {dataSet.title}
+                    </div>
                 </button>
             );
             i++;
@@ -352,7 +359,7 @@ export default function Alert(props: AlertProps) {
                                 {optionList.length > 0 && optionList}
 
                                 {(editButtonList.length > 0 || tabBar) && (
-                                    <div className="absolute top-3 right-3 flex flex-row gap-1">
+                                    <div className="absolute top-4 right-5 flex flex-row gap-1">
                                         {tabBar}
                                         {editButtonList.length > 0 &&
                                             editButtonList}
