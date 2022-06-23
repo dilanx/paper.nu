@@ -263,6 +263,16 @@ function TaskBar(props: TaskBarProps) {
                                     ),
                                     options: [
                                         {
+                                            name: 'clear_plan',
+                                            title: 'Clear plan',
+                                            description: `Clear all of your current plan data, which includes everything for each year and everything in My List. Make sure to save the current URL somewhere if you don't want to lose it.`,
+                                            buttonTextOn: 'Clear',
+                                            requireConfirmation: true,
+                                            singleAction: () => {
+                                                props.f2.clearData();
+                                            },
+                                        },
+                                        {
                                             name: 'save_to_storage',
                                             title: 'Remember most recent plan',
                                             description: `If you visit this site without a full plan URL, your most recently modified plan will be loaded.`,
@@ -270,16 +280,6 @@ function TaskBar(props: TaskBarProps) {
                                             buttonTextOff: 'Disabled',
                                             saveToStorage: true,
                                         },
-                                        // {
-                                        //     name: 'clear_plan',
-                                        //     title: 'Clear plan',
-                                        //     description: `Clear all of your current plan data, which includes everything for each year and everything in My List. Make sure to save the current URL somewhere if you don't want to lose it.`,
-                                        //     buttonTextOn: 'Clear',
-                                        //     requireConfirmation: true,
-                                        //     singleAction: () => {
-                                        //         props.f2.clearData();
-                                        //     },
-                                        // },
                                         {
                                             name: 'reduced_motion',
                                             title: 'Reduced motion',

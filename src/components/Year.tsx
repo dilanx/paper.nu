@@ -6,6 +6,7 @@ import {
     PlusIcon,
     ChevronUpIcon,
     ChevronDownIcon,
+    TrashIcon,
 } from '@heroicons/react/outline';
 import {
     Course,
@@ -109,10 +110,10 @@ class Year extends React.Component<YearProps, YearState> {
                                     );
                                 }}
                             >
-                                <PlusIcon className="w-6 h-6" />
+                                <PlusIcon className="w-5 h-5" />
                                 <div
                                     className={`hidden group-hover:block absolute -bottom-10 right-0 p-1 w-48 border-2 rounded-md
-                                    bg-yellow-50 dark:bg-gray-800 border-yellow-500 text-yellow-500 dark:text-yellow-300 text-sm font-medium`}
+                                        bg-yellow-50 dark:bg-gray-800 border-yellow-500 text-yellow-500 dark:text-yellow-300 text-sm font-medium`}
                                 >
                                     Add summer quarter
                                 </div>
@@ -121,19 +122,33 @@ class Year extends React.Component<YearProps, YearState> {
                         <button
                             className="inline-block p-1 bg-transparent hover:text-red-400 dark:hover:text-red-400 relative group"
                             onClick={() => {
+                                this.props.f2.clearData(this.props.year);
+                            }}
+                        >
+                            <TrashIcon className="w-5 h-5" />
+                            <div
+                                className={`hidden group-hover:block absolute -bottom-10 right-0 p-1 w-48 border-2 rounded-md
+                                    bg-red-50 dark:bg-gray-800 border-red-500 text-red-500 dark:text-red-300 text-sm font-medium`}
+                            >
+                                Clear year's courses
+                            </div>
+                        </button>
+                        <button
+                            className="inline-block p-1 bg-transparent hover:text-fuchsia-400 dark:hover:text-fuchsia-400 relative group"
+                            onClick={() => {
                                 this.setState({
                                     hidden: !this.state.hidden,
                                 });
                             }}
                         >
                             {this.state.hidden ? (
-                                <ChevronDownIcon className="w-6 h-6" />
+                                <ChevronDownIcon className="w-5 h-5" />
                             ) : (
-                                <ChevronUpIcon className="w-6 h-6" />
+                                <ChevronUpIcon className="w-5 h-5" />
                             )}
                             <div
                                 className={`hidden group-hover:block absolute -bottom-10 right-0 p-1 w-40 border-2 rounded-md text-center
-                                bg-red-50 dark:bg-gray-800 border-red-500 text-red-500 dark:text-red-300 text-sm font-medium`}
+                                    bg-fuchsia-50 dark:bg-gray-800 border-fuchsia-500 text-fuchsia-500 dark:text-fuchsia-300 text-sm font-medium`}
                             >
                                 {this.state.hidden
                                     ? "Show year's courses"

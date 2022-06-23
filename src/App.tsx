@@ -11,7 +11,12 @@ import Search from './components/search/Search';
 import Alert from './components/menu/Alert';
 import Bookmarks from './components/bookmarks/Bookmarks';
 import AccountPlans from './components/account/AccountPlans';
-import { ExclamationIcon, PlusIcon, SaveIcon } from '@heroicons/react/outline';
+import {
+    ExclamationIcon,
+    PlusIcon,
+    SaveIcon,
+    TrashIcon,
+} from '@heroicons/react/outline';
 import {
     Course,
     CourseLocation,
@@ -91,8 +96,8 @@ class App extends React.Component<{}, AppState> {
             addYear: () => {
                 app.addYear();
             },
-            clearData: () => {
-                app.clearData();
+            clearData: (year?: number) => {
+                app.clearData(year);
             },
         };
 
@@ -514,29 +519,68 @@ class App extends React.Component<{}, AppState> {
         d('year added: y%d', data.courses.length);
     }
 
-    clearData() {
-        let data = {
-            courses: [
-                [[], [], []],
-                [[], [], []],
-                [[], [], []],
-                [[], [], []],
-            ],
-            bookmarks: {
-                forCredit: new Set<Course>(),
-                noCredit: new Set<Course>(),
-            },
-        };
-
-        d('plan cleared');
-        this.setState({
-            data,
-            unsavedChanges: CourseManager.save(
+    clearData(year?: number) {
+        let data;
+        if (year === undefined) {
+            data = {
+                courses: [
+                    [[], [], []],
+                    [[], [], []],
+                    [[], [], []],
+                    [[], [], []],
+                ],
+                bookmarks: {
+                    forCredit: new Set<Course>(),
+                    noCredit: new Set<Course>(),
+                },
+            };
+            d('plan cleared');
+            this.setState({
                 data,
-                this.state.switches,
-                this.state.originalDataString
-            ),
-        });
+                unsavedChanges: CourseManager.save(
+                    data,
+                    this.state.switches,
+                    this.state.originalDataString
+                ),
+            });
+        } else {
+            const yearText = Utility.convertYear(year).toLowerCase();
+            this.showAlert({
+                title: 'Clear this year?',
+                message: `All of the courses in your ${yearText} will be removed.`,
+                cancelButton: 'Cancel',
+                confirmButton: 'Clear',
+                confirmButtonColor: 'red',
+                iconBackgroundColor: 'red',
+                icon: (
+                    <TrashIcon
+                        className="h-6 w-6 text-red-600"
+                        aria-hidden="true"
+                    />
+                ),
+                action: () => {
+                    let oldData = this.state.data;
+                    let courses = this.state.data.courses;
+                    courses[year] = [[], [], []];
+                    data = { courses: courses, bookmarks: oldData.bookmarks };
+                    d('year cleared: y%d', year);
+                    toast.success(`Cleared your ${yearText}`, {
+                        iconTheme: {
+                            primary: 'red',
+                            secondary: 'white',
+                        },
+                    });
+                    this.setState({
+                        data,
+                        unsavedChanges: CourseManager.save(
+                            data,
+                            this.state.switches,
+                            this.state.originalDataString
+                        ),
+                    });
+                },
+            });
+        }
     }
 
     activateAccountPlan(planId: string) {

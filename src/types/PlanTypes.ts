@@ -51,7 +51,7 @@ export interface PlanModificationFunctions {
 export interface PlanSpecialFunctions {
     addSummerQuarter: (year: number) => void;
     addYear: () => void;
-    clearData: () => void;
+    clearData: (year?: number) => void;
 }
 
 export interface CourseDragItem {
