@@ -2,7 +2,7 @@
 
 ### 1.2.0
 
-_2022-05-XX_
+_2022-06-24_
 
 -   **Accounts!** You can now optionally create an account and link up to 5 plans to it.
     -   Sign in to Plan Northwestern using your auth.dilanxd.com account (supports Google authentication) from any device.
