@@ -1,8 +1,8 @@
 {
   "name": "plan-northwestern",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": true,
-  "homepage": "https://plan-nu.com",
+  "homepage": "https://www.plan-nu.com",
   "dependencies": {
     "@headlessui/react": "^1.6.4",
     "@heroicons/react": "^1.0.6",

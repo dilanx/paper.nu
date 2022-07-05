@@ -1,5 +1,11 @@
 # Plan Northwestern Change Log
 
+### 1.2.1
+
+_2022-07-04_
+
+-   Updated the 'About' menu.
+
 ### 1.2.0
 
 _2022-06-24_
