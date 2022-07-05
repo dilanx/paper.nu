@@ -1,7 +1,7 @@
 import React from 'react';
 import SearchClass from './SearchClass';
 import AddButtons from './AddButtons';
-import CourseManager from '../../CourseManager';
+import PlanManager from '../../PlanManager';
 import {
     SearchIcon,
     ArrowRightIcon,
@@ -107,7 +107,7 @@ class Search extends React.Component<SearchProps, SearchState> {
             };
         }
 
-        let results = CourseManager.search(query);
+        let results = PlanManager.search(query);
         if (results === 'too_short') {
             return {
                 results: [
@@ -135,7 +135,7 @@ class Search extends React.Component<SearchProps, SearchState> {
             courseList.push(
                 <SearchClass
                     course={course}
-                    color={CourseManager.getCourseColor(course.id)}
+                    color={PlanManager.getCourseColor(course.id)}
                     select={(course) => {
                         this.setState({ current: course });
                     }}
@@ -223,7 +223,7 @@ class Search extends React.Component<SearchProps, SearchState> {
             selectedClass = (
                 <SearchClass
                     course={current}
-                    color={CourseManager.getCourseColor(current.id)}
+                    color={PlanManager.getCourseColor(current.id)}
                 />
             );
 

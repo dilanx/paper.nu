@@ -1,6 +1,6 @@
 import { useDrop } from 'react-dnd';
 import { motion } from 'framer-motion';
-import CourseManager from '../CourseManager';
+import PlanManager from '../PlanManager';
 import { Alert } from '../types/AlertTypes';
 import { Color, UserOptions } from '../types/BaseTypes';
 import {
@@ -92,7 +92,7 @@ function Quarter(props: QuarterProps) {
         }
     }
 
-    let units = CourseManager.getQuarterCredits(courses);
+    let units = PlanManager.getQuarterCredits(courses);
 
     let unitString = 'units';
     if (units === 1) {

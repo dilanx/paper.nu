@@ -1,6 +1,6 @@
 import { PlusIcon } from '@heroicons/react/outline';
 import React from 'react';
-import CourseManager from '../CourseManager';
+import PlanManager from '../PlanManager';
 import { Alert } from '../types/AlertTypes';
 import { UserOptions } from '../types/BaseTypes';
 import {
@@ -40,7 +40,7 @@ class Content extends React.Component<ContentProps> {
             });
         }
 
-        let units = CourseManager.getTotalCredits(content);
+        let units = PlanManager.getTotalCredits(content);
 
         let unitString = 'units';
         if (units === 1) {

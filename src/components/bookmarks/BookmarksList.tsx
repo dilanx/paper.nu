@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useDrop } from 'react-dnd';
 import Class from '../Class';
-import CourseManager from '../../CourseManager';
+import PlanManager from '../../PlanManager';
 import {
     CourseDragItem,
     BookmarksData,
@@ -72,7 +72,7 @@ function BookmarksList(props: BookmarksListProps) {
         );
     }
 
-    let units = CourseManager.getQuarterCredits(content);
+    let units = PlanManager.getQuarterCredits(content);
 
     let unitString = 'units';
     if (units === 1) {

@@ -14,7 +14,7 @@ import {
     NontoggleableAlertDataEditButton,
     ToggleableAlertDataEditButton,
 } from '../types/AlertTypes';
-import CourseManager from '../CourseManager';
+import PlanManager from '../PlanManager';
 import Utility from '../utility/Utility';
 import {
     TrashIcon,
@@ -35,7 +35,7 @@ interface ClassProps {
 
 function openInfo(props: ClassProps) {
     let course = props.course;
-    let color = CourseManager.getCourseColor(course.id);
+    let color = PlanManager.getCourseColor(course.id);
 
     if (course.placeholder) {
         props.alert({
@@ -162,7 +162,7 @@ function Class(props: ClassProps) {
         };
     });
 
-    let color = CourseManager.getCourseColor(course.id);
+    let color = PlanManager.getCourseColor(course.id);
     let showMoreInfo =
         props.switches.get.more_info && !props.switches.get.compact;
     let isPlaceholder = course.placeholder;

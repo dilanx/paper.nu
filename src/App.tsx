@@ -3,7 +3,7 @@ import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Content from './components/Content';
-import CourseManager from './CourseManager';
+import PlanManager from './PlanManager';
 import Utility from './utility/Utility';
 import Info from './components/menu/Info';
 import TaskBar from './components/menu/TaskBar';
@@ -184,7 +184,7 @@ class App extends React.Component<{}, AppState> {
 
     initializePlan(params: URLSearchParams, callback: () => void) {
         d('plan initializing');
-        CourseManager.load(params, this.state.switches)
+        PlanManager.load(params, this.state.switches)
             .then(({ data, activePlanId, originalDataString, method }) => {
                 this.setState({ loadingLogin: false });
                 if (data === 'malformed') {
@@ -283,7 +283,7 @@ class App extends React.Component<{}, AppState> {
         let isPlaceholder = course.placeholder;
         let repeatable = course.repeatable;
 
-        let exists = CourseManager.duplicateCourse(course, data);
+        let exists = PlanManager.duplicateCourse(course, data);
 
         if (!repeatable && exists && !isPlaceholder && !ignoreExistCheck) {
             this.showAlert({
@@ -313,7 +313,7 @@ class App extends React.Component<{}, AppState> {
         }
 
         let unitCount =
-            CourseManager.getQuarterCredits(data.courses[year][quarter]) +
+            PlanManager.getQuarterCredits(data.courses[year][quarter]) +
             parseFloat(course.units);
 
         if (unitCount > 5.5) {
@@ -354,7 +354,7 @@ class App extends React.Component<{}, AppState> {
             d('course added: %s (y%dq%d)', course.id, year, quarter);
             this.setState({
                 data,
-                unsavedChanges: CourseManager.save(
+                unsavedChanges: PlanManager.save(
                     data,
                     this.state.switches,
                     this.state.originalDataString
@@ -376,7 +376,7 @@ class App extends React.Component<{}, AppState> {
         d('course removed: %s (y%dq%d)', course.id, year, quarter);
         this.setState({
             data,
-            unsavedChanges: CourseManager.save(
+            unsavedChanges: PlanManager.save(
                 data,
                 this.state.switches,
                 this.state.originalDataString
@@ -422,7 +422,7 @@ class App extends React.Component<{}, AppState> {
                 );
                 this.setState({
                     data,
-                    unsavedChanges: CourseManager.save(
+                    unsavedChanges: PlanManager.save(
                         data,
                         this.state.switches,
                         this.state.originalDataString
@@ -449,7 +449,7 @@ class App extends React.Component<{}, AppState> {
             };
             return {
                 data,
-                unsavedChanges: CourseManager.save(
+                unsavedChanges: PlanManager.save(
                     data,
                     this.state.switches,
                     prevState.originalDataString
@@ -478,7 +478,7 @@ class App extends React.Component<{}, AppState> {
             };
             return {
                 data,
-                unsavedChanges: CourseManager.save(
+                unsavedChanges: PlanManager.save(
                     data,
                     prevState.switches,
                     prevState.originalDataString
@@ -537,7 +537,7 @@ class App extends React.Component<{}, AppState> {
             d('plan cleared');
             this.setState({
                 data,
-                unsavedChanges: CourseManager.save(
+                unsavedChanges: PlanManager.save(
                     data,
                     this.state.switches,
                     this.state.originalDataString
@@ -572,7 +572,7 @@ class App extends React.Component<{}, AppState> {
                     });
                     this.setState({
                         data,
-                        unsavedChanges: CourseManager.save(
+                        unsavedChanges: PlanManager.save(
                             data,
                             this.state.switches,
                             this.state.originalDataString
@@ -606,7 +606,7 @@ class App extends React.Component<{}, AppState> {
                     );
                     return;
                 }
-                let data = CourseManager.loadFromString(plan.content);
+                let data = PlanManager.loadFromString(plan.content);
                 if (data === 'malformed') {
                     this.showAlert(
                         Utility.errorAlert(
@@ -642,7 +642,7 @@ class App extends React.Component<{}, AppState> {
                             originalDataString: plan.content,
                         },
                         () => {
-                            CourseManager.save(data as PlanData);
+                            PlanManager.save(data as PlanData);
                             toast.success(
                                 'Activated plan: ' + Account.getPlanName(planId)
                             );
@@ -681,7 +681,7 @@ class App extends React.Component<{}, AppState> {
             return;
         }
 
-        const dataStr = CourseManager.getDataString(this.state.data);
+        const dataStr = PlanManager.getDataString(this.state.data);
         this.setState({ unsavedChanges: false });
 
         let self = this;
