@@ -56,7 +56,7 @@ function BookmarksList(props: BookmarksListProps) {
                     location={{ year: -1, quarter: props.credit ? 1 : 0 }}
                     f={props.f}
                     switches={props.switches}
-                    key={index}
+                    key={classData.id + '-' + index}
                 />
             );
         });

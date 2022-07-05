@@ -1,5 +1,11 @@
 # Plan Northwestern Change Log
 
+### 1.2.2
+
+_2022-07-05_
+
+-   Fixed a bug with My List.
+
 ### 1.2.1
 
 _2022-07-04_
