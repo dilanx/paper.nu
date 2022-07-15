@@ -1,4 +1,4 @@
-import { getCourseColor } from '../../ScheduleManager';
+import ScheduleManager from '../../ScheduleManager';
 import {
     ScheduleInteractions,
     ScheduleSection,
@@ -13,7 +13,7 @@ interface ScheduleClassProps {
 function ScheduleClass({ section, interactions }: ScheduleClassProps) {
     const { start_time, end_time, subject, number, title, instructors } =
         section;
-    const color = getCourseColor(subject);
+    const color = ScheduleManager.getCourseColor(subject);
     const startDif = start_time.m / 60;
     const length =
         end_time.h * 60 + end_time.m - (start_time.h * 60 + start_time.m);

@@ -165,7 +165,7 @@ function countCourseUnitsInHundreds(courseList: Course[] | Set<Course>) {
     return total;
 }
 
-let PlanManager = {
+const PlanManager = {
     data: courseData,
 
     search: (query: string): SearchResults | SearchError => {
