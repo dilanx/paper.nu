@@ -47,7 +47,7 @@ function loadData(params: URLSearchParams): PlanData | 'malformed' | 'empty' {
                     let subj = courseData.major_ids[subjId];
                     let courseId = subj + ' ' + num;
 
-                    let course = CourseManager.getCourse(courseId);
+                    let course = PlanManager.getCourse(courseId);
                     if (course == null) return 'malformed';
                     classData.push(course);
                     ds('course loaded: %s (y%dq%d)', courseId, year, quarter);
@@ -82,7 +82,7 @@ function loadData(params: URLSearchParams): PlanData | 'malformed' | 'empty' {
                         let subj = courseData.major_ids[subjId];
                         let courseId = subj + ' ' + num;
 
-                        let course = CourseManager.getCourse(courseId);
+                        let course = PlanManager.getCourse(courseId);
                         if (course == null) return 'malformed';
                         if (i === 0) {
                             bookmarksNoCredit.add(course);
@@ -165,7 +165,7 @@ function countCourseUnitsInHundreds(courseList: Course[] | Set<Course>) {
     return total;
 }
 
-let CourseManager = {
+let PlanManager = {
     data: courseData,
 
     search: (query: string): SearchResults | SearchError => {
@@ -314,7 +314,7 @@ let CourseManager = {
 
         // Try to load from URL and match to account plan
         dp('trying to load plan data from URL');
-        let data = CourseManager.loadFromURL(params);
+        let data = PlanManager.loadFromURL(params);
         if (data !== 'malformed' && data !== 'empty') {
             dp('URL load successful');
             method = 'URL';
@@ -345,7 +345,7 @@ let CourseManager = {
                     if (storedPlanId in accountPlans) {
                         dp('account load successful: %s', storedPlanId);
                         let content = accountPlans[storedPlanId].content;
-                        data = CourseManager.loadFromString(content);
+                        data = PlanManager.loadFromString(content);
                         activePlanId = storedPlanId;
                         originalDataString = content;
                         method = 'Account';
@@ -356,12 +356,12 @@ let CourseManager = {
             // Try to load from storage
             if (data === 'empty') {
                 dp('nothing to load from account, trying storage instead');
-                data = CourseManager.loadFromStorage();
+                data = PlanManager.loadFromStorage();
                 method = 'Storage';
             }
 
             if (data !== 'malformed' && data !== 'empty') {
-                CourseManager.save(data);
+                PlanManager.save(data);
             }
         }
 
@@ -427,4 +427,4 @@ let CourseManager = {
     },
 };
 
-export default CourseManager;
+export default PlanManager;
