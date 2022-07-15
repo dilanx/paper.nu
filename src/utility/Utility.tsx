@@ -7,6 +7,7 @@ import {
     UserOptionValue,
 } from '../types/BaseTypes';
 import { PlanErrorLocation } from '../types/ErrorTypes';
+import { Time } from '../types/ScheduleTypes';
 
 let Utility = {
     BACKGROUND_LIGHT: '#FFFFFF',
@@ -162,6 +163,25 @@ let Utility = {
             return num + ' AM';
         }
         return num - (num === 12 ? 0 : 12) + ' PM';
+    },
+
+    convertTime: ({ h, m }: Time, withAmPm?: boolean) => {
+        let pm = false;
+        if (h > 12) {
+            pm = true;
+            h -= 12;
+        }
+        if (h === 12) {
+            pm = true;
+        }
+
+        let time = h + ':' + (m < 10 ? '0' + m : m);
+
+        if (withAmPm) {
+            time += pm ? ' PM' : ' AM';
+        }
+
+        return time;
     },
 
     prereqColor: (num: number) => {

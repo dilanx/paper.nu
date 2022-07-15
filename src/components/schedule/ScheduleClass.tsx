@@ -3,6 +3,7 @@ import {
     ScheduleInteractions,
     ScheduleSection,
 } from '../../types/ScheduleTypes';
+import Utility from '../../utility/Utility';
 
 interface ScheduleClassProps {
     section: ScheduleSection;
@@ -53,9 +54,11 @@ function ScheduleClass({ section, interactions }: ScheduleClassProps) {
                     </p>
                 </div>
                 <p
-                    className={`m-0 text-right text-xs absolute bottom-1 right-1 text-${color}-400 opacity-75 font-bold`}
+                    className={`m-0 text-right text-xs absolute bottom-1 right-1 text-${color}-500 opacity-60 font-semibold`}
                 >
-                    12:30 - 1:50
+                    {Utility.convertTime(start_time) +
+                        ' - ' +
+                        Utility.convertTime(end_time)}
                 </p>
             </div>
         </div>
