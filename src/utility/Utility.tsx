@@ -140,6 +140,30 @@ let Utility = {
         }
     },
 
+    convertDay: (num: number) => {
+        switch (num) {
+            case 0:
+                return 'Mo';
+            case 1:
+                return 'Tu';
+            case 2:
+                return 'We';
+            case 3:
+                return 'Th';
+            case 4:
+                return 'Fr';
+            default:
+                return '??';
+        }
+    },
+
+    convertHour: (num: number) => {
+        if (num < 12) {
+            return num + ' AM';
+        }
+        return num - (num === 12 ? 0 : 12) + ' PM';
+    },
+
     prereqColor: (num: number) => {
         switch (num) {
             case 0:

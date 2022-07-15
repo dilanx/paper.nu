@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useDrop } from 'react-dnd';
-import Class from '../Class';
+import Class from '../plan/Class';
 import PlanManager from '../../PlanManager';
 import {
     CourseDragItem,

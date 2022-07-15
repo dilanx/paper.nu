@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Quarter from './Quarter';
-import Utility from '../utility/Utility';
+import Utility from '../../utility/Utility';
 import {
     PlusIcon,
     ChevronUpIcon,
@@ -13,9 +13,9 @@ import {
     BookmarksData,
     PlanModificationFunctions,
     PlanSpecialFunctions,
-} from '../types/PlanTypes';
-import { Alert } from '../types/AlertTypes';
-import { UserOptions } from '../types/BaseTypes';
+} from '../../types/PlanTypes';
+import { Alert } from '../../types/AlertTypes';
+import { UserOptions } from '../../types/BaseTypes';
 
 interface YearProps {
     data: Course[][];

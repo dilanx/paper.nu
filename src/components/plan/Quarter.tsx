@@ -1,8 +1,8 @@
 import { useDrop } from 'react-dnd';
 import { motion } from 'framer-motion';
-import PlanManager from '../PlanManager';
-import { Alert } from '../types/AlertTypes';
-import { Color, UserOptions } from '../types/BaseTypes';
+import PlanManager from '../../PlanManager';
+import { Alert } from '../../types/AlertTypes';
+import { Color, UserOptions } from '../../types/BaseTypes';
 import {
     CourseDragItem,
     CourseLocation,
@@ -11,7 +11,7 @@ import {
     BookmarksData,
     CourseDropResult,
     DropCollectedProps,
-} from '../types/PlanTypes';
+} from '../../types/PlanTypes';
 import Class from './Class';
 
 interface QuarterProps {

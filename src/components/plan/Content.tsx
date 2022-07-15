@@ -1,14 +1,14 @@
 import { PlusIcon } from '@heroicons/react/outline';
 import React from 'react';
-import PlanManager from '../PlanManager';
-import { Alert } from '../types/AlertTypes';
-import { UserOptions } from '../types/BaseTypes';
+import PlanManager from '../../PlanManager';
+import { Alert } from '../../types/AlertTypes';
+import { UserOptions } from '../../types/BaseTypes';
 import {
     PlanData,
     PlanModificationFunctions,
     PlanSpecialFunctions,
-} from '../types/PlanTypes';
-import Utility from '../utility/Utility';
+} from '../../types/PlanTypes';
+import Utility from '../../utility/Utility';
 import Year from './Year';
 
 interface ContentProps {

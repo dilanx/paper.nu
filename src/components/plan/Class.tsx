@@ -8,21 +8,21 @@ import {
     CourseDragItem,
     CourseDropResult,
     DragCollectProps,
-} from '../types/PlanTypes';
+} from '../../types/PlanTypes';
 import {
     Alert,
     NontoggleableAlertDataEditButton,
     ToggleableAlertDataEditButton,
-} from '../types/AlertTypes';
-import PlanManager from '../PlanManager';
-import Utility from '../utility/Utility';
+} from '../../types/AlertTypes';
+import PlanManager from '../../PlanManager';
+import Utility from '../../utility/Utility';
 import {
     TrashIcon,
     DocumentIcon,
     BookmarkIcon,
 } from '@heroicons/react/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/solid';
-import { UserOptions } from '../types/BaseTypes';
+import { UserOptions } from '../../types/BaseTypes';
 
 interface ClassProps {
     course: Course;

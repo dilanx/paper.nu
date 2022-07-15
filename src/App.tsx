@@ -2,7 +2,7 @@ import React from 'react';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import Content from './components/Content';
+import Content from './components/plan/Content';
 import PlanManager from './PlanManager';
 import Utility from './utility/Utility';
 import Info from './components/menu/Info';
@@ -30,6 +30,8 @@ import Account from './Account';
 import PlanError from './utility/PlanError';
 import debug from 'debug';
 import toast, { Toaster } from 'react-hot-toast';
+import Schedule from './components/schedule/Schedule';
+import { Mode } from './utility/Constants';
 var d = debug('main');
 
 const VERSION = process.env.REACT_APP_VERSION ?? 'UNKNOWN';
@@ -783,7 +785,7 @@ class App extends React.Component<{}, AppState> {
 
                         <div className="bg-white dark:bg-gray-800 grid grid-cols-1 lg:grid-cols-8">
                             <div className="col-span-2 px-4 h-192 md:h-screen flex flex-col">
-                                <Info />
+                                <Info mode={Mode.SCHEDULE} />
                                 <Search
                                     data={this.state.data}
                                     switches={switches}
@@ -834,7 +836,7 @@ class App extends React.Component<{}, AppState> {
                                     switches.get.compact ? 'compact-mode ' : ''
                                 } col-span-6 block pt-0 lg:h-screen lg:overflow-y-scroll no-scrollbar`}
                             >
-                                <Content
+                                {/* <Content
                                     data={this.state.data}
                                     f={this.state.f}
                                     f2={this.state.f2}
@@ -842,7 +844,8 @@ class App extends React.Component<{}, AppState> {
                                         this.showAlert(alertData);
                                     }}
                                     switches={switches}
-                                />
+                                /> */}
+                                <Schedule />
                             </div>
                         </div>
                         <AnimatePresence>
