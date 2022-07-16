@@ -17,10 +17,6 @@ function matchAccountId(accountData: AccountDataMap, content: string) {
     }
 }
 
-function isValid<T>(response: T | 'malformed' | 'empty'): response is T {
-    return response !== 'malformed' && response !== 'empty';
-}
-
 let SaveDataManager = {
     load: async (
         params: URLSearchParams,

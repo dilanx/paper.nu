@@ -1,12 +1,7 @@
 import debug from 'debug';
 import JSONCourseData from './data/schedule_data.json';
 import PlanManager from './PlanManager';
-import {
-    LoadMethods,
-    SearchError,
-    SearchResults,
-    UserOptions,
-} from './types/BaseTypes';
+import { SearchError, SearchResults, UserOptions } from './types/BaseTypes';
 import {
     ScheduleCourse,
     ScheduleData,
@@ -158,7 +153,11 @@ const ScheduleManager = {
         return loadData(new URLSearchParams(dataStr));
     },
 
-    save: (data: ScheduleData, switches?: UserOptions) => {
+    save: (
+        data: ScheduleData,
+        switches?: UserOptions,
+        compareAgainstDataString?: string
+    ) => {
         let params = saveData(data);
         let paramsStr = params.toString();
 
@@ -172,7 +171,13 @@ const ScheduleManager = {
             localStorage.setItem('schedule', paramsStr);
         }
 
-        // TODO compare against active plan
+        let activeScheduleId = switches?.get.active_schedule_id as
+            | string
+            | undefined;
+
+        if (activeScheduleId && activeScheduleId !== 'None') {
+            return paramsStr !== compareAgainstDataString;
+        }
 
         return false;
     },

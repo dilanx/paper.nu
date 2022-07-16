@@ -1,15 +1,12 @@
-import Account from './Account';
+import debug from 'debug';
 import JSONCourseData from './data/plan_data.json';
-import { AccountDataMap } from './types/AccountTypes';
 import {
-    LoadMethods,
     SearchError,
     SearchResults,
     SearchShortcut,
     UserOptions,
 } from './types/BaseTypes';
-import { RawCourseData, PlanData, Course } from './types/PlanTypes';
-import debug from 'debug';
+import { Course, PlanData, RawCourseData } from './types/PlanTypes';
 var ds = debug('plan-manager:ser');
 var dp = debug('plan-manager:op');
 
