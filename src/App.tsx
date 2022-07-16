@@ -63,7 +63,7 @@ class App extends React.Component<{}, AppState> {
     constructor(props: {}) {
         super(props);
 
-        let defaultSwitches = Utility.loadSwitchesFromStorage(
+        let defaultSwitches = SaveDataManager.loadSwitchesFromStorage(
             (key, value, save) => {
                 this.setSwitch(key, value, save);
             }
@@ -328,7 +328,7 @@ class App extends React.Component<{}, AppState> {
         switches.get[key] = val;
         this.setState({ switches: switches });
         if (save) {
-            Utility.saveSwitchToStorage(key, val?.toString());
+            SaveDataManager.saveSwitchToStorage(key, val?.toString());
         }
         d('switch set: %s = %s', key, val);
     }
@@ -1020,6 +1020,7 @@ class App extends React.Component<{}, AppState> {
                                             this.state.scheduleInteractions
                                         }
                                         sf={this.state.sf}
+                                        switches={switches}
                                     />
                                 )}
                             </div>

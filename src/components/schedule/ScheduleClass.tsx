@@ -1,5 +1,6 @@
 import { TrashIcon } from '@heroicons/react/outline';
 import ScheduleManager from '../../ScheduleManager';
+import { UserOptions } from '../../types/BaseTypes';
 import {
     ScheduleInteractions,
     ScheduleModificationFunctions,
@@ -11,9 +12,15 @@ interface ScheduleClassProps {
     section: ScheduleSection;
     interactions: ScheduleInteractions;
     sf: ScheduleModificationFunctions;
+    switches: UserOptions;
 }
 
-function ScheduleClass({ section, interactions, sf }: ScheduleClassProps) {
+function ScheduleClass({
+    section,
+    interactions,
+    sf,
+    switches,
+}: ScheduleClassProps) {
     const { start_time, end_time, subject, number, title, instructors } =
         section;
     const color = ScheduleManager.getCourseColor(subject);
@@ -67,13 +74,15 @@ function ScheduleClass({ section, interactions, sf }: ScheduleClassProps) {
                         {instructorLastNames}
                     </p>
                 </div>
-                <p
-                    className={`m-0 text-right text-xs absolute bottom-1 right-1 text-${color}-500 dark:text-${color}-300 opacity-60 dark:opacity-90 font-semibold`}
-                >
-                    {Utility.convertTime(start_time!) +
-                        ' - ' +
-                        Utility.convertTime(end_time!)}
-                </p>
+                {switches.get.show_times && (
+                    <p
+                        className={`m-0 text-right text-xs absolute bottom-1 right-1 text-${color}-500 dark:text-${color}-300 opacity-60 dark:opacity-90 font-semibold`}
+                    >
+                        {Utility.convertTime(start_time!) +
+                            ' - ' +
+                            Utility.convertTime(end_time!)}
+                    </p>
+                )}
             </div>
             <button
                 className={`absolute -top-2 -right-2 p-0.5 rounded-full

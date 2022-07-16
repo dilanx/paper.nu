@@ -11,7 +11,7 @@ export interface AlertDataOption {
     description: string;
     singleAction?: () => void;
     saveToStorage?: boolean;
-    buttonTextOn: string;
+    buttonTextOn?: string;
     buttonTextOff?: string;
     bonusAction?: (newSwitch: boolean) => void;
     requireConfirmation?: boolean;

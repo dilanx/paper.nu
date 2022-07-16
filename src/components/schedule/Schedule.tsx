@@ -1,4 +1,5 @@
 import React from 'react';
+import { UserOptions } from '../../types/BaseTypes';
 import {
     ScheduleData,
     ScheduleInteractions,
@@ -13,6 +14,7 @@ interface ScheduleProps {
     schedule: ScheduleData;
     interactions: ScheduleInteractions;
     sf: ScheduleModificationFunctions;
+    switches: UserOptions;
 }
 
 class Schedule extends React.Component<ScheduleProps> {
@@ -63,6 +65,7 @@ class Schedule extends React.Component<ScheduleProps> {
                     sections={sections}
                     interactions={this.props.interactions}
                     sf={this.props.sf}
+                    switches={this.props.switches}
                     key={`day-${i}`}
                 />
             );

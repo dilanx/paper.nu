@@ -130,7 +130,7 @@ export default function Alert(props: AlertProps) {
                                         }
                                     }}
                                 >
-                                    {option.buttonTextOn}
+                                    {option.buttonTextOn ?? 'Enabled'}
                                 </button>
                             ) : (
                                 <button
@@ -147,7 +147,7 @@ export default function Alert(props: AlertProps) {
                                         }
                                     }}
                                 >
-                                    {option.buttonTextOff}
+                                    {option.buttonTextOff ?? 'Disabled'}
                                 </button>
                             ))}
                         {option.singleAction && (
@@ -178,7 +178,7 @@ export default function Alert(props: AlertProps) {
                             >
                                 {confirmation[option.name]
                                     ? 'Confirm'
-                                    : option.buttonTextOn}
+                                    : option.buttonTextOn ?? 'Go'}
                             </button>
                         )}
                     </div>

@@ -1,3 +1,4 @@
+import { UserOptions } from '../../types/BaseTypes';
 import {
     ScheduleInteractions,
     ScheduleModificationFunctions,
@@ -26,6 +27,7 @@ interface DayProps {
     sections?: ScheduleSection[];
     interactions: ScheduleInteractions;
     sf: ScheduleModificationFunctions;
+    switches: UserOptions;
 }
 
 function Day(props: DayProps) {
@@ -41,6 +43,7 @@ function Day(props: DayProps) {
                         section={section}
                         interactions={props.interactions}
                         sf={props.sf}
+                        switches={props.switches}
                         key={`day-${props.index}-${section.section_id}`}
                     />
                 );

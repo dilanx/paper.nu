@@ -1,7 +1,7 @@
 import {
     BookmarkIcon,
+    CloudIcon,
     CogIcon,
-    CollectionIcon,
     ExternalLinkIcon,
     InformationCircleIcon,
     SearchIcon,
@@ -111,7 +111,7 @@ function TaskBar(props: TaskBarProps) {
                     switchName="tab"
                     color={TabBarButtonColors['Plans']}
                 >
-                    <CollectionIcon className="w-5 h-5" />
+                    <CloudIcon className="w-5 h-5" />
                     <p className="lg:hidden xl:block m-0 text-sm lg:text-xs w-20 lg:w-12 overflow-hidden whitespace-nowrap text-ellipsis">
                         {Account.getPlanName(
                             props.switches.get.active_plan_id as string

@@ -1,59 +1,12 @@
 import { ExclamationIcon } from '@heroicons/react/outline';
 import { AlertData } from '../types/AlertTypes';
-import {
-    Color,
-    ReadUserOptions,
-    UserOptions,
-    UserOptionValue,
-} from '../types/BaseTypes';
+import { Color } from '../types/BaseTypes';
 import { PlanErrorLocation } from '../types/ErrorTypes';
 import { Time } from '../types/ScheduleTypes';
 
 let Utility = {
     BACKGROUND_LIGHT: '#FFFFFF',
     BACKGROUND_DARK: '#262626',
-
-    loadSwitchesFromStorage: (
-        setSwitchFunction: (
-            key: string,
-            val: UserOptionValue,
-            save: boolean | undefined
-        ) => void
-    ): UserOptions => {
-        let switches: ReadUserOptions = {
-            save_to_storage: true,
-            notifications: true,
-            settings_tab: 'Appearance',
-            mode: 1,
-        };
-        let keys = Object.keys(localStorage);
-        for (let i = 0; i < keys.length; i++) {
-            if (keys[i].startsWith('switch_')) {
-                let store = localStorage.getItem(keys[i]);
-                let val: UserOptionValue = undefined;
-                if (store != null) {
-                    if (store === 'true') val = true;
-                    else if (store === 'false') val = false;
-                    else if (isNaN(parseInt(store))) val = parseInt(store);
-                    else val = store;
-                }
-                let switchId = keys[i].substring(7);
-                switches[switchId] = val;
-            }
-        }
-        return {
-            set: setSwitchFunction,
-            get: switches,
-        };
-    },
-
-    saveSwitchToStorage: (key: string, val?: string) => {
-        if (val) {
-            localStorage.setItem('switch_' + key, val);
-        } else {
-            localStorage.removeItem('switch_' + key);
-        }
-    },
 
     getDistroAcronym: (distroString: string) => {
         let distro = distroString.split(' ');

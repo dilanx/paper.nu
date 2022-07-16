@@ -1,6 +1,12 @@
 import Account from './Account';
 import { AccountDataMap } from './types/AccountTypes';
-import { LoadMethods, LoadResponse, UserOptions } from './types/BaseTypes';
+import {
+    LoadMethods,
+    LoadResponse,
+    ReadUserOptions,
+    UserOptions,
+    UserOptionValue,
+} from './types/BaseTypes';
 import debug from 'debug';
 import ScheduleManager from './ScheduleManager';
 import { Mode } from './utility/Constants';
@@ -205,6 +211,47 @@ let SaveDataManager = {
             originalDataString,
             method,
         };
+    },
+    loadSwitchesFromStorage: (
+        setSwitchFunction: (
+            key: string,
+            val: UserOptionValue,
+            save: boolean | undefined
+        ) => void
+    ): UserOptions => {
+        let switches: ReadUserOptions = {
+            save_to_storage: true,
+            notifications: true,
+            settings_tab: 'General',
+            mode: 1,
+        };
+        let keys = Object.keys(localStorage);
+        for (let i = 0; i < keys.length; i++) {
+            if (keys[i].startsWith('switch_')) {
+                let store = localStorage.getItem(keys[i]);
+                let val: UserOptionValue = undefined;
+                if (store != null) {
+                    if (store === 'true') val = true;
+                    else if (store === 'false') val = false;
+                    else if (isNaN(parseInt(store))) val = parseInt(store);
+                    else val = store;
+                }
+                let switchId = keys[i].substring(7);
+                switches[switchId] = val;
+            }
+        }
+        return {
+            set: setSwitchFunction,
+            get: switches,
+        };
+    },
+
+    saveSwitchToStorage: (key: string, val?: string) => {
+        if (val) {
+            localStorage.setItem('switch_' + key, val);
+        } else {
+            localStorage.removeItem('switch_' + key);
+        }
     },
 };
 

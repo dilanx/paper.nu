@@ -2,11 +2,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import AccountPlanMessage from './AccountPlanMessage';
 import {
-    CollectionIcon,
     RefreshIcon,
     PlusIcon,
     TrashIcon,
     LogoutIcon,
+    CollectionIcon,
 } from '@heroicons/react/outline';
 import Account from '../../Account';
 import {
