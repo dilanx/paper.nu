@@ -830,7 +830,8 @@ class App extends React.Component<{}, AppState> {
         let schedule = this.state.schedule;
         if (
             schedule.bookmarks.some(
-                (course) => course.course_id === course.course_id
+                (bookmarkCourse) =>
+                    bookmarkCourse.course_id === course.course_id
             )
         ) {
             return;
@@ -846,7 +847,8 @@ class App extends React.Component<{}, AppState> {
         let schedule = this.state.schedule;
         if (
             !schedule.bookmarks.some(
-                (course) => course.course_id === course.course_id
+                (bookmarkCourse) =>
+                    bookmarkCourse.course_id === course.course_id
             )
         ) {
             return;

@@ -95,7 +95,8 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
                                 sf={props.sf}
                                 interactions={props.interactions}
                                 alreadyAdded={
-                                    section.section_id in props.schedule
+                                    section.section_id in
+                                    props.schedule.schedule
                                 }
                                 key={`search-${section.section_id}`}
                             />
