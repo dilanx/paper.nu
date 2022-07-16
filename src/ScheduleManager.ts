@@ -5,6 +5,7 @@ import { SearchError, SearchResults, UserOptions } from './types/BaseTypes';
 import {
     ScheduleCourse,
     ScheduleData,
+    ScheduleDataMap,
     ScheduleSection,
 } from './types/ScheduleTypes';
 var ds = debug('schedule-manager:ser');
@@ -16,7 +17,10 @@ const SEARCH_RESULT_LIMIT = 50;
 function loadData(
     params: URLSearchParams
 ): ScheduleData | 'malformed' | 'empty' {
-    let data: ScheduleData = {};
+    let data: ScheduleData = {
+        schedule: {},
+        bookmarks: [],
+    };
 
     let loadedSomething = false;
 
@@ -25,11 +29,25 @@ function loadData(
             loadedSomething = true;
             let sections = params.get('s')!.split(',');
 
+            let sectionData: ScheduleDataMap = {};
             for (let id of sections) {
                 let section = ScheduleManager.getSectionById(id);
                 if (!section) return 'malformed';
-                data[id] = section;
+                sectionData[id] = section;
                 ds('course section loaded: %s', id);
+            }
+            data.schedule = sectionData;
+        }
+        if (params.has('sf')) {
+            loadedSomething = true;
+            let bookmarks = params.get('sf')!.split(',');
+
+            let bookmarksData: ScheduleCourse[] = [];
+            for (let id of bookmarks) {
+                let course = ScheduleManager.getCourseById(id);
+                if (!course) return 'malformed';
+                bookmarksData.push(course);
+                ds('schedule bookmark added: %s', id);
             }
         }
     } catch (e) {
@@ -43,12 +61,20 @@ function loadData(
 
 function saveData(data: ScheduleData) {
     let params = new URLSearchParams();
+    let schedule = data.schedule;
+    let bookmarks = data.bookmarks;
 
     let s = [];
-    for (let id in data) {
+    for (let id in schedule) {
         s.push(id);
     }
     if (s.length > 0) params.set('s', s.join(','));
+
+    let b = [];
+    for (let course of bookmarks) {
+        b.push(course.course_id);
+    }
+    if (b.length > 0) params.set('sf', b.join(','));
 
     ds('schedule data saved');
 
@@ -122,15 +148,18 @@ const ScheduleManager = {
         };
     },
 
-    getSectionById: (id: string): ScheduleSection | undefined => {
-        let courseId = id.split('-')[0];
+    getCourseById: (id: string): ScheduleCourse | undefined => {
         for (let course of scheduleData) {
-            if (course.course_id === courseId) {
-                return course.sections.find(
-                    (section) => section.section_id === id
-                );
+            if (course.course_id === id) {
+                return course;
             }
         }
+    },
+
+    getSectionById: (id: string): ScheduleSection | undefined => {
+        let courseId = id.split('-')[0];
+        let course = ScheduleManager.getCourseById(courseId);
+        return course?.sections.find((section) => section.section_id === id);
     },
 
     getCourseColor: (subject: string) => {

@@ -82,10 +82,16 @@ function loadData(params: URLSearchParams): PlanData | 'malformed' | 'empty' {
                         if (course == null) return 'malformed';
                         if (i === 0) {
                             bookmarksNoCredit.add(course);
-                            ds('bookmark added: %s (credit = false)', courseId);
+                            ds(
+                                'plan bookmark added: %s (credit = false)',
+                                courseId
+                            );
                         } else {
                             bookmarksForCredit.add(course);
-                            ds('bookmark added: %s (credit = true)', courseId);
+                            ds(
+                                'plan bookmark added: %s (credit = true)',
+                                courseId
+                            );
                         }
                     }
                 }

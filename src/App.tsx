@@ -32,6 +32,7 @@ import {
     PlanSpecialFunctions,
 } from './types/PlanTypes';
 import {
+    ScheduleCourse,
     ScheduleData,
     ScheduleInteractions,
     ScheduleModificationFunctions,
@@ -117,6 +118,9 @@ class App extends React.Component<{}, AppState> {
         const sf: ScheduleModificationFunctions = {
             addSection: (section) => app.addSection(section),
             removeSection: (section) => app.removeSection(section),
+            addScheduleBookmark: (course) => app.addScheduleBookmark(course),
+            removeScheduleBookmark: (course) =>
+                app.removeScheduleBookmark(course),
         };
 
         if (defaultSwitches.get.dark) {
@@ -133,7 +137,10 @@ class App extends React.Component<{}, AppState> {
 
         this.state = {
             data: data,
-            schedule: {},
+            schedule: {
+                schedule: {},
+                bookmarks: [],
+            },
             switches: defaultSwitches,
             f,
             f2,
@@ -800,7 +807,7 @@ class App extends React.Component<{}, AppState> {
     addSection(section: ScheduleSection) {
         delete section.preview;
         let schedule = this.state.schedule;
-        schedule[section.section_id] = section;
+        schedule.schedule[section.section_id] = section;
 
         d('schedule section added: %s', section.section_id);
         this.setState({
@@ -811,8 +818,54 @@ class App extends React.Component<{}, AppState> {
 
     removeSection(section: ScheduleSection) {
         let schedule = this.state.schedule;
-        delete schedule[section.section_id];
+        delete schedule.schedule[section.section_id];
         d('schedule section removed: %s', section.section_id);
+        this.setState({
+            schedule,
+            unsavedChanges: ScheduleManager.save(schedule, this.state.switches),
+        });
+    }
+
+    addScheduleBookmark(course: ScheduleCourse) {
+        let schedule = this.state.schedule;
+        if (
+            schedule.bookmarks.some(
+                (course) => course.course_id === course.course_id
+            )
+        ) {
+            return;
+        }
+        schedule.bookmarks.push(course);
+        this.setState({
+            schedule,
+            unsavedChanges: ScheduleManager.save(schedule, this.state.switches),
+        });
+    }
+
+    removeScheduleBookmark(course: ScheduleCourse) {
+        let schedule = this.state.schedule;
+        if (
+            !schedule.bookmarks.some(
+                (course) => course.course_id === course.course_id
+            )
+        ) {
+            return;
+        }
+
+        let index = -1;
+        for (let i = 0; i < schedule.bookmarks.length; i++) {
+            if (schedule.bookmarks[i].course_id === course.course_id) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index === -1) {
+            return;
+        }
+
+        schedule.bookmarks.splice(index, 1);
+
         this.setState({
             schedule,
             unsavedChanges: ScheduleManager.save(schedule, this.state.switches),
@@ -901,10 +954,15 @@ class App extends React.Component<{}, AppState> {
                                 {tab === 'My List' && (
                                     <Bookmarks
                                         bookmarks={this.state.data.bookmarks}
+                                        schedule={this.state.schedule}
                                         alert={(alertData) => {
                                             this.showAlert(alertData);
                                         }}
                                         f={this.state.f}
+                                        sf={this.state.sf}
+                                        scheduleInteractions={
+                                            this.state.scheduleInteractions
+                                        }
                                         switches={switches}
                                     />
                                 )}

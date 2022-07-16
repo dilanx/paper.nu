@@ -25,8 +25,10 @@ class Schedule extends React.Component<ScheduleProps> {
         let start = 9;
         let end = 18;
 
-        for (let section_id in this.props.schedule) {
-            let section = this.props.schedule[section_id];
+        const schedule = this.props.schedule.schedule;
+
+        for (let section_id in schedule) {
+            let section = schedule[section_id];
             if (section.meeting_days) {
                 for (let i = 0; i < section.meeting_days.length; i++) {
                     sectionDays[parseInt(section.meeting_days[i])].push(

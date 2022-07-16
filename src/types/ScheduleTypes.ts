@@ -4,8 +4,15 @@ export interface Time {
 }
 
 export interface ScheduleData {
+    schedule: ScheduleDataMap;
+    bookmarks: ScheduleBookmarks;
+}
+
+export interface ScheduleDataMap {
     [section_id: string]: ScheduleSection;
 }
+
+export type ScheduleBookmarks = ScheduleCourse[];
 
 export interface ScheduleCourse {
     course_id: string;
@@ -55,4 +62,6 @@ export interface ScheduleInteractions {
 export interface ScheduleModificationFunctions {
     addSection: (section: ScheduleSection) => void;
     removeSection: (section: ScheduleSection) => void;
+    addScheduleBookmark: (course: ScheduleCourse) => void;
+    removeScheduleBookmark: (course: ScheduleCourse) => void;
 }

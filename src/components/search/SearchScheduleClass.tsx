@@ -1,3 +1,5 @@
+import { BookmarkIcon, MinusIcon } from '@heroicons/react/outline';
+import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/solid';
 import { motion } from 'framer-motion';
 import { useDrag } from 'react-dnd';
 import { Color } from '../../types/BaseTypes';
@@ -17,6 +19,7 @@ interface SearchScheduleClassProps {
     select: () => void;
     sf: ScheduleModificationFunctions;
     interactions: ScheduleInteractions;
+    fromBookmarks?: boolean;
 }
 
 const variants = {
@@ -48,10 +51,16 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
         [props.selected]
     );
 
+    const isBookmarked =
+        props.fromBookmarks ||
+        props.schedule.bookmarks.some((bookmarkCourse) => {
+            return bookmarkCourse.course_id === course.course_id;
+        });
+
     return (
         <div
             ref={drag}
-            className={`p-2 rounded-lg bg-opacity-60 dark:bg-gray-800 border-2
+            className={`p-2 rounded-lg bg-opacity-60 dark:bg-gray-800 border-2 relative
             ${
                 props.selected
                     ? `bg-white border-${props.color}-400 shadow-lg -translate-y-2`
@@ -93,6 +102,32 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
                         );
                     })}
                 </motion.div>
+            )}
+
+            {!props.selected && (
+                <button
+                    className="absolute -top-2 -right-2 p-1 rounded-full bg-gray-200 hover:bg-indigo-100 dark:bg-gray-700
+                        text-gray-500 dark:text-white text-xs opacity-80 hover:text-indigo-400 dark:hover:text-indigo-400 hover:opacity-100
+                        transition-all duration-150 hidden group-hover:block z-20"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        if (isBookmarked) {
+                            props.sf?.removeScheduleBookmark(course);
+                        } else {
+                            props.sf?.addScheduleBookmark(course);
+                        }
+                    }}
+                >
+                    {isBookmarked ? (
+                        props.fromBookmarks ? (
+                            <MinusIcon className="w-5 h-5" />
+                        ) : (
+                            <BookmarkIconSolid className="w-5 h-5" />
+                        )
+                    ) : (
+                        <BookmarkIcon className="w-5 h-5" />
+                    )}
+                </button>
             )}
         </div>
     );
