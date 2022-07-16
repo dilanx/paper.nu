@@ -50,6 +50,15 @@ function ScheduleClass({ section, interactions, sf }: ScheduleClassProps) {
                 <div className="w-full h-full overflow-scroll no-scrollbar p-2">
                     <p className="m-0 text-sm font-bold text-black dark:text-white">
                         {subject} {number}
+                        {section.component !== 'LEC' && (
+                            <span className="pl-2 font-medium text-xs text-gray-600 dark:text-gray-400">
+                                (
+                                {Utility.convertSectionComponent(
+                                    section.component
+                                )}
+                                )
+                            </span>
+                        )}
                     </p>
                     <p className="m-0 text-xs text-black dark:text-white">
                         {title}
