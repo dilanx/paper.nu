@@ -13,11 +13,11 @@ export interface AuthenticationResponseToken {
     error?: string;
 }
 
-export interface AccountPlansData {
-    [key: string]: AccountPlanData;
+export interface AccountDataMap {
+    [key: string]: AccountData;
 }
 
-export interface AccountPlanData {
+export interface AccountData {
     name: string;
     createdAt: number;
     content: string;

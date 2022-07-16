@@ -2,12 +2,12 @@ import { motion } from 'framer-motion';
 import { TrashIcon } from '@heroicons/react/outline';
 import {
     AccountModificationFunctions,
-    AccountPlanData,
+    AccountData,
 } from '../../types/AccountTypes';
 
 interface AccountPlanProps {
     id: string;
-    plan: AccountPlanData;
+    plan: AccountData;
     fa: AccountModificationFunctions;
     active: boolean;
 }

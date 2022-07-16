@@ -142,45 +142,6 @@ const ScheduleManager = {
         return PlanManager.data.majors[subject]?.color ?? 'gray';
     },
 
-    load: async (params: URLSearchParams, switches: UserOptions) => {
-        // TODO implement account system
-
-        let method: LoadMethods = 'None';
-
-        dp('trying to load schedule data from URL');
-        let data = ScheduleManager.loadFromURL(params);
-        if (data !== 'malformed' && data !== 'empty') {
-            dp('URL load successful');
-            method = 'URL';
-            // TODO match to account
-        }
-
-        if (switches.get.save_to_storage) {
-            // TODO most recent account
-
-            if (data === 'empty') {
-                dp('nothing to load from account, trying storage instead');
-                data = ScheduleManager.loadFromStorage();
-                method = 'Storage';
-            }
-
-            if (data !== 'malformed' && data !== 'empty') {
-                ScheduleManager.save(data);
-            }
-        }
-
-        if (data === 'empty') {
-            dp('no data to load');
-        } else {
-            dp('data loaded');
-        }
-
-        return {
-            data,
-            method,
-        };
-    },
-
     loadFromURL: (params: URLSearchParams) => {
         return loadData(params);
     },
@@ -190,6 +151,11 @@ const ScheduleManager = {
         if (!dataStr) return 'empty';
         let params = new URLSearchParams(dataStr);
         return loadData(params);
+    },
+
+    loadFromString: (dataStr?: string) => {
+        if (!dataStr) return 'empty';
+        return loadData(new URLSearchParams(dataStr));
     },
 
     save: (data: ScheduleData, switches?: UserOptions) => {

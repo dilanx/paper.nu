@@ -11,7 +11,7 @@ import {
 import Account from '../../Account';
 import {
     AccountModificationFunctions,
-    AccountPlansData,
+    AccountDataMap,
 } from '../../types/AccountTypes';
 import { Alert } from '../../types/AlertTypes';
 import Utility from '../../utility/Utility';
@@ -31,7 +31,7 @@ interface AccountPlansProps {
 }
 
 interface AccountPlansState {
-    plans?: AccountPlansData;
+    plans?: AccountDataMap;
     loading: boolean;
     loggedIn: boolean;
     fa: AccountModificationFunctions;

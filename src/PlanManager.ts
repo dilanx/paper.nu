@@ -1,6 +1,6 @@
 import Account from './Account';
 import JSONCourseData from './data/plan_data.json';
-import { AccountPlansData } from './types/AccountTypes';
+import { AccountDataMap } from './types/AccountTypes';
 import {
     LoadMethods,
     SearchError,
@@ -307,83 +307,6 @@ const PlanManager = {
     getCourseColor: (courseId: string) => {
         let subj = courseId.split(' ')[0];
         return courseData.majors[subj].color;
-    },
-
-    load: async (params: URLSearchParams, switches: UserOptions) => {
-        let activePlanId: string | undefined = undefined;
-        let originalDataString: string = '';
-        let accountPlans: AccountPlansData | undefined = undefined;
-        let method: LoadMethods = 'None';
-        if (Account.isLoggedIn()) {
-            accountPlans = await Account.init();
-            activePlanId = 'None';
-        }
-
-        // Try to load from URL and match to account plan
-        dp('trying to load plan data from URL');
-        let data = PlanManager.loadFromURL(params);
-        if (data !== 'malformed' && data !== 'empty') {
-            dp('URL load successful');
-            method = 'URL';
-            if (accountPlans) {
-                let dataStr = params.toString();
-                for (let planId in accountPlans) {
-                    if (accountPlans[planId].content === dataStr) {
-                        dp('matched to account plan: %s', planId);
-                        activePlanId = planId;
-                        originalDataString = dataStr;
-                        method = 'Account';
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (switches.get.save_to_storage) {
-            // Try to load from account
-            if (data === 'empty') {
-                dp(
-                    'nothing to load from URL, trying most recent account instead'
-                );
-                let storedPlanId = switches.get.active_plan_id as
-                    | string
-                    | undefined;
-                if (accountPlans && storedPlanId) {
-                    if (storedPlanId in accountPlans) {
-                        dp('account load successful: %s', storedPlanId);
-                        let content = accountPlans[storedPlanId].content;
-                        data = PlanManager.loadFromString(content);
-                        activePlanId = storedPlanId;
-                        originalDataString = content;
-                        method = 'Account';
-                    }
-                }
-            }
-
-            // Try to load from storage
-            if (data === 'empty') {
-                dp('nothing to load from account, trying storage instead');
-                data = PlanManager.loadFromStorage();
-                method = 'Storage';
-            }
-
-            if (data !== 'malformed' && data !== 'empty') {
-                PlanManager.save(data);
-            }
-        }
-
-        if (data === 'empty') {
-            dp('no data to load');
-        } else {
-            dp('data loaded');
-        }
-
-        return {
-            data,
-            activePlanId,
-            originalDataString,
-            method,
-        };
     },
 
     loadFromURL: (params: URLSearchParams) => {

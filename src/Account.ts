@@ -1,6 +1,6 @@
 import PlanError from './utility/PlanError';
 import {
-    AccountPlansData,
+    AccountDataMap,
     AuthenticationResponseToken,
     ConnectionResponse,
 } from './types/AccountTypes';
@@ -11,9 +11,10 @@ var dh = debug('account:http');
 var dp = debug('account:op');
 
 const TOKEN_URL = 'https://auth.dilanxd.com/authenticate/token';
-const PLANS_URL = 'https://auth.dilanxd.com/plan-nu/plans';
+const ENDPOINT = 'https://auth.dilanxd.com/plan-nu';
 
-var plans: AccountPlansData | undefined = undefined;
+var plans: AccountDataMap | undefined = undefined;
+var schedules: AccountDataMap | undefined = undefined;
 
 async function authLogin(
     authorizationCode?: string,
@@ -95,15 +96,15 @@ async function authLogout(): Promise<ConnectionResponse> {
     return { success: true, data: '' };
 }
 
-async function planOperation(
+async function operation(
     endpoint: string,
     method: string,
     body?: object,
     autoAuth?: boolean
-): Promise<AccountPlansData | undefined> {
+): Promise<AccountDataMap | undefined> {
     dh('%s /%s (body: %o)', method, endpoint, body);
     try {
-        const response = await fetch(PLANS_URL + '/' + endpoint, {
+        const response = await fetch(ENDPOINT + '/' + endpoint, {
             method: method,
             headers: {
                 'Content-Type': 'application/json',
@@ -122,8 +123,14 @@ async function planOperation(
             throw new PlanError(res.error as string);
         }
 
-        plans = res;
-        return res as AccountPlansData;
+        if (endpoint.startsWith('plans')) {
+            plans = res;
+        }
+        if (endpoint.startsWith('schedules')) {
+            schedules = res;
+        }
+
+        return res as AccountDataMap;
     } catch (error) {
         throw new PlanError('Connection Failure');
     }
@@ -139,7 +146,10 @@ let Account = {
     logOut: () => authLogout(),
     init: () => {
         dp('initialize');
-        return planOperation('', 'GET', undefined, false);
+        return {
+            plans: operation('plans', 'GET', undefined, false),
+            schedule: operation('schedules', 'GET', undefined, false),
+        };
     },
     getPlans: (reload = false) => {
         dp('get');
@@ -148,19 +158,19 @@ let Account = {
             return Promise.resolve(plans);
         }
         dp('cache miss');
-        return planOperation('', 'GET');
+        return operation('plans', 'GET');
     },
     createPlan: (name: string) => {
         dp('create');
-        return planOperation('', 'POST', { name });
+        return operation('plans', 'POST', { name });
     },
     deletePlan: (planId: string) => {
         dp('delete');
-        return planOperation(planId, 'DELETE');
+        return operation('plans/' + planId, 'DELETE');
     },
     updatePlan: (planId: string, content: string) => {
         dp('update');
-        return planOperation(planId, 'PATCH', { content });
+        return operation('plans/' + planId, 'PATCH', { content });
     },
     getPlanName: (planId?: string) => {
         if (!planId) return 'Log in';

@@ -1,3 +1,5 @@
+import { Mode } from '../utility/Constants';
+
 export type UserOptionValue = boolean | string | number | undefined;
 
 export interface ReadUserOptions {
@@ -14,6 +16,14 @@ export interface BaseProps {
 }
 
 export type LoadMethods = 'None' | 'URL' | 'Account' | 'Storage';
+
+export interface LoadResponse<T> {
+    mode: Mode;
+    data: T | 'malformed' | 'empty';
+    activeId?: string;
+    originalDataString?: string;
+    method: LoadMethods;
+}
 
 export type Color =
     | 'slate'
