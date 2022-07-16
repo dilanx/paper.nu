@@ -1,4 +1,3 @@
-import React from 'react';
 import Utility from '../../utility/Utility';
 import { useDrag } from 'react-dnd';
 import { BookmarkIcon } from '@heroicons/react/outline';

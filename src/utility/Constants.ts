@@ -1,4 +1,4 @@
 export enum Mode {
-    PLAN,
-    SCHEDULE,
+    PLAN = 0,
+    SCHEDULE = 1,
 }

@@ -24,6 +24,7 @@ let Utility = {
             save_to_storage: true,
             notifications: true,
             settings_tab: 'Appearance',
+            mode: 1,
         };
         let keys = Object.keys(localStorage);
         for (let i = 0; i < keys.length; i++) {
@@ -33,6 +34,7 @@ let Utility = {
                 if (store != null) {
                     if (store === 'true') val = true;
                     else if (store === 'false') val = false;
+                    else if (isNaN(parseInt(store))) val = parseInt(store);
                     else val = store;
                 }
                 let switchId = keys[i].substring(7);
@@ -141,6 +143,14 @@ let Utility = {
         }
     },
 
+    convertAllDays: (nums: string) => {
+        let days = '';
+        for (let i = 0; i < nums.length; i++) {
+            days += Utility.convertDay(parseInt(nums[i]));
+        }
+        return days;
+    },
+
     convertDay: (num: number) => {
         switch (num) {
             case 0:
@@ -182,6 +192,41 @@ let Utility = {
         }
 
         return time;
+    },
+
+    convertSectionComponent: (component: string) => {
+        switch (component) {
+            case 'LEC':
+                return 'LECTURE';
+            case 'DIS':
+                return 'DISCUSSION';
+            case 'LAB':
+                return 'LAB';
+            case 'SEM':
+                return 'SEMINAR';
+            default:
+                return component;
+        }
+    },
+
+    fitHours: (
+        time: Time | undefined,
+        current: number,
+        end: boolean
+    ): number => {
+        if (!time) {
+            return current;
+        }
+        if (end) {
+            if (time.h >= current) {
+                current = time.h + (time.m > 0 ? 1 : 0);
+            }
+            return current;
+        }
+        if (time.h < current) {
+            current = time.h;
+        }
+        return current;
     },
 
     prereqColor: (num: number) => {

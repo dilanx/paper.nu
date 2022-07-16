@@ -70,21 +70,3 @@ export interface DragCollectProps {
 export interface DropCollectedProps {
     isOver: boolean;
 }
-
-export interface SearchResults {
-    results: Course[];
-    shortcut?: SearchShortcut;
-    limitExceeded?: number;
-}
-
-export interface SearchShortcut {
-    replacing: string;
-    with: string;
-}
-
-export type SearchError = 'too_short' | 'no_results';
-
-export interface SearchResultsElements {
-    results: JSX.Element[];
-    shortcut?: SearchShortcut;
-}

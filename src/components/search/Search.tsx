@@ -1,23 +1,34 @@
-import React from 'react';
-import SearchClass from './SearchClass';
-import AddButtons from './AddButtons';
-import PlanManager from '../../PlanManager';
 import {
-    SearchIcon,
     ArrowRightIcon,
-    DotsHorizontalIcon,
     CollectionIcon,
+    DotsHorizontalIcon,
     ExternalLinkIcon,
+    SearchIcon,
 } from '@heroicons/react/outline';
 import { XCircleIcon } from '@heroicons/react/solid';
+import React from 'react';
+import PlanManager from '../../PlanManager';
+import ScheduleManager from '../../ScheduleManager';
+import {
+    SearchResultsElements,
+    SearchShortcut,
+    UserOptions,
+} from '../../types/BaseTypes';
 import {
     Course,
     PlanData,
     PlanModificationFunctions,
-    SearchResultsElements,
-    SearchShortcut,
 } from '../../types/PlanTypes';
-import { UserOptions } from '../../types/BaseTypes';
+import {
+    ScheduleCourse,
+    ScheduleData,
+    ScheduleInteractions,
+    ScheduleModificationFunctions,
+} from '../../types/ScheduleTypes';
+import { Mode } from '../../utility/Constants';
+import AddButtons from './AddButtons';
+import SearchClass from './SearchClass';
+import SearchScheduleClass from './SearchScheduleClass';
 
 interface MiniContentBlockProps {
     icon: JSX.Element;
@@ -43,13 +54,17 @@ function MiniContentBlock(props: MiniContentBlockProps) {
 
 interface SearchProps {
     data: PlanData;
+    schedule: ScheduleData;
     switches: UserOptions;
     f: PlanModificationFunctions;
+    sf: ScheduleModificationFunctions;
+    scheduleInteractions: ScheduleInteractions;
 }
 
 interface SearchState {
     search: string;
     current?: Course;
+    scheduleCurrent?: string;
     shortcut?: SearchShortcut;
 }
 
@@ -107,7 +122,12 @@ class Search extends React.Component<SearchProps, SearchState> {
             };
         }
 
-        let results = PlanManager.search(query);
+        let mode = this.props.switches.get.mode;
+
+        let results =
+            mode === Mode.PLAN
+                ? PlanManager.search(query)
+                : ScheduleManager.search(query);
         if (results === 'too_short') {
             return {
                 results: [
@@ -131,19 +151,46 @@ class Search extends React.Component<SearchProps, SearchState> {
         }
 
         let courseList = [];
-        for (let course of results.results) {
-            courseList.push(
-                <SearchClass
-                    course={course}
-                    color={PlanManager.getCourseColor(course.id)}
-                    select={(course) => {
-                        this.setState({ current: course });
-                    }}
-                    bookmarks={this.props.data.bookmarks}
-                    f={this.props.f}
-                    key={course.id}
-                />
-            );
+        if (mode === Mode.PLAN) {
+            for (let course of results.results as Course[]) {
+                courseList.push(
+                    <SearchClass
+                        course={course}
+                        color={PlanManager.getCourseColor(course.id)}
+                        select={(course) => {
+                            this.setState({ current: course });
+                        }}
+                        bookmarks={this.props.data.bookmarks}
+                        f={this.props.f}
+                        key={course.id}
+                    />
+                );
+            }
+        } else {
+            for (let course of results.results as ScheduleCourse[]) {
+                courseList.push(
+                    <SearchScheduleClass
+                        course={course}
+                        color={ScheduleManager.getCourseColor(course.subject)}
+                        selected={
+                            this.state.scheduleCurrent === course.course_id
+                        }
+                        select={() => {
+                            this.setState({
+                                scheduleCurrent:
+                                    this.state.scheduleCurrent ===
+                                    course.course_id
+                                        ? undefined
+                                        : course.course_id,
+                            });
+                        }}
+                        interactions={this.props.scheduleInteractions}
+                        schedule={this.props.schedule}
+                        sf={this.props.sf}
+                        key={`search-${course.course_id}`}
+                    />
+                );
+            }
         }
 
         if (results.limitExceeded) {
@@ -164,135 +211,12 @@ class Search extends React.Component<SearchProps, SearchState> {
     }
 
     render() {
-        let singleClassView = false;
         let search = this.state.search;
 
         let { results, shortcut } = this.getResults();
 
-        let searchField = (
-            <div className="sticky top-0 p-2 mb-2 bg-white dark:bg-gray-800 z-10 rounded-lg">
-                <div className="block mt-4 mb-2 mx-auto w-11/12 relative">
-                    <input
-                        className="w-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 shadow-md
-                            rounded-lg outline-none hover:border-gray-500 focus:border-black dark:hover:border-gray-400 dark:focus:border-white text-lg p-2 px-4
-                            transition-all duration-150 text-black dark:text-white"
-                        ref={this.searchFieldRef}
-                        value={search}
-                        placeholder="Search for classes..."
-                        onChange={(event) => {
-                            this.setState({ search: event.target.value });
-                        }}
-                    />
-                    {search.length > 0 && (
-                        <button
-                            className="block absolute right-4 top-0 bottom-0 my-2 text-gray-300 hover:text-red-400 focus:text-red-300 
-                            dark:text-gray-600 dark:hover:text-red-400 dark:focus:text-red-500 transition-colors duration-150"
-                            onClick={() => {
-                                this.setState({ search: '' });
-                                this.searchFieldRef.current?.focus();
-                            }}
-                        >
-                            <XCircleIcon className="w-5 h-5" />
-                        </button>
-                    )}
-                </div>
-                {shortcut && (
-                    <p className="text-center text-sm m-0 p-0 text-gray-500 dark:text-gray-400">
-                        replacing{' '}
-                        <span className="text-black dark:text-white font-medium">
-                            {shortcut.replacing}
-                        </span>{' '}
-                        with{' '}
-                        <span className="text-black dark:text-white font-medium">
-                            {shortcut.with}
-                        </span>
-                    </p>
-                )}
-            </div>
-        );
-
-        let selectedClass = null;
-        let addButtons = null;
-        let bookmarksButtons = null;
-        let exitButton = null;
-
         let current = this.state.current;
-        if (current) {
-            singleClassView = true;
-
-            selectedClass = (
-                <SearchClass
-                    course={current}
-                    color={PlanManager.getCourseColor(current.id)}
-                />
-            );
-
-            addButtons = (
-                <AddButtons
-                    action={(year, quarter) => {
-                        if (current) {
-                            this.props.f.addCourse(current, { year, quarter });
-                            this.setState({ current: undefined });
-                        }
-                    }}
-                    courses={this.props.data.courses}
-                />
-            );
-
-            let bookmarks = this.props.data.bookmarks;
-
-            bookmarksButtons = (
-                <div className="py-2">
-                    <p className="text-center text-gray-500 font-bold p-2 text-sm">
-                        MY LIST
-                    </p>
-                    <button
-                        className="block mx-auto bg-indigo-500 text-white font-medium w-4/5 p-0.5 my-2 opacity-100 hover:opacity-60
-                            transition-all duration-150 rounded-md shadow-sm"
-                        onClick={() => {
-                            if (!current) return;
-                            if (bookmarks.noCredit.has(current)) {
-                                this.props.f.removeBookmark(current, false);
-                            } else {
-                                this.props.f.addBookmark(current, false);
-                            }
-                        }}
-                    >
-                        {bookmarks.noCredit.has(current)
-                            ? 'Remove from bookmarks'
-                            : 'Add to bookmarks'}
-                    </button>
-                    <button
-                        className="block mx-auto bg-indigo-800 dark:bg-indigo-400 text-white font-medium w-4/5 p-0.5 my-2 opacity-100 hover:opacity-60
-                            transition-all duration-150 rounded-md shadow-sm"
-                        onClick={() => {
-                            if (!current) return;
-                            if (bookmarks.forCredit.has(current)) {
-                                this.props.f.removeBookmark(current, true);
-                            } else {
-                                this.props.f.addBookmark(current, true);
-                            }
-                        }}
-                    >
-                        {bookmarks.forCredit.has(current)
-                            ? 'Remove for credit'
-                            : 'Add for credit'}
-                    </button>
-                </div>
-            );
-
-            exitButton = (
-                <button
-                    className="block mx-auto my-8 bg-gray-500 text-white font-medium
-                        w-4/5 p-2 opacity-100 hover:opacity-60 transition-all duration-150 rounded-md shadow-sm"
-                    onClick={() => {
-                        this.setState({ current: undefined });
-                    }}
-                >
-                    Back
-                </button>
-            );
-        }
+        let bookmarks = this.props.data.bookmarks;
 
         return (
             <div
@@ -301,13 +225,132 @@ class Search extends React.Component<SearchProps, SearchState> {
                 }border-4 border-gray-400 dark:border-gray-500 my-2 rounded-lg shadow-lg h-full
                 overflow-y-scroll no-scrollbar`}
             >
-                {!singleClassView && searchField}
-                {!singleClassView && results}
+                {!current && (
+                    <>
+                        <div className="sticky top-0 p-2 mb-2 bg-white dark:bg-gray-800 z-10 rounded-lg">
+                            <div className="block mt-4 mb-2 mx-auto w-11/12 relative">
+                                <input
+                                    className="w-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 shadow-md
+                            rounded-lg outline-none hover:border-gray-500 focus:border-black dark:hover:border-gray-400 dark:focus:border-white text-lg p-2 px-4
+                            transition-all duration-150 text-black dark:text-white"
+                                    ref={this.searchFieldRef}
+                                    value={search}
+                                    placeholder="Search for classes..."
+                                    onChange={(event) => {
+                                        this.setState({
+                                            scheduleCurrent: undefined,
+                                            search: event.target.value,
+                                        });
+                                    }}
+                                />
+                                {search.length > 0 && (
+                                    <button
+                                        className="block absolute right-4 top-0 bottom-0 my-2 text-gray-300 hover:text-red-400 focus:text-red-300 
+                            dark:text-gray-600 dark:hover:text-red-400 dark:focus:text-red-500 transition-colors duration-150"
+                                        onClick={() => {
+                                            this.setState({ search: '' });
+                                            this.searchFieldRef.current?.focus();
+                                        }}
+                                    >
+                                        <XCircleIcon className="w-5 h-5" />
+                                    </button>
+                                )}
+                            </div>
+                            {shortcut && (
+                                <p className="text-center text-sm m-0 p-0 text-gray-500 dark:text-gray-400">
+                                    replacing{' '}
+                                    <span className="text-black dark:text-white font-medium">
+                                        {shortcut.replacing}
+                                    </span>{' '}
+                                    with{' '}
+                                    <span className="text-black dark:text-white font-medium">
+                                        {shortcut.with}
+                                    </span>
+                                </p>
+                            )}
+                        </div>
+                        {results}
+                    </>
+                )}
 
-                {singleClassView && selectedClass}
-                {singleClassView && addButtons}
-                {singleClassView && bookmarksButtons}
-                {singleClassView && exitButton}
+                {current && (
+                    <>
+                        <SearchClass
+                            course={current}
+                            color={PlanManager.getCourseColor(current.id)}
+                        />
+                        <AddButtons
+                            action={(year, quarter) => {
+                                if (current) {
+                                    this.props.f.addCourse(current, {
+                                        year,
+                                        quarter,
+                                    });
+                                    this.setState({ current: undefined });
+                                }
+                            }}
+                            courses={this.props.data.courses}
+                        />
+                        <div className="py-2">
+                            <p className="text-center text-gray-500 font-bold p-2 text-sm">
+                                MY LIST
+                            </p>
+                            <button
+                                className="block mx-auto bg-indigo-500 text-white font-medium w-4/5 p-0.5 my-2 opacity-100 hover:opacity-60
+                            transition-all duration-150 rounded-md shadow-sm"
+                                onClick={() => {
+                                    if (!current) return;
+                                    if (bookmarks.noCredit.has(current)) {
+                                        this.props.f.removeBookmark(
+                                            current,
+                                            false
+                                        );
+                                    } else {
+                                        this.props.f.addBookmark(
+                                            current,
+                                            false
+                                        );
+                                    }
+                                }}
+                            >
+                                {bookmarks.noCredit.has(current)
+                                    ? 'Remove from bookmarks'
+                                    : 'Add to bookmarks'}
+                            </button>
+                            <button
+                                className="block mx-auto bg-indigo-800 dark:bg-indigo-400 text-white font-medium w-4/5 p-0.5 my-2 opacity-100 hover:opacity-60
+                            transition-all duration-150 rounded-md shadow-sm"
+                                onClick={() => {
+                                    if (!current) return;
+                                    if (bookmarks.forCredit.has(current)) {
+                                        this.props.f.removeBookmark(
+                                            current,
+                                            true
+                                        );
+                                    } else {
+                                        this.props.f.addBookmark(current, true);
+                                    }
+                                }}
+                            >
+                                {bookmarks.forCredit.has(current)
+                                    ? 'Remove for credit'
+                                    : 'Add for credit'}
+                            </button>
+                        </div>
+                    </>
+                )}
+
+                {current && (
+                    <button
+                        className="block mx-auto my-8 bg-gray-500 text-white font-medium
+                        w-4/5 p-2 opacity-100 hover:opacity-60 transition-all duration-150 rounded-md shadow-sm"
+                        onClick={() => {
+                            this.setState({ current: undefined });
+                        }}
+                    >
+                        Back
+                    </button>
+                )}
             </div>
         );
     }

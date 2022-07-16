@@ -1,22 +1,28 @@
-import React from 'react';
-import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import Content from './components/plan/Content';
-import PlanManager from './PlanManager';
-import Utility from './utility/Utility';
-import Info from './components/menu/Info';
-import TaskBar from './components/menu/TaskBar';
-import Search from './components/search/Search';
-import Alert from './components/menu/Alert';
-import Bookmarks from './components/bookmarks/Bookmarks';
-import AccountPlans from './components/account/AccountPlans';
 import {
     ExclamationIcon,
     PlusIcon,
     SaveIcon,
     TrashIcon,
 } from '@heroicons/react/outline';
+import debug from 'debug';
+import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
+import React from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import toast, { Toaster } from 'react-hot-toast';
+import Account from './Account';
+import AccountPlans from './components/account/AccountPlans';
+import Bookmarks from './components/bookmarks/Bookmarks';
+import Alert from './components/menu/Alert';
+import Info from './components/menu/Info';
+import TaskBar from './components/menu/TaskBar';
+import Content from './components/plan/Content';
+import Schedule from './components/schedule/Schedule';
+import Search from './components/search/Search';
+import PlanManager from './PlanManager';
+import ScheduleManager from './ScheduleManager';
+import { AlertData } from './types/AlertTypes';
+import { UserOptions, UserOptionValue } from './types/BaseTypes';
 import {
     Course,
     CourseLocation,
@@ -24,27 +30,31 @@ import {
     PlanModificationFunctions,
     PlanSpecialFunctions,
 } from './types/PlanTypes';
-import { AlertData } from './types/AlertTypes';
-import { UserOptions, UserOptionValue } from './types/BaseTypes';
-import Account from './Account';
-import PlanError from './utility/PlanError';
-import debug from 'debug';
-import toast, { Toaster } from 'react-hot-toast';
-import Schedule from './components/schedule/Schedule';
+import {
+    ScheduleData,
+    ScheduleInteractions,
+    ScheduleModificationFunctions,
+    ScheduleSection,
+} from './types/ScheduleTypes';
 import { Mode } from './utility/Constants';
+import PlanError from './utility/PlanError';
+import Utility from './utility/Utility';
 var d = debug('main');
 
 const VERSION = process.env.REACT_APP_VERSION ?? 'UNKNOWN';
 
 interface AppState {
     data: PlanData;
+    schedule: ScheduleData;
     switches: UserOptions;
     alertData?: AlertData;
     f: PlanModificationFunctions;
     f2: PlanSpecialFunctions;
+    sf: ScheduleModificationFunctions;
     loadingLogin: boolean;
     unsavedChanges: boolean;
     originalDataString: string;
+    scheduleInteractions: ScheduleInteractions;
 }
 
 class App extends React.Component<{}, AppState> {
@@ -73,7 +83,7 @@ class App extends React.Component<{}, AppState> {
             },
         };
 
-        let f: PlanModificationFunctions = {
+        const f: PlanModificationFunctions = {
             addCourse: (course, location) => {
                 app.addCourse(course, location);
             },
@@ -91,7 +101,7 @@ class App extends React.Component<{}, AppState> {
             },
         };
 
-        let f2: PlanSpecialFunctions = {
+        const f2: PlanSpecialFunctions = {
             addSummerQuarter: (year) => {
                 app.addSummerQuarter(year);
             },
@@ -101,6 +111,11 @@ class App extends React.Component<{}, AppState> {
             clearData: (year?: number) => {
                 app.clearData(year);
             },
+        };
+
+        const sf: ScheduleModificationFunctions = {
+            addSection: (section) => app.addSection(section),
+            removeSection: (section) => app.removeSection(section),
         };
 
         if (defaultSwitches.get.dark) {
@@ -117,12 +132,30 @@ class App extends React.Component<{}, AppState> {
 
         this.state = {
             data: data,
+            schedule: {},
             switches: defaultSwitches,
             f,
             f2,
+            sf,
             loadingLogin: false,
             unsavedChanges: false,
             originalDataString: '',
+            scheduleInteractions: {
+                hoverSection: {
+                    set: (id) => this.interactionUpdate('hoverSection', id),
+                    clear: () => this.interactionUpdate('hoverSection'),
+                },
+                hoverDelete: {
+                    set: (id) => this.interactionUpdate('hoverDelete', id),
+                    clear: () => this.interactionUpdate('hoverDelete'),
+                },
+                previewSection: {
+                    set: (id) => this.interactionUpdate('previewSection', id),
+                    clear: () => this.interactionUpdate('previewSection'),
+                },
+                multiClear: (interactions) =>
+                    this.interactionMultiClear(interactions),
+            },
         };
     }
 
@@ -155,6 +188,12 @@ class App extends React.Component<{}, AppState> {
                             secondary: 'white',
                         },
                     });
+                    break;
+                case 'plan':
+                    this.setSwitch('mode', Mode.PLAN);
+                    break;
+                case 'schedule':
+                    this.setSwitch('mode', Mode.SCHEDULE);
                     break;
             }
         }
@@ -738,6 +777,49 @@ class App extends React.Component<{}, AppState> {
         action();
     }
 
+    addSection(section: ScheduleSection) {
+        delete section.preview;
+        let schedule = this.state.schedule;
+        schedule[section.section_id] = section;
+
+        d('schedule section added: %s', section.section_id);
+        this.setState({
+            schedule,
+            unsavedChanges: ScheduleManager.save(schedule, this.state.switches),
+        });
+    }
+
+    removeSection(section: ScheduleSection) {
+        let schedule = this.state.schedule;
+        delete schedule[section.section_id];
+        d('schedule section removed: %s', section.section_id);
+        this.setState({
+            schedule,
+            unsavedChanges: ScheduleManager.save(schedule, this.state.switches),
+        });
+    }
+
+    interactionUpdate(interaction: keyof ScheduleInteractions, value?: any) {
+        this.setState({
+            scheduleInteractions: {
+                ...this.state.scheduleInteractions,
+                [interaction]: {
+                    ...this.state.scheduleInteractions[interaction],
+                    get: value,
+                },
+            },
+        });
+    }
+
+    interactionMultiClear(interactions: (keyof ScheduleInteractions)[]) {
+        let scheduleInteractions = this.state.scheduleInteractions;
+        for (let interaction of interactions) {
+            if (interaction === 'multiClear') continue;
+            delete scheduleInteractions[interaction].get;
+        }
+        this.setState({ scheduleInteractions });
+    }
+
     render() {
         let switches = this.state.switches;
         let tab = switches.get.tab;
@@ -785,11 +867,16 @@ class App extends React.Component<{}, AppState> {
 
                         <div className="bg-white dark:bg-gray-800 grid grid-cols-1 lg:grid-cols-8">
                             <div className="col-span-2 px-4 h-192 md:h-screen flex flex-col">
-                                <Info mode={Mode.SCHEDULE} />
+                                <Info mode={switches.get.mode as number} />
                                 <Search
                                     data={this.state.data}
+                                    schedule={this.state.schedule}
                                     switches={switches}
                                     f={this.state.f}
+                                    sf={this.state.sf}
+                                    scheduleInteractions={
+                                        this.state.scheduleInteractions
+                                    }
                                 />
                                 {tab === 'My List' && (
                                     <Bookmarks
@@ -836,16 +923,25 @@ class App extends React.Component<{}, AppState> {
                                     switches.get.compact ? 'compact-mode ' : ''
                                 } col-span-6 block pt-0 lg:h-screen lg:overflow-y-scroll no-scrollbar`}
                             >
-                                {/* <Content
-                                    data={this.state.data}
-                                    f={this.state.f}
-                                    f2={this.state.f2}
-                                    alert={(alertData) => {
-                                        this.showAlert(alertData);
-                                    }}
-                                    switches={switches}
-                                /> */}
-                                <Schedule />
+                                {switches.get.mode === Mode.PLAN ? (
+                                    <Content
+                                        data={this.state.data}
+                                        f={this.state.f}
+                                        f2={this.state.f2}
+                                        alert={(alertData) => {
+                                            this.showAlert(alertData);
+                                        }}
+                                        switches={switches}
+                                    />
+                                ) : (
+                                    <Schedule
+                                        schedule={this.state.schedule}
+                                        interactions={
+                                            this.state.scheduleInteractions
+                                        }
+                                        sf={this.state.sf}
+                                    />
+                                )}
                             </div>
                         </div>
                         <AnimatePresence>

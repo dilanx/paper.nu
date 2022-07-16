@@ -1,18 +1,17 @@
 import Account from './Account';
-import JSONCourseData from './data/courses.json';
+import JSONCourseData from './data/plan_data.json';
 import { AccountPlansData } from './types/AccountTypes';
-import { UserOptions } from './types/BaseTypes';
 import {
-    RawCourseData,
-    PlanData,
-    Course,
-    SearchShortcut,
-    SearchResults,
+    LoadMethods,
     SearchError,
-} from './types/PlanTypes';
+    SearchResults,
+    SearchShortcut,
+    UserOptions,
+} from './types/BaseTypes';
+import { RawCourseData, PlanData, Course } from './types/PlanTypes';
 import debug from 'debug';
-var ds = debug('course-manager:ser');
-var dp = debug('course-manager:op');
+var ds = debug('plan-manager:ser');
+var dp = debug('plan-manager:op');
 
 const courseData = JSONCourseData as RawCourseData;
 const SEARCH_RESULT_LIMIT = 100;
@@ -168,7 +167,7 @@ function countCourseUnitsInHundreds(courseList: Course[] | Set<Course>) {
 const PlanManager = {
     data: courseData,
 
-    search: (query: string): SearchResults | SearchError => {
+    prepareQuery: (query: string) => {
         query = query.toLowerCase().replace(/-|_/g, ' ');
         let terms = [query];
 
@@ -188,6 +187,14 @@ const PlanManager = {
                 with: shortcuts.join(', '),
             };
         }
+        return {
+            terms,
+            shortcut,
+        };
+    },
+
+    search: (query: string): SearchResults<Course> | SearchError => {
+        let { terms, shortcut } = PlanManager.prepareQuery(query);
 
         for (let term of terms) {
             if (term.length < 3) {
@@ -306,7 +313,7 @@ const PlanManager = {
         let activePlanId: string | undefined = undefined;
         let originalDataString: string = '';
         let accountPlans: AccountPlansData | undefined = undefined;
-        let method: 'None' | 'URL' | 'Account' | 'Storage' = 'None';
+        let method: LoadMethods = 'None';
         if (Account.isLoggedIn()) {
             accountPlans = await Account.init();
             activePlanId = 'None';
