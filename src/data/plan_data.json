@@ -79100,6 +79100,7 @@
         "ee": ["ELEC_ENG"],
         "bme": ["BMD_ENG"],
         "meche": ["MECH_ENG"],
-        "me": ["MECH_ENG"]
+        "me": ["MECH_ENG"],
+        "ce": ["COMP_ENG"]
     }
 }
