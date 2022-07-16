@@ -180,6 +180,14 @@ let Account = {
         }
         return plans[planId].name.toUpperCase();
     },
+    getScheduleName: (scheduleId?: string) => {
+        if (!scheduleId) return 'Log in';
+        if (scheduleId === 'None') return 'None';
+        if (!schedules) {
+            return 'err';
+        }
+        return schedules[scheduleId].name.toUpperCase();
+    },
 };
 
 export default Account;

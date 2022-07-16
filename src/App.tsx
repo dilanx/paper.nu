@@ -20,6 +20,7 @@ import Content from './components/plan/Content';
 import Schedule from './components/schedule/Schedule';
 import Search from './components/search/Search';
 import PlanManager from './PlanManager';
+import SaveDataManager from './SaveDataManager';
 import ScheduleManager from './ScheduleManager';
 import { AlertData } from './types/AlertTypes';
 import { UserOptions, UserOptionValue } from './types/BaseTypes';
@@ -212,26 +213,26 @@ class App extends React.Component<{}, AppState> {
                     this.setSwitch('tab', 'Plans');
                     this.setSwitch('active_plan_id', 'None', true);
                 }
-                this.initializePlan(params, () => {
+                this.initialize(params, () => {
                     this.setState({ loadingLogin: false });
                 });
             });
         } else {
-            this.initializePlan(params, () => {
+            this.initialize(params, () => {
                 this.setState({ loadingLogin: false });
             });
         }
     }
 
-    initializePlan(params: URLSearchParams, callback: () => void) {
-        d('plan initializing');
-        PlanManager.load(params, this.state.switches)
-            .then(({ data, activePlanId, originalDataString, method }) => {
-                this.setState({ loadingLogin: false });
+    initialize(params: URLSearchParams, callback: () => void) {
+        d('initializing');
+        SaveDataManager.load(params, this.state.switches)
+            .then(({ mode, data, activeId, originalDataString, method }) => {
+                const modeStr = mode === Mode.PLAN ? 'plan' : 'schedule';
                 if (data === 'malformed') {
                     this.showAlert({
-                        title: 'Unable to load plan.',
-                        message: `The plan you're trying to access is not valid. If you're loading it through a URL, ensure that it hasn't been manually modified.`,
+                        title: `Unable to load ${modeStr}.`,
+                        message: `The ${modeStr} you're trying to access is not valid. If you're loading it through a URL, ensure that it hasn't been manually modified.`,
                         confirmButton: 'What a shame.',
                         confirmButtonColor: 'red',
                         iconBackgroundColor: 'red',
@@ -244,25 +245,44 @@ class App extends React.Component<{}, AppState> {
                     });
                     return;
                 }
-                this.setSwitch('active_plan_id', activePlanId, true);
+                this.setSwitch('mode', mode);
+                this.setSwitch(
+                    mode === Mode.PLAN
+                        ? 'active_plan_id'
+                        : 'active_schedule_id',
+                    activeId,
+                    true
+                );
                 this.setState({ originalDataString });
                 if (data === 'empty') {
                     return;
                 }
+
+                switch (mode) {
+                    case Mode.PLAN:
+                        this.setState({ data: data as PlanData });
+                        break;
+                    case Mode.SCHEDULE:
+                        this.setState({ schedule: data as ScheduleData });
+                        break;
+                }
+
                 switch (method) {
                     case 'URL':
-                        toast.success('Loaded plan from URL');
+                        toast.success(`Loaded ${modeStr} from URL`);
                         break;
                     case 'Account':
                         toast.success(
-                            'Loaded plan: ' + Account.getPlanName(activePlanId)
+                            `Loaded ${modeStr}: ` +
+                                (mode === Mode.PLAN
+                                    ? Account.getPlanName(activeId)
+                                    : Account.getScheduleName(activeId))
                         );
                         break;
                     case 'Storage':
-                        toast.success('Loaded recently edited plan');
+                        toast.success(`Loaded recently edited ${modeStr}`);
                         break;
                 }
-                this.setState({ data });
             })
             .catch((error: PlanError) => {
                 this.showAlert(
@@ -271,7 +291,7 @@ class App extends React.Component<{}, AppState> {
             })
             .finally(() => {
                 callback();
-                d('plan initialized');
+                d('initialization complete');
             });
     }
 

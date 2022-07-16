@@ -21,7 +21,7 @@ export interface LoadResponse<T> {
     mode: Mode;
     data: T | 'malformed' | 'empty';
     activeId?: string;
-    originalDataString?: string;
+    originalDataString: string;
     method: LoadMethods;
 }
 

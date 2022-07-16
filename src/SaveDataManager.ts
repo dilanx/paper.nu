@@ -22,7 +22,10 @@ function isValid<T>(response: T | 'malformed' | 'empty'): response is T {
 }
 
 let SaveDataManager = {
-    load: async (params: URLSearchParams, switches: UserOptions) => {
+    load: async (
+        params: URLSearchParams,
+        switches: UserOptions
+    ): Promise<LoadResponse<PlanData | ScheduleData>> => {
         let activeId: string | undefined = undefined;
         let originalDataString: string = '';
         let accountPlans: AccountDataMap | undefined = undefined;
