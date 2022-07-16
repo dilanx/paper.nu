@@ -37,6 +37,15 @@ def modify_section(course_id, section):
             'm': int(end_time[1])
         }
         section['end_time'] = et
+
+    delete_keys = []
+    for key in section:
+        if section[key] is None:
+            delete_keys.append(key)
+    
+    for key in delete_keys:
+        del section[key]
+        
     return section
 
 with open('courses.json') as a, open('discussions.json') as b, open('sections.json') as c:

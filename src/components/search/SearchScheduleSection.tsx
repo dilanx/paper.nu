@@ -27,24 +27,29 @@ function SearchScheduleSection({
     interactions,
     alreadyAdded,
 }: SearchScheduleSectionProps) {
+    const disabled =
+        alreadyAdded ||
+        !section.meeting_days ||
+        !section.start_time ||
+        !section.end_time;
     return (
         <motion.div variants={variants} className={`w-full my-4`}>
             <button
                 className={`w-full block text-left border-2 border-transparent
                 bg-gray-200 dark:bg-gray-700 dark:text-white bg-opacity-50 rounded-lg ${
-                    alreadyAdded
+                    disabled
                         ? 'opacity-60 cursor-not-allowed'
                         : `hover:border-${color}-400`
                 }`}
                 onMouseEnter={() => {
-                    if (!alreadyAdded) interactions.previewSection.set(section);
+                    if (!disabled) interactions.previewSection.set(section);
                 }}
                 onMouseLeave={() => {
-                    if (!alreadyAdded) interactions.previewSection.clear();
+                    if (!disabled) interactions.previewSection.clear();
                 }}
                 onClick={(e) => {
                     e.stopPropagation();
-                    if (!alreadyAdded) {
+                    if (!disabled) {
                         interactions.previewSection.clear();
                         sf.addSection(section);
                     }
@@ -55,9 +60,11 @@ function SearchScheduleSection({
                     <span className="pl-2 text-sm font-normal">
                         {Utility.convertSectionComponent(section.component)}
                     </span>
-                    {alreadyAdded && (
+                    {disabled && (
                         <span className="pl-2 text-xs font-normal text-red-600 dark:text-red-400">
-                            already added
+                            {alreadyAdded
+                                ? 'already added'
+                                : 'no meeting times'}
                         </span>
                     )}
                 </p>
