@@ -49,6 +49,7 @@ function loadData(
                 bookmarksData.push(course);
                 ds('schedule bookmark added: %s', id);
             }
+            data.bookmarks = bookmarksData;
         }
     } catch (e) {
         return 'malformed';

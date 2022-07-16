@@ -4,13 +4,10 @@ import ScheduleManager from '../../ScheduleManager';
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {
-    ScheduleBookmarks,
     ScheduleData,
     ScheduleInteractions,
     ScheduleModificationFunctions,
 } from '../../types/ScheduleTypes';
-import Utility from '../../utility/Utility';
-import Class from '../plan/Class';
 import SearchScheduleClass from '../search/SearchScheduleClass';
 
 interface ScheduleBookmarksListProps {
