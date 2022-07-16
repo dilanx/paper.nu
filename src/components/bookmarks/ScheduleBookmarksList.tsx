@@ -30,18 +30,6 @@ const variants = {
     },
 };
 
-/*
-<Class
-                    course={classData}
-                    bookmarks={props.bookmarks}
-                    alert={props.alert}
-                    location={{ year: -1, quarter: props.credit ? 1 : 0 }}
-                    f={props.f}
-                    switches={props.switches}
-                    key={classData.id + '-' + index}
-                />
-*/
-
 function ScheduleBookmarksList(props: ScheduleBookmarksListProps) {
     let content = props.schedule.bookmarks;
 
@@ -75,8 +63,8 @@ function ScheduleBookmarksList(props: ScheduleBookmarksListProps) {
             <div className={`text-center overflow-hidden whitespace-normal`}>
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                     Find a class you're interested in but don't have a spot for
-                    it on your schedule yet? Bookmark it for later by dragging
-                    it here.
+                    it on your schedule yet? Bookmark it for later using the
+                    bookmark button found on each course in search results!
                 </p>
             </div>
         );
