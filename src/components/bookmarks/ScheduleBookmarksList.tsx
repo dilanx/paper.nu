@@ -72,7 +72,7 @@ function ScheduleBookmarksList(props: ScheduleBookmarksListProps) {
 
     return (
         <motion.div initial="hidden" animate="visible" variants={variants}>
-            <div className="compact-mode relative m-4 rounded-lg px-4 pt-4 pb-8 border-2 border-indigo-500 space-y-3 shadow-lg">
+            <div className="compact-mode relative m-4 rounded-lg px-1 pt-4 pb-8 border-2 border-indigo-500 space-y-3 shadow-lg">
                 <p className="text-center font-bold text-md m-0 p-0 text-gray-600 dark:text-gray-400">
                     BOOKMARKED COURSES
                 </p>
