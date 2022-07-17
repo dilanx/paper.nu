@@ -98,6 +98,12 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
                         description: `See the start and end time for each class on the schedule.`,
                         saveToStorage: true,
                     },
+                    {
+                        name: 'schedule_image_watermark',
+                        title: 'Watermark on schedule images',
+                        description: `If you download your schedule as an image, the site title will be displayed (non-instrusively) at the top right. You can disable this if you don't like it though.`,
+                        saveToStorage: true,
+                    },
                 ],
             },
             {

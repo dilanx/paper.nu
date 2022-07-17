@@ -1,4 +1,4 @@
-import { CameraIcon } from '@heroicons/react/outline';
+import { CalendarIcon, CameraIcon } from '@heroicons/react/outline';
 import { useEffect, useState } from 'react';
 import { Color, UserOptions } from '../../types/BaseTypes';
 import { ScheduleData } from '../../types/ScheduleTypes';
@@ -48,8 +48,8 @@ function UtilityBar({ schedule, switches }: UtilityBarProps) {
 
     return (
         <div
-            className="absolute left-2 lg:left-0 top-1/2 -translate-y-1/2 border-2 border-green-300 p-1 rounded-xl bg-green-100 gap-2
-                flex flex-col opacity-40 hover:opacity-100 hover:shadow-lg transition-all duration-150 text-gray-600"
+            className="absolute left-2 lg:left-0 top-1/2 -translate-y-1/2 border-2 border-green-300 p-1 rounded-xl bg-green-100 dark:bg-gray-700
+                gap-2 flex flex-col opacity-40 hover:opacity-100 hover:shadow-lg transition-all duration-150 text-gray-600 dark:text-gray-300"
         >
             <UtilityButton
                 icon={CameraIcon}
@@ -58,6 +58,12 @@ function UtilityBar({ schedule, switches }: UtilityBarProps) {
                 action={() => {
                     setTakeImage(true);
                 }}
+            />
+            <UtilityButton
+                icon={CalendarIcon}
+                color="cyan"
+                display="Export to calendar"
+                action={() => {}}
             />
 
             {takeImage && (

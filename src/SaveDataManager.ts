@@ -224,6 +224,7 @@ let SaveDataManager = {
             notifications: true,
             settings_tab: 'General',
             mode: 1,
+            schedule_image_watermark: true,
         };
         let keys = Object.keys(localStorage);
         for (let i = 0; i < keys.length; i++) {

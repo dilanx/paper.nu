@@ -97,6 +97,12 @@ class Schedule extends React.Component<ScheduleProps> {
                         switches={this.props.switches}
                     />
                 )}
+                {imageMode &&
+                    this.props.switches.get.schedule_image_watermark && (
+                        <p className="absolute text-lg top-6 right-8 font-bold text-green-400 dark:text-green-200 opacity-50">
+                            PLAN NORTHWESTERN
+                        </p>
+                    )}
             </div>
         );
     }
