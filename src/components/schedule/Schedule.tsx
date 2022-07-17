@@ -9,12 +9,14 @@ import {
 import Utility from '../../utility/Utility';
 import Day from './Day';
 import HoursColumn from './HoursColumn';
+import UtilityBar from './UtilityBar';
 
 interface ScheduleProps {
     schedule: ScheduleData;
-    interactions: ScheduleInteractions;
+    interactions?: ScheduleInteractions;
     sf: ScheduleModificationFunctions;
     switches: UserOptions;
+    imageMode?: boolean;
 }
 
 class Schedule extends React.Component<ScheduleProps> {
@@ -28,6 +30,7 @@ class Schedule extends React.Component<ScheduleProps> {
         let end = 18;
 
         const schedule = this.props.schedule.schedule;
+        const imageMode = this.props.imageMode;
 
         for (let section_id in schedule) {
             let section = schedule[section_id];
@@ -43,7 +46,7 @@ class Schedule extends React.Component<ScheduleProps> {
             }
         }
 
-        const previewSection = this.props.interactions.previewSection.get;
+        const previewSection = this.props.interactions?.previewSection.get;
         if (previewSection?.meeting_days) {
             previewSection.preview = true;
             for (let i = 0; i < previewSection.meeting_days.length; i++) {
@@ -66,13 +69,21 @@ class Schedule extends React.Component<ScheduleProps> {
                     interactions={this.props.interactions}
                     sf={this.props.sf}
                     switches={this.props.switches}
+                    imageMode={imageMode}
                     key={`day-${i}`}
                 />
             );
         }
 
         return (
-            <div className="h-full relative p-4">
+            <div
+                className={`p-4 ${
+                    imageMode
+                        ? 'w-imgw h-imgh absolute top-full'
+                        : 'h-full relative'
+                }`}
+                id={imageMode ? 'schedule' : undefined}
+            >
                 <div
                     className="p-4 border-4 border-green-200 bg-green-50 dark:bg-gray-800 bg-opacity-50 border-opacity-75 h-192 lg:h-full rounded-lg shadow-md grid
                         grid-cols-[3.2rem_repeat(5,_minmax(0,_1fr))]"
@@ -80,6 +91,12 @@ class Schedule extends React.Component<ScheduleProps> {
                     <HoursColumn start={start} end={end} />
                     {days}
                 </div>
+                {!imageMode && (
+                    <UtilityBar
+                        schedule={this.props.schedule}
+                        switches={this.props.switches}
+                    />
+                )}
             </div>
         );
     }

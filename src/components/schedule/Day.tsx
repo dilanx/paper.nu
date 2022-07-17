@@ -25,9 +25,10 @@ interface DayProps {
     start: number;
     end: number;
     sections?: ScheduleSection[];
-    interactions: ScheduleInteractions;
+    interactions?: ScheduleInteractions;
     sf: ScheduleModificationFunctions;
     switches: UserOptions;
+    imageMode?: boolean;
 }
 
 function Day(props: DayProps) {
@@ -44,6 +45,7 @@ function Day(props: DayProps) {
                         interactions={props.interactions}
                         sf={props.sf}
                         switches={props.switches}
+                        imageMode={props.imageMode}
                         key={`day-${props.index}-${section.section_id}`}
                     />
                 );

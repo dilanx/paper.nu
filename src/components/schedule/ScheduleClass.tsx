@@ -10,9 +10,10 @@ import Utility from '../../utility/Utility';
 
 interface ScheduleClassProps {
     section: ScheduleSection;
-    interactions: ScheduleInteractions;
+    interactions?: ScheduleInteractions;
     sf: ScheduleModificationFunctions;
     switches: UserOptions;
+    imageMode?: boolean;
 }
 
 function ScheduleClass({
@@ -20,6 +21,7 @@ function ScheduleClass({
     interactions,
     sf,
     switches,
+    imageMode,
 }: ScheduleClassProps) {
     const { start_time, end_time, subject, number, title, instructors } =
         section;
@@ -36,7 +38,7 @@ function ScheduleClass({
             className={`absolute w-full z-10 rounded-lg bg-opacity-60
                 bg-${color}-100 dark:bg-gray-800 border-2 border-l-4 border-${color}-400 overflow-visible
                 cursor-pointer transition ease-in-out duration-300 group ${
-                    interactions.hoverSection.get === section.section_id
+                    interactions?.hoverSection.get === section.section_id
                         ? '-translate-y-2 shadow-lg'
                         : ''
                 } ${section.preview ? 'opacity-40' : ''}`}
@@ -47,15 +49,27 @@ function ScheduleClass({
                 }px)`,
             }}
             onMouseEnter={() => {
-                interactions.hoverSection.set(section.section_id);
+                interactions?.hoverSection.set(section.section_id);
             }}
             onMouseLeave={() => {
-                interactions.multiClear(['hoverSection', 'hoverDelete']);
+                interactions?.multiClear(['hoverSection', 'hoverDelete']);
             }}
         >
             <div className="w-full h-full relative">
-                <div className="w-full h-full overflow-scroll no-scrollbar p-2">
-                    <p className="m-0 text-sm font-bold text-black dark:text-white">
+                <div
+                    className={`w-full h-full ${
+                        imageMode
+                            ? 'overflow-hidden'
+                            : 'overflow-scroll no-scrollbar'
+                    } p-2`}
+                >
+                    <p
+                        className={`${
+                            imageMode
+                                ? 'text-lg font-normal'
+                                : 'text-sm font-semibold'
+                        } m-0 p-0 text-black dark:text-white`}
+                    >
                         {subject} {number}
                         {section.component !== 'LEC' && (
                             <span className="pl-2 font-medium text-xs text-gray-600 dark:text-gray-400">
@@ -67,7 +81,9 @@ function ScheduleClass({
                             </span>
                         )}
                     </p>
-                    <p className="m-0 text-xs text-black dark:text-white">
+                    <p
+                        className={`text-xs m-0 text-black dark:text-white text-light`}
+                    >
                         {title}
                     </p>
                     <p className="m-0 text-xs text-gray-500 dark:text-gray-300 opacity-75 font-light">
@@ -87,8 +103,8 @@ function ScheduleClass({
             <button
                 className={`absolute -top-2 -right-2 p-0.5 rounded-full
                     ${
-                        interactions.hoverSection.get === section.section_id &&
-                        interactions.hoverDelete.get
+                        interactions?.hoverSection.get === section.section_id &&
+                        interactions?.hoverDelete.get
                             ? 'block text-red-400 bg-red-100 dark:bg-gray-700 opacity-100'
                             : 'hidden bg-gray-200 opacity-80 text-gray-500 dark:text-white'
                     }
@@ -96,17 +112,17 @@ function ScheduleClass({
                     hover:text-red-400 dark:hover:text-red-400 hover:opacity-100
                     transition-all duration-150 group-hover:block z-20`}
                 onMouseEnter={() => {
-                    if (interactions.hoverSection.get === section.section_id) {
-                        interactions.hoverDelete.set(true);
+                    if (interactions?.hoverSection.get === section.section_id) {
+                        interactions?.hoverDelete.set(true);
                     }
                 }}
                 onMouseLeave={() => {
-                    interactions.hoverDelete.clear();
+                    interactions?.hoverDelete.clear();
                 }}
                 onClick={(e) => {
                     e.stopPropagation();
                     sf.removeSection(section);
-                    interactions.multiClear(['hoverSection', 'hoverDelete']);
+                    interactions?.multiClear(['hoverSection', 'hoverDelete']);
                 }}
             >
                 <TrashIcon className="w-5 h-5" />

@@ -33,6 +33,8 @@ module.exports = {
             spacing: {
                 128: '32rem',
                 192: '48rem',
+                imgw: '1440px',
+                imgh: '960px',
             },
             animation: {
                 'reverse-spin': 'reverse-spin 1s linear infinite',
