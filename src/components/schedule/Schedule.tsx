@@ -1,4 +1,5 @@
 import React from 'react';
+import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {
     ScheduleData,
@@ -13,6 +14,7 @@ import UtilityBar from './UtilityBar';
 
 interface ScheduleProps {
     schedule: ScheduleData;
+    alert: Alert;
     interactions?: ScheduleInteractions;
     sf: ScheduleModificationFunctions;
     switches: UserOptions;
@@ -95,6 +97,7 @@ class Schedule extends React.Component<ScheduleProps> {
                     <UtilityBar
                         schedule={this.props.schedule}
                         switches={this.props.switches}
+                        alert={this.props.alert}
                     />
                 )}
                 {imageMode &&

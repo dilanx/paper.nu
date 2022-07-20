@@ -242,13 +242,8 @@ class App extends React.Component<{}, AppState> {
                         message: `The ${modeStr} you're trying to access is not valid. If you're loading it through a URL, ensure that it hasn't been manually modified.`,
                         confirmButton: 'What a shame.',
                         confirmButtonColor: 'red',
-                        iconBackgroundColor: 'red',
-                        icon: (
-                            <ExclamationIcon
-                                className="h-6 w-6 text-red-600"
-                                aria-hidden="true"
-                            />
-                        ),
+                        iconColor: 'red',
+                        icon: ExclamationIcon,
                     });
                     return;
                 }
@@ -366,13 +361,8 @@ class App extends React.Component<{}, AppState> {
                 cancelButton: 'Go back',
                 confirmButton: 'Add anyway',
                 confirmButtonColor: 'red',
-                iconBackgroundColor: 'red',
-                icon: (
-                    <ExclamationIcon
-                        className="h-6 w-6 text-red-600"
-                        aria-hidden="true"
-                    />
-                ),
+                iconColor: 'red',
+                icon: ExclamationIcon,
                 action: () => {
                     confirmationCallback();
                 },
@@ -391,13 +381,8 @@ class App extends React.Component<{}, AppState> {
                 cancelButton: 'Go back',
                 confirmButton: 'Add anyway',
                 confirmButtonColor: 'red',
-                iconBackgroundColor: 'red',
-                icon: (
-                    <ExclamationIcon
-                        className="h-6 w-6 text-red-600"
-                        aria-hidden="true"
-                    />
-                ),
+                iconColor: 'red',
+                icon: ExclamationIcon,
                 action: () => {
                     confirmationCallback();
                 },
@@ -564,13 +549,8 @@ class App extends React.Component<{}, AppState> {
             confirmButton: 'Add quarter',
             confirmButtonColor: 'yellow',
             cancelButton: 'Close',
-            iconBackgroundColor: 'yellow',
-            icon: (
-                <PlusIcon
-                    className="h-6 w-6 text-yellow-600"
-                    aria-hidden="true"
-                />
-            ),
+            iconColor: 'yellow',
+            icon: PlusIcon,
             action: () => {
                 let data = this.state.data;
                 data.courses[year].push([]);
@@ -619,13 +599,8 @@ class App extends React.Component<{}, AppState> {
                 cancelButton: 'Cancel',
                 confirmButton: 'Clear',
                 confirmButtonColor: 'red',
-                iconBackgroundColor: 'red',
-                icon: (
-                    <TrashIcon
-                        className="h-6 w-6 text-red-600"
-                        aria-hidden="true"
-                    />
-                ),
+                iconColor: 'red',
+                icon: TrashIcon,
                 action: () => {
                     let oldData = this.state.data;
                     let courses = this.state.data.courses;
@@ -786,13 +761,8 @@ class App extends React.Component<{}, AppState> {
                 confirmButton: 'Yes, continue',
                 confirmButtonColor: 'red',
                 cancelButton: 'Go back',
-                iconBackgroundColor: 'red',
-                icon: (
-                    <ExclamationIcon
-                        className="h-6 w-6 text-red-600"
-                        aria-hidden="true"
-                    />
-                ),
+                iconColor: 'red',
+                icon: ExclamationIcon,
                 action: () => {
                     this.setState({ unsavedChanges: false });
                     action();
@@ -1016,6 +986,9 @@ class App extends React.Component<{}, AppState> {
                                 ) : (
                                     <Schedule
                                         schedule={this.state.schedule}
+                                        alert={(alertData) => {
+                                            this.showAlert(alertData);
+                                        }}
                                         interactions={
                                             this.state.scheduleInteractions
                                         }

@@ -14,8 +14,8 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
     message: `Customize your Plan Northwestern experience! These settings are saved in your browser and not in the URL.`,
     confirmButton: 'Close',
     confirmButtonColor: 'yellow',
-    iconBackgroundColor: 'yellow',
-    icon: <CogIcon className="h-6 w-6 text-yellow-600" aria-hidden="true" />,
+    iconColor: 'yellow',
+    icon: CogIcon,
     tabs: {
         switchName: 'settings_tab',
         colorMap: {

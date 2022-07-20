@@ -9,13 +9,8 @@ const shareMenu = (): AlertData => ({
     confirmButton: 'Copy to clipboard',
     confirmButtonColor: 'emerald',
     cancelButton: 'Close',
-    iconBackgroundColor: 'emerald',
-    icon: (
-        <ExternalLinkIcon
-            className="h-6 w-6 text-emerald-600"
-            aria-hidden="true"
-        />
-    ),
+    iconColor: 'emerald',
+    icon: ExternalLinkIcon,
     textView: window.location.href,
     action: () => {
         navigator.clipboard.writeText(window.location.href);

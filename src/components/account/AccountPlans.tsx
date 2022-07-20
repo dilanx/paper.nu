@@ -102,13 +102,8 @@ class AccountPlans extends React.Component<
             cancelButton: 'Cancel',
             confirmButton: 'Create',
             confirmButtonColor: 'rose',
-            iconBackgroundColor: 'rose',
-            icon: (
-                <PlusIcon
-                    className="h-6 w-6 text-rose-600"
-                    aria-hidden="true"
-                />
-            ),
+            iconColor: 'rose',
+            icon: PlusIcon,
             textInput: {
                 placeholder: 'Name',
                 match: /^[\w\-\s]{1,10}$/,
@@ -158,13 +153,8 @@ class AccountPlans extends React.Component<
             cancelButton: 'Cancel',
             confirmButton: 'Delete',
             confirmButtonColor: 'red',
-            iconBackgroundColor: 'red',
-            icon: (
-                <TrashIcon
-                    className="h-6 w-6 text-red-600"
-                    aria-hidden="true"
-                />
-            ),
+            iconColor: 'red',
+            icon: TrashIcon,
             action: () => {
                 self.setState({ loading: true });
                 toast.promise(
@@ -216,13 +206,8 @@ class AccountPlans extends React.Component<
             cancelButton: 'Cancel',
             confirmButton: 'Log out',
             confirmButtonColor: 'rose',
-            iconBackgroundColor: 'rose',
-            icon: (
-                <LogoutIcon
-                    className="h-6 w-6 text-rose-600"
-                    aria-hidden="true"
-                />
-            ),
+            iconColor: 'rose',
+            icon: LogoutIcon,
             action: () => {
                 Account.logOut();
             },

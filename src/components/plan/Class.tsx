@@ -44,13 +44,8 @@ function openInfo(props: ClassProps) {
             message: `If you aren't sure which course to take to fulfill a certain requirement, you can use a placeholder! Search using 'placeholder' or by requirement category to find placeholders.`,
             confirmButton: 'Close',
             confirmButtonColor: color,
-            iconBackgroundColor: color,
-            icon: (
-                <DocumentIcon
-                    className={`h-6 w-6 text-${color}-600`}
-                    aria-hidden="true"
-                />
-            ),
+            iconColor: color,
+            icon: DocumentIcon,
         });
         return;
     }
@@ -125,13 +120,8 @@ function openInfo(props: ClassProps) {
         message: course.description,
         confirmButton: 'Close',
         confirmButtonColor: color,
-        iconBackgroundColor: color,
-        icon: (
-            <DocumentIcon
-                className={`h-6 w-6 text-${color}-600`}
-                aria-hidden="true"
-            />
-        ),
+        iconColor: color,
+        icon: DocumentIcon,
         extras: extras,
         editButtons: [favoriteToggle, remove],
     });

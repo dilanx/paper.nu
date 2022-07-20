@@ -208,13 +208,8 @@ let Utility = {
             confirmButton: 'View status',
             confirmButtonColor: 'red',
             cancelButton: 'Close',
-            iconBackgroundColor: 'red',
-            icon: (
-                <ExclamationIcon
-                    className="h-6 w-6 text-red-600"
-                    aria-hidden="true"
-                />
-            ),
+            iconColor: 'red',
+            icon: ExclamationIcon,
             textView: error + ' - ' + from,
             action: () => {
                 window.open('https://status.dilanxd.com', '_blank');

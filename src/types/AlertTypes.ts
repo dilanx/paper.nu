@@ -1,4 +1,4 @@
-import { ColorMap } from './BaseTypes';
+import { Color, ColorMap } from './BaseTypes';
 
 export interface AlertDataExtra {
     title: string;
@@ -56,7 +56,7 @@ export function editButtonIsToggleable(
 }
 
 export interface AlertData {
-    icon: JSX.Element;
+    icon: (props: React.ComponentProps<'svg'>) => JSX.Element;
     title: string;
     subtitle?: string;
     customSubtitle?: JSX.Element;
@@ -77,8 +77,8 @@ export interface AlertData {
         focusByDefault?: boolean;
     };
     confirmButton: string;
-    confirmButtonColor: string;
-    iconBackgroundColor: string;
+    confirmButtonColor: Color;
+    iconColor: Color;
     cancelButton?: string;
     action?: (inputText?: string) => void;
 }

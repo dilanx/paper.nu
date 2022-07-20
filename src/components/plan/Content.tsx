@@ -69,13 +69,8 @@ class Content extends React.Component<ContentProps> {
                                     confirmButton: 'Add year',
                                     confirmButtonColor: 'cyan',
                                     cancelButton: 'Close',
-                                    iconBackgroundColor: 'cyan',
-                                    icon: (
-                                        <PlusIcon
-                                            className="h-6 w-6 text-cyan-600"
-                                            aria-hidden="true"
-                                        />
-                                    ),
+                                    iconColor: 'cyan',
+                                    icon: PlusIcon,
                                     action: () => {
                                         this.props.f2.addYear();
                                     },
