@@ -1,5 +1,7 @@
 import { CalendarIcon, CameraIcon } from '@heroicons/react/outline';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { Alert } from '../../types/AlertTypes';
 import { Color, UserOptions } from '../../types/BaseTypes';
 import { ScheduleData } from '../../types/ScheduleTypes';
 import { downloadScheduleAsImage } from '../../utility/Image';
@@ -33,15 +35,19 @@ function UtilityButton(props: UtilityButtonProps) {
 interface UtilityBarProps {
     schedule: ScheduleData;
     switches: UserOptions;
+    alert: Alert;
 }
 
-function UtilityBar({ schedule, switches }: UtilityBarProps) {
+function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
     const [takeImage, setTakeImage] = useState(false);
 
     useEffect(() => {
         if (takeImage) {
-            downloadScheduleAsImage(switches.get.dark as boolean).finally(() =>
-                setTakeImage(false)
+            downloadScheduleAsImage(switches.get.dark as boolean).finally(
+                () => {
+                    setTakeImage(false);
+                    toast.success('Exported schedule as image');
+                }
             );
         }
     }, [takeImage, switches]);
@@ -56,7 +62,17 @@ function UtilityBar({ schedule, switches }: UtilityBarProps) {
                 color="orange"
                 display="Download schedule as image"
                 action={() => {
-                    setTakeImage(true);
+                    alert({
+                        title: 'Download schedule as image',
+                        icon: CameraIcon,
+                        message:
+                            'This will export your schedule as an image, which you can then share! By default, non-intrusive Plan Northwestern branding will appear in the top right, but that can be disabled in the settings.',
+                        confirmButton: 'Download',
+                        confirmButtonColor: 'orange',
+                        iconColor: 'orange',
+                        cancelButton: 'Cancel',
+                        action: () => setTakeImage(true),
+                    });
                 }}
             />
             <UtilityButton
@@ -70,6 +86,7 @@ function UtilityBar({ schedule, switches }: UtilityBarProps) {
                 <div className="relative">
                     <Schedule
                         schedule={schedule}
+                        alert={alert}
                         switches={switches}
                         sf={undefined as any}
                         imageMode={true}
