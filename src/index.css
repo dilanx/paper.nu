@@ -13,6 +13,10 @@
         scrollbar-width: none; /* Firefox */
     }
 
+    .schedule-grid-cols {
+        grid-template-columns: 3.2rem repeat(5, minmax(0, 1fr));
+    }
+
     @keyframes spin {
         from {
             transform: translate(-50%, -50%) rotate(0);

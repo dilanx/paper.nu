@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { Alert } from '../../types/AlertTypes';
 import { Color, UserOptions } from '../../types/BaseTypes';
 import { ScheduleData } from '../../types/ScheduleTypes';
-import { downloadScheduleAsImage } from '../../utility/Image';
+import { exportScheduleAsImage } from '../../utility/Image';
 import Schedule from './Schedule';
 
 interface UtilityButtonProps {
@@ -43,12 +43,10 @@ function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
 
     useEffect(() => {
         if (takeImage) {
-            downloadScheduleAsImage(switches.get.dark as boolean).finally(
-                () => {
-                    setTakeImage(false);
-                    toast.success('Exported schedule as image');
-                }
-            );
+            exportScheduleAsImage(switches.get.dark as boolean).finally(() => {
+                setTakeImage(false);
+                toast.success('Exported schedule as image');
+            });
         }
     }, [takeImage, switches]);
 

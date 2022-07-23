@@ -88,7 +88,7 @@ class Schedule extends React.Component<ScheduleProps> {
             >
                 <div
                     className="p-4 border-4 border-green-200 bg-green-50 dark:bg-gray-800 bg-opacity-50 border-opacity-75 h-192 lg:h-full rounded-lg shadow-md grid
-                        grid-cols-[3.2rem_repeat(5,_minmax(0,_1fr))]"
+                        schedule-grid-cols"
                 >
                     <HoursColumn start={start} end={end} />
                     {days}
