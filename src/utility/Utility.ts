@@ -2,7 +2,7 @@ import { ExclamationIcon } from '@heroicons/react/outline';
 import { AlertData } from '../types/AlertTypes';
 import { Color } from '../types/BaseTypes';
 import { PlanErrorLocation } from '../types/ErrorTypes';
-import { Time } from '../types/ScheduleTypes';
+import { ScheduleDataMap, ScheduleDate, Time } from '../types/ScheduleTypes';
 
 let Utility = {
     BACKGROUND_LIGHT: '#FFFFFF',
@@ -96,10 +96,18 @@ let Utility = {
         }
     },
 
-    convertAllDays: (nums: string) => {
+    convertAllDaysToString: (nums: string) => {
         let days = '';
         for (let i = 0; i < nums.length; i++) {
             days += Utility.convertDay(parseInt(nums[i]));
+        }
+        return days;
+    },
+
+    convertAllDaysToArray: (nums: string) => {
+        let days = [];
+        for (let i = 0; i < nums.length; i++) {
+            days.push(Utility.convertDay(parseInt(nums[i])).toUpperCase());
         }
         return days;
     },
@@ -128,6 +136,11 @@ let Utility = {
         return num - (num === 12 ? 0 : 12) + ' PM';
     },
 
+    convertDate: (date: string): ScheduleDate => {
+        const [y, m, d] = date.split('-').map((p) => parseInt(p));
+        return { y, m: m - 1, d };
+    },
+
     convertTime: ({ h, m }: Time, withAmPm?: boolean) => {
         let pm = false;
         if (h > 12) {
@@ -150,13 +163,13 @@ let Utility = {
     convertSectionComponent: (component: string) => {
         switch (component) {
             case 'LEC':
-                return 'LECTURE';
+                return 'lecture';
             case 'DIS':
-                return 'DISCUSSION';
+                return 'discussion';
             case 'LAB':
-                return 'LAB';
+                return 'lab';
             case 'SEM':
-                return 'SEMINAR';
+                return 'seminar';
             default:
                 return component;
         }
@@ -181,6 +194,29 @@ let Utility = {
         }
         return current;
     },
+
+    getClosestMeetingDate: (
+        { y, m, d }: ScheduleDate,
+        meetingDays: string
+    ): ScheduleDate | undefined => {
+        const date = new Date(y, m, d);
+        for (let i = 0; i < 6; i++) {
+            const day = date.getDay() - 1;
+            if (meetingDays.includes(day.toString())) {
+                return {
+                    y: date.getFullYear(),
+                    m: date.getMonth(),
+                    d: date.getDate(),
+                };
+            }
+            date.setDate(date.getDate() + 1);
+        }
+    },
+
+    formatSections: (schedule: ScheduleDataMap) =>
+        Object.values(schedule)
+            .map((section) => `${section.subject} ${section.number}`)
+            .join(', '),
 
     prereqColor: (num: number) => {
         switch (num) {
@@ -229,6 +265,10 @@ let Utility = {
         }
 
         return text;
+    },
+
+    capitalizeFirstLetter: (text: string) => {
+        return text.charAt(0).toUpperCase() + text.slice(1);
     },
 };
 

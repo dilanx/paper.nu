@@ -79,7 +79,7 @@ function openInfo(props: ClassProps) {
         removeBookmark: removeFavorite,
     } = props.f;
 
-    const favoriteToggle: ToggleableAlertDataEditButton<Course> = {
+    const bookmarkToggle: ToggleableAlertDataEditButton<Course> = {
         toggle: true,
         data: bookmarks.noCredit,
         key: course,
@@ -123,7 +123,7 @@ function openInfo(props: ClassProps) {
         iconColor: color,
         icon: DocumentIcon,
         extras: extras,
-        editButtons: [favoriteToggle, remove],
+        editButtons: [bookmarkToggle, remove],
     });
 }
 

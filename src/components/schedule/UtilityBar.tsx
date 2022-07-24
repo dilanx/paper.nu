@@ -4,7 +4,9 @@ import toast from 'react-hot-toast';
 import { Alert } from '../../types/AlertTypes';
 import { Color, UserOptions } from '../../types/BaseTypes';
 import { ScheduleData } from '../../types/ScheduleTypes';
+import { exportScheduleAsICS, getSections } from '../../utility/Calendar';
 import { exportScheduleAsImage } from '../../utility/Image';
+import Utility from '../../utility/Utility';
 import Schedule from './Schedule';
 
 interface UtilityButtonProps {
@@ -58,10 +60,10 @@ function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
             <UtilityButton
                 icon={CameraIcon}
                 color="orange"
-                display="Download schedule as image"
+                display="Export as image"
                 action={() => {
                     alert({
-                        title: 'Download schedule as image',
+                        title: 'Export schedule as image',
                         icon: CameraIcon,
                         message:
                             'This will export your schedule as an image, which you can then share! By default, non-intrusive Plan Northwestern branding will appear in the top right, but that can be disabled in the settings.',
@@ -77,7 +79,45 @@ function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
                 icon={CalendarIcon}
                 color="cyan"
                 display="Export to calendar"
-                action={() => {}}
+                action={() => {
+                    const { validSections, invalidSections } =
+                        getSections(schedule);
+
+                    const invalidSectionMessage =
+                        Object.keys(invalidSections).length > 0
+                            ? `\n\nThe following sections cannot be added to the exported schedule because they don't have valid meeting time data: ${Utility.formatSections(
+                                  invalidSections
+                              )}`
+                            : '';
+
+                    alert({
+                        title: 'Export schedule to calendar',
+                        icon: CalendarIcon,
+                        message: `This will export your schedule to an ICS file, which you can then import into your calendar app! Ensure that you set your time zone to central time (Chicago, U.S.A.).${invalidSectionMessage}`,
+                        textHTML: (
+                            <p className="my-2">
+                                Here are some instructions on how to import
+                                events into some popular calendar apps:{' '}
+                                <a href="https://support.apple.com/en-ca/guide/calendar/icl1023/mac">
+                                    Apple Calendar
+                                </a>
+                                ,{' '}
+                                <a href="https://support.google.com/calendar/answer/37118?hl=en&co=GENIE.Platform%3DDesktop">
+                                    Google Calendar
+                                </a>
+                                ,{' '}
+                                <a href="https://support.microsoft.com/en-us/office/import-calendars-into-outlook-8e8364e1-400e-4c0f-a573-fe76b5a2d379">
+                                    Microsoft Outlook
+                                </a>
+                            </p>
+                        ),
+                        confirmButton: 'Download',
+                        confirmButtonColor: 'cyan',
+                        iconColor: 'cyan',
+                        cancelButton: 'Cancel',
+                        action: () => exportScheduleAsICS(validSections),
+                    });
+                }}
             />
 
             {takeImage && (

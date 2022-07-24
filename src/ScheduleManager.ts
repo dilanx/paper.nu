@@ -1,17 +1,21 @@
 import debug from 'debug';
 import JSONCourseData from './data/schedule_data.json';
+import JSONLocations from './data/locations.json';
 import PlanManager from './PlanManager';
 import { SearchError, SearchResults, UserOptions } from './types/BaseTypes';
 import {
+    ScheduleLocation,
     ScheduleCourse,
     ScheduleData,
     ScheduleDataMap,
+    ScheduleLocations,
     ScheduleSection,
 } from './types/ScheduleTypes';
 var ds = debug('schedule-manager:ser');
 var dp = debug('schedule-manager:op');
 
 const scheduleData = JSONCourseData as ScheduleCourse[];
+const locations = JSONLocations as ScheduleLocations;
 const SEARCH_RESULT_LIMIT = 50;
 
 function loadData(
@@ -161,6 +165,11 @@ const ScheduleManager = {
         let courseId = id.split('-')[0];
         let course = ScheduleManager.getCourseById(courseId);
         return course?.sections.find((section) => section.section_id === id);
+    },
+
+    getLocation: (building_name?: string): ScheduleLocation | undefined => {
+        if (!building_name) return;
+        return locations[building_name] ?? undefined;
     },
 
     getCourseColor: (subject: string) => {

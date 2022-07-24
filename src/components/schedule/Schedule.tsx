@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {
@@ -68,6 +69,8 @@ class Schedule extends React.Component<ScheduleProps> {
                     start={start}
                     end={end}
                     sections={sections}
+                    bookmarks={this.props.schedule.bookmarks}
+                    alert={this.props.alert}
                     interactions={this.props.interactions}
                     sf={this.props.sf}
                     switches={this.props.switches}
@@ -78,13 +81,20 @@ class Schedule extends React.Component<ScheduleProps> {
         }
 
         return (
-            <div
+            <motion.div
                 className={`p-4 ${
                     imageMode
                         ? 'w-imgw h-imgh absolute top-full'
                         : 'h-full relative'
                 }`}
                 id={imageMode ? 'schedule' : undefined}
+                {...(!imageMode
+                    ? {
+                          initial: { x: 50, opacity: 0 },
+                          animate: { x: 0, opacity: 1 },
+                          transition: { duration: 0.5 },
+                      }
+                    : {})}
             >
                 <div
                     className="p-4 border-4 border-green-200 bg-green-50 dark:bg-gray-800 bg-opacity-50 border-opacity-75 h-192 lg:h-full rounded-lg shadow-md grid
@@ -93,6 +103,7 @@ class Schedule extends React.Component<ScheduleProps> {
                     <HoursColumn start={start} end={end} />
                     {days}
                 </div>
+
                 {!imageMode && (
                     <UtilityBar
                         schedule={this.props.schedule}
@@ -100,13 +111,14 @@ class Schedule extends React.Component<ScheduleProps> {
                         alert={this.props.alert}
                     />
                 )}
+
                 {imageMode &&
                     this.props.switches.get.schedule_image_watermark && (
                         <p className="absolute text-lg top-6 right-8 font-bold text-green-400 dark:text-green-200 opacity-50">
                             PLAN NORTHWESTERN
                         </p>
                     )}
-            </div>
+            </motion.div>
         );
     }
 }

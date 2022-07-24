@@ -43,10 +43,10 @@ export default function Alert(props: AlertProps) {
         data.extras.forEach((extra) => {
             extraList.push(
                 <div className="mt-4" key={`alert-extra-${i}`}>
-                    <p className="text-xs text-gray-500 font-bold dark:text-gray-400">
+                    <p className="text-xs text-gray-500 font-bold dark:text-gray-300">
                         {extra.title}
                     </p>
-                    <p className="m-0 p-0 text-sm text-gray-500 font-light dark:text-gray-400">
+                    <p className="m-0 p-0 text-sm text-gray-500 font-light dark:text-gray-300">
                         {extra.content}
                     </p>
                 </div>
@@ -196,9 +196,26 @@ export default function Alert(props: AlertProps) {
             let dataSet: AlertDataEditButtonData;
 
             if (editButtonIsToggleable(editButton)) {
-                dataSet = editButton.data.has(editButton.key)
-                    ? editButton.enabled
-                    : editButton.disabled;
+                const data = editButton.data;
+                const key = editButton.key;
+                const indexProperty = editButton.indexProperty;
+
+                let enabled = false;
+
+                if (data instanceof Set) {
+                    enabled = data.has(key);
+                } else {
+                    if (indexProperty) {
+                        enabled = data.some(
+                            (value) =>
+                                value[indexProperty] === key[indexProperty]
+                        );
+                    } else {
+                        data.includes(key);
+                    }
+                }
+
+                dataSet = enabled ? editButton.enabled : editButton.disabled;
             } else {
                 dataSet = editButton.buttonData;
             }
@@ -281,14 +298,14 @@ export default function Alert(props: AlertProps) {
                                         <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                                             <Dialog.Title
                                                 as="h3"
-                                                className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
+                                                className="text-lg leading-6 font-medium text-black dark:text-white"
                                             >
                                                 {data.title}
                                             </Dialog.Title>
 
                                             {data.subtitle && (
                                                 <div>
-                                                    <p className="text-md font-light text-gray-900 dark:text-gray-100">
+                                                    <p className="text-md font-light text-gray-900 dark:text-gray-50">
                                                         {data.subtitle}
                                                     </p>
                                                 </div>
@@ -296,10 +313,9 @@ export default function Alert(props: AlertProps) {
                                             {data.customSubtitle && (
                                                 <div>{data.customSubtitle}</div>
                                             )}
-                                            <div className="mt-2">
-                                                <p className="text-sm text-gray-500 dark:text-gray-200">
-                                                    {data.message}
-                                                </p>
+                                            <div className="alert-data mt-2 text-sm text-gray-600 dark:text-gray-100">
+                                                <p>{data.message}</p>
+                                                {data.textHTML}
                                             </div>
                                             {extraList.length > 0 && extraList}
                                             {data.textInput && (

@@ -1,7 +1,22 @@
-import { TrashIcon } from '@heroicons/react/outline';
+import {
+    BookmarkIcon,
+    DocumentIcon,
+    TrashIcon,
+} from '@heroicons/react/outline';
+import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/solid';
+import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
+import {
+    Alert,
+    AlertDataEditButton,
+    AlertDataExtra,
+    NontoggleableAlertDataEditButton,
+    ToggleableAlertDataEditButton,
+} from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {
+    ScheduleBookmarks,
+    ScheduleCourse,
     ScheduleInteractions,
     ScheduleModificationFunctions,
     ScheduleSection,
@@ -10,19 +25,128 @@ import Utility from '../../utility/Utility';
 
 interface ScheduleClassProps {
     section: ScheduleSection;
+    bookmarks: ScheduleBookmarks;
+    alert: Alert;
     interactions?: ScheduleInteractions;
     sf: ScheduleModificationFunctions;
     switches: UserOptions;
     imageMode?: boolean;
 }
 
-function ScheduleClass({
-    section,
-    interactions,
-    sf,
-    switches,
-    imageMode,
-}: ScheduleClassProps) {
+function openInfo(props: ScheduleClassProps) {
+    const section = props.section;
+    const name = section.subject + ' ' + section.number;
+    const course = PlanManager.getCourse(name);
+    const scheduleCourse = ScheduleManager.getCourseById(
+        section.section_id.split('-')[0]
+    );
+    const color = PlanManager.getCourseColor(name);
+
+    const extras: AlertDataExtra[] = [];
+
+    extras.push({
+        title: 'COMPONENT',
+        content: Utility.capitalizeFirstLetter(
+            Utility.convertSectionComponent(section.component)
+        ),
+    });
+    extras.push({
+        title: 'MEETING TIMES',
+        content: `${
+            section.meeting_days && section.start_time && section.end_time
+                ? `${Utility.convertAllDaysToString(
+                      section.meeting_days
+                  )} ${Utility.convertTime(
+                      section.start_time,
+                      true
+                  )} - ${Utility.convertTime(section.end_time, true)}`
+                : 'No meeting times provided'
+        }`,
+    });
+    extras.push({
+        title:
+            'INSTRUCTOR' + ((section.instructors?.length || 0) > 1 ? 'S' : ''),
+        content: section.instructors?.join(', ') || 'No instructor provided',
+    });
+    extras.push({
+        title: 'LOCATION',
+        content: section.room?.building_name || 'No location provided',
+    });
+
+    if (course) {
+        if (course.prereqs) {
+            extras.push({
+                title: 'PREREQUISITES',
+                content: course.prereqs,
+            });
+        }
+
+        if (course.distros) {
+            let distros = Utility.convertDistros(course.distros);
+            extras.push({
+                title: 'DISTRIBUTION AREAS',
+                content: distros.join(', '),
+            });
+        }
+    }
+
+    const editButtons: AlertDataEditButton[] = [];
+
+    if (scheduleCourse) {
+        const bookmarkToggle: ToggleableAlertDataEditButton<ScheduleCourse> = {
+            toggle: true,
+            data: props.bookmarks,
+            key: scheduleCourse,
+            indexProperty: 'course_id',
+            enabled: {
+                title: 'Remove from My List',
+                icon: <BookmarkIconSolid className="w-6 h-6" />,
+                color: 'indigo',
+                action: () => {
+                    props.sf.removeScheduleBookmark(scheduleCourse);
+                },
+            },
+            disabled: {
+                title: 'Add to My List',
+                icon: <BookmarkIcon className="w-6 h-6" />,
+                color: 'indigo',
+                action: () => {
+                    props.sf.addScheduleBookmark(scheduleCourse);
+                },
+            },
+        };
+        editButtons.push(bookmarkToggle);
+    }
+
+    const remove: NontoggleableAlertDataEditButton = {
+        toggle: false,
+        buttonData: {
+            title: 'Remove course',
+            icon: <TrashIcon className="w-6 h-6" />,
+            color: 'red',
+            action: () => {
+                props.sf.removeSection(section);
+            },
+            close: true,
+        },
+    };
+    editButtons.push(remove);
+
+    props.alert({
+        title: name,
+        subtitle: section.title,
+        message: course?.description ?? 'No course description found',
+        confirmButton: 'Close',
+        confirmButtonColor: color,
+        iconColor: color,
+        icon: DocumentIcon,
+        extras: extras,
+        editButtons: editButtons,
+    });
+}
+
+function ScheduleClass(props: ScheduleClassProps) {
+    const { section, interactions, sf, switches, imageMode } = props;
     const { start_time, end_time, subject, number, title, instructors } =
         section;
     const color = ScheduleManager.getCourseColor(subject);
@@ -41,7 +165,7 @@ function ScheduleClass({
                     interactions?.hoverSection.get === section.section_id
                         ? '-translate-y-2 shadow-lg'
                         : ''
-                } ${section.preview ? 'opacity-40' : ''}`}
+                } ${section.preview ? 'opacity-60' : ''}`}
             style={{
                 top: `${startDif * 100}%`,
                 height: `calc(${endDif * 100}% + ${
@@ -54,6 +178,7 @@ function ScheduleClass({
             onMouseLeave={() => {
                 interactions?.multiClear(['hoverSection', 'hoverDelete']);
             }}
+            onClick={() => openInfo(props)}
         >
             <div className="w-full h-full relative">
                 <div
@@ -72,13 +197,16 @@ function ScheduleClass({
                     >
                         {subject} {number}
                         {section.component !== 'LEC' && (
-                            <span className="pl-2 font-medium text-xs text-gray-600 dark:text-gray-400">
-                                (
-                                {Utility.convertSectionComponent(
-                                    section.component
-                                )}
-                                )
-                            </span>
+                            <>
+                                {' '}
+                                <span className="font-medium text-xs text-gray-600 dark:text-gray-400">
+                                    (
+                                    {Utility.convertSectionComponent(
+                                        section.component
+                                    ).toUpperCase()}
+                                    )
+                                </span>
+                            </>
                         )}
                     </p>
                     <p

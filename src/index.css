@@ -17,6 +17,10 @@
         grid-template-columns: 3.2rem repeat(5, minmax(0, 1fr));
     }
 
+    .alert-data a {
+        @apply text-purple-800 dark:text-purple-300 hover:underline;
+    }
+
     @keyframes spin {
         from {
             transform: translate(-50%, -50%) rotate(0);

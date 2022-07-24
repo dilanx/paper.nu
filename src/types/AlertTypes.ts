@@ -43,8 +43,9 @@ export interface NontoggleableAlertDataEditButton {
 
 export interface ToggleableAlertDataEditButton<T> {
     toggle: true;
-    data: Set<T>;
+    data: Set<T> | T[];
     key: T;
+    indexProperty?: keyof T;
     enabled: AlertDataEditButtonData;
     disabled: AlertDataEditButtonData;
 }
@@ -76,6 +77,7 @@ export interface AlertData {
         matchError?: string;
         focusByDefault?: boolean;
     };
+    textHTML?: JSX.Element;
     confirmButton: string;
     confirmButtonColor: Color;
     iconColor: Color;

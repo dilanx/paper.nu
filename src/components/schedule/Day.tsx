@@ -1,5 +1,7 @@
+import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {
+    ScheduleBookmarks,
     ScheduleInteractions,
     ScheduleModificationFunctions,
     ScheduleSection,
@@ -25,6 +27,8 @@ interface DayProps {
     start: number;
     end: number;
     sections?: ScheduleSection[];
+    bookmarks: ScheduleBookmarks;
+    alert: Alert;
     interactions?: ScheduleInteractions;
     sf: ScheduleModificationFunctions;
     switches: UserOptions;
@@ -42,6 +46,8 @@ function Day(props: DayProps) {
                 children.push(
                     <ScheduleClass
                         section={section}
+                        bookmarks={props.bookmarks}
+                        alert={props.alert}
                         interactions={props.interactions}
                         sf={props.sf}
                         switches={props.switches}

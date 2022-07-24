@@ -12,6 +12,10 @@ export interface ScheduleDataMap {
     [section_id: string]: ScheduleSection;
 }
 
+export interface ValidScheduleDataMap {
+    [section_id: string]: ValidScheduleSection;
+}
+
 export type ScheduleBookmarks = ScheduleCourse[];
 
 export interface ScheduleCourse {
@@ -45,6 +49,29 @@ export interface ScheduleSection {
         desc: string;
     }[];
     preview?: boolean;
+}
+
+export interface ValidScheduleSection extends ScheduleSection {
+    start_date: string;
+    end_date: string;
+    start_time: Time;
+    end_time: Time;
+    meeting_days: string;
+}
+
+export interface ScheduleLocations {
+    [building_name: string]: ScheduleLocation | null;
+}
+
+export interface ScheduleLocation {
+    lat: number;
+    lon: number;
+}
+
+export interface ScheduleDate {
+    y: number;
+    m: number;
+    d: number;
 }
 
 export interface ScheduleInteraction<T> {

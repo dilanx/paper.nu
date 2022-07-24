@@ -58,7 +58,9 @@ function SearchScheduleSection({
                 <p className="px-2 text-md font-bold overflow-hidden whitespace-nowrap">
                     {section.section}
                     <span className="pl-2 text-sm font-normal">
-                        {Utility.convertSectionComponent(section.component)}
+                        {Utility.convertSectionComponent(
+                            section.component
+                        ).toUpperCase()}
                     </span>
                     {disabled && (
                         <span className="pl-2 text-xs font-normal text-red-600 dark:text-red-400">
@@ -72,7 +74,9 @@ function SearchScheduleSection({
                 <div className="text-center py-4">
                     <p className="text-sm font-normal">
                         {section.meeting_days
-                            ? Utility.convertAllDays(section.meeting_days)
+                            ? Utility.convertAllDaysToString(
+                                  section.meeting_days
+                              )
                             : 'no days'}
                     </p>
                     <p className="text-md font-medium">
