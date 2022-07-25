@@ -34,7 +34,7 @@ import SearchScheduleClass from './SearchScheduleClass';
 interface MiniContentBlockProps {
     icon: IconElement;
     title: string;
-    children: string;
+    children: React.ReactNode;
 }
 
 function MiniContentBlock(props: MiniContentBlockProps) {
@@ -98,7 +98,7 @@ class Search extends React.Component<SearchProps, SearchState> {
         if (query.length === 0) {
             return {
                 results:
-                    mode === Mode.SCHEDULE
+                    mode === Mode.PLAN
                         ? [
                               <div key="no-query">
                                   <MiniContentBlock
@@ -135,7 +135,52 @@ class Search extends React.Component<SearchProps, SearchState> {
                                   </MiniContentBlock>
                               </div>,
                           ]
-                        : [<div key="no-query"></div>],
+                        : [
+                              <div key="no-query">
+                                  <MiniContentBlock
+                                      icon={SearchIcon}
+                                      title="Search"
+                                  >
+                                      Use the search bar to search across every
+                                      course offered{' '}
+                                      <span className="font-bold">
+                                          {
+                                              process.env
+                                                  .REACT_APP_SCHEDULE_QUARTER
+                                          }
+                                      </span>{' '}
+                                      at Northwestern and view detailed
+                                      information for each one.
+                                  </MiniContentBlock>
+                                  <MiniContentBlock
+                                      icon={ArrowRightIcon}
+                                      title="Add"
+                                  >
+                                      Add any of the sections for a course to
+                                      your schedule and watch as they appear at
+                                      the appropriate time.
+                                  </MiniContentBlock>
+                                  <MiniContentBlock
+                                      icon={CollectionIcon}
+                                      title="Save"
+                                  >
+                                      Easily create an account to save multiple
+                                      schedules and access them from anywhere.
+                                      You can even add custom blocks to your
+                                      account schedules.
+                                  </MiniContentBlock>
+                                  <MiniContentBlock
+                                      icon={ExternalLinkIcon}
+                                      title="Share"
+                                  >
+                                      The URL updates as you modify your
+                                      schedule. Share it with others and they'll
+                                      have a copy that they can view and edit.
+                                      You can also export your schedule as an
+                                      image or to your calendar app.
+                                  </MiniContentBlock>
+                              </div>,
+                          ],
             };
         }
 
