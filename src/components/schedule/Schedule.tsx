@@ -1,5 +1,5 @@
-import React from 'react';
 import { motion } from 'framer-motion';
+import React from 'react';
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {
@@ -7,7 +7,6 @@ import {
     ScheduleData,
     ScheduleInteractions,
     ScheduleModificationFunctions,
-    ScheduleSection,
     ValidScheduleSection,
 } from '../../types/ScheduleTypes';
 import Utility from '../../utility/Utility';
