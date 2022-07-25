@@ -10,7 +10,6 @@ import React from 'react';
 import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
 import {
-    IconElement,
     SearchResultsElements,
     SearchShortcut,
     UserOptions,
@@ -28,30 +27,10 @@ import {
 } from '../../types/ScheduleTypes';
 import { Mode } from '../../utility/Constants';
 import AddButtons from './AddButtons';
+import MiniContentBlock from './MiniContentBlock';
+import SearchButton from './SearchButton';
 import SearchClass from './SearchClass';
 import SearchScheduleClass from './SearchScheduleClass';
-
-interface MiniContentBlockProps {
-    icon: IconElement;
-    title: string;
-    children: React.ReactNode;
-}
-
-function MiniContentBlock(props: MiniContentBlockProps) {
-    return (
-        <div className="text-center p-4">
-            <div className="mx-auto my-1 flex items-center justify-center text-gray-500 dark:text-gray-400">
-                <props.icon className="w-6 h-6" />
-            </div>
-            <p className="text-lg font-medium text-gray-500 dark:text-gray-400">
-                {props.title}
-            </p>
-            <p className="text-sm font-light text-gray-400 dark:text-gray-500">
-                {props.children}
-            </p>
-        </div>
-    );
-}
 
 interface SearchProps {
     data: PlanData;
@@ -137,6 +116,14 @@ class Search extends React.Component<SearchProps, SearchState> {
                           ]
                         : [
                               <div key="no-query">
+                                  <div className="flex justify-center gap-4 mx-4">
+                                      <SearchButton action={() => {}}>
+                                          Browse
+                                      </SearchButton>
+                                      <SearchButton action={() => {}}>
+                                          Advanced
+                                      </SearchButton>
+                                  </div>
                                   <MiniContentBlock
                                       icon={SearchIcon}
                                       title="Search"
@@ -150,7 +137,9 @@ class Search extends React.Component<SearchProps, SearchState> {
                                           }
                                       </span>{' '}
                                       at Northwestern and view detailed
-                                      information for each one.
+                                      information for each one. Search courses
+                                      by subject and number, title, time slot,
+                                      instructor, or location.
                                   </MiniContentBlock>
                                   <MiniContentBlock
                                       icon={ArrowRightIcon}

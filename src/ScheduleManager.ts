@@ -9,6 +9,7 @@ import {
     ScheduleDataMap,
     ScheduleLocation,
     ScheduleLocations,
+    ScheduleSearchFilter,
     ScheduleSection,
 } from './types/ScheduleTypes';
 var ds = debug('schedule-manager:ser');
@@ -89,12 +90,18 @@ function saveData(data: ScheduleData) {
 const ScheduleManager = {
     data: scheduleData,
 
-    search: (query: string): SearchResults<ScheduleCourse> | SearchError => {
+    search: (
+        query: string,
+        filter?: ScheduleSearchFilter,
+        ignoreTooShort = false
+    ): SearchResults<ScheduleCourse> | SearchError => {
         let { terms, shortcut } = PlanManager.prepareQuery(query);
 
-        for (let term of terms) {
-            if (term.length < 3) {
-                return 'too_short';
+        if (!ignoreTooShort) {
+            for (let term of terms) {
+                if (term.length < 3) {
+                    return 'too_short';
+                }
             }
         }
 
