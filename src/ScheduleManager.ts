@@ -1,13 +1,13 @@
 import debug from 'debug';
-import JSONCourseData from './data/schedule_data.json';
 import JSONLocations from './data/locations.json';
+import JSONCourseData from './data/schedule_data.json';
 import PlanManager from './PlanManager';
 import { SearchError, SearchResults, UserOptions } from './types/BaseTypes';
 import {
-    ScheduleLocation,
     ScheduleCourse,
     ScheduleData,
     ScheduleDataMap,
+    ScheduleLocation,
     ScheduleLocations,
     ScheduleSection,
 } from './types/ScheduleTypes';

@@ -59,6 +59,19 @@ export interface ValidScheduleSection extends ScheduleSection {
     meeting_days: string;
 }
 
+export function isValidScheduleSection(
+    section: ScheduleSection | undefined
+): section is ValidScheduleSection {
+    return (
+        !!section &&
+        !!section.start_date &&
+        !!section.end_date &&
+        !!section.start_time &&
+        !!section.end_time &&
+        !!section.meeting_days
+    );
+}
+
 export interface ScheduleLocations {
     [building_name: string]: ScheduleLocation | null;
 }
@@ -72,6 +85,14 @@ export interface ScheduleDate {
     y: number;
     m: number;
     d: number;
+}
+
+export interface ScheduleHourMap {
+    [hour: number]: ValidScheduleSection[];
+}
+
+export interface ScheduleLayoutMap {
+    [sectionId: string]: { i: number; l: number };
 }
 
 export interface ScheduleInteraction<T> {

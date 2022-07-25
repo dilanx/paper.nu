@@ -4,8 +4,9 @@ import {
     ScheduleBookmarks,
     ScheduleInteractions,
     ScheduleModificationFunctions,
-    ScheduleSection,
+    ValidScheduleSection,
 } from '../../types/ScheduleTypes';
+import { getLayout } from '../../utility/Layout';
 import Utility from '../../utility/Utility';
 import ScheduleClass from './ScheduleClass';
 
@@ -26,7 +27,7 @@ interface DayProps {
     index: number;
     start: number;
     end: number;
-    sections?: ScheduleSection[];
+    sections?: ValidScheduleSection[];
     bookmarks: ScheduleBookmarks;
     alert: Alert;
     interactions?: ScheduleInteractions;
@@ -36,27 +37,28 @@ interface DayProps {
 }
 
 function Day(props: DayProps) {
+    // TODO improve performance with memoization
     let hours: JSX.Element[] = [
         <Cell day={props.index} key={`day-${props.index}-x`} />,
     ];
+
+    const { hourAssignments, layoutMap } = getLayout(props.sections);
+
     for (let i = props.start + 1; i <= props.end; i++) {
-        let children: JSX.Element[] = [];
-        for (let section of props.sections || []) {
-            if (section.start_time?.h === i - 1) {
-                children.push(
-                    <ScheduleClass
-                        section={section}
-                        bookmarks={props.bookmarks}
-                        alert={props.alert}
-                        interactions={props.interactions}
-                        sf={props.sf}
-                        switches={props.switches}
-                        imageMode={props.imageMode}
-                        key={`day-${props.index}-${section.section_id}`}
-                    />
-                );
-            }
-        }
+        const children = hourAssignments[i - 1]?.map((section) => (
+            <ScheduleClass
+                section={section}
+                bookmarks={props.bookmarks}
+                alert={props.alert}
+                interactions={props.interactions}
+                sf={props.sf}
+                switches={props.switches}
+                imageMode={props.imageMode}
+                split={layoutMap[section.section_id]}
+                key={`day-${props.index}-${section.section_id}`}
+            />
+        ));
+
         hours.push(<Cell key={`day-${props.index}-${i}`}>{children}</Cell>);
     }
 

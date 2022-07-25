@@ -31,6 +31,7 @@ interface ScheduleClassProps {
     sf: ScheduleModificationFunctions;
     switches: UserOptions;
     imageMode?: boolean;
+    split?: { i: number; l: number };
 }
 
 function openInfo(props: ScheduleClassProps) {
@@ -51,7 +52,7 @@ function openInfo(props: ScheduleClassProps) {
         ),
     });
     extras.push({
-        title: 'MEETING TIMES',
+        title: 'TIME SLOT',
         content: `${
             section.meeting_days && section.start_time && section.end_time
                 ? `${Utility.convertAllDaysToString(
@@ -146,20 +147,31 @@ function openInfo(props: ScheduleClassProps) {
 }
 
 function ScheduleClass(props: ScheduleClassProps) {
-    const { section, interactions, sf, switches, imageMode } = props;
+    const { section, interactions, sf, switches, imageMode, split } = props;
     const { start_time, end_time, subject, number, title, instructors } =
         section;
     const color = ScheduleManager.getCourseColor(subject);
+
     const startDif = start_time!.m / 60;
     const length =
         end_time!.h * 60 + end_time!.m - (start_time!.h * 60 + start_time!.m);
     const endDif = length / 60;
+
     const instructorLastNames = instructors
         ?.map((i) => i.split(' ').pop())
         .join(', ');
+
+    let left = '0%';
+    let width = '100%';
+    if (split) {
+        const { i, l } = split;
+        left = `${(i / l) * 100}%`;
+        width = `${100 / l}%`;
+    }
+
     return (
         <div
-            className={`absolute w-full z-10 rounded-lg bg-opacity-60
+            className={`absolute z-10 rounded-lg bg-opacity-60
                 bg-${color}-100 dark:bg-gray-800 border-2 border-l-4 border-${color}-400 overflow-visible
                 cursor-pointer transition ease-in-out duration-300 group ${
                     interactions?.hoverSection.get === section.section_id
@@ -168,6 +180,8 @@ function ScheduleClass(props: ScheduleClassProps) {
                 } ${section.preview ? 'opacity-60' : ''}`}
             style={{
                 top: `${startDif * 100}%`,
+                left,
+                width,
                 height: `calc(${endDif * 100}% + ${
                     2 * (end_time!.h - start_time!.h)
                 }px)`,

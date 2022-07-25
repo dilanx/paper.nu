@@ -3,10 +3,12 @@ import { motion } from 'framer-motion';
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {
+    isValidScheduleSection,
     ScheduleData,
     ScheduleInteractions,
     ScheduleModificationFunctions,
     ScheduleSection,
+    ValidScheduleSection,
 } from '../../types/ScheduleTypes';
 import Utility from '../../utility/Utility';
 import Day from './Day';
@@ -26,7 +28,7 @@ class Schedule extends React.Component<ScheduleProps> {
     render() {
         let days: JSX.Element[] = [];
         let sectionDays: {
-            [day: number]: ScheduleSection[];
+            [day: number]: ValidScheduleSection[];
         } = { 0: [], 1: [], 2: [], 3: [], 4: [] };
 
         let start = 9;
@@ -37,7 +39,7 @@ class Schedule extends React.Component<ScheduleProps> {
 
         for (let section_id in schedule) {
             let section = schedule[section_id];
-            if (section.meeting_days) {
+            if (isValidScheduleSection(section)) {
                 for (let i = 0; i < section.meeting_days.length; i++) {
                     sectionDays[parseInt(section.meeting_days[i])].push(
                         section
@@ -50,7 +52,7 @@ class Schedule extends React.Component<ScheduleProps> {
         }
 
         const previewSection = this.props.interactions?.previewSection.get;
-        if (previewSection?.meeting_days) {
+        if (isValidScheduleSection(previewSection)) {
             previewSection.preview = true;
             for (let i = 0; i < previewSection.meeting_days.length; i++) {
                 sectionDays[parseInt(previewSection.meeting_days[i])].push(
@@ -97,8 +99,10 @@ class Schedule extends React.Component<ScheduleProps> {
                     : {})}
             >
                 <div
-                    className="p-4 border-4 border-green-200 bg-green-50 dark:bg-gray-800 bg-opacity-50 border-opacity-75 h-192 lg:h-full rounded-lg shadow-md grid
-                        schedule-grid-cols"
+                    className={`p-4 border-4 border-green-200 bg-green-50 dark:bg-gray-800 bg-opacity-50 border-opacity-75 rounded-lg shadow-md grid
+                        schedule-grid-cols ${
+                            imageMode ? 'h-full' : 'h-192 lg:h-full'
+                        }`}
                 >
                     <HoursColumn start={start} end={end} />
                     {days}

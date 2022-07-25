@@ -545,7 +545,7 @@ class App extends React.Component<{}, AppState> {
             title: 'Add summer quarter to this year?',
             message: `This will add a summer quarter to your ${Utility.convertYear(
                 year
-            ).toLowerCase()} year. You can remove it by removing all classes from that quarter and refreshing the page.`,
+            ).toLowerCase()}. You can remove it by removing all classes from that quarter and refreshing the page.`,
             confirmButton: 'Add quarter',
             confirmButtonColor: 'yellow',
             cancelButton: 'Close',

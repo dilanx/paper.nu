@@ -213,6 +213,22 @@ let Utility = {
         }
     },
 
+    timeInMinutes: ({ h, m }: Time) => h * 60 + m,
+
+    timesOverlap: (
+        time1Start: Time,
+        time1End: Time,
+        time2Start: Time,
+        time2End: Time
+    ) => {
+        const startA = time1Start.h * 60 + time1Start.m;
+        const endA = time1End.h * 60 + time1End.m;
+        const startB = time2Start.h * 60 + time2Start.m;
+        const endB = time2End.h * 60 + time2End.m;
+
+        return startA <= endB && startB <= endA;
+    },
+
     formatSections: (schedule: ScheduleDataMap) =>
         Object.values(schedule)
             .map((section) => `${section.subject} ${section.number}`)
