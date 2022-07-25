@@ -68,3 +68,5 @@ export interface SearchResultsElements {
     results: JSX.Element[];
     shortcut?: SearchShortcut;
 }
+
+export type IconElement = (props: React.ComponentProps<'svg'>) => JSX.Element;

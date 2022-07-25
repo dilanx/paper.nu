@@ -1,4 +1,4 @@
-import { Color, ColorMap } from './BaseTypes';
+import { Color, ColorMap, IconElement } from './BaseTypes';
 
 export interface AlertDataExtra {
     title: string;
@@ -57,7 +57,7 @@ export function editButtonIsToggleable(
 }
 
 export interface AlertData {
-    icon: (props: React.ComponentProps<'svg'>) => JSX.Element;
+    icon: IconElement;
     title: string;
     subtitle?: string;
     customSubtitle?: JSX.Element;

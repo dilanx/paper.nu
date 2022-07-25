@@ -2,7 +2,7 @@ import { CalendarIcon, CameraIcon } from '@heroicons/react/outline';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Alert } from '../../types/AlertTypes';
-import { Color, UserOptions } from '../../types/BaseTypes';
+import { Color, IconElement, UserOptions } from '../../types/BaseTypes';
 import { ScheduleData } from '../../types/ScheduleTypes';
 import { exportScheduleAsICS, getSections } from '../../utility/Calendar';
 import { exportScheduleAsImage } from '../../utility/Image';
@@ -10,7 +10,7 @@ import Utility from '../../utility/Utility';
 import Schedule from './Schedule';
 
 interface UtilityButtonProps {
-    icon: (props: React.ComponentProps<'svg'>) => JSX.Element;
+    icon: IconElement;
     color: Color;
     display: string;
     action: () => void;

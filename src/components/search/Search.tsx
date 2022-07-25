@@ -10,6 +10,7 @@ import React from 'react';
 import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
 import {
+    IconElement,
     SearchResultsElements,
     SearchShortcut,
     UserOptions,
@@ -31,22 +32,22 @@ import SearchClass from './SearchClass';
 import SearchScheduleClass from './SearchScheduleClass';
 
 interface MiniContentBlockProps {
-    icon: JSX.Element;
+    icon: IconElement;
     title: string;
-    text: string;
+    children: string;
 }
 
 function MiniContentBlock(props: MiniContentBlockProps) {
     return (
         <div className="text-center p-4">
             <div className="mx-auto my-1 flex items-center justify-center text-gray-500 dark:text-gray-400">
-                {props.icon}
+                <props.icon className="w-6 h-6" />
             </div>
             <p className="text-lg font-medium text-gray-500 dark:text-gray-400">
                 {props.title}
             </p>
             <p className="text-sm font-light text-gray-400 dark:text-gray-500">
-                {props.text}
+                {props.children}
             </p>
         </div>
     );
@@ -91,38 +92,52 @@ class Search extends React.Component<SearchProps, SearchState> {
     }
 
     getResults(): SearchResultsElements {
-        let query = this.state.search;
+        const query = this.state.search;
+        const mode = this.props.switches.get.mode;
 
         if (query.length === 0) {
             return {
-                results: [
-                    <div key="no-query">
-                        <MiniContentBlock
-                            icon={<SearchIcon className="w-6 h-6" />}
-                            title="Search"
-                            text="Use the search bar to search across every course at Northwestern and view detailed information for each one."
-                        />
-                        <MiniContentBlock
-                            icon={<ArrowRightIcon className="w-6 h-6" />}
-                            title="Drag"
-                            text="Drag courses from this search area into the quarter you want. Alternatively, you can click on the course and select the quarter you want to add it to."
-                        />
-                        <MiniContentBlock
-                            icon={<CollectionIcon className="w-6 h-6" />}
-                            title="Save"
-                            text="Easily create an account to save multiple plans and access them from anywhere."
-                        />
-                        <MiniContentBlock
-                            icon={<ExternalLinkIcon className="w-6 h-6" />}
-                            title="Share"
-                            text="The URL updates as you modify your plan. Share it with others and they'll have a copy that they can view and edit."
-                        />
-                    </div>,
-                ],
+                results:
+                    mode === Mode.SCHEDULE
+                        ? [
+                              <div key="no-query">
+                                  <MiniContentBlock
+                                      icon={SearchIcon}
+                                      title="Search"
+                                  >
+                                      Use the search bar to search across every
+                                      course at Northwestern and view detailed
+                                      information for each one.
+                                  </MiniContentBlock>
+                                  <MiniContentBlock
+                                      icon={ArrowRightIcon}
+                                      title="Drag"
+                                  >
+                                      Drag courses from this search area into
+                                      the quarter you want. Alternatively, you
+                                      can click on the course and select the
+                                      quarter you want to add it to.
+                                  </MiniContentBlock>
+                                  <MiniContentBlock
+                                      icon={CollectionIcon}
+                                      title="Save"
+                                  >
+                                      Easily create an account to save multiple
+                                      plans and access them from anywhere.
+                                  </MiniContentBlock>
+                                  <MiniContentBlock
+                                      icon={ExternalLinkIcon}
+                                      title="Share"
+                                  >
+                                      The URL updates as you modify your plan.
+                                      Share it with others and they'll have a
+                                      copy that they can view and edit.
+                                  </MiniContentBlock>
+                              </div>,
+                          ]
+                        : [<div key="no-query"></div>],
             };
         }
-
-        let mode = this.props.switches.get.mode;
 
         let results =
             mode === Mode.PLAN
@@ -196,11 +211,13 @@ class Search extends React.Component<SearchProps, SearchState> {
         if (results.limitExceeded) {
             courseList.push(
                 <MiniContentBlock
-                    icon={<DotsHorizontalIcon className="w-6 h-6" />}
+                    icon={DotsHorizontalIcon}
                     title={`and ${results.limitExceeded} more.`}
-                    text="There are too many results to display. You'll need to narrow your search to get more."
                     key="too-many"
-                />
+                >
+                    There are too many results to display. You'll need to narrow
+                    your search to get more.
+                </MiniContentBlock>
             );
         }
 

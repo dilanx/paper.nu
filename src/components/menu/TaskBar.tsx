@@ -9,7 +9,12 @@ import {
 import React from 'react';
 import Account from '../../Account';
 import { Alert } from '../../types/AlertTypes';
-import { Color, ColorMap, UserOptions } from '../../types/BaseTypes';
+import {
+    Color,
+    ColorMap,
+    IconElement,
+    UserOptions,
+} from '../../types/BaseTypes';
 import { PlanSpecialFunctions } from '../../types/PlanTypes';
 import aboutMenu from './About';
 import settingsMenu from './Settings';
@@ -17,7 +22,7 @@ import shareMenu from './Share';
 import { TabBar, TabBarButton } from './TabBar';
 
 interface MiniButtonProps {
-    icon: (props: React.ComponentProps<'svg'>) => JSX.Element;
+    icon: IconElement;
     color: Color;
     display: string;
     action: () => void;
