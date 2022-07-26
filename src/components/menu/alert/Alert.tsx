@@ -1,16 +1,11 @@
-import { useState, useRef, Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import {
-    AlertConfirmationState,
-    AlertData,
-    AlertDataEditButtonData,
-    editButtonIsToggleable,
-} from '../../../types/AlertTypes';
+import { Fragment, useRef, useState } from 'react';
+import { AlertConfirmationState, AlertData } from '../../../types/AlertTypes';
 import { UserOptions } from '../../../types/BaseTypes';
 import { TabBar, TabBarButton } from '../TabBar';
+import { getAlertEditButtons } from './AlertEditButtons';
 import { getAlertExtras } from './AlertExtras';
 import { getAlertOptions } from './AlertOptions';
-import { getAlertEditButtons } from './AlertEditButtons';
 
 interface AlertProps {
     data: AlertData;
@@ -83,7 +78,7 @@ export default function Alert(props: AlertProps) {
         setConfirmation
     );
 
-    let editButtonList = getAlertEditButtons(data.editButtons);
+    let editButtonList = getAlertEditButtons(data.editButtons, close);
 
     let okay = true;
 

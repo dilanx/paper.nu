@@ -5,7 +5,8 @@ import {
 } from '../../../types/AlertTypes';
 
 export const getAlertEditButtons = (
-    editButtons: AlertDataEditButton[] | undefined
+    editButtons: AlertDataEditButton[] | undefined,
+    close: () => void
 ) =>
     editButtons?.map((editButton, i) => {
         let dataSet: AlertDataEditButtonData;
