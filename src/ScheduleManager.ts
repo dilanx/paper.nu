@@ -1,14 +1,14 @@
 import debug from 'debug';
-import JSONLocations from './data/locations.json';
+import JSONSchoolData from './data/school.json';
 import JSONCourseData from './data/schedule_data.json';
 import PlanManager from './PlanManager';
 import { SearchError, SearchResults, UserOptions } from './types/BaseTypes';
 import {
+    RawSchoolData,
     ScheduleCourse,
     ScheduleData,
     ScheduleDataMap,
     ScheduleLocation,
-    ScheduleLocations,
     ScheduleSearchFilter,
     ScheduleSection,
 } from './types/ScheduleTypes';
@@ -16,7 +16,7 @@ var ds = debug('schedule-manager:ser');
 var dp = debug('schedule-manager:op');
 
 const scheduleData = JSONCourseData as ScheduleCourse[];
-const locations = JSONLocations as ScheduleLocations;
+const school = JSONSchoolData as RawSchoolData;
 const SEARCH_RESULT_LIMIT = 50;
 
 function loadData(
@@ -99,6 +99,9 @@ const ScheduleManager = {
 
         if (!ignoreTooShort) {
             for (let term of terms) {
+                if (term.length === 0) {
+                    return 'no_query';
+                }
                 if (term.length < 3) {
                     return 'too_short';
                 }
@@ -176,11 +179,23 @@ const ScheduleManager = {
 
     getLocation: (building_name?: string): ScheduleLocation | undefined => {
         if (!building_name) return;
-        return locations[building_name] ?? undefined;
+        return school.locations[building_name] ?? undefined;
     },
 
     getCourseColor: (subject: string) => {
         return PlanManager.data.majors[subject]?.color ?? 'gray';
+    },
+
+    getAllSchoolSymbols: () => {
+        return Object.keys(school.schools);
+    },
+
+    getSchoolName: (symbol: string) => {
+        return school.schools[symbol]?.name ?? 'Unknown';
+    },
+
+    getSchoolSubjects: (symbol: string) => {
+        return school.schools[symbol]?.subjects ?? [];
     },
 
     loadFromURL: (params: URLSearchParams) => {

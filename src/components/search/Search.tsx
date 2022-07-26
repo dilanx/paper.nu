@@ -76,7 +76,7 @@ class Search extends React.Component<SearchProps, SearchState> {
         const query = this.state.search;
         const mode = this.props.switches.get.mode;
 
-        if (query.length === 0) {
+        if (query.length === 0 && this.state.mode === SearchMode.NORMAL) {
             return {
                 results:
                     mode === Mode.PLAN
@@ -171,6 +171,10 @@ class Search extends React.Component<SearchProps, SearchState> {
             mode === Mode.PLAN
                 ? PlanManager.search(query)
                 : ScheduleManager.search(query);
+
+        if (results === 'no_query') {
+            return {};
+        }
         if (results === 'too_short') {
             return {
                 results: [

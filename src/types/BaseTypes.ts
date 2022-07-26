@@ -62,10 +62,10 @@ export interface SearchShortcut {
     with: string;
 }
 
-export type SearchError = 'too_short' | 'no_results';
+export type SearchError = 'no_query' | 'too_short' | 'no_results';
 
 export interface SearchResultsElements {
-    results: JSX.Element[];
+    results?: JSX.Element[];
     shortcut?: SearchShortcut;
 }
 

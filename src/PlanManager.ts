@@ -200,6 +200,9 @@ const PlanManager = {
         let { terms, shortcut } = PlanManager.prepareQuery(query);
 
         for (let term of terms) {
+            if (term.length === 0) {
+                return 'no_query';
+            }
             if (term.length < 3) {
                 return 'too_short';
             }

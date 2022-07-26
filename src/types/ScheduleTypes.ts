@@ -72,8 +72,27 @@ export function isValidScheduleSection(
     );
 }
 
+export interface RawSchoolData {
+    locations: ScheduleLocations;
+    schools: UniversitySchools;
+}
+
+export interface UniversitySchools {
+    [symbol: string]: UniversitySchool;
+}
+
+export interface UniversitySchool {
+    name: string;
+    subjects: UniversitySubject[];
+}
+
+export interface UniversitySubject {
+    symbol: string;
+    name: string;
+}
+
 export interface ScheduleLocations {
-    [building_name: string]: ScheduleLocation | null;
+    [building: string]: ScheduleLocation | null;
 }
 
 export interface ScheduleLocation {
