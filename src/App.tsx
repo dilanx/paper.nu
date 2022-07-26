@@ -1011,7 +1011,7 @@ class App extends React.Component<{}, AppState> {
                                     }`}
                                 >
                                     <button
-                                        className="flex items-center gap-2 rainbow-border-button shadow-lg opacity-75 hover:opacity-100 focus:before:bg-none focus:before:bg-emerald-400
+                                        className="flex items-center gap-2 rainbow-border-button shadow-lg opacity-75 hover:opacity-100 active:before:bg-none active:before:bg-emerald-400
                                             after:bg-gray-100 text-black dark:after:bg-gray-700 dark:text-white"
                                         onClick={() => {
                                             this.updatePlan();

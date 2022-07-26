@@ -279,7 +279,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                             <div className="block mt-4 mb-2 mx-auto w-11/12 relative">
                                 <input
                                     className="w-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 shadow-md
-                            rounded-lg outline-none hover:border-gray-500 focus:border-black dark:hover:border-gray-400 dark:focus:border-white text-lg p-2 px-4
+                            rounded-lg outline-none hover:border-gray-500 active:border-black dark:hover:border-gray-400 dark:active:border-white text-lg p-2 px-4
                             transition-all duration-150 text-black dark:text-white"
                                     ref={this.searchFieldRef}
                                     value={search}
@@ -293,8 +293,8 @@ class Search extends React.Component<SearchProps, SearchState> {
                                 />
                                 {!queryEmpty && (
                                     <button
-                                        className="block absolute right-4 top-0 bottom-0 my-2 text-gray-300 hover:text-red-400 focus:text-red-300 
-                            dark:text-gray-600 dark:hover:text-red-400 dark:focus:text-red-500 transition-colors duration-150"
+                                        className="block absolute right-4 top-0 bottom-0 my-2 text-gray-300 hover:text-red-400 active:text-red-300 
+                            dark:text-gray-600 dark:hover:text-red-400 dark:active:text-red-500 transition-colors duration-150"
                                         onClick={() => {
                                             this.setState({ search: '' });
                                             this.searchFieldRef.current?.focus();

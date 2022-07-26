@@ -171,10 +171,10 @@ export default function Alert(props: AlertProps) {
                                                 ${
                                                     inputText.length === 0 ||
                                                     !data.textInput.match
-                                                        ? 'focus:border-gray-500 dark:focus:border-gray-300'
+                                                        ? 'active:border-gray-500 dark:active:border-gray-300'
                                                         : okay
-                                                        ? 'focus:border-green-500 dark:focus:border-green-500'
-                                                        : 'focus:border-red-500 dark:focus:border-red-500'
+                                                        ? 'active:border-green-500 dark:active:border-green-500'
+                                                        : 'active:border-red-500 dark:active:border-red-500'
                                                 }`}
                                                         placeholder={
                                                             data.textInput
@@ -228,7 +228,7 @@ export default function Alert(props: AlertProps) {
                                 bg-${data.confirmButtonColor}-500 
                                 ${
                                     okay
-                                        ? `opacity-100 hover:bg-${data.confirmButtonColor}-600 focus:bg-${data.confirmButtonColor}-700`
+                                        ? `opacity-100 hover:bg-${data.confirmButtonColor}-600 active:bg-${data.confirmButtonColor}-700`
                                         : `opacity-75 cursor-not-allowed`
                                 } 
                                 text-base font-medium text-white outline-none sm:ml-3 sm:w-auto sm:text-sm 
@@ -244,8 +244,8 @@ export default function Alert(props: AlertProps) {
                                         <button
                                             type="button"
                                             className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2
-                                bg-white text-base font-medium text-gray-700 hover:bg-gray-100 focus:bg-gray-200 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm
-                                dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600 dark:focus:bg-gray-500"
+                                bg-white text-base font-medium text-gray-700 hover:bg-gray-100 active:bg-gray-200 active:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm
+                                dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600 dark:active:bg-gray-500"
                                             onClick={() => {
                                                 close();
                                             }}
