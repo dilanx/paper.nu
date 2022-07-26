@@ -1,13 +1,17 @@
+import { Color } from '../../types/BaseTypes';
+
 interface SearchButtonProps {
     action: () => void;
     children: string;
+    active?: Color;
 }
 
-function SearchButton({ action, children }: SearchButtonProps) {
+function SearchButton({ action, children, active }: SearchButtonProps) {
+    const color = active ?? 'gray';
     return (
         <button
-            className="flex-1 bg-gray-200 text-gray-600 font-medium p-1 rounded-lg opacity-60 transition-all duration-150
-                hover:opacity-100 focus:bg-gray-300 focus:text-gray-700 focus:opacity-100"
+            className={`flex-1 bg-${color}-200 text-${color}-600 font-medium p-1 rounded-lg opacity-60 transition-all duration-150
+                hover:opacity-100 active:bg-${color}-300 active:text-${color}-700 active:opacity-100`}
             onClick={() => action()}
         >
             {children}

@@ -25,9 +25,10 @@ import {
     ScheduleInteractions,
     ScheduleModificationFunctions,
 } from '../../types/ScheduleTypes';
-import { Mode } from '../../utility/Constants';
+import { Mode, SearchMode } from '../../utility/Constants';
 import AddButtons from './AddButtons';
 import MiniContentBlock from './MiniContentBlock';
+import SearchBrowse from './SearchBrowse';
 import SearchButton from './SearchButton';
 import SearchClass from './SearchClass';
 import SearchScheduleClass from './SearchScheduleClass';
@@ -43,6 +44,7 @@ interface SearchProps {
 
 interface SearchState {
     search: string;
+    mode: SearchMode;
     current?: Course;
     scheduleCurrent?: string;
     shortcut?: SearchShortcut;
@@ -54,7 +56,7 @@ class Search extends React.Component<SearchProps, SearchState> {
     constructor(props: SearchProps) {
         super(props);
 
-        this.state = { search: '' };
+        this.state = { search: '', mode: SearchMode.NORMAL };
         this.searchFieldRef = React.createRef();
     }
 
@@ -116,14 +118,6 @@ class Search extends React.Component<SearchProps, SearchState> {
                           ]
                         : [
                               <div key="no-query">
-                                  <div className="flex justify-center gap-4 mx-4">
-                                      <SearchButton action={() => {}}>
-                                          Browse
-                                      </SearchButton>
-                                      <SearchButton action={() => {}}>
-                                          Advanced
-                                      </SearchButton>
-                                  </div>
                                   <MiniContentBlock
                                       icon={SearchIcon}
                                       title="Search"
@@ -269,6 +263,9 @@ class Search extends React.Component<SearchProps, SearchState> {
         let current = this.state.current;
         let bookmarks = this.props.data.bookmarks;
 
+        const queryEmpty = search.length === 0;
+        const mode = this.state.mode;
+
         return (
             <div
                 className={`${
@@ -294,7 +291,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                                         });
                                     }}
                                 />
-                                {search.length > 0 && (
+                                {!queryEmpty && (
                                     <button
                                         className="block absolute right-4 top-0 bottom-0 my-2 text-gray-300 hover:text-red-400 focus:text-red-300 
                             dark:text-gray-600 dark:hover:text-red-400 dark:focus:text-red-500 transition-colors duration-150"
@@ -319,7 +316,49 @@ class Search extends React.Component<SearchProps, SearchState> {
                                     </span>
                                 </p>
                             )}
+                            {queryEmpty && (
+                                <div className="flex justify-center gap-4 m-4">
+                                    <SearchButton
+                                        active={
+                                            mode === SearchMode.BROWSE
+                                                ? 'blue'
+                                                : undefined
+                                        }
+                                        action={() =>
+                                            this.setState({
+                                                mode:
+                                                    mode === SearchMode.BROWSE
+                                                        ? SearchMode.NORMAL
+                                                        : SearchMode.BROWSE,
+                                            })
+                                        }
+                                    >
+                                        Browse
+                                    </SearchButton>
+                                    <SearchButton
+                                        active={
+                                            mode === SearchMode.ADVANCED
+                                                ? 'orange'
+                                                : undefined
+                                        }
+                                        action={() =>
+                                            this.setState({
+                                                mode:
+                                                    mode === SearchMode.ADVANCED
+                                                        ? SearchMode.NORMAL
+                                                        : SearchMode.ADVANCED,
+                                            })
+                                        }
+                                    >
+                                        Advanced
+                                    </SearchButton>
+                                </div>
+                            )}
                         </div>
+                        {queryEmpty &&
+                            this.state.mode === SearchMode.BROWSE && (
+                                <SearchBrowse />
+                            )}
                         {results}
                     </>
                 )}
