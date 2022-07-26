@@ -1,22 +1,22 @@
 import { useState, useRef, Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import {
+    AlertConfirmationState,
     AlertData,
     AlertDataEditButtonData,
     editButtonIsToggleable,
-} from '../../types/AlertTypes';
-import { UserOptions } from '../../types/BaseTypes';
-import { TabBar, TabBarButton } from './TabBar';
+} from '../../../types/AlertTypes';
+import { UserOptions } from '../../../types/BaseTypes';
+import { TabBar, TabBarButton } from '../TabBar';
+import { getAlertExtras } from './AlertExtras';
+import { getAlertOptions } from './AlertOptions';
+import { getAlertEditButtons } from './AlertEditButtons';
 
 interface AlertProps {
     data: AlertData;
     switches: UserOptions;
     onConfirm: (inputText?: string) => void;
     onClose: () => void;
-}
-
-interface AlertConfirmationState {
-    [key: string]: boolean;
 }
 
 export default function Alert(props: AlertProps) {
@@ -35,25 +35,9 @@ export default function Alert(props: AlertProps) {
         props.onConfirm(props.data.textInput ? inputText : undefined);
     }
 
-    let data = props.data;
+    const data = props.data;
 
-    let extraList: JSX.Element[] = [];
-    if (data.extras) {
-        let i = 0;
-        data.extras.forEach((extra) => {
-            extraList.push(
-                <div className="mt-4" key={`alert-extra-${i}`}>
-                    <p className="text-xs text-gray-500 font-bold dark:text-gray-300">
-                        {extra.title}
-                    </p>
-                    <p className="m-0 p-0 text-sm text-gray-500 font-light dark:text-gray-300">
-                        {extra.content}
-                    </p>
-                </div>
-            );
-            i++;
-        });
-    }
+    const extraList = getAlertExtras(data.extras);
 
     let options = data.options;
 
@@ -92,157 +76,14 @@ export default function Alert(props: AlertProps) {
         );
     }
 
-    let optionList: JSX.Element[] = [];
+    let optionList = getAlertOptions(
+        options,
+        props.switches,
+        confirmation,
+        setConfirmation
+    );
 
-    if (options) {
-        let i = 0;
-        options.forEach((option) => {
-            let enabled = false;
-            if (!option.singleAction)
-                enabled = props.switches.get[option.name] as boolean;
-            optionList.push(
-                <div
-                    className="grid grid-cols-1 sm:grid-cols-5 p-2 m-2"
-                    key={`alert-option-${i}`}
-                >
-                    <div className="col-span-1 sm:col-span-3">
-                        <p className="text-sm font-bold text-black dark:text-white">
-                            {option.title}
-                        </p>
-                        <p className="text-xs text-gray-600 mr-2 dark:text-gray-300">
-                            {option.description}
-                        </p>
-                    </div>
-                    <div className="col-span-1 sm:col-span-2">
-                        {!option.singleAction &&
-                            (enabled ? (
-                                <button
-                                    className="block mx-auto bg-emerald-400 text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
-                                    m-1 p-2 w-full rounded-md shadow-sm"
-                                    onClick={() => {
-                                        props.switches.set(
-                                            option.name,
-                                            false,
-                                            option.saveToStorage
-                                        );
-                                        if (option.bonusAction) {
-                                            option.bonusAction(false);
-                                        }
-                                    }}
-                                >
-                                    {option.buttonTextOn ?? 'Enabled'}
-                                </button>
-                            ) : (
-                                <button
-                                    className="block mx-auto bg-red-400 text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
-                                    m-1 p-2 w-full rounded-md shadow-sm"
-                                    onClick={() => {
-                                        props.switches.set(
-                                            option.name,
-                                            true,
-                                            option.saveToStorage
-                                        );
-                                        if (option.bonusAction) {
-                                            option.bonusAction(true);
-                                        }
-                                    }}
-                                >
-                                    {option.buttonTextOff ?? 'Disabled'}
-                                </button>
-                            ))}
-                        {option.singleAction && (
-                            <button
-                                className={`block mx-auto ${
-                                    confirmation[option.name]
-                                        ? 'bg-red-500 dark:bg-red-500'
-                                        : 'bg-gray-600 dark:bg-gray-500'
-                                } text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
-                                    m-1 p-2 w-full rounded-md shadow-md'`}
-                                onClick={() => {
-                                    if (option.requireConfirmation) {
-                                        if (!confirmation[option.name]) {
-                                            setConfirmation({
-                                                ...confirmation,
-                                                [option.name]: true,
-                                            });
-                                            return;
-                                        }
-                                    }
-                                    if (option.singleAction)
-                                        option.singleAction();
-                                    setConfirmation({
-                                        ...confirmation,
-                                        [option.name]: false,
-                                    });
-                                }}
-                            >
-                                {confirmation[option.name]
-                                    ? 'Confirm'
-                                    : option.buttonTextOn ?? 'Go'}
-                            </button>
-                        )}
-                    </div>
-                </div>
-            );
-            i++;
-        });
-    }
-
-    let editButtonList: JSX.Element[] = [];
-
-    if (data.editButtons) {
-        let i = 0;
-        data.editButtons.forEach((editButton) => {
-            let dataSet: AlertDataEditButtonData;
-
-            if (editButtonIsToggleable(editButton)) {
-                const data = editButton.data;
-                const key = editButton.key;
-                const indexProperty = editButton.indexProperty;
-
-                let enabled = false;
-
-                if (data instanceof Set) {
-                    enabled = data.has(key);
-                } else {
-                    if (indexProperty) {
-                        enabled = data.some(
-                            (value) =>
-                                value[indexProperty] === key[indexProperty]
-                        );
-                    } else {
-                        data.includes(key);
-                    }
-                }
-
-                dataSet = enabled ? editButton.enabled : editButton.disabled;
-            } else {
-                dataSet = editButton.buttonData;
-            }
-
-            let color = dataSet.color;
-
-            editButtonList.push(
-                <button
-                    className={`text-gray-500 hover:text-${color}-400 transition-all duration-150 relative group`}
-                    key={`edit-button-${i}`}
-                    onClick={() => {
-                        dataSet.action();
-                        if (dataSet.close) close();
-                    }}
-                >
-                    {dataSet.icon}
-                    <div
-                        className={`hidden group-hover:block absolute -bottom-10 right-0 p-1 w-40 border-2 rounded-md
-                            bg-${color}-50 dark:bg-gray-800 border-${color}-500 text-${color}-500 dark:text-${color}-300 text-sm font-medium`}
-                    >
-                        {dataSet.title}
-                    </div>
-                </button>
-            );
-            i++;
-        });
-    }
+    let editButtonList = getAlertEditButtons(data.editButtons);
 
     let okay = true;
 

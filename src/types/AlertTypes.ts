@@ -17,6 +17,10 @@ export interface AlertDataOption {
     requireConfirmation?: boolean;
 }
 
+export interface AlertConfirmationState {
+    [key: string]: boolean;
+}
+
 export interface AlertDataTab {
     name: string;
     display: JSX.Element;

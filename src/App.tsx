@@ -13,7 +13,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import Account from './Account';
 import AccountPlans from './components/account/AccountPlans';
 import Bookmarks from './components/bookmarks/Bookmarks';
-import Alert from './components/menu/Alert';
+import Alert from './components/menu/alert/Alert';
 import Info from './components/menu/Info';
 import TaskBar from './components/menu/TaskBar';
 import Content from './components/plan/Content';
