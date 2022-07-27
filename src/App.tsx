@@ -191,11 +191,11 @@ class App extends React.Component<{}, AppState> {
                     }
                 >
                     I'm restructuring the account services and authentication
-                    system today. Plan NU will be available the whole time but I
-                    recommend against making changes to account plans just for
-                    today (July 27) because you may encounter problems when
-                    trying to save your changes. ONLY account plans are affected
-                    JUST for today. Thanks!
+                    system! Plan NU will be available the whole time but I
+                    recommend against making changes to account plans on July 27
+                    and July 28 because you may encounter problems when trying
+                    to save your changes. Only account plans are affected.
+                    Thanks!
                     <button
                         className="text-gray-400 px-2 opacity-60 hover:opacity-90"
                         onClick={() => toast.dismiss(t.id)}
