@@ -1,22 +1,26 @@
-import React from 'react';
-import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import Content from './components/Content';
-import CourseManager from './CourseManager';
-import Utility from './utility/Utility';
-import Info from './components/menu/Info';
-import TaskBar from './components/menu/TaskBar';
-import Search from './components/search/Search';
-import Alert from './components/menu/Alert';
-import Bookmarks from './components/bookmarks/Bookmarks';
-import AccountPlans from './components/account/AccountPlans';
 import {
     ExclamationIcon,
     PlusIcon,
     SaveIcon,
     TrashIcon,
 } from '@heroicons/react/outline';
+import debug from 'debug';
+import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
+import React from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import toast, { Toaster } from 'react-hot-toast';
+import Account from './Account';
+import AccountPlans from './components/account/AccountPlans';
+import Bookmarks from './components/bookmarks/Bookmarks';
+import Content from './components/Content';
+import Alert from './components/menu/Alert';
+import Info from './components/menu/Info';
+import TaskBar from './components/menu/TaskBar';
+import Search from './components/search/Search';
+import CourseManager from './CourseManager';
+import { AlertData } from './types/AlertTypes';
+import { UserOptions, UserOptionValue } from './types/BaseTypes';
 import {
     Course,
     CourseLocation,
@@ -24,12 +28,8 @@ import {
     PlanModificationFunctions,
     PlanSpecialFunctions,
 } from './types/PlanTypes';
-import { AlertData } from './types/AlertTypes';
-import { UserOptions, UserOptionValue } from './types/BaseTypes';
-import Account from './Account';
 import PlanError from './utility/PlanError';
-import debug from 'debug';
-import toast, { Toaster } from 'react-hot-toast';
+import Utility from './utility/Utility';
 var d = debug('main');
 
 const VERSION = process.env.REACT_APP_VERSION ?? 'UNKNOWN';
@@ -180,6 +180,34 @@ class App extends React.Component<{}, AppState> {
                 this.setState({ loadingLogin: false });
             });
         }
+
+        toast(
+            (t) => (
+                <span
+                    className={
+                        this.state.switches.get.dark
+                            ? 'text-red-200'
+                            : 'text-sky-500'
+                    }
+                >
+                    I'm restructuring the account services and authentication
+                    system today. Plan NU will be available the whole time but I
+                    recommend against making changes to account plans just for
+                    today (July 27) because you may encounter problems when
+                    trying to save your changes. ONLY account plans are affected
+                    JUST for today. Thanks!
+                    <button
+                        className="text-gray-400 px-2 opacity-60 hover:opacity-90"
+                        onClick={() => toast.dismiss(t.id)}
+                    >
+                        Dismiss
+                    </button>
+                </span>
+            ),
+            {
+                duration: 20000,
+            }
+        );
     }
 
     initializePlan(params: URLSearchParams, callback: () => void) {
