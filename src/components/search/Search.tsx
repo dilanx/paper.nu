@@ -1,5 +1,6 @@
 import {
     ArrowRightIcon,
+    ArrowSmLeftIcon,
     CollectionIcon,
     DotsHorizontalIcon,
     ExternalLinkIcon,
@@ -10,6 +11,8 @@ import React from 'react';
 import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
 import {
+    FilterOptions,
+    SearchFilter,
     SearchResultsElements,
     SearchShortcut,
     UserOptions,
@@ -45,6 +48,7 @@ interface SearchProps {
 interface SearchState {
     search: string;
     mode: SearchMode;
+    filter: SearchFilter;
     current?: Course;
     scheduleCurrent?: string;
     shortcut?: SearchShortcut;
@@ -56,8 +60,27 @@ class Search extends React.Component<SearchProps, SearchState> {
     constructor(props: SearchProps) {
         super(props);
 
-        this.state = { search: '', mode: SearchMode.NORMAL };
+        this.state = {
+            search: '',
+            mode: SearchMode.NORMAL,
+            filter: {
+                get: {},
+                set: (filter) => this.updateFilter(filter),
+            },
+        };
         this.searchFieldRef = React.createRef();
+    }
+
+    updateFilter(filter: Partial<FilterOptions>) {
+        this.setState({
+            filter: {
+                ...this.state.filter,
+                get: {
+                    ...this.state.filter.get,
+                    ...filter,
+                },
+            },
+        });
     }
 
     searchMessage(title: string, subtitle: string) {
@@ -325,19 +348,33 @@ class Search extends React.Component<SearchProps, SearchState> {
                                     <SearchButton
                                         active={
                                             mode === SearchMode.BROWSE
-                                                ? 'blue'
+                                                ? 'green'
                                                 : undefined
                                         }
-                                        action={() =>
+                                        action={() => {
+                                            if (this.state.filter.get.school) {
+                                                this.updateFilter({
+                                                    school: undefined,
+                                                });
+                                                return;
+                                            }
+
                                             this.setState({
                                                 mode:
                                                     mode === SearchMode.BROWSE
                                                         ? SearchMode.NORMAL
                                                         : SearchMode.BROWSE,
-                                            })
-                                        }
+                                            });
+                                        }}
                                     >
-                                        Browse
+                                        {this.state.filter.get.school ? (
+                                            <div className="flex w-full justify-center items-center gap-1">
+                                                <ArrowSmLeftIcon className="w-5 h-5" />{' '}
+                                                Back
+                                            </div>
+                                        ) : (
+                                            'Browse'
+                                        )}
                                     </SearchButton>
                                     <SearchButton
                                         active={
@@ -345,14 +382,17 @@ class Search extends React.Component<SearchProps, SearchState> {
                                                 ? 'orange'
                                                 : undefined
                                         }
-                                        action={() =>
+                                        action={() => {
+                                            this.updateFilter({
+                                                school: undefined,
+                                            });
                                             this.setState({
                                                 mode:
                                                     mode === SearchMode.ADVANCED
                                                         ? SearchMode.NORMAL
                                                         : SearchMode.ADVANCED,
-                                            })
-                                        }
+                                            });
+                                        }}
                                     >
                                         Advanced
                                     </SearchButton>
@@ -361,7 +401,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                         </div>
                         {queryEmpty &&
                             this.state.mode === SearchMode.BROWSE && (
-                                <SearchBrowse />
+                                <SearchBrowse filter={this.state.filter} />
                             )}
                         {results}
                     </>

@@ -132,5 +132,3 @@ export interface ScheduleModificationFunctions {
     addScheduleBookmark: (course: ScheduleCourse) => void;
     removeScheduleBookmark: (course: ScheduleCourse) => void;
 }
-
-export interface ScheduleSearchFilter {}

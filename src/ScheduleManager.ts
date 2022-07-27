@@ -2,14 +2,18 @@ import debug from 'debug';
 import JSONSchoolData from './data/school.json';
 import JSONCourseData from './data/schedule_data.json';
 import PlanManager from './PlanManager';
-import { SearchError, SearchResults, UserOptions } from './types/BaseTypes';
+import {
+    FilterOptions,
+    SearchError,
+    SearchResults,
+    UserOptions,
+} from './types/BaseTypes';
 import {
     RawSchoolData,
     ScheduleCourse,
     ScheduleData,
     ScheduleDataMap,
     ScheduleLocation,
-    ScheduleSearchFilter,
     ScheduleSection,
 } from './types/ScheduleTypes';
 var ds = debug('schedule-manager:ser');
@@ -92,7 +96,7 @@ const ScheduleManager = {
 
     search: (
         query: string,
-        filter?: ScheduleSearchFilter,
+        filter?: FilterOptions,
         ignoreTooShort = false
     ): SearchResults<ScheduleCourse> | SearchError => {
         let { terms, shortcut } = PlanManager.prepareQuery(query);
