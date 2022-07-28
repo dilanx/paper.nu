@@ -180,34 +180,6 @@ class App extends React.Component<{}, AppState> {
                 this.setState({ loadingLogin: false });
             });
         }
-
-        toast(
-            (t) => (
-                <span
-                    className={
-                        this.state.switches.get.dark
-                            ? 'text-red-200'
-                            : 'text-sky-500'
-                    }
-                >
-                    I'm restructuring the account services and authentication
-                    system! Plan NU will be available the whole time but I
-                    recommend against making changes to account plans on July 27
-                    and July 28 because you may encounter problems when trying
-                    to save your changes. Only account plans are affected.
-                    Thanks!
-                    <button
-                        className="text-gray-400 px-2 opacity-60 hover:opacity-90"
-                        onClick={() => toast.dismiss(t.id)}
-                    >
-                        Dismiss
-                    </button>
-                </span>
-            ),
-            {
-                duration: 20000,
-            }
-        );
     }
 
     initializePlan(params: URLSearchParams, callback: () => void) {
