@@ -27,11 +27,11 @@ function BrowseButton({ symbol, name, action, color }: BrowseButtonProps) {
 
 interface SearchBrowseProps {
     filter: SearchFilter;
+    school?: string;
+    setSchool: (school: string) => void;
 }
 
-function SearchBrowse({ filter }: SearchBrowseProps) {
-    const school = filter.get.school;
-
+function SearchBrowse({ filter, school, setSchool }: SearchBrowseProps) {
     return (
         <div className="m-4 flex flex-col gap-3">
             {!school &&
@@ -39,7 +39,7 @@ function SearchBrowse({ filter }: SearchBrowseProps) {
                     <BrowseButton
                         symbol={s}
                         name={ScheduleManager.getSchoolName(s)}
-                        action={() => filter.set({ school: s })}
+                        action={() => setSchool(s)}
                         key={`browse-school-${i}`}
                     />
                 ))}

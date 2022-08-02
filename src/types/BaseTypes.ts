@@ -67,15 +67,16 @@ export type SearchError = 'no_query' | 'too_short' | 'no_results';
 export interface SearchFilter {
     get: FilterOptions;
     set: (filter: Partial<FilterOptions>) => void;
+    remove: (filter: keyof FilterOptions) => void;
 }
 
 export interface FilterOptions {
-    school?: string;
     subject?: string;
 }
 
 export interface SearchResultsElements {
     results?: JSX.Element[];
+    placeholder?: JSX.Element[];
     shortcut?: SearchShortcut;
 }
 

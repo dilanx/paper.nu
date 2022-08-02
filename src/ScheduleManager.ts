@@ -96,12 +96,10 @@ const ScheduleManager = {
 
     search: (
         query: string,
-        filter?: FilterOptions,
-        ignoreTooShort = false
+        filter?: FilterOptions
     ): SearchResults<ScheduleCourse> | SearchError => {
         let { terms, shortcut } = PlanManager.prepareQuery(query);
-
-        if (!ignoreTooShort) {
+        if (!filter || Object.keys(filter).length === 0) {
             for (let term of terms) {
                 if (term.length === 0) {
                     return 'no_query';

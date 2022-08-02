@@ -170,6 +170,8 @@ let Utility = {
                 return 'lab';
             case 'SEM':
                 return 'seminar';
+            case 'PED':
+                return 'performance';
             default:
                 return component;
         }
