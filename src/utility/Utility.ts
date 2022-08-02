@@ -1,6 +1,6 @@
 import { ExclamationIcon } from '@heroicons/react/outline';
 import { AlertData } from '../types/AlertTypes';
-import { Color } from '../types/BaseTypes';
+import { Color, FilterOptions } from '../types/BaseTypes';
 import { PlanErrorLocation } from '../types/ErrorTypes';
 import { ScheduleDataMap, ScheduleDate, Time } from '../types/ScheduleTypes';
 
@@ -287,6 +287,13 @@ let Utility = {
 
     capitalizeFirstLetter: (text: string) => {
         return text.charAt(0).toUpperCase() + text.slice(1);
+    },
+
+    getFilterColor: (filterName: keyof FilterOptions): Color => {
+        switch (filterName) {
+            case 'subject':
+                return 'blue';
+        }
     },
 };
 
