@@ -99,7 +99,8 @@ const ScheduleManager = {
         filter?: FilterOptions
     ): SearchResults<ScheduleCourse> | SearchError => {
         let { terms, shortcut } = PlanManager.prepareQuery(query);
-        if (!filter || Object.keys(filter).length === 0) {
+        const filterExists = filter && Object.keys(filter).length > 0;
+        if (!filterExists) {
             for (let term of terms) {
                 if (term.length === 0) {
                     return 'no_query';
@@ -110,10 +111,20 @@ const ScheduleManager = {
             }
         }
 
+        let data = scheduleData;
+        if (filterExists) {
+            data = data.filter((course) => {
+                if (filter.subject && course.subject !== filter.subject) {
+                    return false;
+                }
+                return true;
+            });
+        }
+
         let courseIdResults: ScheduleCourse[] = [];
         let courseNameResults: ScheduleCourse[] = [];
 
-        scheduleData.forEach((course) => {
+        data.forEach((course) => {
             const id = course.subject + ' ' + course.number;
             for (let term of terms) {
                 if (id.toLowerCase().replace(/-|_/g, ' ').includes(term)) {
