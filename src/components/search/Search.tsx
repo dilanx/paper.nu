@@ -34,6 +34,7 @@ import MiniContentBlock from './MiniContentBlock';
 import SearchBrowse from './SearchBrowse';
 import SearchButton from './SearchButton';
 import SearchClass from './SearchClass';
+import SearchFilterDisplay from './SearchFilterDisplay';
 import SearchScheduleClass from './SearchScheduleClass';
 
 interface SearchProps {
@@ -309,6 +310,7 @@ class Search extends React.Component<SearchProps, SearchState> {
 
         const queryEmpty = search.length === 0;
         const mode = this.state.mode;
+        const filter = this.state.filter;
 
         return (
             <div
@@ -359,6 +361,9 @@ class Search extends React.Component<SearchProps, SearchState> {
                                         {shortcut.with}
                                     </span>
                                 </p>
+                            )}
+                            {Object.keys(filter.get).length > 0 && (
+                                <SearchFilterDisplay filter={filter} />
                             )}
                             {queryEmpty && (
                                 <div className="flex justify-center gap-4 m-4">
