@@ -171,10 +171,10 @@ export default function Alert(props: AlertProps) {
                                                 ${
                                                     inputText.length === 0 ||
                                                     !data.textInput.match
-                                                        ? 'active:border-gray-500 dark:active:border-gray-300'
+                                                        ? 'focus:border-gray-500 focus:active:border-gray-300'
                                                         : okay
-                                                        ? 'active:border-green-500 dark:active:border-green-500'
-                                                        : 'active:border-red-500 dark:active:border-red-500'
+                                                        ? 'focus:border-green-500 focus:active:border-green-500'
+                                                        : 'focus:border-red-500 focus:active:border-red-500'
                                                 }`}
                                                         placeholder={
                                                             data.textInput

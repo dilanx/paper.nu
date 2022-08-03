@@ -295,6 +295,42 @@ let Utility = {
                 return 'blue';
         }
     },
+
+    parseTime: (text: string): Time | undefined => {
+        let timeString = text.toLowerCase();
+        const timeRegex = /^\d{1,2}:\d{1,2} ?(a|am|p|pm)?$/i;
+
+        if (!timeRegex.test(timeString)) {
+            return undefined;
+        }
+
+        const meridian = timeString.match(/[ap]/i)?.[0];
+        let [h, m] = timeString
+            .replace(/[ apm]/gi, '')
+            .split(':')
+            .map((p) => parseInt(p));
+        if (isNaN(h) || isNaN(m)) {
+            return undefined;
+        }
+        if (meridian === 'p') {
+            if (h > 12) return;
+            if (h < 12) h += 12;
+        }
+        if (meridian === 'a') {
+            if (h > 12) return;
+            if (h === 12) h = 0;
+        }
+
+        if (h < 0 || m < 0) {
+            return undefined;
+        }
+
+        if (h > 23 || m > 59) {
+            return undefined;
+        }
+
+        return { h, m };
+    },
 };
 
 export default Utility;

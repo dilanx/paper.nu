@@ -207,6 +207,19 @@ const ScheduleManager = {
         return school.schools[symbol]?.name ?? 'Unknown';
     },
 
+    isSchoolSubject: (symbol: string) => {
+        for (const s in school.schools) {
+            if (
+                school.schools[s].subjects.some(
+                    (subject) => subject.symbol === symbol
+                )
+            ) {
+                return true;
+            }
+        }
+        return false;
+    },
+
     getSchoolSubjects: (symbol: string) => {
         return school.schools[symbol]?.subjects ?? [];
     },
