@@ -71,8 +71,8 @@ function SearchFilterBadge({ name, value, remove }: SearchFilterBadgeProps) {
         {value}
       </p>
       <p
-        className="absolute top-0 left-0 w-full h-full text-white bg-blue-400
-                    rounded-lg hidden group-hover:flex justify-center items-center bg-opacity-80 group-active:bg-opacity-100"
+        className={`absolute top-0 left-0 w-full h-full text-white bg-${color}-400
+                    rounded-lg hidden group-hover:flex justify-center items-center bg-opacity-80 group-active:bg-opacity-100`}
       >
         <XIcon className="w-4 h-4" />
       </p>
@@ -103,7 +103,7 @@ function SearchFilterDisplay({ filter }: SearchFilterDisplayProps) {
       />
     );
   });
-  return <div className="flex gap-2 justify-center">{badges}</div>;
+  return <div className="flex flex-wrap gap-2 justify-center">{badges}</div>;
 }
 
 export default SearchFilterDisplay;

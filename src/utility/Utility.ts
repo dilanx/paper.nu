@@ -289,6 +289,10 @@ let Utility = {
     switch (filterBadgeName) {
       case 'subject':
         return 'blue';
+      case 'start':
+        return 'green';
+      case 'end':
+        return 'red';
       default:
         return 'gray';
     }
