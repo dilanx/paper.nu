@@ -6,6 +6,7 @@ import {
 } from '../../types/ScheduleTypes';
 import Utility from '../../utility/Utility';
 import { motion } from 'framer-motion';
+import { StarIcon } from '@heroicons/react/solid';
 
 interface SearchScheduleSectionProps {
   section: ScheduleSection;
@@ -35,7 +36,7 @@ function SearchScheduleSection({
   return (
     <motion.div variants={variants} className={`w-full my-4`}>
       <button
-        className={`w-full block text-left border-2 border-transparent
+        className={`w-full block text-left border-2 border-transparent relative
                 bg-gray-200 dark:bg-gray-700 dark:text-white bg-opacity-50 rounded-lg ${
                   disabled
                     ? 'opacity-60 cursor-not-allowed'

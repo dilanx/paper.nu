@@ -335,6 +335,20 @@ let Utility = {
     return { h, m };
   },
 
+  timeWithinRange: (time: Time, start?: Time, end?: Time) => {
+    if (start) {
+      if (time.h < start.h) return false;
+      if (time.h === start.h && time.m < start.m) return false;
+    }
+
+    if (end) {
+      if (time.h > end.h) return false;
+      if (time.h === end.h && time.m > end.m) return false;
+    }
+
+    return true;
+  },
+
   forAllChildElements: (
     root: React.ReactNode,
     callback: (element: React.ReactElement) => void

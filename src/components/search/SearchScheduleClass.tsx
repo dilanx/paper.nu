@@ -9,6 +9,8 @@ import {
   ScheduleInteractions,
   ScheduleModificationFunctions,
 } from '../../types/ScheduleTypes';
+import { FilterOptions } from '../../types/SearchTypes';
+import Utility from '../../utility/Utility';
 import SearchScheduleSection from './SearchScheduleSection';
 
 interface SearchScheduleClassProps {
@@ -20,6 +22,7 @@ interface SearchScheduleClassProps {
   sf: ScheduleModificationFunctions;
   interactions: ScheduleInteractions;
   fromBookmarks?: boolean;
+  filter?: FilterOptions;
 }
 
 const variants = {
@@ -35,7 +38,8 @@ const variants = {
 };
 
 function SearchScheduleClass(props: SearchScheduleClassProps) {
-  let course = props.course;
+  const course = props.course;
+  const filter = props.filter;
 
   let item = { course };
 
@@ -56,6 +60,8 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
     props.schedule.bookmarks.some((bookmarkCourse) => {
       return bookmarkCourse.course_id === course.course_id;
     });
+
+  let hidden = 0;
 
   return (
     <div
@@ -86,6 +92,24 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
           className="px-2 py-4"
         >
           {course.sections.map((section) => {
+            if (section.start_time && section.end_time) {
+              const visible =
+                Utility.timeWithinRange(
+                  section.start_time,
+                  filter?.startAfter,
+                  filter?.startBefore
+                ) &&
+                Utility.timeWithinRange(
+                  section.end_time,
+                  filter?.endAfter,
+                  filter?.endBefore
+                );
+              if (!visible) {
+                hidden++;
+                return undefined;
+              }
+            }
+
             return (
               <SearchScheduleSection
                 section={section}
@@ -97,6 +121,11 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
               />
             );
           })}
+          {hidden > 0 && (
+            <p className="m-0 text-sm text-center text-gray-400 font-medium">
+              {hidden} section{hidden > 1 ? 's' : ''} hidden by filter
+            </p>
+          )}
         </motion.div>
       )}
 

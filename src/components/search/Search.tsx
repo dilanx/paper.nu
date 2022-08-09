@@ -244,6 +244,7 @@ class Search extends React.Component<SearchProps, SearchState> {
             interactions={this.props.scheduleInteractions}
             schedule={this.props.schedule}
             sf={this.props.sf}
+            filter={filter}
             key={`search-${course.course_id}`}
           />
         );
