@@ -1,134 +1,134 @@
 export interface Time {
-    h: number;
-    m: number;
+  h: number;
+  m: number;
 }
 
 export interface ScheduleData {
-    schedule: ScheduleDataMap;
-    bookmarks: ScheduleBookmarks;
+  schedule: ScheduleDataMap;
+  bookmarks: ScheduleBookmarks;
 }
 
 export interface ScheduleDataMap {
-    [section_id: string]: ScheduleSection;
+  [section_id: string]: ScheduleSection;
 }
 
 export interface ValidScheduleDataMap {
-    [section_id: string]: ValidScheduleSection;
+  [section_id: string]: ValidScheduleSection;
 }
 
 export type ScheduleBookmarks = ScheduleCourse[];
 
 export interface ScheduleCourse {
-    course_id: string;
-    school: string;
-    title: string;
-    subject: string;
-    number: string;
-    sections: ScheduleSection[];
+  course_id: string;
+  school: string;
+  title: string;
+  subject: string;
+  number: string;
+  sections: ScheduleSection[];
 }
 
 export interface ScheduleSection {
-    section_id: string;
-    instructors?: string[];
-    mode: string | null;
-    title: string;
-    subject: string;
-    number: string;
-    section: string;
-    meeting_days?: string;
-    start_time?: Time;
-    end_time?: Time;
-    room?: {
-        building_name?: string;
-    };
-    start_date?: string;
-    end_date?: string;
-    component: string;
-    course_descriptions?: {
-        name: string;
-        desc: string;
-    }[];
-    preview?: boolean;
+  section_id: string;
+  instructors?: string[];
+  mode: string | null;
+  title: string;
+  subject: string;
+  number: string;
+  section: string;
+  meeting_days?: string;
+  start_time?: Time;
+  end_time?: Time;
+  room?: {
+    building_name?: string;
+  };
+  start_date?: string;
+  end_date?: string;
+  component: string;
+  course_descriptions?: {
+    name: string;
+    desc: string;
+  }[];
+  preview?: boolean;
 }
 
 export interface ValidScheduleSection extends ScheduleSection {
-    start_date: string;
-    end_date: string;
-    start_time: Time;
-    end_time: Time;
-    meeting_days: string;
+  start_date: string;
+  end_date: string;
+  start_time: Time;
+  end_time: Time;
+  meeting_days: string;
 }
 
 export function isValidScheduleSection(
-    section: ScheduleSection | undefined
+  section: ScheduleSection | undefined
 ): section is ValidScheduleSection {
-    return (
-        !!section &&
-        !!section.start_date &&
-        !!section.end_date &&
-        !!section.start_time &&
-        !!section.end_time &&
-        !!section.meeting_days
-    );
+  return (
+    !!section &&
+    !!section.start_date &&
+    !!section.end_date &&
+    !!section.start_time &&
+    !!section.end_time &&
+    !!section.meeting_days
+  );
 }
 
 export interface RawSchoolData {
-    locations: ScheduleLocations;
-    schools: UniversitySchools;
+  locations: ScheduleLocations;
+  schools: UniversitySchools;
 }
 
 export interface UniversitySchools {
-    [symbol: string]: UniversitySchool;
+  [symbol: string]: UniversitySchool;
 }
 
 export interface UniversitySchool {
-    name: string;
-    subjects: UniversitySubject[];
+  name: string;
+  subjects: UniversitySubject[];
 }
 
 export interface UniversitySubject {
-    symbol: string;
-    name: string;
+  symbol: string;
+  name: string;
 }
 
 export interface ScheduleLocations {
-    [building: string]: ScheduleLocation | null;
+  [building: string]: ScheduleLocation | null;
 }
 
 export interface ScheduleLocation {
-    lat: number;
-    lon: number;
+  lat: number;
+  lon: number;
 }
 
 export interface ScheduleDate {
-    y: number;
-    m: number;
-    d: number;
+  y: number;
+  m: number;
+  d: number;
 }
 
 export interface ScheduleHourMap {
-    [hour: number]: ValidScheduleSection[];
+  [hour: number]: ValidScheduleSection[];
 }
 
 export interface ScheduleLayoutMap {
-    [sectionId: string]: { i: number; l: number };
+  [sectionId: string]: { i: number; l: number };
 }
 
 export interface ScheduleInteraction<T> {
-    get?: T;
-    set: (value: T) => void;
-    clear: () => void;
+  get?: T;
+  set: (value: T) => void;
+  clear: () => void;
 }
 export interface ScheduleInteractions {
-    hoverSection: ScheduleInteraction<string>;
-    hoverDelete: ScheduleInteraction<boolean>;
-    previewSection: ScheduleInteraction<ScheduleSection>;
-    multiClear: (interactions: (keyof ScheduleInteractions)[]) => void;
+  hoverSection: ScheduleInteraction<string>;
+  hoverDelete: ScheduleInteraction<boolean>;
+  previewSection: ScheduleInteraction<ScheduleSection>;
+  multiClear: (interactions: (keyof ScheduleInteractions)[]) => void;
 }
 
 export interface ScheduleModificationFunctions {
-    addSection: (section: ScheduleSection) => void;
-    removeSection: (section: ScheduleSection) => void;
-    addScheduleBookmark: (course: ScheduleCourse) => void;
-    removeScheduleBookmark: (course: ScheduleCourse) => void;
+  addSection: (section: ScheduleSection) => void;
+  removeSection: (section: ScheduleSection) => void;
+  addScheduleBookmark: (course: ScheduleCourse) => void;
+  removeScheduleBookmark: (course: ScheduleCourse) => void;
 }
