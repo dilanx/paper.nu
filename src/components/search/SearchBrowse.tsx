@@ -58,7 +58,9 @@ function SearchBrowse({ filter, school, setSchool }: SearchBrowseProps) {
                         <BrowseButton
                             symbol={s.symbol}
                             name={s.name}
-                            action={() => filter.set({ subject: s.symbol })}
+                            action={() => {
+                                filter.set({ subject: s.symbol }, true);
+                            }}
                             color={ScheduleManager.getCourseColor(s.symbol)}
                             key={`browse-subject-${i}`}
                         />

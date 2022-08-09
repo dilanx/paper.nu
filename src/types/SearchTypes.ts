@@ -15,7 +15,7 @@ export type SearchError = 'no_query' | 'too_short' | 'no_results';
 
 export interface SearchFilter {
     get: FilterOptions;
-    set: (filter: Partial<FilterOptions>) => void;
+    set: (filter: Partial<FilterOptions>, returnToNormalMode?: boolean) => void;
 }
 
 export interface FilterOptions {

@@ -300,7 +300,8 @@ let Utility = {
         }
     },
 
-    parseTime: (text: string): Time | undefined => {
+    parseTime: (text?: string): Time | undefined => {
+        if (!text) return;
         let timeString = text.toLowerCase();
         const timeRegex = /^\d{1,2}:\d{1,2} ?(a|am|p|pm)?$/i;
 
@@ -350,6 +351,10 @@ let Utility = {
             }
         }
         React.Children.forEach(root, rec);
+    },
+
+    safe: <T = any>(value: T): T | undefined => {
+        if (value) return value;
     },
 };
 

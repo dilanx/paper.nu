@@ -94,13 +94,17 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
                         className="block mx-auto my-0 px-8 py-1 font-medium rounded-md bg-orange-400 text-white
                         hover:opacity-80 active:opacity-70 disabled:opacity-60 disabled:cursor-not-allowed transition-opacity duration-150"
                         onClick={() => {
-                            filter.set({
-                                subject,
-                                startAfter: Utility.parseTime(startAfter),
-                                startBefore: Utility.parseTime(startBefore),
-                                endAfter: Utility.parseTime(endAfter),
-                                endBefore: Utility.parseTime(endBefore),
-                            });
+                            filter.set(
+                                {
+                                    subject:
+                                        Utility.safe(subject)?.toUpperCase(),
+                                    startAfter: Utility.parseTime(startAfter),
+                                    startBefore: Utility.parseTime(startBefore),
+                                    endAfter: Utility.parseTime(endAfter),
+                                    endBefore: Utility.parseTime(endBefore),
+                                },
+                                true
+                            );
                         }}
                     >
                         Apply

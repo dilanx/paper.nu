@@ -69,14 +69,15 @@ class Search extends React.Component<SearchProps, SearchState> {
             mode: SearchMode.NORMAL,
             filter: {
                 get: {},
-                set: (filter) => this.updateFilter(filter),
+                set: (filter, returnToNormalMode = false) =>
+                    this.updateFilter(filter, returnToNormalMode),
             },
             forceDisplay: false,
         };
         this.searchFieldRef = React.createRef();
     }
 
-    updateFilter(filter: Partial<FilterOptions>) {
+    updateFilter(filter: Partial<FilterOptions>, returnToNormalMode: boolean) {
         const updated = this.state.filter.get;
         for (const x in filter) {
             const f = x as keyof FilterOptions;
@@ -92,6 +93,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                 ...this.state.filter,
                 get: updated,
             },
+            mode: returnToNormalMode ? SearchMode.NORMAL : this.state.mode,
         });
     }
 
@@ -124,7 +126,16 @@ class Search extends React.Component<SearchProps, SearchState> {
         appMode: Mode,
         searchMode: SearchMode
     ): SearchResultsElements {
-        if (query.length === 0 && searchMode === SearchMode.NORMAL) {
+        if (searchMode !== SearchMode.NORMAL) {
+            return {};
+        }
+
+        let results =
+            appMode === Mode.PLAN
+                ? PlanManager.search(query)
+                : ScheduleManager.search(query, filter);
+
+        if (results === 'no_query') {
             return {
                 placeholder:
                     appMode === Mode.PLAN
@@ -215,14 +226,6 @@ class Search extends React.Component<SearchProps, SearchState> {
             };
         }
 
-        let results =
-            appMode === Mode.PLAN
-                ? PlanManager.search(query)
-                : ScheduleManager.search(query, filter);
-
-        if (results === 'no_query') {
-            return {};
-        }
         if (results === 'too_short') {
             return {
                 placeholder: [
@@ -387,8 +390,13 @@ class Search extends React.Component<SearchProps, SearchState> {
                                                 : undefined
                                         }
                                         action={() => {
-                                            if (this.state.filter.get.subject) {
-                                                this.removeFilter('subject');
+                                            if (
+                                                searchMode !== SearchMode.BROWSE
+                                            ) {
+                                                this.setState({
+                                                    mode: SearchMode.BROWSE,
+                                                    browseSchool: undefined,
+                                                });
                                                 return;
                                             }
                                             if (this.state.browseSchool) {
@@ -399,15 +407,11 @@ class Search extends React.Component<SearchProps, SearchState> {
                                             }
 
                                             this.setState({
-                                                mode:
-                                                    searchMode ===
-                                                    SearchMode.BROWSE
-                                                        ? SearchMode.NORMAL
-                                                        : SearchMode.BROWSE,
+                                                mode: SearchMode.NORMAL,
                                             });
                                         }}
                                     >
-                                        {this.state.filter.get.subject ||
+                                        {searchMode === SearchMode.BROWSE &&
                                         this.state.browseSchool ? (
                                             <div className="flex w-full justify-center items-center gap-1">
                                                 <ArrowSmLeftIcon className="w-5 h-5" />{' '}
@@ -424,12 +428,22 @@ class Search extends React.Component<SearchProps, SearchState> {
                                                 : undefined
                                         }
                                         action={() => {
+                                            if (
+                                                searchMode ===
+                                                SearchMode.ADVANCED
+                                            ) {
+                                                this.setState({
+                                                    mode: SearchMode.NORMAL,
+                                                    filter: {
+                                                        ...this.state.filter,
+                                                        get: {},
+                                                    },
+                                                });
+                                                return;
+                                            }
+
                                             this.setState({
-                                                mode:
-                                                    searchMode ===
-                                                    SearchMode.ADVANCED
-                                                        ? SearchMode.NORMAL
-                                                        : SearchMode.ADVANCED,
+                                                mode: SearchMode.ADVANCED,
                                                 browseSchool: undefined,
                                             });
                                         }}
