@@ -434,10 +434,6 @@ class Search extends React.Component<SearchProps, SearchState> {
                                             ) {
                                                 this.setState({
                                                     mode: SearchMode.NORMAL,
-                                                    filter: {
-                                                        ...this.state.filter,
-                                                        get: {},
-                                                    },
                                                 });
                                                 return;
                                             }
