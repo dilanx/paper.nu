@@ -1,13 +1,8 @@
 import debug from 'debug';
-import JSONSchoolData from './data/school.json';
 import JSONCourseData from './data/schedule_data.json';
+import JSONSchoolData from './data/school.json';
 import PlanManager from './PlanManager';
-import {
-    FilterOptions,
-    SearchError,
-    SearchResults,
-    UserOptions,
-} from './types/BaseTypes';
+import { UserOptions } from './types/BaseTypes';
 import {
     RawSchoolData,
     ScheduleCourse,
@@ -16,6 +11,7 @@ import {
     ScheduleLocation,
     ScheduleSection,
 } from './types/ScheduleTypes';
+import { FilterOptions, SearchError, SearchResults } from './types/SearchTypes';
 var ds = debug('schedule-manager:ser');
 var dp = debug('schedule-manager:op');
 

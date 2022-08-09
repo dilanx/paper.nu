@@ -1,12 +1,12 @@
 import debug from 'debug';
 import JSONCourseData from './data/plan_data.json';
+import { UserOptions } from './types/BaseTypes';
+import { Course, PlanData, RawCourseData } from './types/PlanTypes';
 import {
     SearchError,
     SearchResults,
     SearchShortcut,
-    UserOptions,
-} from './types/BaseTypes';
-import { Course, PlanData, RawCourseData } from './types/PlanTypes';
+} from './types/SearchTypes';
 var ds = debug('plan-manager:ser');
 var dp = debug('plan-manager:op');
 

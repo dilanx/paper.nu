@@ -51,33 +51,6 @@ export type Color =
 
 export type ColorMap = { [key: string]: Color };
 
-export interface SearchResults<T> {
-    results: T[];
-    shortcut?: SearchShortcut;
-    limitExceeded?: number;
-}
-
-export interface SearchShortcut {
-    replacing: string;
-    with: string;
-}
-
-export type SearchError = 'no_query' | 'too_short' | 'no_results';
-
-export interface SearchFilter {
-    get: FilterOptions;
-    set: (filter: Partial<FilterOptions>) => void;
-    remove: (filter: keyof FilterOptions) => void;
-}
-
-export interface FilterOptions {
-    subject?: string;
-}
-
-export interface SearchResultsElements {
-    results?: JSX.Element[];
-    placeholder?: JSX.Element[];
-    shortcut?: SearchShortcut;
-}
-
 export type IconElement = (props: React.ComponentProps<'svg'>) => JSX.Element;
+
+export type StringMap = { [key: string]: string };

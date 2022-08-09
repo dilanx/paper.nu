@@ -1,15 +1,70 @@
 import { XIcon } from '@heroicons/react/outline';
-import { FilterOptions, SearchFilter } from '../../types/BaseTypes';
+import {
+    FilterBadgeName,
+    FilterDisplay,
+    FilterDisplayMap,
+    FilterOptions,
+    SearchFilter,
+} from '../../types/SearchTypes';
 import Utility from '../../utility/Utility';
 
+const display = (
+    value: string,
+    ...relatedKeys: (keyof FilterOptions)[]
+): FilterDisplay => ({ value, relatedKeys });
+
+function filtersAsStrings({
+    subject,
+    startAfter,
+    startBefore,
+    endAfter,
+    endBefore,
+}: FilterOptions): FilterDisplayMap {
+    const filters: FilterDisplayMap = {};
+
+    if (subject) {
+        filters['subject'] = display(subject, 'subject');
+    }
+
+    if (startAfter || startBefore) {
+        const after = startAfter
+            ? Utility.convertTime(startAfter, true)
+            : '12:00 AM';
+        const before = startBefore
+            ? Utility.convertTime(startBefore, true)
+            : '11:59 PM';
+        filters['start'] = display(
+            `${after} - ${before}`,
+            'startAfter',
+            'startBefore'
+        );
+    }
+
+    if (endAfter || endBefore) {
+        const after = endAfter
+            ? Utility.convertTime(endAfter, true)
+            : '12:00 AM';
+        const before = endBefore
+            ? Utility.convertTime(endBefore, true)
+            : '11:59 PM';
+        filters['end'] = display(
+            `${after} - ${before}`,
+            'endAfter',
+            'endBefore'
+        );
+    }
+
+    return filters;
+}
+
 interface SearchFilterBadgeProps {
-    name: keyof FilterOptions;
+    name: FilterBadgeName;
     value: string;
     remove: () => void;
 }
 
 function SearchFilterBadge({ name, value, remove }: SearchFilterBadgeProps) {
-    const color = Utility.getFilterColor(name);
+    const color = Utility.getFilterBadgeColor(name);
     return (
         <button
             className="flex text-xs rounded-lg overflow-hidden group relative shadow-sm"
@@ -36,18 +91,24 @@ interface SearchFilterDisplayProps {
 }
 
 function SearchFilterDisplay({ filter }: SearchFilterDisplayProps) {
-    const badges = [];
-    for (const f in filter.get) {
-        const name = f as keyof FilterOptions;
-        badges.push(
+    const filterDisplay = filtersAsStrings(filter.get);
+    const badges = Object.keys(filterDisplay).map((f) => {
+        const name = f as FilterBadgeName;
+        const d = filterDisplay[name]!;
+        const toRemove: Partial<FilterOptions> = {};
+        for (const key of d.relatedKeys) {
+            toRemove[key] = undefined;
+        }
+
+        return (
             <SearchFilterBadge
                 name={name}
-                value={filter.get[name] as string}
-                remove={() => filter.remove(name)}
+                value={d.value}
+                remove={() => filter.set(toRemove)}
                 key={`filter-badge-${f}`}
             />
         );
-    }
+    });
     return <div className="flex gap-2 justify-center">{badges}</div>;
 }
 

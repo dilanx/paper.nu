@@ -1,5 +1,6 @@
 import ScheduleManager from '../../ScheduleManager';
-import { Color, SearchFilter } from '../../types/BaseTypes';
+import { Color } from '../../types/BaseTypes';
+import { SearchFilter } from '../../types/SearchTypes';
 
 interface BrowseButtonProps {
     symbol: string;

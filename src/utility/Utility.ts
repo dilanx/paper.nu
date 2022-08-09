@@ -1,8 +1,10 @@
 import { ExclamationIcon } from '@heroicons/react/outline';
+import React from 'react';
 import { AlertData } from '../types/AlertTypes';
-import { Color, FilterOptions } from '../types/BaseTypes';
+import { Color } from '../types/BaseTypes';
 import { PlanErrorLocation } from '../types/ErrorTypes';
 import { ScheduleDataMap, ScheduleDate, Time } from '../types/ScheduleTypes';
+import { FilterBadgeName } from '../types/SearchTypes';
 
 let Utility = {
     BACKGROUND_LIGHT: '#FFFFFF',
@@ -141,7 +143,7 @@ let Utility = {
         return { y, m: m - 1, d };
     },
 
-    convertTime: ({ h, m }: Time, withAmPm?: boolean) => {
+    convertTime: ({ h, m }: Time, withAmPm = false) => {
         let pm = false;
         if (h > 12) {
             pm = true;
@@ -289,10 +291,12 @@ let Utility = {
         return text.charAt(0).toUpperCase() + text.slice(1);
     },
 
-    getFilterColor: (filterName: keyof FilterOptions): Color => {
-        switch (filterName) {
+    getFilterBadgeColor: (filterBadgeName: FilterBadgeName): Color => {
+        switch (filterBadgeName) {
             case 'subject':
                 return 'blue';
+            default:
+                return 'gray';
         }
     },
 
@@ -330,6 +334,22 @@ let Utility = {
         }
 
         return { h, m };
+    },
+
+    forAllChildElements: (
+        root: React.ReactNode,
+        callback: (element: React.ReactElement) => void
+    ) => {
+        function rec(element: React.ReactNode) {
+            if (React.isValidElement(element)) {
+                callback(element);
+            }
+            const children = (element as any).props?.children;
+            if (children) {
+                React.Children.forEach(children, rec);
+            }
+        }
+        React.Children.forEach(root, rec);
     },
 };
 

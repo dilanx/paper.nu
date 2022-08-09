@@ -10,13 +10,7 @@ import { XCircleIcon } from '@heroicons/react/solid';
 import React from 'react';
 import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
-import {
-    FilterOptions,
-    SearchFilter,
-    SearchResultsElements,
-    SearchShortcut,
-    UserOptions,
-} from '../../types/BaseTypes';
+import { UserOptions } from '../../types/BaseTypes';
 import {
     Course,
     PlanData,
@@ -28,6 +22,12 @@ import {
     ScheduleInteractions,
     ScheduleModificationFunctions,
 } from '../../types/ScheduleTypes';
+import {
+    FilterOptions,
+    SearchFilter,
+    SearchResultsElements,
+    SearchShortcut,
+} from '../../types/SearchTypes';
 import { Mode, SearchMode } from '../../utility/Constants';
 import AddButtons from './AddButtons';
 import MiniContentBlock from './MiniContentBlock';
@@ -70,7 +70,6 @@ class Search extends React.Component<SearchProps, SearchState> {
             filter: {
                 get: {},
                 set: (filter) => this.updateFilter(filter),
-                remove: (filter) => this.removeFilter(filter),
             },
             forceDisplay: false,
         };
@@ -78,13 +77,20 @@ class Search extends React.Component<SearchProps, SearchState> {
     }
 
     updateFilter(filter: Partial<FilterOptions>) {
+        const updated = this.state.filter.get;
+        for (const x in filter) {
+            const f = x as keyof FilterOptions;
+            if (!filter[f]) {
+                delete updated[f];
+                continue;
+            }
+            updated[f] = filter[f] as any;
+        }
+
         this.setState({
             filter: {
                 ...this.state.filter,
-                get: {
-                    ...this.state.filter.get,
-                    ...filter,
-                },
+                get: updated,
             },
         });
     }
@@ -112,12 +118,12 @@ class Search extends React.Component<SearchProps, SearchState> {
         );
     }
 
-    getResults(): SearchResultsElements {
-        const query = this.state.search;
-        const filter = this.state.filter.get;
-        const appMode = this.props.switches.get.mode;
-        const searchMode = this.state.mode;
-
+    getResults(
+        query: string,
+        filter: FilterOptions,
+        appMode: Mode,
+        searchMode: SearchMode
+    ): SearchResultsElements {
         if (query.length === 0 && searchMode === SearchMode.NORMAL) {
             return {
                 placeholder:
@@ -302,16 +308,22 @@ class Search extends React.Component<SearchProps, SearchState> {
     }
 
     render() {
-        let search = this.state.search;
+        const search = this.state.search;
+        const appMode = this.props.switches.get.mode as Mode;
+        const searchMode = this.state.mode;
+        const filter = this.state.filter;
 
-        let { results, placeholder, shortcut } = this.getResults();
+        let { results, placeholder, shortcut } = this.getResults(
+            search,
+            filter.get,
+            appMode,
+            searchMode
+        );
 
         let current = this.state.current;
         let bookmarks = this.props.data.bookmarks;
 
         const queryEmpty = search.length === 0;
-        const mode = this.state.mode;
-        const filter = this.state.filter;
 
         return (
             <div
@@ -370,7 +382,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                                 <div className="flex justify-center gap-4 m-4">
                                     <SearchButton
                                         active={
-                                            mode === SearchMode.BROWSE
+                                            searchMode === SearchMode.BROWSE
                                                 ? 'green'
                                                 : undefined
                                         }
@@ -388,7 +400,8 @@ class Search extends React.Component<SearchProps, SearchState> {
 
                                             this.setState({
                                                 mode:
-                                                    mode === SearchMode.BROWSE
+                                                    searchMode ===
+                                                    SearchMode.BROWSE
                                                         ? SearchMode.NORMAL
                                                         : SearchMode.BROWSE,
                                             });
@@ -406,14 +419,15 @@ class Search extends React.Component<SearchProps, SearchState> {
                                     </SearchButton>
                                     <SearchButton
                                         active={
-                                            mode === SearchMode.ADVANCED
+                                            searchMode === SearchMode.ADVANCED
                                                 ? 'orange'
                                                 : undefined
                                         }
                                         action={() => {
                                             this.setState({
                                                 mode:
-                                                    mode === SearchMode.ADVANCED
+                                                    searchMode ===
+                                                    SearchMode.ADVANCED
                                                         ? SearchMode.NORMAL
                                                         : SearchMode.ADVANCED,
                                                 browseSchool: undefined,
@@ -427,7 +441,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                         </div>
                         {queryEmpty &&
                             !results &&
-                            (mode === SearchMode.BROWSE ? (
+                            (searchMode === SearchMode.BROWSE ? (
                                 <SearchBrowse
                                     filter={this.state.filter}
                                     school={this.state.browseSchool}
@@ -436,7 +450,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                                     }}
                                 />
                             ) : (
-                                mode === SearchMode.ADVANCED && (
+                                searchMode === SearchMode.ADVANCED && (
                                     <SearchAdvanced
                                         filter={this.state.filter}
                                     />
