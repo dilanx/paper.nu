@@ -27,11 +27,27 @@ interface SearchAdvancedProps {
 }
 
 function SearchAdvanced({ filter }: SearchAdvancedProps) {
-    const [subject, setSubject] = useState('');
-    const [startAfter, setStartAfter] = useState('');
-    const [startBefore, setStartBefore] = useState('');
-    const [endAfter, setEndAfter] = useState('');
-    const [endBefore, setEndBefore] = useState('');
+    const [subject, setSubject] = useState(filter.get.subject || '');
+    const [startAfter, setStartAfter] = useState(
+        filter.get.startAfter
+            ? Utility.convertTime(filter.get.startAfter, true)
+            : ''
+    );
+    const [startBefore, setStartBefore] = useState(
+        filter.get.startBefore
+            ? Utility.convertTime(filter.get.startBefore, true)
+            : ''
+    );
+    const [endAfter, setEndAfter] = useState(
+        filter.get.endAfter
+            ? Utility.convertTime(filter.get.endAfter, true)
+            : ''
+    );
+    const [endBefore, setEndBefore] = useState(
+        filter.get.endBefore
+            ? Utility.convertTime(filter.get.endBefore, true)
+            : ''
+    );
 
     const buttonRef = useRef(null);
 
