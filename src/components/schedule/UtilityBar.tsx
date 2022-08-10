@@ -25,7 +25,7 @@ function UtilityButton(props: UtilityButtonProps) {
     >
       <props.icon className="w-6 h-6" />
       <div
-        className={`hidden group-hover:block absolute left-10 top-1/2 -translate-y-1/2 p-1 border-2 rounded-md whitespace-nowrap
+        className={`hidden group-hover:block absolute z-20 left-10 top-1/2 -translate-y-1/2 p-1 border-2 rounded-md whitespace-nowrap
                     bg-${color}-50 dark:bg-gray-800 border-${color}-500 text-${color}-500 dark:text-${color}-300 text-sm font-medium`}
       >
         {props.display}
@@ -54,7 +54,7 @@ function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
 
   return (
     <div
-      className="absolute left-2 lg:left-0 top-1/2 -translate-y-1/2 border-2 border-green-300 p-1 rounded-xl bg-green-100 dark:bg-gray-700
+      className="absolute z-20 left-2 lg:left-0 top-1/2 -translate-y-1/2 border-2 border-green-300 p-1 rounded-xl bg-green-100 dark:bg-gray-700
                 gap-2 flex flex-col opacity-40 hover:opacity-100 hover:shadow-lg transition-all duration-150 text-gray-600 dark:text-gray-300"
     >
       <UtilityButton

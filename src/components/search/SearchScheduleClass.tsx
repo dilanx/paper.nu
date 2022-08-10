@@ -92,7 +92,11 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
           className="px-2 py-4"
         >
           {course.sections.map((section) => {
-            if (section.start_time && section.end_time) {
+            if (
+              section.start_time &&
+              section.end_time &&
+              section.meeting_days
+            ) {
               const visible =
                 Utility.timeWithinRange(
                   section.start_time,
@@ -103,8 +107,22 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
                   section.end_time,
                   filter?.endAfter,
                   filter?.endBefore
+                ) &&
+                Utility.validMeetingDay(
+                  section.meeting_days,
+                  filter?.meetingDays
                 );
               if (!visible) {
+                hidden++;
+                return undefined;
+              }
+            } else {
+              if (
+                filter?.startAfter ||
+                filter?.startBefore ||
+                filter?.endAfter ||
+                filter?.endBefore
+              ) {
                 hidden++;
                 return undefined;
               }

@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import ScheduleManager from '../../ScheduleManager';
 import { SearchFilter } from '../../types/SearchTypes';
 import Utility from '../../utility/Utility';
+import MultiSelectInput from '../generic/MultiSelectInput';
 import TextInput from '../generic/TextInput';
 import TextValidationWrapper from '../generic/TextValidationWrapper';
 
@@ -44,6 +45,7 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
   const [endBefore, setEndBefore] = useState(
     filter.get.endBefore ? Utility.convertTime(filter.get.endBefore, true) : ''
   );
+  const [meetingDays, setMeetingDays] = useState(filter.get.meetingDays || []);
 
   const buttonRef = useRef(null);
 
@@ -92,6 +94,14 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
             validator={(value) => Utility.parseTime(value) !== undefined}
           />
         </Section>
+        <Section title="MEETING DAYS" fullRow>
+          <MultiSelectInput
+            title="meeting-days"
+            options={['Mo', 'Tu', 'We', 'Th', 'Fr']}
+            selected={meetingDays}
+            setSelected={setMeetingDays}
+          />
+        </Section>
         <div className="w-full col-span-2">
           <button
             ref={buttonRef}
@@ -105,6 +115,7 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
                   startBefore: Utility.parseTime(startBefore),
                   endAfter: Utility.parseTime(endAfter),
                   endBefore: Utility.parseTime(endBefore),
+                  meetingDays: Utility.safeArray(meetingDays),
                 },
                 true
               );

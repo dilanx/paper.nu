@@ -6,6 +6,7 @@ import {
   FilterOptions,
   SearchFilter,
 } from '../../types/SearchTypes';
+import { DayMap } from '../../utility/Constants';
 import Utility from '../../utility/Utility';
 
 const display = (
@@ -19,6 +20,7 @@ function filtersAsStrings({
   startBefore,
   endAfter,
   endBefore,
+  meetingDays,
 }: FilterOptions): FilterDisplayMap {
   const filters: FilterDisplayMap = {};
 
@@ -46,6 +48,13 @@ function filtersAsStrings({
       ? Utility.convertTime(endBefore, true)
       : '11:59 PM';
     filters['end'] = display(`${after} - ${before}`, 'endAfter', 'endBefore');
+  }
+
+  if (meetingDays) {
+    filters['meeting days'] = display(
+      meetingDays.sort((a, b) => DayMap[a] - DayMap[b]).join(''),
+      'meetingDays'
+    );
   }
 
   return filters;

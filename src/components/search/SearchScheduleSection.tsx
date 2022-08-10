@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { Color } from '../../types/BaseTypes';
 import {
   ScheduleInteractions,
@@ -5,8 +6,6 @@ import {
   ScheduleSection,
 } from '../../types/ScheduleTypes';
 import Utility from '../../utility/Utility';
-import { motion } from 'framer-motion';
-import { StarIcon } from '@heroicons/react/solid';
 
 interface SearchScheduleSectionProps {
   section: ScheduleSection;

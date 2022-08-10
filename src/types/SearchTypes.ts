@@ -24,9 +24,10 @@ export interface FilterOptions {
   startBefore?: Time;
   endAfter?: Time;
   endBefore?: Time;
+  meetingDays?: string[];
 }
 
-export type FilterBadgeName = 'subject' | 'start' | 'end';
+export type FilterBadgeName = 'subject' | 'start' | 'end' | 'meeting days';
 
 export interface FilterDisplay {
   value: string;

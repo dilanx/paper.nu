@@ -12,6 +12,7 @@ import {
   ScheduleSection,
 } from './types/ScheduleTypes';
 import { FilterOptions, SearchError, SearchResults } from './types/SearchTypes';
+import Utility from './utility/Utility';
 var ds = debug('schedule-manager:ser');
 var dp = debug('schedule-manager:op');
 
@@ -109,10 +110,39 @@ const ScheduleManager = {
 
     let data = scheduleData;
     if (filterExists) {
+      const {
+        subject,
+        startAfter,
+        startBefore,
+        endAfter,
+        endBefore,
+        meetingDays,
+      } = filter;
+
       data = data.filter((course) => {
-        if (filter.subject && course.subject !== filter.subject) {
+        if (subject && course.subject !== subject) {
           return false;
         }
+        if (startAfter || startBefore || endAfter || endBefore || meetingDays) {
+          let s = 0;
+          for (const section of course.sections) {
+            const { start_time, end_time, meeting_days } = section;
+            if (!start_time || !end_time || !meeting_days) continue;
+            s +=
+              Utility.timeWithinRange(start_time, startAfter, startBefore) &&
+              Utility.timeWithinRange(end_time, endAfter, endBefore) &&
+              Utility.validMeetingDay(meeting_days, meetingDays)
+                ? 1
+                : 0;
+          }
+          if (s === 0) {
+            return false;
+          }
+        }
+
+        if (filter.meetingDays) {
+        }
+
         return true;
       });
     }

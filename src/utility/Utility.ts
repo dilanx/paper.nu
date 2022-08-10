@@ -5,6 +5,7 @@ import { Color } from '../types/BaseTypes';
 import { PlanErrorLocation } from '../types/ErrorTypes';
 import { ScheduleDataMap, ScheduleDate, Time } from '../types/ScheduleTypes';
 import { FilterBadgeName } from '../types/SearchTypes';
+import { DayMap } from './Constants';
 
 let Utility = {
   BACKGROUND_LIGHT: '#FFFFFF',
@@ -293,6 +294,8 @@ let Utility = {
         return 'green';
       case 'end':
         return 'red';
+      case 'meeting days':
+        return 'fuchsia';
       default:
         return 'gray';
     }
@@ -349,6 +352,13 @@ let Utility = {
     return true;
   },
 
+  validMeetingDay: (meetingDays: string, filterDays: string[] | undefined) => {
+    if (!filterDays) return true;
+    return filterDays.some((day) =>
+      meetingDays.includes(DayMap[day].toString())
+    );
+  },
+
   forAllChildElements: (
     root: React.ReactNode,
     callback: (element: React.ReactElement) => void
@@ -365,9 +375,12 @@ let Utility = {
     React.Children.forEach(root, rec);
   },
 
-  safe: <T = any>(value: T): T | undefined => {
+  safe: (value: any): any | undefined => {
     if (value) return value;
   },
+
+  safeArray: (value: any[]): any[] | undefined =>
+    value.length === 0 ? undefined : value,
 };
 
 export default Utility;

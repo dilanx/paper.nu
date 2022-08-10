@@ -91,7 +91,7 @@ export default function Alert(props: AlertProps) {
       <Dialog
         as="div"
         initialFocus={initialFocus}
-        className={`${props.switches.get.dark ? 'dark' : ''} relative z-10`}
+        className={`${props.switches.get.dark ? 'dark' : ''} relative z-40`}
         onClose={() => close()}
       >
         <Transition.Child
