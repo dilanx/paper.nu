@@ -10,7 +10,6 @@ import {
   ScheduleModificationFunctions,
 } from '../../types/ScheduleTypes';
 import { FilterOptions } from '../../types/SearchTypes';
-import Utility from '../../utility/Utility';
 import SearchScheduleSection from './SearchScheduleSection';
 
 interface SearchScheduleClassProps {
@@ -39,7 +38,6 @@ const variants = {
 
 function SearchScheduleClass(props: SearchScheduleClassProps) {
   const course = props.course;
-  const filter = props.filter;
 
   let item = { course };
 
@@ -61,7 +59,7 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
       return bookmarkCourse.course_id === course.course_id;
     });
 
-  let hidden = 0;
+  let hidden = props.fromBookmarks ? 0 : course.hide_section_ids?.length ?? 0;
 
   return (
     <div
@@ -93,41 +91,11 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
         >
           {course.sections.map((section) => {
             if (
-              section.start_time &&
-              section.end_time &&
-              section.meeting_days
+              !props.fromBookmarks &&
+              course.hide_section_ids?.includes(section.section_id)
             ) {
-              const visible =
-                Utility.timeWithinRange(
-                  section.start_time,
-                  filter?.startAfter,
-                  filter?.startBefore
-                ) &&
-                Utility.timeWithinRange(
-                  section.end_time,
-                  filter?.endAfter,
-                  filter?.endBefore
-                ) &&
-                Utility.validMeetingDay(
-                  section.meeting_days,
-                  filter?.meetingDays
-                );
-              if (!visible) {
-                hidden++;
-                return undefined;
-              }
-            } else {
-              if (
-                filter?.startAfter ||
-                filter?.startBefore ||
-                filter?.endAfter ||
-                filter?.endBefore
-              ) {
-                hidden++;
-                return undefined;
-              }
+              return undefined;
             }
-
             return (
               <SearchScheduleSection
                 section={section}

@@ -25,6 +25,7 @@ export interface ScheduleCourse {
   subject: string;
   number: string;
   sections: ScheduleSection[];
+  hide_section_ids?: string[];
 }
 
 export interface ScheduleSection {

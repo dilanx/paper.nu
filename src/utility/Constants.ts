@@ -9,6 +9,8 @@ export enum SearchMode {
   ADVANCED = 2,
 }
 
+export const DAYS = ['Mo', 'Tu', 'We', 'Th', 'Fr'];
+
 export const DayMap: { [key: string]: number } = {
   Mo: 0,
   Tu: 1,

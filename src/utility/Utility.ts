@@ -338,25 +338,11 @@ let Utility = {
     return { h, m };
   },
 
-  timeWithinRange: (time: Time, start?: Time, end?: Time) => {
-    if (start) {
-      if (time.h < start.h) return false;
-      if (time.h === start.h && time.m < start.m) return false;
+  timeCompare: (time1: Time, time2: Time) => {
+    if (time1.h === time2.h) {
+      return time1.m - time2.m;
     }
-
-    if (end) {
-      if (time.h > end.h) return false;
-      if (time.h === end.h && time.m > end.m) return false;
-    }
-
-    return true;
-  },
-
-  validMeetingDay: (meetingDays: string, filterDays: string[] | undefined) => {
-    if (!filterDays) return true;
-    return filterDays.some((day) =>
-      meetingDays.includes(DayMap[day].toString())
-    );
+    return time1.h - time2.h;
   },
 
   forAllChildElements: (

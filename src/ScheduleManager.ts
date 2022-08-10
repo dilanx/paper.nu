@@ -10,8 +10,10 @@ import {
   ScheduleDataMap,
   ScheduleLocation,
   ScheduleSection,
+  Time,
 } from './types/ScheduleTypes';
 import { FilterOptions, SearchError, SearchResults } from './types/SearchTypes';
+import { DAYS } from './utility/Constants';
 import Utility from './utility/Utility';
 var ds = debug('schedule-manager:ser');
 var dp = debug('schedule-manager:op');
@@ -109,48 +111,21 @@ const ScheduleManager = {
     }
 
     let data = scheduleData;
-    if (filterExists) {
-      const {
-        subject,
-        startAfter,
-        startBefore,
-        endAfter,
-        endBefore,
-        meetingDays,
-      } = filter;
-
-      data = data.filter((course) => {
-        if (subject && course.subject !== subject) {
-          return false;
-        }
-        if (startAfter || startBefore || endAfter || endBefore || meetingDays) {
-          let s = 0;
-          for (const section of course.sections) {
-            const { start_time, end_time, meeting_days } = section;
-            if (!start_time || !end_time || !meeting_days) continue;
-            s +=
-              Utility.timeWithinRange(start_time, startAfter, startBefore) &&
-              Utility.timeWithinRange(end_time, endAfter, endBefore) &&
-              Utility.validMeetingDay(meeting_days, meetingDays)
-                ? 1
-                : 0;
-          }
-          if (s === 0) {
-            return false;
-          }
-        }
-
-        if (filter.meetingDays) {
-        }
-
-        return true;
-      });
-    }
 
     let courseIdResults: ScheduleCourse[] = [];
     let courseNameResults: ScheduleCourse[] = [];
 
     data.forEach((course) => {
+      course.hide_section_ids = [];
+      if (filterExists) {
+        for (const section of course.sections) {
+          if (!ScheduleManager.sectionMatchesFilter(section, filter)) {
+            course.hide_section_ids.push(section.section_id);
+          }
+        }
+
+        if (course.hide_section_ids.length === course.sections.length) return;
+      }
       const id = course.subject + ' ' + course.number;
       for (let term of terms) {
         if (id.toLowerCase().replace(/-|_/g, ' ').includes(term)) {
@@ -239,6 +214,45 @@ const ScheduleManager = {
 
   getSchoolSubjects: (symbol: string) => {
     return school.schools[symbol]?.subjects ?? [];
+  },
+
+  sectionMatchesFilter: (section: ScheduleSection, filter?: FilterOptions) => {
+    if (!filter) return true;
+    if (filter.subject && filter.subject !== section.subject) return false;
+
+    const t = (
+      start: Time | undefined,
+      after: Time | undefined,
+      before: Time | undefined
+    ) => {
+      if (after && (!start || Utility.timeCompare(start, after) < 0)) {
+        return false;
+      }
+      if (before && (!start || Utility.timeCompare(start, before) > 0)) {
+        return false;
+      }
+      return true;
+    };
+
+    if (!t(section.start_time, filter.startAfter, filter.startBefore)) {
+      return false;
+    }
+    if (!t(section.end_time, filter.endAfter, filter.endBefore)) {
+      return false;
+    }
+
+    if (filter.meetingDays) {
+      if (
+        !section.meeting_days ||
+        !Array.from(section.meeting_days).every((d) =>
+          filter.meetingDays?.includes(DAYS[parseInt(d)])
+        )
+      ) {
+        return false;
+      }
+    }
+
+    return true;
   },
 
   loadFromURL: (params: URLSearchParams) => {
