@@ -6,7 +6,7 @@ import {
   FilterOptions,
   SearchFilter,
 } from '../../types/SearchTypes';
-import { DayMap } from '../../utility/Constants';
+import { ComponentMap, DayMap } from '../../utility/Constants';
 import Utility from '../../utility/Utility';
 
 const display = (
@@ -21,6 +21,7 @@ function filtersAsStrings({
   endAfter,
   endBefore,
   meetingDays,
+  components,
 }: FilterOptions): FilterDisplayMap {
   const filters: FilterDisplayMap = {};
 
@@ -54,6 +55,13 @@ function filtersAsStrings({
     filters['meeting days'] = display(
       meetingDays.sort((a, b) => DayMap[a] - DayMap[b]).join(''),
       'meetingDays'
+    );
+  }
+
+  if (components) {
+    filters['components'] = display(
+      components.sort((a, b) => ComponentMap[a] - ComponentMap[b]).join(', '),
+      'components'
     );
   }
 

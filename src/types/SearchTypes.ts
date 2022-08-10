@@ -25,9 +25,15 @@ export interface FilterOptions {
   endAfter?: Time;
   endBefore?: Time;
   meetingDays?: string[];
+  components?: string[];
 }
 
-export type FilterBadgeName = 'subject' | 'start' | 'end' | 'meeting days';
+export type FilterBadgeName =
+  | 'subject'
+  | 'start'
+  | 'end'
+  | 'meeting days'
+  | 'components';
 
 export interface FilterDisplay {
   value: string;

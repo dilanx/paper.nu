@@ -13,7 +13,7 @@ import {
   Time,
 } from './types/ScheduleTypes';
 import { FilterOptions, SearchError, SearchResults } from './types/SearchTypes';
-import { DAYS } from './utility/Constants';
+import { Days } from './utility/Constants';
 import Utility from './utility/Utility';
 var ds = debug('schedule-manager:ser');
 var dp = debug('schedule-manager:op');
@@ -216,7 +216,10 @@ const ScheduleManager = {
     return school.schools[symbol]?.subjects ?? [];
   },
 
-  sectionMatchesFilter: (section: ScheduleSection, filter?: FilterOptions) => {
+  sectionMatchesFilter: (
+    section: ScheduleSection,
+    filter?: FilterOptions
+  ): boolean => {
     if (!filter) return true;
     if (filter.subject && filter.subject !== section.subject) return false;
 
@@ -245,9 +248,15 @@ const ScheduleManager = {
       if (
         !section.meeting_days ||
         !Array.from(section.meeting_days).every((d) =>
-          filter.meetingDays?.includes(DAYS[parseInt(d)])
+          filter.meetingDays?.includes(Days[parseInt(d)])
         )
       ) {
+        return false;
+      }
+    }
+
+    if (filter.components) {
+      if (!filter.components.includes(section.component)) {
         return false;
       }
     }

@@ -46,6 +46,7 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
     filter.get.endBefore ? Utility.convertTime(filter.get.endBefore, true) : ''
   );
   const [meetingDays, setMeetingDays] = useState(filter.get.meetingDays || []);
+  const [components, setComponents] = useState(filter.get.components || []);
 
   const buttonRef = useRef(null);
 
@@ -102,6 +103,14 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
             setSelected={setMeetingDays}
           />
         </Section>
+        <Section title="COMPONENTS" fullRow>
+          <MultiSelectInput
+            title="components"
+            options={['LEC', 'DIS', 'LAB', 'SEM', 'PED']}
+            selected={components}
+            setSelected={setComponents}
+          />
+        </Section>
         <div className="w-full col-span-2">
           <button
             ref={buttonRef}
@@ -116,6 +125,7 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
                   endAfter: Utility.parseTime(endAfter),
                   endBefore: Utility.parseTime(endBefore),
                   meetingDays: Utility.safeArray(meetingDays),
+                  components: Utility.safeArray(components),
                 },
                 true
               );

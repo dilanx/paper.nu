@@ -235,23 +235,6 @@ let Utility = {
       .map((section) => `${section.subject} ${section.number}`)
       .join(', '),
 
-  prereqColor: (num: number) => {
-    switch (num) {
-      case 0:
-        return 'red';
-      case 1:
-        return 'blue';
-      case 2:
-        return 'green';
-      case 3:
-        return 'yellow';
-      case 4:
-        return 'purple';
-      default:
-        return 'gray';
-    }
-  },
-
   errorAlert: (from: PlanErrorLocation, error: string): AlertData => {
     return {
       title: "Well, this isn't good...",
@@ -296,6 +279,8 @@ let Utility = {
         return 'red';
       case 'meeting days':
         return 'fuchsia';
+      case 'components':
+        return 'amber';
       default:
         return 'gray';
     }
