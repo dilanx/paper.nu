@@ -301,8 +301,8 @@ class Search extends React.Component<SearchProps, SearchState> {
               <div className="block mt-4 mb-2 mx-auto w-11/12 relative">
                 <input
                   className="w-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 shadow-md
-                                        rounded-lg outline-none hover:border-gray-500 focus:border-black dark:hover:border-gray-400 dark:focus:border-white text-lg p-2 px-4
-                                        transition-all duration-150 text-black dark:text-white"
+                    rounded-lg outline-none hover:border-gray-500 focus:border-black dark:hover:border-gray-400 dark:focus:border-white text-lg p-2 px-4
+                    transition-all duration-150 text-black dark:text-white"
                   ref={this.searchFieldRef}
                   value={search}
                   placeholder="Search for classes..."
@@ -327,7 +327,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                 )}
               </div>
               {shortcut && (
-                <p className="text-center text-sm m-0 p-0 text-gray-500 dark:text-gray-400">
+                <p className="text-center text-sm m-1 p-0 text-gray-500 dark:text-gray-400">
                   replacing{' '}
                   <span className="text-black dark:text-white font-medium">
                     {shortcut.replacing}
