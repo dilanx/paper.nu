@@ -47,6 +47,7 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
   );
   const [meetingDays, setMeetingDays] = useState(filter.get.meetingDays || []);
   const [components, setComponents] = useState(filter.get.components || []);
+  const [instructor, setInstructor] = useState(filter.get.instructor || '');
 
   const buttonRef = useRef(null);
 
@@ -67,7 +68,7 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
           <TextInput
             value={startAfter}
             setValue={setStartAfter}
-            placeholder="XX:XX am/pm"
+            placeholder="ex. 10:00 am"
             validator={(value) => Utility.parseTime(value) !== undefined}
           />
         </Section>
@@ -75,7 +76,7 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
           <TextInput
             value={startBefore}
             setValue={setStartBefore}
-            placeholder="XX:XX am/pm"
+            placeholder="ex. 1:00 pm"
             validator={(value) => Utility.parseTime(value) !== undefined}
           />
         </Section>
@@ -83,7 +84,7 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
           <TextInput
             value={endAfter}
             setValue={setEndAfter}
-            placeholder="XX:XX am/pm"
+            placeholder="ex. 11:00 am"
             validator={(value) => Utility.parseTime(value) !== undefined}
           />
         </Section>
@@ -91,7 +92,7 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
           <TextInput
             value={endBefore}
             setValue={setEndBefore}
-            placeholder="XX:XX am/pm"
+            placeholder="ex. 4:00 pm"
             validator={(value) => Utility.parseTime(value) !== undefined}
           />
         </Section>
@@ -111,6 +112,13 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
             setSelected={setComponents}
           />
         </Section>
+        <Section title="INSTRUCTOR" fullRow>
+          <TextInput
+            value={instructor}
+            setValue={setInstructor}
+            placeholder="ex. John Doe"
+          />
+        </Section>
         <div className="w-full col-span-2">
           <button
             ref={buttonRef}
@@ -126,6 +134,7 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
                   endBefore: Utility.parseTime(endBefore),
                   meetingDays: Utility.safeArray(meetingDays),
                   components: Utility.safeArray(components),
+                  instructor: Utility.safe(instructor)?.toLowerCase(),
                 },
                 true
               );

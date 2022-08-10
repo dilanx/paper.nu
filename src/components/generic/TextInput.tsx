@@ -11,7 +11,7 @@ function TextInput({
   placeholder,
   validator,
 }: TextInputProps) {
-  const invalid = value ? !validator?.(value) : false;
+  const invalid = value && validator ? !validator(value) : false;
   return (
     <input
       className={`text-sm dark:bg-gray-800 dark:text-white border-2 border-gray-300 dark:border-gray-600 w-full outline-none px-2 py-1 rounded-md

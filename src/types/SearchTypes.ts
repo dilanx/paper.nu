@@ -26,6 +26,7 @@ export interface FilterOptions {
   endBefore?: Time;
   meetingDays?: string[];
   components?: string[];
+  instructor?: string;
 }
 
 export type FilterBadgeName =
@@ -33,7 +34,8 @@ export type FilterBadgeName =
   | 'start'
   | 'end'
   | 'meeting days'
-  | 'components';
+  | 'components'
+  | 'instructor';
 
 export interface FilterDisplay {
   value: string;

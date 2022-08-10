@@ -261,6 +261,17 @@ const ScheduleManager = {
       }
     }
 
+    if (filter.instructor) {
+      if (
+        !section.instructors ||
+        !section.instructors.some((instructor) =>
+          instructor.toLowerCase().includes(filter.instructor!)
+        )
+      ) {
+        return false;
+      }
+    }
+
     return true;
   },
 

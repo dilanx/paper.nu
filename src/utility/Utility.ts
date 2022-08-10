@@ -5,7 +5,6 @@ import { Color } from '../types/BaseTypes';
 import { PlanErrorLocation } from '../types/ErrorTypes';
 import { ScheduleDataMap, ScheduleDate, Time } from '../types/ScheduleTypes';
 import { FilterBadgeName } from '../types/SearchTypes';
-import { DayMap } from './Constants';
 
 let Utility = {
   BACKGROUND_LIGHT: '#FFFFFF',
@@ -281,6 +280,8 @@ let Utility = {
         return 'fuchsia';
       case 'components':
         return 'amber';
+      case 'instructor':
+        return 'pink';
       default:
         return 'gray';
     }

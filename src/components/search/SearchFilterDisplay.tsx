@@ -22,6 +22,7 @@ function filtersAsStrings({
   endBefore,
   meetingDays,
   components,
+  instructor,
 }: FilterOptions): FilterDisplayMap {
   const filters: FilterDisplayMap = {};
 
@@ -65,6 +66,10 @@ function filtersAsStrings({
     );
   }
 
+  if (instructor) {
+    filters['instructor'] = display(instructor, 'instructor');
+  }
+
   return filters;
 }
 
@@ -83,7 +88,8 @@ function SearchFilterBadge({ name, value, remove }: SearchFilterBadgeProps) {
     >
       <p className={`px-1 py-0.5 bg-${color}-500 text-white`}>{name}</p>
       <p
-        className={`px-1 py-0.5 bg-${color}-100 dark:bg-gray-600 text-${color}-500 dark:text-${color}-300 font-bold`}
+        className={`px-1 py-0.5 bg-${color}-100 dark:bg-gray-600 text-${color}-500 dark:text-${color}-300
+          font-bold overflow-hidden whitespace-nowrap text-ellipsis`}
       >
         {value}
       </p>
