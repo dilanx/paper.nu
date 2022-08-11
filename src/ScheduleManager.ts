@@ -272,6 +272,15 @@ const ScheduleManager = {
       }
     }
 
+    if (filter.location) {
+      if (
+        !section.room?.building_name ||
+        !section.room.building_name.toLowerCase().includes(filter.location)
+      ) {
+        return false;
+      }
+    }
+
     return true;
   },
 

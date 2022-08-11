@@ -48,6 +48,7 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
   const [meetingDays, setMeetingDays] = useState(filter.get.meetingDays || []);
   const [components, setComponents] = useState(filter.get.components || []);
   const [instructor, setInstructor] = useState(filter.get.instructor || '');
+  const [location, setLocation] = useState(filter.get.location || '');
 
   const buttonRef = useRef(null);
 
@@ -119,6 +120,13 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
             placeholder="ex. John Doe"
           />
         </Section>
+        <Section title="LOCATION" fullRow>
+          <TextInput
+            value={location}
+            setValue={setLocation}
+            placeholder="ex. Technological Institute"
+          />
+        </Section>
         <div className="w-full col-span-2">
           <button
             ref={buttonRef}
@@ -135,6 +143,7 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
                   meetingDays: Utility.safeArray(meetingDays),
                   components: Utility.safeArray(components),
                   instructor: Utility.safe(instructor)?.toLowerCase(),
+                  location: Utility.safe(location)?.toLowerCase(),
                 },
                 true
               );

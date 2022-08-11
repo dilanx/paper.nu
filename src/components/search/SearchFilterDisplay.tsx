@@ -23,6 +23,7 @@ function filtersAsStrings({
   meetingDays,
   components,
   instructor,
+  location,
 }: FilterOptions): FilterDisplayMap {
   const filters: FilterDisplayMap = {};
 
@@ -68,6 +69,10 @@ function filtersAsStrings({
 
   if (instructor) {
     filters['instructor'] = display(instructor, 'instructor');
+  }
+
+  if (location) {
+    filters['location'] = display(location, 'location');
   }
 
   return filters;

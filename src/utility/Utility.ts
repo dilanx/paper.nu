@@ -282,6 +282,8 @@ let Utility = {
         return 'amber';
       case 'instructor':
         return 'pink';
+      case 'location':
+        return 'lime';
       default:
         return 'gray';
     }
