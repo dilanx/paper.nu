@@ -16,45 +16,43 @@ For v1.2.0, Plan Northwestern will be getting a bit of a UI design, primarily ab
 
 Once Plan Northwestern completes its update to v1.2.0, the integration will start (and will be released as Plan Northwestern v2.0.0). There will be no downtime—the current version of salad.nu will be accessible until the new version is ready.
 
-  You can expect the integrated version to have everything you love about salad.nu, including the easiness of just navigating to the site and being able to see your schedule and search for courses instantly. The schedule view will be similar, each course will still have detailed information (if not more), the map will still be there, and so on. **You won't lose anything, but you will _gain_ a ton of new features, some of which are listed below!**
+You can expect the integrated version to have everything you love about salad.nu, including the easiness of just navigating to the site and being able to see your schedule and search for courses instantly. The schedule view will be similar, each course will still have detailed information (if not more), the map will still be there, and so on. **You won't lose anything, but you will _gain_ a ton of new features, some of which are listed below!**
 
-- **Multiple schedules**
+-   **Multiple schedules**
 
-  If you're like me, you've probably created multiple version's of a schedule for an upcoming quarter by stuffing all of the different courses on one screen and then hoping that you'll remember which belongs with which. Fret no more, because thanks to Plan Northwestern's **URL data storage system**, schedule data will be saved in the URL, making your schedule savable and sharable. You can send the link to a friend so they can view a copy of your schedule, or swap it out with another link to view another schedule of yours.
+    If you're like me, you've probably created multiple version's of a schedule for an upcoming quarter by stuffing all of the different courses on one screen and then hoping that you'll remember which belongs with which. Fret no more, because thanks to Plan Northwestern's **URL data storage system**, schedule data will be saved in the URL, making your schedule savable and sharable. You can send the link to a friend so they can view a copy of your schedule, or swap it out with another link to view another schedule of yours.
 
-- **Sync across your devices**
+-   **Sync across your devices**
 
-  With Plan Northwestern v1.2.0, you'll be able to create an account (just by linking an existing Google account) and save up to 5 plans. Using this same system, you'll be able to save up to a certain amount of schedules on the same account. Idk how many yet but maybe like 10? Is that too many? Or too little? Idk you tell me.
+    With Plan Northwestern v1.2.0, you'll be able to create an account (just by linking an existing Google account) and save up to 5 plans. Using this same system, you'll be able to save up to a certain amount of schedules on the same account. Idk how many yet but maybe like 10? Is that too many? Or too little? Idk you tell me.
 
-- **Powerful search**
+-   **Powerful search**
 
-  Plan Northwestern will bring its powerful search functionality to the course schedule. You'll be able to utilize search shortcuts to easily find the courses you're looking for. For example, typing 'cs 111' will bring up 'COMP_SCI 111-0', and typing 'ea 2' will bring up both 'GEN_ENG 205-2' and 'GEN_ENG 206-2'. There are a bunch more shortcuts, and adding new ones is as easy as [creating an issue](https://github.com/dilanx/plan-northwestern/issues) to let me know of your suggestions. The search functionality will be continuously improved on as time goes on and will be structured in a way that makes it as simple yet also function as possible. Here are some upcoming advanced search options:
-  
-  - Search by Weinberg distro
-  - Search by dependents (the results are courses that require the searched course as a prereq)
-  - Search by time frame
-  - Search by instructor
-  - Search by location (maybe lol idk if this one is that useful)
+    Plan Northwestern will bring its powerful search functionality to the course schedule. You'll be able to utilize search shortcuts to easily find the courses you're looking for. For example, typing 'cs 111' will bring up 'COMP_SCI 111-0', and typing 'ea 2' will bring up both 'GEN_ENG 205-2' and 'GEN_ENG 206-2'. There are a bunch more shortcuts, and adding new ones is as easy as [creating an issue](https://github.com/dilanx/plan-northwestern/issues) to let me know of your suggestions. The search functionality will be continuously improved on as time goes on and will be structured in a way that makes it as simple yet also function as possible. Here are some upcoming advanced search options:
 
-- **Custom course blocks**
+    -   Search by time frame
+    -   Search by instructor
+    -   Search by location (maybe lol idk if this one is that useful)
 
-  You'll be able to add custom course cards with a custom description, day, and time to your schedule (probably).
+-   **Custom course blocks**
 
-- **Better calendar exports**
+    You'll be able to add custom course cards with a custom description, day, and time to your schedule (probably).
 
-  Export your quarter course schedule from here to your favorite calendar app like Apple Calendar, Google Calendar, and Microsoft Outlook.
+-   **Better calendar exports**
 
-- **More course data**
+    Export your quarter course schedule from here to your favorite calendar app like Apple Calendar, Google Calendar, and Microsoft Outlook.
 
-  Thanks to Plan Northwestern's partnership with the Office of the Registrar, I'll be able to add any data that salad.nu is missing (like some missing courses and discussion sections).
+-   **More course data**
 
-- **Intuitive user interface**
+    Thanks to Plan Northwestern's partnership with the Office of the Registrar, I'll be able to add any data that salad.nu is missing (like some missing courses and discussion sections).
 
-  One of the nice things about salad.nu is that it's very easy to use. There are no plans to take that away. Rather, it'll be even easier to use. With more detailed data available for each course, you'll be able to see which sections you must add to your schedule in conjunction with a specific course (like required discussion sections and labs), just like in CAESAR. With just a few clicks on a single site, you'll have everything ready. No need to reference a bunch of different sites to see which courses require which prereqs or additional sections.
+-   **Intuitive user interface**
 
-- **Seamless integration**
+    One of the nice things about salad.nu is that it's very easy to use. There are no plans to take that away. Rather, it'll be even easier to use. With more detailed data available for each course, you'll be able to see which sections you must add to your schedule in conjunction with a specific course (like required discussion sections and labs), just like in CAESAR. With just a few clicks on a single site, you'll have everything ready. No need to reference a bunch of different sites to see which courses require which prereqs or additional sections.
 
-  Drag courses from your plan to your schedule, and vice versa.
+-   **Seamless integration**
+
+    Drag courses from your plan to your schedule, and vice versa.
 
 _All features listed above are tentative and may not be implemented exactly as described here._
 
