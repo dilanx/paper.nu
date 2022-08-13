@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { RefreshIcon } from '@heroicons/react/outline';
+import { SpinnerCircularFixed } from 'spinners-react';
 import { Color, ColorMap, UserOptions } from '../../types/BaseTypes';
 
 interface TabBarProps {
@@ -22,6 +22,7 @@ interface TabBarButtonProps {
 }
 
 export function TabBar(props: TabBarProps) {
+  const darkMode = props.switches.get.dark;
   let colorMap = props.colorMap;
   let color = colorMap[props.switches.get[props.switchName] as string];
   return (
@@ -38,7 +39,15 @@ export function TabBar(props: TabBarProps) {
             color={color}
             disableClick={true}
           >
-            <RefreshIcon className="w-5 h-5 animate-reverse-spin" />
+            <SpinnerCircularFixed
+              size={20}
+              thickness={160}
+              speed={200}
+              color={darkMode ? 'rgb(212, 212, 212)' : 'rgb(115, 115, 115)'}
+              secondaryColor={
+                darkMode ? 'rgb(64, 64, 64)' : 'rgba(245, 245, 245)'
+              }
+            />
             <p className="lg:hidden xl:block m-0 text-sm lg:text-xs w-20 lg:w-12 overflow-hidden whitespace-nowrap text-ellipsis">
               Loading
             </p>

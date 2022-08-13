@@ -36,16 +36,6 @@ module.exports = {
                 imgw: '1440px',
                 imgh: '960px',
             },
-            animation: {
-                'reverse-spin': 'reverse-spin 1s linear infinite',
-            },
-            keyframes: {
-                'reverse-spin': {
-                    from: {
-                        transform: 'rotate(360deg)',
-                    },
-                },
-            },
         },
     },
     plugins: [

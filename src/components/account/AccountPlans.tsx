@@ -1,25 +1,25 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import AccountPlanMessage from './AccountPlanMessage';
 import {
-  RefreshIcon,
+  CollectionIcon,
+  LogoutIcon,
   PlusIcon,
   TrashIcon,
-  LogoutIcon,
-  CollectionIcon,
 } from '@heroicons/react/outline';
+import { motion } from 'framer-motion';
+import React from 'react';
+import toast from 'react-hot-toast';
+import { SpinnerCircularFixed } from 'spinners-react';
 import Account from '../../Account';
 import {
-  AccountModificationFunctions,
   AccountDataMap,
+  AccountModificationFunctions,
 } from '../../types/AccountTypes';
 import { Alert } from '../../types/AlertTypes';
+import { UserOptions } from '../../types/BaseTypes';
+import { PlanData } from '../../types/PlanTypes';
+import PlanError from '../../utility/PlanError';
 import Utility from '../../utility/Utility';
 import AccountPlan from './AccountPlan';
-import PlanError from '../../utility/PlanError';
-import { PlanData } from '../../types/PlanTypes';
-import { UserOptions } from '../../types/BaseTypes';
-import toast from 'react-hot-toast';
+import AccountPlanMessage from './AccountPlanMessage';
 
 interface AccountPlansProps {
   data: PlanData;
@@ -203,6 +203,7 @@ class AccountPlans extends React.Component<
 
   render() {
     let plans: JSX.Element[] = [];
+    const darkMode = this.props.switches.get.dark as boolean;
 
     if (this.state.plans) {
       let self = this;
@@ -244,7 +245,17 @@ class AccountPlans extends React.Component<
           />
         ) : this.state.loading ? (
           <AccountPlanMessage
-            icon={<RefreshIcon className="w-12 h-12 animate-reverse-spin" />}
+            icon={
+              <SpinnerCircularFixed
+                size={50}
+                thickness={160}
+                speed={200}
+                color={darkMode ? 'rgb(251, 113, 133)' : 'rgb(244, 63, 94)'}
+                secondaryColor={
+                  darkMode ? 'rgb(64, 64, 64)' : 'rgba(245, 245, 245)'
+                }
+              />
+            }
             title="Almost ready..."
             description="Your plans are loading."
           />
