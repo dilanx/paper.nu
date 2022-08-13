@@ -305,7 +305,11 @@ class Search extends React.Component<SearchProps, SearchState> {
                     transition-all duration-150 text-black dark:text-white"
                   ref={this.searchFieldRef}
                   value={search}
-                  placeholder="Search for classes..."
+                  placeholder={`Search ${
+                    appMode === Mode.PLAN
+                      ? 'for classes...'
+                      : process.env.REACT_APP_SCHEDULE_QUARTER + '...'
+                  }`}
                   onChange={(event) => {
                     this.setState({
                       scheduleCurrent: undefined,
