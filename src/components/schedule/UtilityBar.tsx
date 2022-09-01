@@ -66,7 +66,7 @@ function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
             title: 'Export schedule as image',
             icon: CameraIcon,
             message:
-              'This will export your schedule as an image, which you can then share! By default, non-intrusive Plan Northwestern branding will appear in the top right, but that can be disabled in the settings.',
+              'This will export your schedule as an image, which you can then share!',
             confirmButton: 'Download',
             confirmButtonColor: 'orange',
             iconColor: 'orange',
