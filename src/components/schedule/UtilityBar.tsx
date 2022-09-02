@@ -45,7 +45,7 @@ function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
 
   useEffect(() => {
     if (takeImage) {
-      exportScheduleAsImage(switches.get.dark as boolean).finally(() => {
+      exportScheduleAsImage(switches.get.dark).finally(() => {
         setTakeImage(false);
         toast.success('Exported schedule as image');
       });

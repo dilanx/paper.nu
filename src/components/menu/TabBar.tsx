@@ -1,10 +1,15 @@
 import { ReactNode } from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';
-import { Color, ColorMap, UserOptions } from '../../types/BaseTypes';
+import {
+  Color,
+  ColorMap,
+  ReadUserOptions,
+  UserOptions,
+} from '../../types/BaseTypes';
 
 interface TabBarProps {
   switches: UserOptions;
-  switchName: string;
+  switchName: keyof ReadUserOptions;
   tabLoading: boolean;
   colorMap: ColorMap;
   children?: ReactNode;
@@ -14,7 +19,7 @@ interface TabBarButtonProps {
   name: string;
   selected: string;
   switches: UserOptions;
-  switchName: string;
+  switchName?: keyof ReadUserOptions;
   color: Color;
   disableClick?: boolean;
   tooltipBelow?: boolean;
@@ -35,7 +40,6 @@ export function TabBar(props: TabBarProps) {
             name="Loading"
             selected="None"
             switches={props.switches}
-            switchName="Tab"
             color={color}
             disableClick={true}
           >
@@ -75,7 +79,9 @@ export function TabBarButton(props: TabBarButtonProps) {
       } flex items-center gap-1 group`}
       onClick={() => {
         if (props.disableClick) return;
-        props.switches.set(props.switchName, props.name, false);
+        if (props.switchName) {
+          props.switches.set(props.switchName, props.name, false);
+        }
       }}
     >
       {props.children}

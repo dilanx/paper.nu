@@ -28,7 +28,6 @@ const aboutMenu = (version: string): AlertData => ({
   },
   options: [
     {
-      name: 'about_change_log',
       title: `What's new?`,
       description: `Check out what changes have been made in the latest update.`,
       buttonTextOn: `Change Log`,
@@ -40,7 +39,6 @@ const aboutMenu = (version: string): AlertData => ({
       },
     },
     {
-      name: 'about_feedback',
       title: 'Share your thoughts!',
       description: `Find any bugs, notice any errors in course data, or have any suggestions? Please send me a message on Instagram or create an issue on GitHub!`,
       buttonTextOn: 'Instagram',
@@ -49,7 +47,6 @@ const aboutMenu = (version: string): AlertData => ({
       },
     },
     {
-      name: 'about_discord',
       title: 'Join the Northwestern Discord server.',
       description: `Join the Northwestern University Discord server and connect with thousands of other students!`,
       buttonTextOn: 'Discord',

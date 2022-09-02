@@ -1,13 +1,26 @@
 import { Mode } from '../utility/Constants';
 
-export type UserOptionValue = boolean | string | number | undefined;
-
 export interface ReadUserOptions {
-  [key: string]: UserOptionValue;
+  save_to_storage?: boolean;
+  notifications?: boolean;
+  settings_tab?: string;
+  mode?: number;
+  schedule_image_watermark?: boolean;
+  active_plan_id?: string;
+  active_schedule_id?: string;
+  dark?: boolean;
+  tab?: string;
+  reduced_motion?: boolean;
+  compact?: boolean;
+  save_location_top?: boolean;
+  quarter_units?: boolean;
+  more_info?: boolean;
+  show_times?: boolean;
+  debug?: boolean;
 }
 
 export interface UserOptions {
-  set: (key: string, val: UserOptionValue, save?: boolean) => void;
+  set: (key: keyof ReadUserOptions, val: any, save?: boolean) => void;
   get: ReadUserOptions;
 }
 

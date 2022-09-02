@@ -23,7 +23,7 @@ import PlanManager from './PlanManager';
 import SaveDataManager from './SaveDataManager';
 import ScheduleManager from './ScheduleManager';
 import { AlertData } from './types/AlertTypes';
-import { UserOptions, UserOptionValue } from './types/BaseTypes';
+import { ReadUserOptions, UserOptions } from './types/BaseTypes';
 import {
   Course,
   CourseLocation,
@@ -307,7 +307,7 @@ class App extends React.Component<{}, AppState> {
     }
   }
 
-  setSwitch(key: string, val: UserOptionValue, save = false) {
+  setSwitch(key: keyof ReadUserOptions, val: any, save = false) {
     let switches = this.state.switches;
     if (
       key === 'active_plan_id' &&

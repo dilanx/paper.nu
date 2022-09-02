@@ -11,9 +11,11 @@ export const getAlertOptions = (
   setConfirmation: React.Dispatch<React.SetStateAction<AlertConfirmationState>>
 ) =>
   options?.map((option, i) => {
-    let enabled = option.singleAction
-      ? false
-      : (switches.get[option.name] as boolean);
+    const singleAction = option.singleAction || !option.switch;
+    let enabled =
+      option.singleAction || !option.switch
+        ? false
+        : (switches.get[option.switch] as boolean);
     return (
       <div
         className="grid grid-cols-1 sm:grid-cols-5 p-2 m-2"
@@ -28,13 +30,13 @@ export const getAlertOptions = (
           </p>
         </div>
         <div className="col-span-1 sm:col-span-2">
-          {!option.singleAction &&
+          {!singleAction &&
             (enabled ? (
               <button
                 className="block mx-auto bg-emerald-400 text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
                             m-1 p-2 w-full rounded-md shadow-sm"
                 onClick={() => {
-                  switches.set(option.name, false, option.saveToStorage);
+                  switches.set(option.switch!, false, option.saveToStorage);
                   if (option.bonusAction) {
                     option.bonusAction(false);
                   }
@@ -47,7 +49,7 @@ export const getAlertOptions = (
                 className="block mx-auto bg-red-400 text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
                             m-1 p-2 w-full rounded-md shadow-sm"
                 onClick={() => {
-                  switches.set(option.name, true, option.saveToStorage);
+                  switches.set(option.switch!, true, option.saveToStorage);
                   if (option.bonusAction) {
                     option.bonusAction(true);
                   }
@@ -59,29 +61,31 @@ export const getAlertOptions = (
           {option.singleAction && (
             <button
               className={`block mx-auto ${
-                confirmation[option.name]
+                option.confirmation && confirmation[option.confirmation]
                   ? 'bg-red-500 dark:bg-red-500'
                   : 'bg-gray-600 dark:bg-gray-500'
               } text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
                             m-1 p-2 w-full rounded-md shadow-md'`}
               onClick={() => {
-                if (option.requireConfirmation) {
-                  if (!confirmation[option.name]) {
+                if (option.confirmation) {
+                  if (!confirmation[option.confirmation]) {
                     setConfirmation({
                       ...confirmation,
-                      [option.name]: true,
+                      [option.confirmation]: true,
                     });
                     return;
                   }
                 }
                 if (option.singleAction) option.singleAction();
-                setConfirmation({
-                  ...confirmation,
-                  [option.name]: false,
-                });
+                if (option.confirmation) {
+                  setConfirmation({
+                    ...confirmation,
+                    [option.confirmation]: false,
+                  });
+                }
               }}
             >
-              {confirmation[option.name]
+              {option.confirmation && confirmation[option.confirmation]
                 ? 'Confirm'
                 : option.buttonTextOn ?? 'Go'}
             </button>

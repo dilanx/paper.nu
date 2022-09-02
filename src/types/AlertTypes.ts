@@ -1,4 +1,4 @@
-import { Color, ColorMap, IconElement } from './BaseTypes';
+import { Color, ColorMap, IconElement, ReadUserOptions } from './BaseTypes';
 
 export interface AlertDataExtra {
   title: string;
@@ -6,7 +6,7 @@ export interface AlertDataExtra {
 }
 
 export interface AlertDataOption {
-  name: string;
+  switch?: keyof ReadUserOptions;
   title: string;
   description: string;
   singleAction?: () => void;
@@ -14,7 +14,7 @@ export interface AlertDataOption {
   buttonTextOn?: string;
   buttonTextOff?: string;
   bonusAction?: (newSwitch: boolean) => void;
-  requireConfirmation?: boolean;
+  confirmation?: string;
 }
 
 export interface AlertConfirmationState {
@@ -69,7 +69,7 @@ export interface AlertData {
   extras?: AlertDataExtra[];
   options?: AlertDataOption[];
   tabs?: {
-    switchName: string;
+    switchName: keyof ReadUserOptions;
     colorMap: ColorMap;
     tabs: AlertDataTab[];
   };

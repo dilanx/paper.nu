@@ -1,6 +1,6 @@
 import { toJpeg } from 'html-to-image';
 
-export async function exportScheduleAsImage(dark: boolean) {
+export async function exportScheduleAsImage(dark?: boolean) {
   const element = document.getElementById('schedule');
   if (!element) {
     return false;

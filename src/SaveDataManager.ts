@@ -5,7 +5,6 @@ import {
   LoadResponse,
   ReadUserOptions,
   UserOptions,
-  UserOptionValue,
 } from './types/BaseTypes';
 import debug from 'debug';
 import ScheduleManager from './ScheduleManager';
@@ -106,7 +105,7 @@ let SaveDataManager = {
     if (switches.get.save_to_storage) {
       if (mode === Mode.PLAN) {
         d('trying to load plan data from account');
-        let storedPlanId = switches.get.active_plan_id as string | undefined;
+        let storedPlanId = switches.get.active_plan_id;
         if (accountPlans && storedPlanId) {
           if (storedPlanId in accountPlans) {
             let content = accountPlans[storedPlanId].content;
@@ -148,9 +147,7 @@ let SaveDataManager = {
           return response;
         }
       } else if (mode === Mode.SCHEDULE) {
-        let storedScheduleId = switches.get.active_schedule_id as
-          | string
-          | undefined;
+        let storedScheduleId = switches.get.active_schedule_id;
         if (accountSchedules && storedScheduleId) {
           if (storedScheduleId in accountSchedules) {
             let content = accountSchedules[storedScheduleId].content;
@@ -205,8 +202,8 @@ let SaveDataManager = {
   },
   loadSwitchesFromStorage: (
     setSwitchFunction: (
-      key: string,
-      val: UserOptionValue,
+      key: keyof ReadUserOptions,
+      val: any,
       save: boolean | undefined
     ) => void
   ): UserOptions => {
@@ -221,15 +218,15 @@ let SaveDataManager = {
     for (let i = 0; i < keys.length; i++) {
       if (keys[i].startsWith('switch_')) {
         let store = localStorage.getItem(keys[i]);
-        let val: UserOptionValue = undefined;
+        let val: any = undefined;
         if (store != null) {
           if (store === 'true') val = true;
           else if (store === 'false') val = false;
           else if (isNaN(parseInt(store))) val = parseInt(store);
           else val = store;
         }
-        let switchId = keys[i].substring(7);
-        switches[switchId] = val;
+        let switchId = keys[i].substring(7) as keyof ReadUserOptions;
+        switches[switchId] = val as any;
       }
     }
     return {
