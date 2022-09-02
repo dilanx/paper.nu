@@ -334,9 +334,7 @@ const PlanManager = {
       `${window.location.pathname}?${paramsStr}`
     );
 
-    if (switches?.get.save_to_storage) {
-      localStorage.setItem('data', paramsStr);
-    }
+    localStorage.setItem('data', paramsStr);
 
     let activePlanId = switches?.get.active_plan_id as string | undefined;
 

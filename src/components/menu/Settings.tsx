@@ -106,20 +106,14 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
           {
             switch: 'schedule_warnings',
             title: 'Schedule warnings',
-            description: ``
-          }
+            description: ``,
+          },
         ],
       },
       {
         name: 'Advanced',
         display: <DotsHorizontalIcon className="w-5 h-5" />,
         options: [
-          {
-            switch: 'save_to_storage',
-            title: 'Remember most recent data',
-            description: `If you visit this site without a full plan or schedule URL, your most recently modified one will be loaded.`,
-            saveToStorage: true,
-          },
           {
             switch: 'reduced_motion',
             title: 'Reduced motion',

@@ -26,7 +26,6 @@ export interface AppState {
 }
 
 export interface ReadUserOptions {
-  save_to_storage?: boolean;
   notifications?: boolean;
   settings_tab?: string;
   mode?: number;

@@ -102,92 +102,90 @@ let SaveDataManager = {
     const mode = switches.get.mode as Mode;
     d('last mode used is %d', mode);
 
-    if (switches.get.save_to_storage) {
-      if (mode === Mode.PLAN) {
-        d('trying to load plan data from account');
-        let storedPlanId = switches.get.active_plan_id;
-        if (accountPlans && storedPlanId) {
-          if (storedPlanId in accountPlans) {
-            let content = accountPlans[storedPlanId].content;
-            let data = PlanManager.loadFromString(content);
-            if (data !== 'empty') {
-              if (data !== 'malformed') {
-                d('account plan load successful: %s', storedPlanId);
-                activeId = storedPlanId;
-                originalDataString = content;
-                PlanManager.save(data);
-                d('plan data loaded');
-              }
-              const response: LoadResponse<PlanData> = {
-                mode: Mode.PLAN,
-                data,
-                activeId,
-                originalDataString,
-                method: 'Account',
-              };
-              return response;
+    if (mode === Mode.PLAN) {
+      d('trying to load plan data from account');
+      let storedPlanId = switches.get.active_plan_id;
+      if (accountPlans && storedPlanId) {
+        if (storedPlanId in accountPlans) {
+          let content = accountPlans[storedPlanId].content;
+          let data = PlanManager.loadFromString(content);
+          if (data !== 'empty') {
+            if (data !== 'malformed') {
+              d('account plan load successful: %s', storedPlanId);
+              activeId = storedPlanId;
+              originalDataString = content;
+              PlanManager.save(data);
+              d('plan data loaded');
             }
+            const response: LoadResponse<PlanData> = {
+              mode: Mode.PLAN,
+              data,
+              activeId,
+              originalDataString,
+              method: 'Account',
+            };
+            return response;
           }
         }
+      }
 
-        d('nothing to load from account, trying storage instead');
-        let data = PlanManager.loadFromStorage();
-        if (data !== 'empty') {
-          if (data !== 'malformed') {
-            PlanManager.save(data);
-            d('plan data loaded');
-          }
-          const response: LoadResponse<PlanData> = {
-            mode: Mode.PLAN,
-            data,
-            activeId,
-            originalDataString,
-            method: 'Storage',
-          };
-          return response;
+      d('nothing to load from account, trying storage instead');
+      let data = PlanManager.loadFromStorage();
+      if (data !== 'empty') {
+        if (data !== 'malformed') {
+          PlanManager.save(data);
+          d('plan data loaded');
         }
-      } else if (mode === Mode.SCHEDULE) {
-        let storedScheduleId = switches.get.active_schedule_id;
-        if (accountSchedules && storedScheduleId) {
-          if (storedScheduleId in accountSchedules) {
-            let content = accountSchedules[storedScheduleId].content;
-            let data = ScheduleManager.loadFromString(content);
-            if (data !== 'empty') {
-              if (data !== 'malformed') {
-                d('account scheedule load successful: %s', storedScheduleId);
-                activeId = storedScheduleId;
-                originalDataString = content;
-                ScheduleManager.save(data);
-                d('schedule data loaded');
-              }
-              const response: LoadResponse<ScheduleData> = {
-                mode: Mode.SCHEDULE,
-                data,
-                activeId,
-                originalDataString,
-                method: 'Account',
-              };
-              return response;
+        const response: LoadResponse<PlanData> = {
+          mode: Mode.PLAN,
+          data,
+          activeId,
+          originalDataString,
+          method: 'Storage',
+        };
+        return response;
+      }
+    } else if (mode === Mode.SCHEDULE) {
+      let storedScheduleId = switches.get.active_schedule_id;
+      if (accountSchedules && storedScheduleId) {
+        if (storedScheduleId in accountSchedules) {
+          let content = accountSchedules[storedScheduleId].content;
+          let data = ScheduleManager.loadFromString(content);
+          if (data !== 'empty') {
+            if (data !== 'malformed') {
+              d('account scheedule load successful: %s', storedScheduleId);
+              activeId = storedScheduleId;
+              originalDataString = content;
+              ScheduleManager.save(data);
+              d('schedule data loaded');
             }
+            const response: LoadResponse<ScheduleData> = {
+              mode: Mode.SCHEDULE,
+              data,
+              activeId,
+              originalDataString,
+              method: 'Account',
+            };
+            return response;
           }
         }
+      }
 
-        d('nothing to load from account, trying storage instead');
-        let data = ScheduleManager.loadFromStorage();
-        if (data !== 'empty') {
-          if (data !== 'malformed') {
-            ScheduleManager.save(data);
-            d('schedule data loaded');
-          }
-          const response: LoadResponse<ScheduleData> = {
-            mode: Mode.SCHEDULE,
-            data,
-            activeId,
-            originalDataString,
-            method: 'Storage',
-          };
-          return response;
+      d('nothing to load from account, trying storage instead');
+      let data = ScheduleManager.loadFromStorage();
+      if (data !== 'empty') {
+        if (data !== 'malformed') {
+          ScheduleManager.save(data);
+          d('schedule data loaded');
         }
+        const response: LoadResponse<ScheduleData> = {
+          mode: Mode.SCHEDULE,
+          data,
+          activeId,
+          originalDataString,
+          method: 'Storage',
+        };
+        return response;
       }
     }
 
@@ -208,7 +206,6 @@ let SaveDataManager = {
     ) => void
   ): UserOptions => {
     let switches: ReadUserOptions = {
-      save_to_storage: true,
       notifications: true,
       settings_tab: 'General',
       mode: 1,

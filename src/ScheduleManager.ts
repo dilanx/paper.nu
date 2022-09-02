@@ -342,9 +342,7 @@ const ScheduleManager = {
       `${window.location.pathname}?${paramsStr}`
     );
 
-    if (switches?.get.save_to_storage) {
-      localStorage.setItem('schedule', paramsStr);
-    }
+    localStorage.setItem('schedule', paramsStr);
 
     let activeScheduleId = switches?.get.active_schedule_id as
       | string
