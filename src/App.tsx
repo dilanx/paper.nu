@@ -346,7 +346,7 @@ class App extends React.Component<{}, AppState> {
 
     if (!repeatable && exists && !isPlaceholder && !ignoreExistCheck) {
       this.showAlert({
-        title: 'Course already planned.',
+        title: 'Course already planned',
         message: `You already have ${
           course.id
         } on your plan during the ${Utility.convertQuarter(
@@ -372,7 +372,7 @@ class App extends React.Component<{}, AppState> {
 
     if (unitCount > 5.5) {
       this.showAlert({
-        title: 'Too many classes.',
+        title: 'Too many classes',
         message: `With this course, you'll have ${unitCount} units worth of classes this quarter, which is over Northwestern's maximum of 5.5 units.`,
         cancelButton: 'Go back',
         confirmButton: 'Add anyway',
