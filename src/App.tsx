@@ -1,9 +1,4 @@
-import {
-  ExclamationIcon,
-  PlusIcon,
-  SaveIcon,
-  TrashIcon,
-} from '@heroicons/react/outline';
+import { ExclamationIcon, SaveIcon } from '@heroicons/react/outline';
 import debug from 'debug';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import React from 'react';
@@ -11,6 +6,22 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import toast, { Toaster } from 'react-hot-toast';
 import Account from './Account';
+import {
+  addBookmark,
+  addCourse,
+  addSummerQuarter,
+  addYear,
+  clearData,
+  moveCourse,
+  removeBookmark,
+  removeCourse,
+} from './app/PlanModification';
+import {
+  addScheduleBookmark,
+  addSection,
+  removeScheduleBookmark,
+  removeSection,
+} from './app/ScheduleModification';
 import AccountPlans from './components/account/AccountPlans';
 import Bookmarks from './components/bookmarks/Bookmarks';
 import Alert from './components/menu/alert/Alert';
@@ -21,43 +32,25 @@ import Schedule from './components/schedule/Schedule';
 import Search from './components/search/Search';
 import PlanManager from './PlanManager';
 import SaveDataManager from './SaveDataManager';
-import ScheduleManager from './ScheduleManager';
 import { AlertData } from './types/AlertTypes';
-import { ReadUserOptions, UserOptions } from './types/BaseTypes';
+import { AppState, ReadUserOptions } from './types/BaseTypes';
 import {
   Course,
-  CourseLocation,
   PlanData,
   PlanModificationFunctions,
   PlanSpecialFunctions,
 } from './types/PlanTypes';
 import {
-  ScheduleCourse,
   ScheduleData,
   ScheduleInteractions,
   ScheduleModificationFunctions,
-  ScheduleSection,
 } from './types/ScheduleTypes';
 import { Mode } from './utility/Constants';
 import PlanError from './utility/PlanError';
 import Utility from './utility/Utility';
-var d = debug('main');
+var d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? 'UNKNOWN';
-
-interface AppState {
-  data: PlanData;
-  schedule: ScheduleData;
-  switches: UserOptions;
-  alertData?: AlertData;
-  f: PlanModificationFunctions;
-  f2: PlanSpecialFunctions;
-  sf: ScheduleModificationFunctions;
-  loadingLogin: boolean;
-  unsavedChanges: boolean;
-  originalDataString: string;
-  scheduleInteractions: ScheduleInteractions;
-}
 
 class App extends React.Component<{}, AppState> {
   constructor(props: {}) {
@@ -87,39 +80,39 @@ class App extends React.Component<{}, AppState> {
 
     const f: PlanModificationFunctions = {
       addCourse: (course, location) => {
-        app.addCourse(course, location);
+        addCourse(app, course, location);
       },
       removeCourse: (courseIndex, location) => {
-        app.removeCourse(courseIndex, location);
+        removeCourse(app, courseIndex, location);
       },
       moveCourse: (course, oldLocation, newLocation) => {
-        app.moveCourse(course, oldLocation, newLocation);
+        moveCourse(app, course, oldLocation, newLocation);
       },
       addBookmark: (course, forCredit) => {
-        app.addBookmark(course, forCredit);
+        addBookmark(app, course, forCredit);
       },
       removeBookmark: (course, forCredit) => {
-        app.removeBookmark(course, forCredit);
+        removeBookmark(app, course, forCredit);
       },
     };
 
     const f2: PlanSpecialFunctions = {
       addSummerQuarter: (year) => {
-        app.addSummerQuarter(year);
+        addSummerQuarter(app, year);
       },
       addYear: () => {
-        app.addYear();
+        addYear(app);
       },
       clearData: (year?: number) => {
-        app.clearData(year);
+        clearData(app, year);
       },
     };
 
     const sf: ScheduleModificationFunctions = {
-      addSection: (section) => app.addSection(section),
-      removeSection: (section) => app.removeSection(section),
-      addScheduleBookmark: (course) => app.addScheduleBookmark(course),
-      removeScheduleBookmark: (course) => app.removeScheduleBookmark(course),
+      addSection: (section) => addSection(app, section),
+      removeSection: (section) => removeSection(app, section),
+      addScheduleBookmark: (course) => addScheduleBookmark(app, course),
+      removeScheduleBookmark: (course) => removeScheduleBookmark(app, course),
     };
 
     if (defaultSwitches.get.dark) {
@@ -332,282 +325,6 @@ class App extends React.Component<{}, AppState> {
     this.setState({ alertData: undefined });
   }
 
-  courseConfirmationPrompts(
-    course: Course,
-    { year, quarter }: CourseLocation,
-    confirmationCallback: () => void,
-    ignoreExistCheck = false
-  ) {
-    let data = this.state.data;
-    let isPlaceholder = course.placeholder;
-    let repeatable = course.repeatable;
-
-    let exists = PlanManager.duplicateCourse(course, data);
-
-    if (!repeatable && exists && !isPlaceholder && !ignoreExistCheck) {
-      this.showAlert({
-        title: 'Course already planned',
-        message: `You already have ${
-          course.id
-        } on your plan during the ${Utility.convertQuarter(
-          exists.quarter
-        ).title.toLowerCase()} quarter of your ${Utility.convertYear(
-          exists.year
-        ).toLowerCase()} year.`,
-        cancelButton: 'Go back',
-        confirmButton: 'Add anyway',
-        confirmButtonColor: 'red',
-        iconColor: 'red',
-        icon: ExclamationIcon,
-        action: () => {
-          confirmationCallback();
-        },
-      });
-      return;
-    }
-
-    let unitCount =
-      PlanManager.getQuarterCredits(data.courses[year][quarter]) +
-      parseFloat(course.units);
-
-    if (unitCount > 5.5) {
-      this.showAlert({
-        title: 'Too many classes',
-        message: `With this course, you'll have ${unitCount} units worth of classes this quarter, which is over Northwestern's maximum of 5.5 units.`,
-        cancelButton: 'Go back',
-        confirmButton: 'Add anyway',
-        confirmButtonColor: 'red',
-        iconColor: 'red',
-        icon: ExclamationIcon,
-        action: () => {
-          confirmationCallback();
-        },
-      });
-      return;
-    }
-
-    confirmationCallback();
-  }
-
-  addCourse(course: Course, location: CourseLocation) {
-    this.courseConfirmationPrompts(course, location, () => {
-      let data = this.state.data;
-      let { year, quarter } = location;
-      data.courses[year][quarter].push(course);
-      data.courses[year][quarter].sort((a, b) => {
-        if (a.placeholder) return 1;
-        if (b.placeholder) return -1;
-        return a.id.localeCompare(b.id);
-      });
-
-      d('course added: %s (y%dq%d)', course.id, year, quarter);
-      this.setState({
-        data,
-        unsavedChanges: PlanManager.save(
-          data,
-          this.state.switches,
-          this.state.originalDataString
-        ),
-      });
-    });
-  }
-
-  removeCourse(course: Course, { year, quarter }: CourseLocation) {
-    if (year < 0) {
-      this.removeBookmark(course, quarter === 1);
-      return;
-    }
-    let data = this.state.data;
-    data.courses[year][quarter].splice(
-      data.courses[year][quarter].indexOf(course),
-      1
-    );
-    d('course removed: %s (y%dq%d)', course.id, year, quarter);
-    this.setState({
-      data,
-      unsavedChanges: PlanManager.save(
-        data,
-        this.state.switches,
-        this.state.originalDataString
-      ),
-    });
-  }
-
-  moveCourse(
-    course: Course,
-    oldLocation: CourseLocation,
-    newLocation: CourseLocation
-  ) {
-    let { year: oy, quarter: oq } = oldLocation;
-    let { year: ny, quarter: nq } = newLocation;
-    if (oy === ny && oq === nq) return;
-
-    this.courseConfirmationPrompts(
-      course,
-      newLocation,
-      () => {
-        if (oy >= 0) {
-          let data = this.state.data;
-          data.courses[oy][oq].splice(data.courses[oy][oq].indexOf(course), 1);
-        }
-        let data = this.state.data;
-        data.courses[ny][nq].push(course);
-        data.courses[ny][nq].sort((a, b) => {
-          if (a.placeholder) return 1;
-          if (b.placeholder) return -1;
-          return a.id.localeCompare(b.id);
-        });
-
-        d('course moved: %s (y%dq%d) -> (y%dq%d)', course.id, oy, oq, ny, nq);
-        this.setState({
-          data,
-          unsavedChanges: PlanManager.save(
-            data,
-            this.state.switches,
-            this.state.originalDataString
-          ),
-        });
-      },
-      true
-    );
-  }
-
-  addBookmark(course: Course, forCredit: boolean) {
-    let bookmarks = this.state.data.bookmarks;
-    if (forCredit) {
-      bookmarks.forCredit.add(course);
-    } else {
-      bookmarks.noCredit.add(course);
-    }
-
-    d('bookmark added: %s (credit = %s)', course.id, forCredit.toString());
-    this.setState((prevState) => {
-      const data = {
-        ...prevState.data,
-        bookmarks: bookmarks,
-      };
-      return {
-        data,
-        unsavedChanges: PlanManager.save(
-          data,
-          this.state.switches,
-          prevState.originalDataString
-        ),
-      };
-    });
-  }
-
-  removeBookmark(course: Course, forCredit: boolean) {
-    let bookmarks = this.state.data.bookmarks;
-    if (forCredit) {
-      bookmarks.forCredit.delete(course);
-    } else {
-      bookmarks.noCredit.delete(course);
-    }
-
-    d('bookmark removed: %s (credit = %s)', course.id, forCredit.toString());
-    this.setState((prevState) => {
-      const data = {
-        ...prevState.data,
-        bookmarks: bookmarks,
-      };
-      return {
-        data,
-        unsavedChanges: PlanManager.save(
-          data,
-          prevState.switches,
-          prevState.originalDataString
-        ),
-      };
-    });
-  }
-
-  addSummerQuarter(year: number) {
-    this.showAlert({
-      title: 'Add summer quarter to this year?',
-      message: `This will add a summer quarter to your ${Utility.convertYear(
-        year
-      ).toLowerCase()}. You can remove it by removing all classes from that quarter and refreshing the page.`,
-      confirmButton: 'Add quarter',
-      confirmButtonColor: 'yellow',
-      cancelButton: 'Close',
-      iconColor: 'yellow',
-      icon: PlusIcon,
-      action: () => {
-        let data = this.state.data;
-        data.courses[year].push([]);
-        this.setState({ data: data });
-        d('summer quarter added: y%d', year);
-      },
-    });
-  }
-
-  addYear() {
-    let data = this.state.data;
-    data.courses.push([[], [], []]);
-    this.setState({ data: data });
-    d('year added: y%d', data.courses.length);
-  }
-
-  clearData(year?: number) {
-    let data;
-    if (year === undefined) {
-      data = {
-        courses: [
-          [[], [], []],
-          [[], [], []],
-          [[], [], []],
-          [[], [], []],
-        ],
-        bookmarks: {
-          forCredit: new Set<Course>(),
-          noCredit: new Set<Course>(),
-        },
-      };
-      d('plan cleared');
-      this.setState({
-        data,
-        unsavedChanges: PlanManager.save(
-          data,
-          this.state.switches,
-          this.state.originalDataString
-        ),
-      });
-    } else {
-      const yearText = Utility.convertYear(year).toLowerCase();
-      this.showAlert({
-        title: 'Clear this year?',
-        message: `All of the courses in your ${yearText} will be removed.`,
-        cancelButton: 'Cancel',
-        confirmButton: 'Clear',
-        confirmButtonColor: 'red',
-        iconColor: 'red',
-        icon: TrashIcon,
-        action: () => {
-          let oldData = this.state.data;
-          let courses = this.state.data.courses;
-          courses[year] = [[], [], []];
-          data = { courses: courses, bookmarks: oldData.bookmarks };
-          d('year cleared: y%d', year);
-          toast.success(`Cleared your ${yearText}`, {
-            iconTheme: {
-              primary: 'red',
-              secondary: 'white',
-            },
-          });
-          this.setState({
-            data,
-            unsavedChanges: PlanManager.save(
-              data,
-              this.state.switches,
-              this.state.originalDataString
-            ),
-          });
-        },
-      });
-    }
-  }
-
   activateAccountPlan(planId: string) {
     d('plan activating: %s', planId);
     Account.getPlans()
@@ -739,74 +456,6 @@ class App extends React.Component<{}, AppState> {
     }
 
     action();
-  }
-
-  addSection(section: ScheduleSection) {
-    delete section.preview;
-    let schedule = this.state.schedule;
-    schedule.schedule[section.section_id] = section;
-
-    d('schedule section added: %s', section.section_id);
-    this.setState({
-      schedule,
-      unsavedChanges: ScheduleManager.save(schedule, this.state.switches),
-    });
-  }
-
-  removeSection(section: ScheduleSection) {
-    let schedule = this.state.schedule;
-    delete schedule.schedule[section.section_id];
-    d('schedule section removed: %s', section.section_id);
-    this.setState({
-      schedule,
-      unsavedChanges: ScheduleManager.save(schedule, this.state.switches),
-    });
-  }
-
-  addScheduleBookmark(course: ScheduleCourse) {
-    let schedule = this.state.schedule;
-    if (
-      schedule.bookmarks.some(
-        (bookmarkCourse) => bookmarkCourse.course_id === course.course_id
-      )
-    ) {
-      return;
-    }
-    schedule.bookmarks.push(course);
-    this.setState({
-      schedule,
-      unsavedChanges: ScheduleManager.save(schedule, this.state.switches),
-    });
-  }
-
-  removeScheduleBookmark(course: ScheduleCourse) {
-    let schedule = this.state.schedule;
-    if (
-      !schedule.bookmarks.some(
-        (bookmarkCourse) => bookmarkCourse.course_id === course.course_id
-      )
-    ) {
-      return;
-    }
-
-    let index = -1;
-    for (let i = 0; i < schedule.bookmarks.length; i++) {
-      if (schedule.bookmarks[i].course_id === course.course_id) {
-        index = i;
-        break;
-      }
-    }
-
-    if (index === -1) {
-      return;
-    }
-
-    schedule.bookmarks.splice(index, 1);
-
-    this.setState({
-      schedule,
-      unsavedChanges: ScheduleManager.save(schedule, this.state.switches),
-    });
   }
 
   interactionUpdate(interaction: keyof ScheduleInteractions, value?: any) {

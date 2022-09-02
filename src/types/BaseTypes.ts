@@ -1,4 +1,29 @@
 import { Mode } from '../utility/Constants';
+import { AlertData } from './AlertTypes';
+import {
+  PlanData,
+  PlanModificationFunctions,
+  PlanSpecialFunctions,
+} from './PlanTypes';
+import {
+  ScheduleData,
+  ScheduleInteractions,
+  ScheduleModificationFunctions,
+} from './ScheduleTypes';
+
+export interface AppState {
+  data: PlanData;
+  schedule: ScheduleData;
+  switches: UserOptions;
+  alertData?: AlertData;
+  f: PlanModificationFunctions;
+  f2: PlanSpecialFunctions;
+  sf: ScheduleModificationFunctions;
+  loadingLogin: boolean;
+  unsavedChanges: boolean;
+  originalDataString: string;
+  scheduleInteractions: ScheduleInteractions;
+}
 
 export interface ReadUserOptions {
   save_to_storage?: boolean;
@@ -17,6 +42,7 @@ export interface ReadUserOptions {
   more_info?: boolean;
   show_times?: boolean;
   debug?: boolean;
+  schedule_warnings?: boolean;
 }
 
 export interface UserOptions {
@@ -67,3 +93,5 @@ export type ColorMap = { [key: string]: Color };
 export type IconElement = (props: React.ComponentProps<'svg'>) => JSX.Element;
 
 export type StringMap = { [key: string]: string };
+
+export type AppType = React.Component<{}, AppState>;

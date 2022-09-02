@@ -284,6 +284,34 @@ const ScheduleManager = {
     return true;
   },
 
+  sectionsOverlap: (section: ScheduleSection, data: ScheduleDataMap) => {
+    if (!section.meeting_days || !section.start_time || !section.end_time) {
+      return;
+    }
+
+    for (const s of Object.values(data)) {
+      if (
+        Array.from(section.meeting_days!).some(
+          (d) => s.meeting_days?.includes(d) ?? false
+        )
+      ) {
+        if (!s.start_time || !s.end_time) {
+          continue;
+        }
+        if (
+          Utility.timesOverlap(
+            section.start_time!,
+            section.end_time!,
+            s.start_time,
+            s.end_time
+          )
+        ) {
+          return s;
+        }
+      }
+    }
+  },
+
   loadFromURL: (params: URLSearchParams) => {
     return loadData(params);
   },
