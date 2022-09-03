@@ -24,7 +24,7 @@ function matchAccountId(accountData: AccountDataMap, content: string) {
 
 let SaveDataManager = {
   load: async (
-    params: URLSearchParams,
+    params: URLSearchParams | undefined,
     switches: UserOptions
   ): Promise<LoadResponse<PlanData | ScheduleData>> => {
     let activeId: string | undefined = undefined;
@@ -40,65 +40,67 @@ let SaveDataManager = {
       activeId = 'None';
     }
 
-    d('trying to load schedule URL data');
-    let scheduleData = ScheduleManager.loadFromURL(params);
-    if (scheduleData !== 'empty') {
-      if (scheduleData !== 'malformed') {
-        d('schedule URL load successful');
-        method = 'URL';
-        if (accountSchedules) {
-          let dataStr = params.toString();
-          let id = matchAccountId(accountSchedules, dataStr);
-          if (id) {
-            d('matched content to account schedule: %s', id);
-            activeId = id;
-            originalDataString = dataStr;
-            method = 'Account';
+    if (params) {
+      d('trying to load schedule URL data');
+      let scheduleData = ScheduleManager.loadFromURL(params);
+      if (scheduleData !== 'empty') {
+        if (scheduleData !== 'malformed') {
+          d('schedule URL load successful');
+          method = 'URL';
+          if (accountSchedules) {
+            let dataStr = params.toString();
+            let id = matchAccountId(accountSchedules, dataStr);
+            if (id) {
+              d('matched content to account schedule: %s', id);
+              activeId = id;
+              originalDataString = dataStr;
+              method = 'Account';
+            }
           }
+          ScheduleManager.save(scheduleData);
+          d('schedule data loaded');
         }
-        ScheduleManager.save(scheduleData);
-        d('schedule data loaded');
+        const response: LoadResponse<ScheduleData> = {
+          mode: Mode.SCHEDULE,
+          data: scheduleData,
+          activeId,
+          originalDataString,
+          method,
+        };
+        return response;
       }
-      const response: LoadResponse<ScheduleData> = {
-        mode: Mode.SCHEDULE,
-        data: scheduleData,
-        activeId,
-        originalDataString,
-        method,
-      };
-      return response;
-    }
 
-    d('no schedule URL data to load, trying plan URL data instead');
-    let planData = PlanManager.loadFromURL(params);
-    if (planData !== 'empty') {
-      if (planData !== 'malformed') {
-        d('plan URL load successful');
-        method = 'URL';
-        if (accountPlans) {
-          let dataStr = params.toString();
-          let id = matchAccountId(accountPlans, dataStr);
-          if (id) {
-            d('matched content to account plan: %s', id);
-            activeId = id;
-            originalDataString = dataStr;
-            method = 'Account';
+      d('no schedule URL data to load, trying plan URL data instead');
+      let planData = PlanManager.loadFromURL(params);
+      if (planData !== 'empty') {
+        if (planData !== 'malformed') {
+          d('plan URL load successful');
+          method = 'URL';
+          if (accountPlans) {
+            let dataStr = params.toString();
+            let id = matchAccountId(accountPlans, dataStr);
+            if (id) {
+              d('matched content to account plan: %s', id);
+              activeId = id;
+              originalDataString = dataStr;
+              method = 'Account';
+            }
           }
+          PlanManager.save(planData);
+          d('plan data loaded');
         }
-        PlanManager.save(planData);
-        d('plan data loaded');
+        const response: LoadResponse<PlanData> = {
+          mode: Mode.PLAN,
+          data: planData,
+          activeId,
+          originalDataString,
+          method,
+        };
+        return response;
       }
-      const response: LoadResponse<PlanData> = {
-        mode: Mode.PLAN,
-        data: planData,
-        activeId,
-        originalDataString,
-        method,
-      };
-      return response;
-    }
 
-    d('nothing to load from URL');
+      d('nothing to load from URL');
+    }
     const mode = switches.get.mode as Mode;
     d('last mode used is %d', mode);
 
@@ -208,7 +210,7 @@ let SaveDataManager = {
     let switches: ReadUserOptions = {
       notifications: true,
       settings_tab: 'General',
-      mode: 1,
+      mode: Mode.PLAN,
       schedule_image_watermark: true,
       schedule_warnings: true,
     };
@@ -220,11 +222,11 @@ let SaveDataManager = {
         if (store != null) {
           if (store === 'true') val = true;
           else if (store === 'false') val = false;
-          else if (isNaN(parseInt(store))) val = parseInt(store);
+          else if (!isNaN(parseInt(store))) val = parseInt(store);
           else val = store;
         }
         let switchId = keys[i].substring(7) as keyof ReadUserOptions;
-        switches[switchId] = val as any;
+        switches[switchId] = val;
       }
     }
     return {

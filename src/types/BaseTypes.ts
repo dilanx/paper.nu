@@ -28,7 +28,7 @@ export interface AppState {
 export interface ReadUserOptions {
   notifications?: boolean;
   settings_tab?: string;
-  mode?: number;
+  mode?: Mode;
   schedule_image_watermark?: boolean;
   active_plan_id?: string;
   active_schedule_id?: string;

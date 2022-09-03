@@ -9,13 +9,13 @@ class Info extends React.Component<InfoProps> {
   render() {
     return (
       <div
-        className={`flex items-center justify-center my-4 px-4 py-3 text-center whitespace-nowrap border-2
+        className={`flex items-center justify-center mt-4 mb-2 px-4 py-3 text-center whitespace-nowrap border-2
                 ${
                   this.props.mode === Mode.PLAN
                     ? 'bg-purple-50 border-purple-800 dark:border-purple-300'
                     : 'bg-green-50 border-green-600 dark:border-green-300'
                 }
-                dark:bg-gray-800 rounded-3xl`}
+                dark:bg-gray-800 rounded-3xl transition-all duration-300`}
       >
         <svg
           aria-hidden="true"
@@ -26,7 +26,7 @@ class Info extends React.Component<InfoProps> {
             this.props.mode === Mode.PLAN
               ? 'text-purple-800 dark:text-purple-300'
               : 'text-green-600 dark:text-green-300'
-          } svg-inline--fa fa-calendar fa-w-14`}
+          } svg-inline--fa fa-calendar fa-w-14 transition-all duration-300`}
           role="img"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 448 512"
@@ -37,7 +37,7 @@ class Info extends React.Component<InfoProps> {
           ></path>
         </svg>
         <p
-          className={`text-2xl font-normal ${
+          className={`text-2xl font-normal transition-all duration-300 ${
             this.props.mode === Mode.PLAN
               ? 'text-purple-800 dark:text-purple-300'
               : 'text-green-600 dark:text-green-300'

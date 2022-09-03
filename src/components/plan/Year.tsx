@@ -37,7 +37,6 @@ const variants = {
   visible: {
     opacity: 1,
     transition: {
-      delayChildren: 0.5,
       staggerChildren: 0.2,
       when: 'beforeChildren',
     },

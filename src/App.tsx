@@ -26,6 +26,7 @@ import AccountPlans from './components/account/AccountPlans';
 import Bookmarks from './components/bookmarks/Bookmarks';
 import Alert from './components/menu/alert/Alert';
 import Info from './components/menu/Info';
+import ModeSwitch from './components/menu/ModeSwitch';
 import TaskBar from './components/menu/TaskBar';
 import Content from './components/plan/Content';
 import Schedule from './components/schedule/Schedule';
@@ -222,7 +223,7 @@ class App extends React.Component<{}, AppState> {
     }
   }
 
-  initialize(params: URLSearchParams, callback: () => void) {
+  initialize(params: URLSearchParams | undefined, callback: () => void) {
     d('initializing');
     SaveDataManager.load(params, this.state.switches)
       .then(({ mode, data, activeId, originalDataString, method }) => {
@@ -522,7 +523,17 @@ class App extends React.Component<{}, AppState> {
 
             <div className="bg-white dark:bg-gray-800 grid grid-cols-1 lg:grid-cols-8">
               <div className="col-span-2 px-4 h-192 md:h-screen flex flex-col">
-                <Info mode={switches.get.mode as number} />
+                <Info mode={switches.get.mode!} />
+                <ModeSwitch
+                  switches={switches}
+                  changeMode={(mode) => {
+                    this.setSwitch('mode', mode, true);
+                    this.setState({ loadingLogin: true });
+                    this.initialize(undefined, () => {
+                      this.setState({ loadingLogin: false });
+                    });
+                  }}
+                />
                 <Search
                   data={this.state.data}
                   schedule={this.state.schedule}
@@ -576,27 +587,29 @@ class App extends React.Component<{}, AppState> {
                   switches.get.compact ? 'compact-mode ' : ''
                 } col-span-6 block pt-0 lg:h-screen lg:overflow-y-scroll no-scrollbar`}
               >
-                {switches.get.mode === Mode.PLAN ? (
-                  <Content
-                    data={this.state.data}
-                    f={this.state.f}
-                    f2={this.state.f2}
-                    alert={(alertData) => {
-                      this.showAlert(alertData);
-                    }}
-                    switches={switches}
-                  />
-                ) : (
-                  <Schedule
-                    schedule={this.state.schedule}
-                    alert={(alertData) => {
-                      this.showAlert(alertData);
-                    }}
-                    interactions={this.state.scheduleInteractions}
-                    sf={this.state.sf}
-                    switches={switches}
-                  />
-                )}
+                <AnimatePresence>
+                  {switches.get.mode === Mode.PLAN ? (
+                    <Content
+                      data={this.state.data}
+                      f={this.state.f}
+                      f2={this.state.f2}
+                      alert={(alertData) => {
+                        this.showAlert(alertData);
+                      }}
+                      switches={switches}
+                    />
+                  ) : (
+                    <Schedule
+                      schedule={this.state.schedule}
+                      alert={(alertData) => {
+                        this.showAlert(alertData);
+                      }}
+                      interactions={this.state.scheduleInteractions}
+                      sf={this.state.sf}
+                      switches={switches}
+                    />
+                  )}
+                </AnimatePresence>
               </div>
             </div>
             <AnimatePresence>
@@ -611,7 +624,7 @@ class App extends React.Component<{}, AppState> {
                 >
                   <button
                     className="flex items-center gap-2 rainbow-border-button shadow-lg opacity-75 hover:opacity-100 active:before:bg-none active:before:bg-emerald-400
-                                            after:bg-gray-100 text-black dark:after:bg-gray-700 dark:text-white"
+                      after:bg-gray-100 text-black dark:after:bg-gray-700 dark:text-white"
                     onClick={() => {
                       this.updatePlan();
                     }}
