@@ -7,6 +7,11 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import toast, { Toaster } from 'react-hot-toast';
 import Account from './Account';
 import {
+  activateAccountPlan,
+  deactivate,
+  update,
+} from './app/AccountModification';
+import {
   addBookmark,
   addCourse,
   addSummerQuarter,
@@ -326,139 +331,6 @@ class App extends React.Component<{}, AppState> {
     this.setState({ alertData: undefined });
   }
 
-  activateAccountPlan(planId: string) {
-    d('plan activating: %s', planId);
-    Account.getPlans()
-      .then((plans) => {
-        if (!plans) {
-          this.showAlert(
-            Utility.errorAlert('account_activate_plan', 'Undefined Plans')
-          );
-          return;
-        }
-        let plan = plans[planId];
-        if (!plan) {
-          this.showAlert(
-            Utility.errorAlert('account_activate_plan', 'Undefined Plan')
-          );
-          return;
-        }
-        let data = PlanManager.loadFromString(plan.content);
-        if (data === 'malformed') {
-          this.showAlert(
-            Utility.errorAlert('account_activate_plan', 'Malformed Plan')
-          );
-          return;
-        }
-
-        if (data === 'empty') {
-          this.setSwitch('active_plan_id', planId, true);
-          this.setState({
-            originalDataString: plan.content,
-            unsavedChanges: window.location.search.length > 0,
-          });
-          toast.success('Activated plan: ' + Account.getPlanName(planId));
-          d('plan activated: %s (empty)', planId);
-          return;
-        }
-
-        let confirmNonAccountOverwrite =
-          this.state.switches.get.active_plan_id === 'None' &&
-          window.location.search.length > 0;
-
-        this.discardChanges(() => {
-          this.setSwitch('active_plan_id', planId, true);
-          this.setState(
-            {
-              data: data as PlanData,
-              originalDataString: plan.content,
-            },
-            () => {
-              PlanManager.save(data as PlanData);
-              toast.success('Activated plan: ' + Account.getPlanName(planId));
-              d('plan activated: %s', planId);
-            }
-          );
-        }, confirmNonAccountOverwrite);
-      })
-      .catch((error: PlanError) => {
-        this.showAlert(
-          Utility.errorAlert('account_activate_plan', error.message)
-        );
-      });
-  }
-
-  deactivatePlan() {
-    this.discardChanges(() => {
-      let planId = this.state.switches.get.active_plan_id;
-      this.setSwitch('active_plan_id', 'None', true);
-      toast.success('Deactivated plan', {
-        iconTheme: {
-          primary: 'red',
-          secondary: 'white',
-        },
-      });
-      d('plan deactivated: %s', planId);
-    });
-  }
-
-  updatePlan() {
-    let activePlanId = this.state.switches.get.active_plan_id;
-    if (!activePlanId || activePlanId === 'None') {
-      this.showAlert(
-        Utility.errorAlert('account_update_plan', 'No Active Plan')
-      );
-      return;
-    }
-
-    const dataStr = PlanManager.getDataString(this.state.data);
-    this.setState({ unsavedChanges: false });
-
-    let self = this;
-    toast.promise(Account.updatePlan(activePlanId as string, dataStr), {
-      loading: 'Saving...',
-      success: () => {
-        self.setState({
-          originalDataString: dataStr,
-        });
-        return 'Saved ' + Account.getPlanName(activePlanId as string);
-      },
-      error: (err) => {
-        this.setState({ unsavedChanges: true });
-        this.showAlert(Utility.errorAlert('account_update_plan', err.message));
-        return 'Something went wrong';
-      },
-    });
-  }
-
-  discardChanges(
-    action: () => void,
-    confirmNonAccountOverwrite: boolean = false
-  ) {
-    let message = confirmNonAccountOverwrite
-      ? 'It looks like you have some data on your plan already. Activating this non-empty plan will overwrite that data. Are you sure?'
-      : 'It looks like you have some unsaved changes. Navigating away will cause them not to be saved to your account. Are you sure?';
-
-    if (confirmNonAccountOverwrite || this.state.unsavedChanges) {
-      this.showAlert({
-        title: 'Hold on...',
-        message,
-        confirmButton: 'Yes, continue',
-        confirmButtonColor: 'red',
-        cancelButton: 'Go back',
-        iconColor: 'red',
-        icon: ExclamationIcon,
-        action: () => {
-          this.setState({ unsavedChanges: false });
-          action();
-        },
-      });
-      return;
-    }
-
-    action();
-  }
-
   interactionUpdate(interaction: keyof ScheduleInteractions, value?: any) {
     this.setState({
       scheduleInteractions: {
@@ -481,9 +353,11 @@ class App extends React.Component<{}, AppState> {
   }
 
   render() {
-    let switches = this.state.switches;
-    let tab = switches.get.tab;
-    let darkMode = switches.get.dark;
+    const switches = this.state.switches;
+    const tab = switches.get.tab;
+    const darkMode = switches.get.dark;
+    const isSchedule = switches.get.mode === Mode.SCHEDULE;
+
     return (
       <DndProvider backend={HTML5Backend}>
         {switches.get.notifications && (
@@ -563,10 +437,10 @@ class App extends React.Component<{}, AppState> {
                       this.showAlert(alertData);
                     }}
                     activatePlan={(planId) => {
-                      this.activateAccountPlan(planId);
+                      activateAccountPlan(this, planId);
                     }}
                     deactivatePlan={() => {
-                      this.deactivatePlan();
+                      deactivate(this, isSchedule);
                     }}
                     activePlanId={switches.get.active_plan_id as string}
                   />
@@ -626,7 +500,7 @@ class App extends React.Component<{}, AppState> {
                     className="flex items-center gap-2 rainbow-border-button shadow-lg opacity-75 hover:opacity-100 active:before:bg-none active:before:bg-emerald-400
                       after:bg-gray-100 text-black dark:after:bg-gray-700 dark:text-white"
                     onClick={() => {
-                      this.updatePlan();
+                      update(this, isSchedule);
                     }}
                   >
                     <>

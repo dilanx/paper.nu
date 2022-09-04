@@ -1,7 +1,7 @@
 import {
   ArrowRightIcon,
   ArrowSmLeftIcon,
-  CollectionIcon,
+  CloudIcon,
   DotsHorizontalIcon,
   ExternalLinkIcon,
   SearchIcon,
@@ -150,7 +150,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                     want. Alternatively, you can click on the course and select
                     the quarter you want to add it to.
                   </MiniContentBlock>
-                  <MiniContentBlock icon={CollectionIcon} title="Save">
+                  <MiniContentBlock icon={CloudIcon} title="Save">
                     Easily create an account to save multiple plans and access
                     them from anywhere.
                   </MiniContentBlock>
@@ -175,7 +175,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                     Add any of the sections for a course to your schedule and
                     watch as they appear at the appropriate time.
                   </MiniContentBlock>
-                  <MiniContentBlock icon={CollectionIcon} title="Save">
+                  <MiniContentBlock icon={CloudIcon} title="Save">
                     Easily create an account to save multiple schedules and
                     access them from anywhere. You can even add custom blocks to
                     your account schedules.

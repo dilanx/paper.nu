@@ -152,24 +152,24 @@ let Account = {
     };
   },
   getPlans: (reload = false) => {
-    dp('get');
+    dp('plans: get');
     if (plans && !reload) {
-      dp('cache hit');
+      dp('plans: cache hit');
       return Promise.resolve(plans);
     }
-    dp('cache miss');
+    dp('plans: cache miss');
     return operation('plans', 'GET');
   },
   createPlan: (name: string) => {
-    dp('create');
+    dp('plans: create');
     return operation('plans', 'POST', { name });
   },
   deletePlan: (planId: string) => {
-    dp('delete');
+    dp('plans: delete');
     return operation('plans/' + planId, 'DELETE');
   },
   updatePlan: (planId: string, content: string) => {
-    dp('update');
+    dp('plans: update');
     return operation('plans/' + planId, 'PATCH', { content });
   },
   getPlanName: (planId?: string) => {
@@ -179,6 +179,27 @@ let Account = {
       return 'err';
     }
     return plans[planId].name.toUpperCase();
+  },
+  getSchedules: (reload = false) => {
+    dp('schedules: get');
+    if (schedules && !reload) {
+      dp('schedules: cache hit');
+      return Promise.resolve(schedules);
+    }
+    dp('schedules: cache miss');
+    return operation('schedules', 'GET');
+  },
+  createSchedule: (name: string) => {
+    dp('schedules: create');
+    return operation('schedules', 'POST', { name });
+  },
+  deleteSchedule: (scheduleId: string) => {
+    dp('schedules: delete');
+    return operation('schedules/' + scheduleId, 'DELETE');
+  },
+  updateSchedule: (scheduleId: string, content: string) => {
+    dp('schedules: update');
+    return operation('schedules/' + scheduleId, 'PATCH', { content });
   },
   getScheduleName: (scheduleId?: string) => {
     if (!scheduleId) return 'Log in';

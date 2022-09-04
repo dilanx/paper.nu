@@ -1,5 +1,5 @@
 import {
-  CollectionIcon,
+  CloudIcon,
   LogoutIcon,
   PlusIcon,
   TrashIcon,
@@ -233,7 +233,7 @@ class AccountPlans extends React.Component<
         </p>
         {!this.state.loggedIn ? (
           <AccountPlanMessage
-            icon={<CollectionIcon className="w-12 h-12" />}
+            icon={<CloudIcon className="w-12 h-12" />}
             title="Save your plans"
             description="By creating an account, you can save up to 5 plans and access them from any device at any time. It's super simple."
             button={{
