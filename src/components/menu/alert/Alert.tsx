@@ -208,9 +208,10 @@ export default function Alert(props: AlertProps) {
                 )}
 
                 <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse dark:bg-gray-800">
-                  <button
-                    type="button"
-                    className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 
+                  {data.confirmButton && (
+                    <button
+                      type="button"
+                      className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 
                                 bg-${data.confirmButtonColor}-500 
                                 ${
                                   okay
@@ -219,13 +220,14 @@ export default function Alert(props: AlertProps) {
                                 } 
                                 text-base font-medium text-white outline-none sm:ml-3 sm:w-auto sm:text-sm 
                                 transition-all duration-150`}
-                    disabled={!okay}
-                    onClick={() => {
-                      confirm();
-                    }}
-                  >
-                    {data.confirmButton}
-                  </button>
+                      disabled={!okay}
+                      onClick={() => {
+                        confirm();
+                      }}
+                    >
+                      {data.confirmButton}
+                    </button>
+                  )}
                   {data.cancelButton && (
                     <button
                       type="button"

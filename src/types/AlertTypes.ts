@@ -82,8 +82,8 @@ export interface AlertData {
     focusByDefault?: boolean;
   };
   textHTML?: JSX.Element;
-  confirmButton: string;
-  confirmButtonColor: Color;
+  confirmButton?: string;
+  confirmButtonColor?: Color;
   iconColor: Color;
   cancelButton?: string;
   action?: (inputText?: string) => void;
