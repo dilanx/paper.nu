@@ -17,6 +17,7 @@ interface TabBarProps {
 
 interface TabBarButtonProps {
   name: string;
+  display?: string;
   selected: string;
   switches: UserOptions;
   switchName?: keyof ReadUserOptions;
@@ -91,7 +92,7 @@ export function TabBarButton(props: TabBarButtonProps) {
         } left-1/2 -translate-x-1/2 p-1 border-2 rounded-md
                     bg-${color}-50 dark:bg-gray-800 border-${color}-500 text-${color}-500 dark:text-${color}-300 text-sm font-medium`}
       >
-        {props.name}
+        {props.display ?? props.name}
       </div>
     </button>
   );

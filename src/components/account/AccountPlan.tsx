@@ -33,9 +33,9 @@ function AccountPlan(props: AccountPlanProps) {
             active:shadow-inner active:translate-y-0 group cursor-pointer`}
         onClick={() => {
           if (props.active) {
-            props.fa.deactivatePlan();
+            props.fa.deactivate();
           } else {
-            props.fa.activatePlan(id);
+            props.fa.activate(id);
           }
         }}
       >
@@ -54,7 +54,7 @@ function AccountPlan(props: AccountPlanProps) {
                         transition-all duration-150 hidden group-hover:block z-20"
           onClick={(e) => {
             e.stopPropagation();
-            props.fa.deletePlan(id, plan.name);
+            props.fa.delete(id, plan.name);
           }}
         >
           <TrashIcon className="w-5 h-5" />

@@ -8,7 +8,9 @@ import toast, { Toaster } from 'react-hot-toast';
 import Account from './Account';
 import {
   activateAccountPlan,
+  activateAccountSchedule,
   deactivate,
+  discardChanges,
   update,
 } from './app/AccountModification';
 import {
@@ -36,7 +38,6 @@ import TaskBar from './components/menu/TaskBar';
 import Content from './components/plan/Content';
 import Schedule from './components/schedule/Schedule';
 import Search from './components/search/Search';
-import PlanManager from './PlanManager';
 import SaveDataManager from './SaveDataManager';
 import { AlertData } from './types/AlertTypes';
 import { AppState, ReadUserOptions } from './types/BaseTypes';
@@ -250,7 +251,7 @@ class App extends React.Component<{}, AppState> {
           activeId,
           true
         );
-        this.setState({ originalDataString });
+        this.setState({ originalDataString, unsavedChanges: false });
         if (data === 'empty') {
           return;
         }
@@ -401,10 +402,12 @@ class App extends React.Component<{}, AppState> {
                 <ModeSwitch
                   switches={switches}
                   changeMode={(mode) => {
-                    this.setSwitch('mode', mode, true);
-                    this.setState({ loadingLogin: true });
-                    this.initialize(undefined, () => {
-                      this.setState({ loadingLogin: false });
+                    discardChanges(this, () => {
+                      this.setSwitch('mode', mode, true);
+                      this.setState({ loadingLogin: true });
+                      this.initialize(undefined, () => {
+                        this.setState({ loadingLogin: false });
+                      });
                     });
                   }}
                 />
@@ -431,18 +434,24 @@ class App extends React.Component<{}, AppState> {
                 )}
                 {tab === 'Plans' && (
                   <AccountPlans
-                    data={this.state.data}
                     switches={this.state.switches}
                     alert={(alertData) => {
                       this.showAlert(alertData);
                     }}
-                    activatePlan={(planId) => {
-                      activateAccountPlan(this, planId);
+                    activatePlan={(id) => {
+                      activateAccountPlan(this, id);
                     }}
-                    deactivatePlan={() => {
+                    activateSchedule={(id) => {
+                      activateAccountSchedule(this, id);
+                    }}
+                    deactivate={() => {
                       deactivate(this, isSchedule);
                     }}
-                    activePlanId={switches.get.active_plan_id as string}
+                    activeId={
+                      switches.get[
+                        `active_${isSchedule ? 'schedule' : 'plan'}_id`
+                      ]
+                    }
                   />
                 )}
                 <TaskBar

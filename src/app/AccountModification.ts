@@ -3,14 +3,13 @@ import debug from 'debug';
 import toast from 'react-hot-toast';
 import Account from '../Account';
 import PlanManager from '../PlanManager';
+import ScheduleManager from '../ScheduleManager';
+import { AccountData, AccountDataMap } from '../types/AccountTypes';
 import { AppType } from '../types/BaseTypes';
 import { PlanData } from '../types/PlanTypes';
+import { ScheduleData } from '../types/ScheduleTypes';
 import PlanError from '../utility/PlanError';
 import Utility from '../utility/Utility';
-import { AccountData, AccountDataMap } from '../types/AccountTypes';
-import { AlertData } from '../types/AlertTypes';
-import { ScheduleData } from '../types/ScheduleTypes';
-import ScheduleManager from '../ScheduleManager';
 var d = debug('app:account-mod');
 
 function activate(
@@ -177,7 +176,9 @@ export function update(app: AppType, isSchedule: boolean) {
     return;
   }
 
-  const dataStr = PlanManager.getDataString(app.state.data);
+  const dataStr = isSchedule
+    ? ScheduleManager.getDataString(app.state.schedule)
+    : PlanManager.getDataString(app.state.data);
   app.setState({ unsavedChanges: false });
 
   toast.promise(
@@ -209,7 +210,7 @@ export function update(app: AppType, isSchedule: boolean) {
   );
 }
 
-function discardChanges(
+export function discardChanges(
   app: AppType,
   action: () => void,
   confirmNonAccountOverwrite: boolean = false

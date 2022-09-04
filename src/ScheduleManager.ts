@@ -328,6 +328,10 @@ const ScheduleManager = {
     return loadData(new URLSearchParams(dataStr));
   },
 
+  getDataString: (data: ScheduleData) => {
+    return saveData(data).toString();
+  },
+
   save: (
     data: ScheduleData,
     switches?: UserOptions,

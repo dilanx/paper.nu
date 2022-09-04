@@ -175,7 +175,7 @@ let Account = {
   getPlanName: (planId?: string) => {
     if (!planId) return 'Log in';
     if (planId === 'None') return 'None';
-    if (!plans) {
+    if (!plans || !plans[planId]) {
       return 'err';
     }
     return plans[planId].name.toUpperCase();
@@ -204,7 +204,7 @@ let Account = {
   getScheduleName: (scheduleId?: string) => {
     if (!scheduleId) return 'Log in';
     if (scheduleId === 'None') return 'None';
-    if (!schedules) {
+    if (!schedules || !schedules[scheduleId]) {
       return 'err';
     }
     return schedules[scheduleId].name.toUpperCase();

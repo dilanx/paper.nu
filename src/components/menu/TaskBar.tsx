@@ -16,6 +16,7 @@ import {
   UserOptions,
 } from '../../types/BaseTypes';
 import { PlanSpecialFunctions } from '../../types/PlanTypes';
+import { Mode } from '../../utility/Constants';
 import aboutMenu from './About';
 import settingsMenu from './Settings';
 import shareMenu from './Share';
@@ -65,6 +66,7 @@ interface TaskBarProps {
 }
 
 function TaskBar(props: TaskBarProps) {
+  const switches = props.switches;
   return (
     <div className="flex mx-auto mt-2 mb-4 gap-2">
       <MiniButton
@@ -111,6 +113,7 @@ function TaskBar(props: TaskBarProps) {
         </TabBarButton>
         <TabBarButton
           name="Plans"
+          display={switches.get.mode === Mode.PLAN ? 'Plans' : 'Schedules'}
           selected={props.switches.get.tab as string}
           switches={props.switches}
           switchName="tab"
@@ -118,7 +121,9 @@ function TaskBar(props: TaskBarProps) {
         >
           <CloudIcon className="w-5 h-5" />
           <p className="lg:hidden xl:block m-0 text-sm lg:text-xs w-20 lg:w-12 overflow-hidden whitespace-nowrap text-ellipsis">
-            {Account.getPlanName(props.switches.get.active_plan_id as string)}
+            {switches.get.mode === Mode.SCHEDULE
+              ? Account.getScheduleName(switches.get.active_schedule_id)
+              : Account.getPlanName(switches.get.active_plan_id)}
           </p>
         </TabBarButton>
       </TabBar>

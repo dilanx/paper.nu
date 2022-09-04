@@ -247,7 +247,7 @@ let Utility = {
       icon: ExclamationIcon,
       textView: error + ' - ' + from,
       action: () => {
-        window.open('https://status.dilanxd.com', '_blank');
+        window.open('https://dilan.statuspage.io', '_blank');
       },
     };
   },
