@@ -122,10 +122,10 @@ export default function Alert(props: AlertProps) {
                   <div className="sm:flex sm:items-start">
                     <div
                       ref={initialFocus}
-                      className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-${data.iconColor}-100 sm:mx-0 sm:h-10 sm:w-10`}
+                      className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-${data.iconColor}-100 dark:bg-gray-600 sm:mx-0 sm:h-10 sm:w-10`}
                     >
                       <data.icon
-                        className={`w-6 h-6 text-${data.iconColor}-600`}
+                        className={`w-6 h-6 text-${data.iconColor}-600 dark:text-${data.iconColor}-300`}
                         aria-hidden="true"
                       />
                     </div>
