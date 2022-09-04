@@ -1,4 +1,4 @@
-import { CalendarIcon, CameraIcon } from '@heroicons/react/outline';
+import { CalendarIcon, CameraIcon, PlusIcon } from '@heroicons/react/outline';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Alert } from '../../types/AlertTypes';
@@ -117,6 +117,12 @@ function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
             action: () => exportScheduleAsICS(validSections),
           });
         }}
+      />
+      <UtilityButton
+        icon={PlusIcon}
+        color="pink"
+        display="Add custom section"
+        action={() => {}}
       />
 
       {takeImage && (
