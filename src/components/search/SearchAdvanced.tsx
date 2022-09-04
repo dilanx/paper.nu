@@ -5,6 +5,7 @@ import Utility from '../../utility/Utility';
 import MultiSelectInput from '../generic/MultiSelectInput';
 import TextInput from '../generic/TextInput';
 import TextValidationWrapper from '../generic/TextValidationWrapper';
+import TimeInput from '../generic/TimeInput';
 
 interface SectionProps {
   title: string;
@@ -66,35 +67,31 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
           />
         </Section>
         <Section title="START AFTER">
-          <TextInput
+          <TimeInput
             value={startAfter}
             setValue={setStartAfter}
             placeholder="ex. 10:00 am"
-            validator={(value) => Utility.parseTime(value) !== undefined}
           />
         </Section>
         <Section title="START BEFORE">
-          <TextInput
+          <TimeInput
             value={startBefore}
             setValue={setStartBefore}
             placeholder="ex. 1:00 pm"
-            validator={(value) => Utility.parseTime(value) !== undefined}
           />
         </Section>
         <Section title="END AFTER">
-          <TextInput
+          <TimeInput
             value={endAfter}
             setValue={setEndAfter}
             placeholder="ex. 11:00 am"
-            validator={(value) => Utility.parseTime(value) !== undefined}
           />
         </Section>
         <Section title="END BEFORE">
-          <TextInput
+          <TimeInput
             value={endBefore}
             setValue={setEndBefore}
             placeholder="ex. 4:00 pm"
-            validator={(value) => Utility.parseTime(value) !== undefined}
           />
         </Section>
         <Section title="MEETING DAYS" fullRow>

@@ -3,6 +3,7 @@ interface TextInputProps {
   setValue: (value: string) => void;
   placeholder?: string;
   validator?: (value: string) => boolean;
+  onBlur?: () => void;
 }
 
 function TextInput({
@@ -10,6 +11,7 @@ function TextInput({
   setValue,
   placeholder,
   validator,
+  onBlur,
 }: TextInputProps) {
   const invalid = value && validator ? !validator(value) : false;
   return (
@@ -23,6 +25,7 @@ function TextInput({
       value={value}
       placeholder={placeholder}
       onChange={(e) => setValue(e.target.value)}
+      onBlur={onBlur}
     />
   );
 }
