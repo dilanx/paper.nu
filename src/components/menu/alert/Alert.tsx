@@ -1,10 +1,16 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useRef, useState } from 'react';
-import { AlertConfirmationState, AlertData } from '../../../types/AlertTypes';
+import {
+  AlertConfirmationState,
+  AlertData,
+  AlertFormResponse,
+} from '../../../types/AlertTypes';
 import { UserOptions } from '../../../types/BaseTypes';
+import TextValidationWrapper from '../../generic/TextValidationWrapper';
 import { TabBar, TabBarButton } from '../TabBar';
 import { getAlertEditButtons } from './AlertEditButtons';
 import { getAlertExtras } from './AlertExtras';
+import { getAlertForm } from './AlertForm';
 import { getAlertOptions } from './AlertOptions';
 
 interface AlertProps {
@@ -15,11 +21,24 @@ interface AlertProps {
 }
 
 export default function Alert(props: AlertProps) {
-  let [isOpen, setIsOpen] = useState(true);
-  let [confirmation, setConfirmation] = useState<AlertConfirmationState>({});
-  let [inputText, setInputText] = useState('');
+  const [isOpen, setIsOpen] = useState(true);
+  const [confirmation, setConfirmation] = useState<AlertConfirmationState>({});
+  const [inputText, setInputText] = useState('');
 
-  let initialFocus = useRef(null);
+  let defaultFormValues: AlertFormResponse = {};
+  if (props.data.form) {
+    for (const section of props.data.form.sections) {
+      for (const field of section.fields) {
+        defaultFormValues[field.name] = field.defaultValue || '';
+      }
+    }
+  }
+
+  const [formValues, setFormValues] =
+    useState<AlertFormResponse>(defaultFormValues);
+
+  const initialFocus = useRef(null);
+  const confirmButton = useRef(null);
 
   function close() {
     setIsOpen(false);
@@ -80,10 +99,10 @@ export default function Alert(props: AlertProps) {
 
   let editButtonList = getAlertEditButtons(data.editButtons, close);
 
-  let okay = true;
+  let badInput: boolean | undefined = undefined;
 
   if (data.textInput?.match) {
-    okay = data.textInput.match.test(inputText);
+    badInput = !data.textInput.match.test(inputText);
   }
 
   return (
@@ -167,7 +186,7 @@ export default function Alert(props: AlertProps) {
                                                   inputText.length === 0 ||
                                                   !data.textInput.match
                                                     ? 'focus:border-gray-500 focus:active:border-gray-300'
-                                                    : okay
+                                                    : badInput
                                                     ? 'focus:border-green-500 focus:active:border-green-500'
                                                     : 'focus:border-red-500 focus:active:border-red-500'
                                                 }`}
@@ -177,7 +196,7 @@ export default function Alert(props: AlertProps) {
                             }}
                           />
                           <p className="text-sm text-red-500 mx-2 my-1">
-                            {!okay &&
+                            {!badInput &&
                               inputText.length > 0 &&
                               data.textInput.matchError}
                           </p>
@@ -200,6 +219,30 @@ export default function Alert(props: AlertProps) {
 
                 {optionList.length > 0 && optionList}
 
+                {data.form && (
+                  <div className="m-4 grid grid-cols-1 sm:grid-cols-2 sm:gap-2">
+                    {data.form.validationWrapper ? (
+                      <TextValidationWrapper buttons={[confirmButton]}>
+                        {getAlertForm(
+                          formValues,
+                          (name, value) => {
+                            setFormValues({ ...formValues, [name]: value });
+                          },
+                          data.form.sections
+                        )}
+                      </TextValidationWrapper>
+                    ) : (
+                      getAlertForm(
+                        formValues,
+                        (name, value) => {
+                          setFormValues({ ...formValues, [name]: value });
+                        },
+                        data.form.sections
+                      )
+                    )}
+                  </div>
+                )}
+
                 {(editButtonList.length > 0 || tabBar) && (
                   <div className="absolute top-4 right-5 flex flex-row gap-1">
                     {tabBar}
@@ -211,17 +254,18 @@ export default function Alert(props: AlertProps) {
                   {data.confirmButton && (
                     <button
                       type="button"
+                      ref={confirmButton}
                       className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 
-                                bg-${data.confirmButtonColor}-500 
-                                ${
-                                  okay
-                                    ? `opacity-100 hover:bg-${data.confirmButtonColor}-600 active:bg-${data.confirmButtonColor}-700`
-                                    : `opacity-75 cursor-not-allowed`
-                                } 
-                                text-base font-medium text-white outline-none sm:ml-3 sm:w-auto sm:text-sm 
-                                transition-all duration-150`}
-                      disabled={!okay}
+                        bg-${data.confirmButtonColor}-500
+                        opacity-100 hover:bg-${data.confirmButtonColor}-600 active:bg-${data.confirmButtonColor}-700
+                        disabled:opacity-75 disabled:cursor-not-allowed
+                        text-base font-medium text-white outline-none sm:ml-3 sm:w-auto sm:text-sm 
+                        transition-all duration-150`}
+                      disabled={badInput}
                       onClick={() => {
+                        if (data.form) {
+                          data.form.onSubmit(formValues);
+                        }
                         confirm();
                       }}
                     >

@@ -2,37 +2,14 @@ import { CalendarIcon, CameraIcon, PlusIcon } from '@heroicons/react/outline';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Alert } from '../../types/AlertTypes';
-import { Color, IconElement, UserOptions } from '../../types/BaseTypes';
+import { UserOptions } from '../../types/BaseTypes';
 import { ScheduleData } from '../../types/ScheduleTypes';
 import { exportScheduleAsICS, getSections } from '../../utility/Calendar';
+import { customSectionForm } from '../../utility/Forms';
 import { exportScheduleAsImage } from '../../utility/Image';
 import Utility from '../../utility/Utility';
 import Schedule from './Schedule';
-
-interface UtilityButtonProps {
-  icon: IconElement;
-  color: Color;
-  display: string;
-  action: () => void;
-}
-
-function UtilityButton(props: UtilityButtonProps) {
-  const color = props.color;
-  return (
-    <button
-      className={`hover:text-${color}-500 transition-all duration-150 relative group`}
-      onClick={() => props.action()}
-    >
-      <props.icon className="w-6 h-6" />
-      <div
-        className={`hidden group-hover:block absolute z-20 left-10 top-1/2 -translate-y-1/2 p-1 border-2 rounded-md whitespace-nowrap
-                    bg-${color}-50 dark:bg-gray-800 border-${color}-500 text-${color}-500 dark:text-${color}-300 text-sm font-medium`}
-      >
-        {props.display}
-      </div>
-    </button>
-  );
-}
+import UtilityBarButton from './UtilityBarButton';
 
 interface UtilityBarProps {
   schedule: ScheduleData;
@@ -57,7 +34,7 @@ function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
       className="absolute z-20 left-2 lg:left-0 top-1/2 -translate-y-1/2 border-2 border-green-300 p-1 rounded-xl bg-green-100 dark:bg-gray-700
                 gap-2 flex flex-col opacity-40 hover:opacity-100 hover:shadow-lg transition-all duration-150 text-gray-600 dark:text-gray-300"
     >
-      <UtilityButton
+      <UtilityBarButton
         icon={CameraIcon}
         color="orange"
         display="Export as image"
@@ -75,7 +52,7 @@ function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
           });
         }}
       />
-      <UtilityButton
+      <UtilityBarButton
         icon={CalendarIcon}
         color="cyan"
         display="Export to calendar"
@@ -118,11 +95,47 @@ function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
           });
         }}
       />
-      <UtilityButton
+      <UtilityBarButton
         icon={PlusIcon}
         color="pink"
         display="Add custom section"
-        action={() => {}}
+        action={() => {
+          if (
+            !switches.get.active_schedule_id ||
+            switches.get.active_schedule_id === 'None'
+          ) {
+            alert({
+              title: 'Add custom section',
+              icon: PlusIcon,
+              message:
+                "Custom sections can only be added to schedules linked to an account. Make sure you're logged in and have a schedule activated!",
+              confirmButton: 'Get started',
+              confirmButtonColor: 'pink',
+              iconColor: 'pink',
+              cancelButton: 'Close',
+              action: () => {
+                switches.set('tab', 'Plans');
+              },
+            });
+            return;
+          }
+          alert({
+            title: 'Add custom section',
+            icon: PlusIcon,
+            message: 'Test',
+            form: {
+              validationWrapper: true,
+              sections: customSectionForm(),
+              onSubmit: (response) => {
+                console.log(response);
+              },
+            },
+            confirmButton: 'Add',
+            confirmButtonColor: 'pink',
+            iconColor: 'pink',
+            cancelButton: 'Cancel',
+          });
+        }}
       />
 
       {takeImage && (

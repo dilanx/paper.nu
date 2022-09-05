@@ -17,11 +17,13 @@ function canBeValidated(nodeProps: any): nodeProps is ValidateTextInput {
 interface TextValidationWrapperProps {
   children: React.ReactNode;
   buttons?: React.MutableRefObject<any>[];
+  onValidation?: (valid: boolean) => void;
 }
 
 function TextValidationWrapper({
   children,
   buttons,
+  onValidation,
 }: TextValidationWrapperProps) {
   let valid = true;
   Utility.forAllChildElements(children, (element) => {
@@ -37,6 +39,7 @@ function TextValidationWrapper({
       }
     }
   }
+  onValidation?.(valid);
   return <>{children}</>;
 }
 

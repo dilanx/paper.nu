@@ -4,6 +4,7 @@ interface TextInputProps {
   placeholder?: string;
   validator?: (value: string) => boolean;
   onBlur?: () => void;
+  maxLength?: number;
 }
 
 function TextInput({
@@ -12,6 +13,7 @@ function TextInput({
   placeholder,
   validator,
   onBlur,
+  maxLength,
 }: TextInputProps) {
   const invalid = value && validator ? !validator(value) : false;
   return (
@@ -26,6 +28,7 @@ function TextInput({
       placeholder={placeholder}
       onChange={(e) => setValue(e.target.value)}
       onBlur={onBlur}
+      maxLength={maxLength}
     />
   );
 }

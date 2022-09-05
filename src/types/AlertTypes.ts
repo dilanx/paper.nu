@@ -60,6 +60,48 @@ export function editButtonIsToggleable(
   return button.toggle;
 }
 
+export interface AlertFormSection {
+  title: string;
+  fullRow?: boolean;
+  fields: AlertFormField[];
+}
+
+type AlertFormFieldType = 'text' | 'time' | 'multi-select';
+
+export interface AlertFormField {
+  name: string;
+  type: AlertFormFieldType;
+  defaultValue?: string;
+}
+
+export interface AlertFormFieldText extends AlertFormField {
+  type: 'text';
+  placeholder?: string;
+  validator?: (value: string) => boolean;
+  maxLength?: number;
+}
+
+export interface AlertFormFieldTime extends AlertFormField {
+  type: 'time';
+  placeholder?: string;
+}
+
+export interface AlertFormFieldMultiSelect extends AlertFormField {
+  type: 'multi-select';
+  options: string[];
+}
+
+export function formFieldIs<T extends AlertFormField>(
+  field: AlertFormField,
+  type: AlertFormFieldType
+): field is T {
+  return field.type === type;
+}
+
+export interface AlertFormResponse {
+  [field: string]: string;
+}
+
 export interface AlertData {
   icon: IconElement;
   title: string;
@@ -82,6 +124,11 @@ export interface AlertData {
     focusByDefault?: boolean;
   };
   textHTML?: JSX.Element;
+  form?: {
+    sections: AlertFormSection[];
+    validationWrapper?: boolean;
+    onSubmit: (repsonse: AlertFormResponse) => void;
+  };
   confirmButton?: string;
   confirmButtonColor?: Color;
   iconColor: Color;
