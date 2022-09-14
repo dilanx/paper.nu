@@ -4,6 +4,7 @@ import {
   CloudIcon,
   DotsHorizontalIcon,
   ExternalLinkIcon,
+  FilterIcon,
   SearchIcon,
 } from '@heroicons/react/outline';
 import { XCircleIcon } from '@heroicons/react/solid';
@@ -346,7 +347,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                 <SearchFilterDisplay filter={filter} />
               )}
               {queryEmpty && (
-                <div className="flex justify-center gap-4 m-4">
+                <div className="flex justify-center gap-2 m-4">
                   <SearchButton
                     active={
                       searchMode === SearchMode.BROWSE ? 'green' : undefined
@@ -397,8 +398,9 @@ class Search extends React.Component<SearchProps, SearchState> {
                         browseSchool: undefined,
                       });
                     }}
+                    tooltip="Test"
                   >
-                    Advanced
+                    <FilterIcon className="w-5 h-5" />
                   </SearchButton>
                 </div>
               )}
