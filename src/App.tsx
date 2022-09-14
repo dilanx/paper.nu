@@ -470,7 +470,7 @@ class App extends React.Component<{}, AppState> {
                   switches.get.compact ? 'compact-mode ' : ''
                 } col-span-6 block pt-0 lg:h-screen lg:overflow-y-scroll no-scrollbar`}
               >
-                <AnimatePresence>
+                <AnimatePresence exitBeforeEnter>
                   {switches.get.mode === Mode.PLAN ? (
                     <Content
                       data={this.state.data}
@@ -480,6 +480,7 @@ class App extends React.Component<{}, AppState> {
                         this.showAlert(alertData);
                       }}
                       switches={switches}
+                      key="plan"
                     />
                   ) : (
                     <Schedule
@@ -490,6 +491,7 @@ class App extends React.Component<{}, AppState> {
                       interactions={this.state.scheduleInteractions}
                       sf={this.state.sf}
                       switches={switches}
+                      key="schedule"
                     />
                   )}
                 </AnimatePresence>

@@ -1,12 +1,14 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import {
   AlertConfirmationState,
   AlertData,
   AlertFormResponse,
 } from '../../../types/AlertTypes';
 import { UserOptions } from '../../../types/BaseTypes';
-import TextValidationWrapper from '../../generic/TextValidationWrapper';
+import { formIsValid } from '../../../utility/AlertFormInputValidation';
+import Utility from '../../../utility/Utility';
+import InputValidationWrapper from '../../generic/InputValidationWrapper';
 import { TabBar, TabBarButton } from '../TabBar';
 import { getAlertEditButtons } from './AlertEditButtons';
 import { getAlertExtras } from './AlertExtras';
@@ -24,10 +26,19 @@ export default function Alert(props: AlertProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [confirmation, setConfirmation] = useState<AlertConfirmationState>({});
   const [inputText, setInputText] = useState('');
+  const [badInput, setBadInput] = useState(false);
+
+  const data = props.data;
+
+  useEffect(() => {
+    if (data.textInput?.match) {
+      setBadInput(!data.textInput.match.test(inputText));
+    }
+  }, [data.textInput, inputText]);
 
   let defaultFormValues: AlertFormResponse = {};
-  if (props.data.form) {
-    for (const section of props.data.form.sections) {
+  if (data.form) {
+    for (const section of data.form.sections) {
       for (const field of section.fields) {
         defaultFormValues[field.name] = field.defaultValue || '';
       }
@@ -36,6 +47,12 @@ export default function Alert(props: AlertProps) {
 
   const [formValues, setFormValues] =
     useState<AlertFormResponse>(defaultFormValues);
+
+  useEffect(() => {
+    if (data.form) {
+      setBadInput(!formIsValid(formValues, data.form.sections));
+    }
+  }, [data.form, formValues]);
 
   const initialFocus = useRef(null);
   const confirmButton = useRef(null);
@@ -48,8 +65,6 @@ export default function Alert(props: AlertProps) {
     setIsOpen(false);
     props.onConfirm(props.data.textInput ? inputText : undefined);
   }
-
-  const data = props.data;
 
   const extraList = getAlertExtras(data.extras);
 
@@ -98,12 +113,6 @@ export default function Alert(props: AlertProps) {
   );
 
   let editButtonList = getAlertEditButtons(data.editButtons, close);
-
-  let badInput: boolean | undefined = undefined;
-
-  if (data.textInput?.match) {
-    badInput = !data.textInput.match.test(inputText);
-  }
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -221,24 +230,12 @@ export default function Alert(props: AlertProps) {
 
                 {data.form && (
                   <div className="m-4 grid grid-cols-1 sm:grid-cols-2 sm:gap-2">
-                    {data.form.validationWrapper ? (
-                      <TextValidationWrapper buttons={[confirmButton]}>
-                        {getAlertForm(
-                          formValues,
-                          (name, value) => {
-                            setFormValues({ ...formValues, [name]: value });
-                          },
-                          data.form.sections
-                        )}
-                      </TextValidationWrapper>
-                    ) : (
-                      getAlertForm(
-                        formValues,
-                        (name, value) => {
-                          setFormValues({ ...formValues, [name]: value });
-                        },
-                        data.form.sections
-                      )
+                    {getAlertForm(
+                      formValues,
+                      (name, value) => {
+                        setFormValues({ ...formValues, [name]: value });
+                      },
+                      data.form.sections
                     )}
                   </div>
                 )}
@@ -258,11 +255,12 @@ export default function Alert(props: AlertProps) {
                       className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 
                         bg-${data.confirmButtonColor}-500
                         opacity-100 hover:bg-${data.confirmButtonColor}-600 active:bg-${data.confirmButtonColor}-700
-                        disabled:opacity-75 disabled:cursor-not-allowed
+                        disabled:opacity-30 disabled:cursor-not-allowed
                         text-base font-medium text-white outline-none sm:ml-3 sm:w-auto sm:text-sm 
                         transition-all duration-150`}
                       disabled={badInput}
                       onClick={() => {
+                        console.log('click');
                         if (data.form) {
                           data.form.onSubmit(formValues);
                         }

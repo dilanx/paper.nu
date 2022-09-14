@@ -5,7 +5,7 @@ import Utility from '../../utility/Utility';
 import MultiSelectInput from '../generic/MultiSelectInput';
 import Section from '../generic/Section';
 import TextInput from '../generic/TextInput';
-import TextValidationWrapper from '../generic/TextValidationWrapper';
+import InputValidationWrapper from '../generic/InputValidationWrapper';
 import TimeInput from '../generic/TimeInput';
 
 interface SearchAdvancedProps {
@@ -39,7 +39,7 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
 
   return (
     <div className="m-4 grid grid-cols-2 gap-2">
-      <TextValidationWrapper buttons={[buttonRef]}>
+      <InputValidationWrapper buttons={[buttonRef]}>
         <Section title="SUBJECT" fullRow>
           <TextInput
             value={subject}
@@ -82,16 +82,16 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
           <MultiSelectInput
             title="meeting-days"
             options={['Mo', 'Tu', 'We', 'Th', 'Fr']}
-            selected={meetingDays}
-            setSelected={setMeetingDays}
+            value={meetingDays}
+            setValue={setMeetingDays}
           />
         </Section>
         <Section title="COMPONENTS" fullRow>
           <MultiSelectInput
             title="components"
             options={['LEC', 'DIS', 'LAB', 'SEM', 'PED']}
-            selected={components}
-            setSelected={setComponents}
+            value={components}
+            setValue={setComponents}
           />
         </Section>
         <Section title="INSTRUCTOR" fullRow>
@@ -133,7 +133,7 @@ function SearchAdvanced({ filter }: SearchAdvancedProps) {
             Apply
           </button>
         </div>
-      </TextValidationWrapper>
+      </InputValidationWrapper>
     </div>
   );
 }

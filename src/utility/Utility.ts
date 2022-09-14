@@ -1,6 +1,10 @@
 import { ExclamationIcon } from '@heroicons/react/outline';
 import React from 'react';
-import { AlertData } from '../types/AlertTypes';
+import {
+  AlertData,
+  AlertFormResponse,
+  AlertFormSection,
+} from '../types/AlertTypes';
 import { Color } from '../types/BaseTypes';
 import { PlanErrorLocation } from '../types/ErrorTypes';
 import { ScheduleDataMap, ScheduleDate, Time } from '../types/ScheduleTypes';

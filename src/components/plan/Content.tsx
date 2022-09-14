@@ -10,6 +10,7 @@ import {
 } from '../../types/PlanTypes';
 import Utility from '../../utility/Utility';
 import Year from './Year';
+import { motion } from 'framer-motion';
 
 interface ContentProps {
   data: PlanData;
@@ -48,7 +49,13 @@ class Content extends React.Component<ContentProps> {
     }
 
     return (
-      <div className="bg-white dark:bg-gray-800">
+      <motion.div
+        className="bg-white dark:bg-gray-800"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25 }}
+      >
         {years}
         <div className="flex m-5 justify-center gap-4">
           <div className="border-2 border-gray-200 rounded-lg p-1 w-48 dark:border-gray-600 shadow-sm">
@@ -80,7 +87,7 @@ class Content extends React.Component<ContentProps> {
             </button>
           )}
         </div>
-      </div>
+      </motion.div>
     );
   }
 }

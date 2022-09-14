@@ -31,6 +31,7 @@ export const getAlertForm = (
               placeholder={field.placeholder}
               validator={field.validator}
               maxLength={field.maxLength}
+              required={field.required}
               key={`alert-form-field-${field.name}`}
             />
           );
@@ -41,6 +42,7 @@ export const getAlertForm = (
               value={values[field.name]}
               setValue={(value) => setValue(field.name, value)}
               placeholder={field.placeholder}
+              required={field.required}
               key={`alert-form-field-${field.name}`}
             />
           );
@@ -50,10 +52,9 @@ export const getAlertForm = (
             <MultiSelectInput
               title={field.name}
               options={field.options}
-              selected={values[field.name] ? values[field.name].split(',') : []}
-              setSelected={(selected) =>
-                setValue(field.name, selected.join(','))
-              }
+              value={values[field.name] ? values[field.name].split(',') : []}
+              setValue={(selected) => setValue(field.name, selected.join(','))}
+              required={field.required}
               key={`alert-form-field-${field.name}`}
             />
           );

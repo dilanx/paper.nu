@@ -5,6 +5,7 @@ interface TextInputProps {
   validator?: (value: string) => boolean;
   onBlur?: () => void;
   maxLength?: number;
+  required?: boolean;
 }
 
 function TextInput({
@@ -14,8 +15,9 @@ function TextInput({
   validator,
   onBlur,
   maxLength,
+  required,
 }: TextInputProps) {
-  const invalid = value && validator ? !validator(value) : false;
+  const invalid = value && validator ? !validator(value) : !value && required;
   return (
     <input
       className={`text-sm dark:bg-gray-800 dark:text-white border-2 border-gray-300 dark:border-gray-600 w-full outline-none px-2 py-1 rounded-md

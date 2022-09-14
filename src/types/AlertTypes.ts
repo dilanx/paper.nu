@@ -72,6 +72,7 @@ export interface AlertFormField {
   name: string;
   type: AlertFormFieldType;
   defaultValue?: string;
+  required?: boolean;
 }
 
 export interface AlertFormFieldText extends AlertFormField {
@@ -127,6 +128,7 @@ export interface AlertData {
   form?: {
     sections: AlertFormSection[];
     validationWrapper?: boolean;
+    disableSubmitByDefault?: boolean;
     onSubmit: (repsonse: AlertFormResponse) => void;
   };
   confirmButton?: string;

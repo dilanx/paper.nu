@@ -15,11 +15,13 @@ export function customSectionForm(): AlertFormSection[] {
     name,
     type: 'time',
     placeholder: 'hh:mm am/pm',
+    required: true,
   });
   const sel: AlertFormFieldMultiSelect = {
     name: 'meeting_days',
     type: 'multi-select',
     options: ['Mo', 'Tu', 'We', 'Th', 'Fr'],
+    required: true,
   };
 
   return [
