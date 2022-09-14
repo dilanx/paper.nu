@@ -1,4 +1,5 @@
 import { Color, IconElement } from '../../types/BaseTypes';
+import Tooltip from '../generic/Tooltip';
 
 interface UtilityBarButtonProps {
   icon: IconElement;
@@ -15,12 +16,9 @@ function UtilityBarButton(props: UtilityBarButtonProps) {
       onClick={() => props.action()}
     >
       <props.icon className="w-6 h-6" />
-      <div
-        className={`hidden group-hover:block absolute z-20 left-10 top-1/2 -translate-y-1/2 p-1 border-2 rounded-md whitespace-nowrap
-                    bg-${color}-50 dark:bg-gray-800 border-${color}-500 text-${color}-500 dark:text-${color}-300 text-sm font-medium`}
-      >
+      <Tooltip color={color} className="z-20 left-10 top-1/2 -translate-y-1/2">
         {props.display}
-      </div>
+      </Tooltip>
     </button>
   );
 }

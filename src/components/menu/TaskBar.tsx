@@ -17,6 +17,7 @@ import {
 } from '../../types/BaseTypes';
 import { PlanSpecialFunctions } from '../../types/PlanTypes';
 import { Mode } from '../../utility/Constants';
+import Tooltip from '../generic/Tooltip';
 import aboutMenu from './About';
 import settingsMenu from './Settings';
 import shareMenu from './Share';
@@ -41,12 +42,9 @@ function MiniButton(props: MiniButtonProps) {
       }}
     >
       <props.icon className="w-5 h-5" />
-      <div
-        className={`hidden group-hover:block absolute -top-10 left-1/2 -translate-x-1/2 p-1 border-2 rounded-md
-                    bg-${color}-50 dark:bg-gray-800 border-${color}-500 text-${color}-500 dark:text-${color}-300 text-sm font-medium`}
-      >
+      <Tooltip color={color} className="-top-10 left-1/2 -translate-x-1/2">
         {props.display}
-      </div>
+      </Tooltip>
     </button>
   );
 }

@@ -6,6 +6,7 @@ import {
   ReadUserOptions,
   UserOptions,
 } from '../../types/BaseTypes';
+import Tooltip from '../generic/Tooltip';
 
 interface TabBarProps {
   switches: UserOptions;
@@ -86,14 +87,14 @@ export function TabBarButton(props: TabBarButtonProps) {
       }}
     >
       {props.children}
-      <div
-        className={`hidden group-hover:block absolute ${
+      <Tooltip
+        color={color}
+        className={`left-1/2 -translate-x-1/2 ${
           props.tooltipBelow ? '-bottom-10' : '-top-10'
-        } left-1/2 -translate-x-1/2 p-1 border-2 rounded-md
-                    bg-${color}-50 dark:bg-gray-800 border-${color}-500 text-${color}-500 dark:text-${color}-300 text-sm font-medium`}
+        }`}
       >
         {props.display ?? props.name}
-      </div>
+      </Tooltip>
     </button>
   );
 }

@@ -16,6 +16,7 @@ import {
 } from '../../types/PlanTypes';
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
+import Tooltip from '../generic/Tooltip';
 
 interface YearProps {
   data: Course[][];
@@ -106,12 +107,9 @@ class Year extends React.Component<YearProps, YearState> {
                 }}
               >
                 <PlusIcon className="w-5 h-5" />
-                <div
-                  className={`hidden group-hover:block absolute -bottom-10 right-0 p-1 w-48 border-2 rounded-md
-                                        bg-yellow-50 dark:bg-gray-800 border-yellow-500 text-yellow-500 dark:text-yellow-300 text-sm font-medium`}
-                >
+                <Tooltip color="yellow" className="-bottom-10 right-0 w-48">
                   Add summer quarter
-                </div>
+                </Tooltip>
               </button>
             )}
             <button
@@ -121,12 +119,9 @@ class Year extends React.Component<YearProps, YearState> {
               }}
             >
               <TrashIcon className="w-5 h-5" />
-              <div
-                className={`hidden group-hover:block absolute -bottom-10 right-0 p-1 w-48 border-2 rounded-md
-                                    bg-red-50 dark:bg-gray-800 border-red-500 text-red-500 dark:text-red-300 text-sm font-medium`}
-              >
+              <Tooltip color="red" className="-bottom-10 right-0 w-48">
                 Clear year's courses
-              </div>
+              </Tooltip>
             </button>
             <button
               className="inline-block p-1 bg-transparent hover:text-fuchsia-400 dark:hover:text-fuchsia-400 relative group"
@@ -141,14 +136,11 @@ class Year extends React.Component<YearProps, YearState> {
               ) : (
                 <ChevronUpIcon className="w-5 h-5" />
               )}
-              <div
-                className={`hidden group-hover:block absolute -bottom-10 right-0 p-1 w-40 border-2 rounded-md text-center
-                                    bg-fuchsia-50 dark:bg-gray-800 border-fuchsia-500 text-fuchsia-500 dark:text-fuchsia-300 text-sm font-medium`}
-              >
+              <Tooltip color="fuchsia" className="-bottom-10 right-0 w-48">
                 {this.state.hidden
                   ? "Show year's courses"
                   : "Hide year's courses"}
-              </div>
+              </Tooltip>
             </button>
           </div>
         </div>

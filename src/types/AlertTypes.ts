@@ -31,7 +31,7 @@ export interface AlertDataTab {
 export interface AlertDataEditButtonData {
   title: string;
   icon: JSX.Element;
-  color: string;
+  color: Color;
   action: () => void;
   close?: boolean;
 }

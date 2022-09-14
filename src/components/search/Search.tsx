@@ -398,7 +398,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                         browseSchool: undefined,
                       });
                     }}
-                    tooltip="Test"
+                    tooltip="Filter"
                   >
                     <FilterIcon className="w-5 h-5" />
                   </SearchButton>
