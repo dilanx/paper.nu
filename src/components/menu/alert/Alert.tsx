@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import {
   AlertConfirmationState,
   AlertData,
@@ -7,8 +7,6 @@ import {
 } from '../../../types/AlertTypes';
 import { UserOptions } from '../../../types/BaseTypes';
 import { formIsValid } from '../../../utility/AlertFormInputValidation';
-import Utility from '../../../utility/Utility';
-import InputValidationWrapper from '../../generic/InputValidationWrapper';
 import { TabBar, TabBarButton } from '../TabBar';
 import { getAlertEditButtons } from './AlertEditButtons';
 import { getAlertExtras } from './AlertExtras';

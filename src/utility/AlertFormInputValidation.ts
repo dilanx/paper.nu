@@ -2,7 +2,6 @@ import {
   AlertFormField,
   AlertFormResponse,
   AlertFormSection,
-  formFieldIs,
 } from '../types/AlertTypes';
 import Utility from './Utility';
 
