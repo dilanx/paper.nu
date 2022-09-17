@@ -11,6 +11,7 @@ import { XCircleIcon } from '@heroicons/react/solid';
 import React from 'react';
 import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
+import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {
   Course,
@@ -30,6 +31,8 @@ import {
   SearchShortcut,
 } from '../../types/SearchTypes';
 import { Mode, SearchMode } from '../../utility/Constants';
+import { searchFilterForm } from '../../utility/Forms';
+import Utility from '../../utility/Utility';
 import AddButtons from './AddButtons';
 import MiniContentBlock from './MiniContentBlock';
 import SearchAdvanced from './SearchAdvanced';
@@ -46,6 +49,7 @@ interface SearchProps {
   f: PlanModificationFunctions;
   sf: ScheduleModificationFunctions;
   scheduleInteractions: ScheduleInteractions;
+  alert: Alert;
 }
 
 interface SearchState {
@@ -382,23 +386,50 @@ class Search extends React.Component<SearchProps, SearchState> {
                     )}
                   </SearchButton>
                   <SearchButton
-                    active={
-                      searchMode === SearchMode.ADVANCED ? 'orange' : undefined
-                    }
                     action={() => {
-                      if (searchMode === SearchMode.ADVANCED) {
-                        this.setState({
-                          mode: SearchMode.NORMAL,
-                        });
-                        return;
-                      }
-
-                      this.setState({
-                        mode: SearchMode.ADVANCED,
-                        browseSchool: undefined,
+                      this.props.alert({
+                        title: 'Edit search filters',
+                        icon: FilterIcon,
+                        message:
+                          'Filter search results by any combination of the properties below.',
+                        form: {
+                          sections: searchFilterForm(filter.get),
+                          onSubmit: ({
+                            subject,
+                            startAfter,
+                            startBefore,
+                            endAfter,
+                            endBefore,
+                            meetingDays,
+                            components,
+                            instructor,
+                            location,
+                          }) => {
+                            filter.set({
+                              subject: Utility.safe(subject)?.toUpperCase(),
+                              startAfter: Utility.parseTime(startAfter),
+                              startBefore: Utility.parseTime(startBefore),
+                              endAfter: Utility.parseTime(endAfter),
+                              endBefore: Utility.parseTime(endBefore),
+                              meetingDays: Utility.safeArray(
+                                meetingDays ? meetingDays.split(',') : []
+                              ),
+                              components: Utility.safeArray(
+                                components ? components.split(',') : []
+                              ),
+                              instructor:
+                                Utility.safe(instructor)?.toLowerCase(),
+                              location: Utility.safe(location)?.toLowerCase(),
+                            });
+                          },
+                        },
+                        confirmButton: 'Apply',
+                        confirmButtonColor: 'orange',
+                        iconColor: 'orange',
+                        cancelButton: 'Cancel',
                       });
                     }}
-                    tooltip="Filter"
+                    tooltip="Edit filter"
                   >
                     <FilterIcon className="w-5 h-5" />
                   </SearchButton>

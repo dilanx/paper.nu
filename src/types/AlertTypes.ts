@@ -108,7 +108,7 @@ export interface AlertData {
   title: string;
   subtitle?: string;
   customSubtitle?: JSX.Element;
-  message: string;
+  message?: string;
   extras?: AlertDataExtra[];
   options?: AlertDataOption[];
   tabs?: {
@@ -127,8 +127,6 @@ export interface AlertData {
   textHTML?: JSX.Element;
   form?: {
     sections: AlertFormSection[];
-    validationWrapper?: boolean;
-    disableSubmitByDefault?: boolean;
     onSubmit: (repsonse: AlertFormResponse) => void;
   };
   confirmButton?: string;

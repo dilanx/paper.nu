@@ -418,6 +418,9 @@ class App extends React.Component<{}, AppState> {
                   f={this.state.f}
                   sf={this.state.sf}
                   scheduleInteractions={this.state.scheduleInteractions}
+                  alert={(alertData) => {
+                    this.showAlert(alertData);
+                  }}
                 />
                 {tab === 'My List' && (
                   <Bookmarks

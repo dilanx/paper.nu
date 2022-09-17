@@ -171,10 +171,12 @@ export default function Alert(props: AlertProps) {
                         </div>
                       )}
                       {data.customSubtitle && <div>{data.customSubtitle}</div>}
-                      <div className="alert-data mt-2 text-sm text-gray-600 dark:text-gray-100">
-                        <p>{data.message}</p>
-                        {data.textHTML}
-                      </div>
+                      {(data.message || data.textHTML) && (
+                        <div className="alert-data mt-2 text-sm text-gray-600 dark:text-gray-100">
+                          {data.message && <p>{data.message}</p>}
+                          {data.textHTML}
+                        </div>
+                      )}
                       {extraList.length > 0 && extraList}
                       {data.textInput && (
                         <div>
@@ -258,7 +260,6 @@ export default function Alert(props: AlertProps) {
                         transition-all duration-150`}
                       disabled={badInput}
                       onClick={() => {
-                        console.log('click');
                         if (data.form) {
                           data.form.onSubmit(formValues);
                         }

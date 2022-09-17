@@ -94,3 +94,5 @@ export type IconElement = (props: React.ComponentProps<'svg'>) => JSX.Element;
 export type StringMap = { [key: string]: string };
 
 export type AppType = React.Component<{}, AppState>;
+
+export type TextValidator = (value: string) => boolean;

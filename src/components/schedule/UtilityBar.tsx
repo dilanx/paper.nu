@@ -125,9 +125,7 @@ function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
             message:
               'Enhance your schedule with custom sections! Each value can be whatever you want. These sections will not be saved to the URL and will only be linked to the active account schedule.',
             form: {
-              validationWrapper: true,
               sections: customSectionForm(),
-              disableSubmitByDefault: true,
               onSubmit: (response) => {
                 console.log(response);
               },
