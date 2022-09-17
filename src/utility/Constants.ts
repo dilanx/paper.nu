@@ -6,7 +6,6 @@ export enum Mode {
 export enum SearchMode {
   NORMAL = 0,
   BROWSE = 1,
-  ADVANCED = 2,
 }
 
 export const Days = ['Mo', 'Tu', 'We', 'Th', 'Fr'];

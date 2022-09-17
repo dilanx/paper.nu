@@ -35,7 +35,6 @@ import { searchFilterForm } from '../../utility/Forms';
 import Utility from '../../utility/Utility';
 import AddButtons from './AddButtons';
 import MiniContentBlock from './MiniContentBlock';
-import SearchAdvanced from './SearchAdvanced';
 import SearchBrowse from './SearchBrowse';
 import SearchButton from './SearchButton';
 import SearchClass from './SearchClass';
@@ -436,21 +435,15 @@ class Search extends React.Component<SearchProps, SearchState> {
                 </div>
               )}
             </div>
-            {queryEmpty &&
-              !results &&
-              (searchMode === SearchMode.BROWSE ? (
-                <SearchBrowse
-                  filter={this.state.filter}
-                  school={this.state.browseSchool}
-                  setSchool={(school) => {
-                    this.setState({ browseSchool: school });
-                  }}
-                />
-              ) : (
-                searchMode === SearchMode.ADVANCED && (
-                  <SearchAdvanced filter={this.state.filter} />
-                )
-              ))}
+            {queryEmpty && !results && searchMode === SearchMode.BROWSE && (
+              <SearchBrowse
+                filter={this.state.filter}
+                school={this.state.browseSchool}
+                setSchool={(school) => {
+                  this.setState({ browseSchool: school });
+                }}
+              />
+            )}
             {placeholder}
             {results}
           </>
