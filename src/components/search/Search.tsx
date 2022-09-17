@@ -1,13 +1,16 @@
 import {
   ArrowRightIcon,
-  ArrowSmLeftIcon,
+  ArrowSmallLeftIcon,
   CloudIcon,
-  DotsHorizontalIcon,
-  ExternalLinkIcon,
-  FilterIcon,
-  SearchIcon,
-} from '@heroicons/react/outline';
-import { XCircleIcon } from '@heroicons/react/solid';
+  EllipsisHorizontalIcon,
+  ArrowTopRightOnSquareIcon,
+  MagnifyingGlassIcon,
+} from '@heroicons/react/24/outline';
+import {
+  XCircleIcon,
+  FunnelIcon,
+  CalendarDaysIcon,
+} from '@heroicons/react/24/solid';
 import React from 'react';
 import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
@@ -145,7 +148,7 @@ class Search extends React.Component<SearchProps, SearchState> {
           appMode === Mode.PLAN
             ? [
                 <div key="no-query">
-                  <MiniContentBlock icon={SearchIcon} title="Search">
+                  <MiniContentBlock icon={MagnifyingGlassIcon} title="Search">
                     Use the search bar to search across every course at
                     Northwestern and view detailed information for each one.
                   </MiniContentBlock>
@@ -158,7 +161,10 @@ class Search extends React.Component<SearchProps, SearchState> {
                     Easily create an account to save multiple plans and access
                     them from anywhere.
                   </MiniContentBlock>
-                  <MiniContentBlock icon={ExternalLinkIcon} title="Share">
+                  <MiniContentBlock
+                    icon={ArrowTopRightOnSquareIcon}
+                    title="Share"
+                  >
                     The URL updates as you modify your plan. Share it with
                     others and they'll have a copy that they can view and edit.
                   </MiniContentBlock>
@@ -166,7 +172,7 @@ class Search extends React.Component<SearchProps, SearchState> {
               ]
             : [
                 <div key="no-query">
-                  <MiniContentBlock icon={SearchIcon} title="Search">
+                  <MiniContentBlock icon={MagnifyingGlassIcon} title="Search">
                     Use the search bar to search across every course offered{' '}
                     <span className="font-bold">
                       {process.env.REACT_APP_SCHEDULE_QUARTER}
@@ -184,7 +190,10 @@ class Search extends React.Component<SearchProps, SearchState> {
                     access them from anywhere. You can even add custom blocks to
                     your account schedules.
                   </MiniContentBlock>
-                  <MiniContentBlock icon={ExternalLinkIcon} title="Share">
+                  <MiniContentBlock
+                    icon={ArrowTopRightOnSquareIcon}
+                    title="Share"
+                  >
                     The URL updates as you modify your schedule. Share it with
                     others and they'll have a copy that they can view and edit.
                     You can also export your schedule as an image or to your
@@ -258,7 +267,7 @@ class Search extends React.Component<SearchProps, SearchState> {
     if (results.limitExceeded) {
       courseList.push(
         <MiniContentBlock
-          icon={DotsHorizontalIcon}
+          icon={EllipsisHorizontalIcon}
           title={`and ${results.limitExceeded} more.`}
           key="too-many"
         >
@@ -378,7 +387,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                     {searchMode === SearchMode.BROWSE &&
                     this.state.browseSchool ? (
                       <div className="flex w-full justify-center items-center gap-1">
-                        <ArrowSmLeftIcon className="w-5 h-5" /> Back
+                        <ArrowSmallLeftIcon className="w-5 h-5" /> Back
                       </div>
                     ) : (
                       'Browse'
@@ -388,7 +397,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                     action={() => {
                       this.props.alert({
                         title: 'Edit search filters',
-                        icon: FilterIcon,
+                        icon: FunnelIcon,
                         message:
                           'Filter search results by any combination of the properties below.',
                         form: {
@@ -430,10 +439,10 @@ class Search extends React.Component<SearchProps, SearchState> {
                     }}
                     tooltip="Edit filter"
                   >
-                    <FilterIcon className="w-5 h-5" />
+                    <FunnelIcon className="w-5 h-5" />
                   </SearchButton>
                   <SearchButton action={() => {}} tooltip="Change term">
-                    temp
+                    <CalendarDaysIcon className="w-5 h-5" />
                   </SearchButton>
                 </div>
               )}

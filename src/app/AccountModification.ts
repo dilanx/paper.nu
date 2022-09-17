@@ -1,4 +1,4 @@
-import { ExclamationIcon } from '@heroicons/react/outline';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import debug from 'debug';
 import toast from 'react-hot-toast';
 import Account from '../Account';
@@ -228,7 +228,7 @@ export function discardChanges(
         confirmButtonColor: 'red',
         cancelButton: 'Go back',
         iconColor: 'red',
-        icon: ExclamationIcon,
+        icon: ExclamationTriangleIcon,
         action: () => {
           app.setState({ unsavedChanges: false });
           action();

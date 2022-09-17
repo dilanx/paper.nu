@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { TrashIcon } from '@heroicons/react/outline';
+import { TrashIcon } from '@heroicons/react/24/outline';
 import {
   AccountModificationFunctions,
   AccountData,

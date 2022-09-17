@@ -1,4 +1,4 @@
-import { CalendarIcon, CameraIcon, PlusIcon } from '@heroicons/react/outline';
+import { CalendarIcon, CameraIcon, PlusIcon } from '@heroicons/react/24/solid';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Alert } from '../../types/AlertTypes';

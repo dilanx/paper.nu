@@ -1,4 +1,7 @@
-import { ExclamationIcon, SaveIcon } from '@heroicons/react/outline';
+import {
+  ExclamationTriangleIcon,
+  ArrowDownTrayIcon,
+} from '@heroicons/react/24/outline';
 import debug from 'debug';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import React from 'react';
@@ -241,7 +244,7 @@ class App extends React.Component<{}, AppState> {
             confirmButton: 'What a shame.',
             confirmButtonColor: 'red',
             iconColor: 'red',
-            icon: ExclamationIcon,
+            icon: ExclamationTriangleIcon,
           });
           return;
         }
@@ -518,7 +521,7 @@ class App extends React.Component<{}, AppState> {
                     }}
                   >
                     <>
-                      <SaveIcon className="h-6 w-6 inline-block" />
+                      <ArrowDownTrayIcon className="h-6 w-6 inline-block" />
                       <p className="inline-block text-lg font-extrabold">
                         SAVE
                       </p>

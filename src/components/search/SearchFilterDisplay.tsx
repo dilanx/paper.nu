@@ -1,4 +1,4 @@
-import { XIcon } from '@heroicons/react/outline';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import {
   FilterBadgeName,
   FilterDisplay,
@@ -102,7 +102,7 @@ function SearchFilterBadge({ name, value, remove }: SearchFilterBadgeProps) {
         className={`absolute top-0 left-0 w-full h-full text-white bg-${color}-400
                     rounded-lg hidden group-hover:flex justify-center items-center bg-opacity-80 group-active:bg-opacity-100`}
       >
-        <XIcon className="w-4 h-4" />
+        <XMarkIcon className="w-4 h-4" />
       </p>
     </button>
   );

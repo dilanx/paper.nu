@@ -1,4 +1,4 @@
-import { ExclamationIcon } from '@heroicons/react/outline';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import { AlertData } from '../types/AlertTypes';
 import { Color } from '../types/BaseTypes';
@@ -244,7 +244,7 @@ let Utility = {
       confirmButtonColor: 'red',
       cancelButton: 'Close',
       iconColor: 'red',
-      icon: ExclamationIcon,
+      icon: ExclamationTriangleIcon,
       textView: error + ' - ' + from,
       action: () => {
         window.open('https://dilan.statuspage.io', '_blank');

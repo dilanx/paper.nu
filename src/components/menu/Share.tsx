@@ -1,4 +1,4 @@
-import { ExternalLinkIcon } from '@heroicons/react/outline';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
 import { AlertData } from '../../types/AlertTypes';
 
@@ -10,7 +10,7 @@ const shareMenu = (): AlertData => ({
   confirmButtonColor: 'emerald',
   cancelButton: 'Close',
   iconColor: 'emerald',
-  icon: ExternalLinkIcon,
+  icon: ArrowTopRightOnSquareIcon,
   textView: window.location.href,
   action: () => {
     navigator.clipboard.writeText(window.location.href);

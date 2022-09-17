@@ -1,4 +1,4 @@
-import { ExclamationIcon } from '@heroicons/react/outline';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import debug from 'debug';
 import ScheduleManager from '../ScheduleManager';
 import { AppType } from '../types/BaseTypes';
@@ -23,7 +23,7 @@ function courseConfirmationPrompts(
         confirmButton: 'Add anyway',
         confirmButtonColor: 'red',
         iconColor: 'red',
-        icon: ExclamationIcon,
+        icon: ExclamationTriangleIcon,
         action: () => {
           confirmationCallback();
         },

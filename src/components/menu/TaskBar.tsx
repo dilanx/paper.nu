@@ -1,12 +1,11 @@
 import {
   BookmarkIcon,
   CloudIcon,
-  CogIcon,
-  ExternalLinkIcon,
+  Cog6ToothIcon,
+  ArrowTopRightOnSquareIcon,
   InformationCircleIcon,
-  SearchIcon,
-} from '@heroicons/react/outline';
-import React from 'react';
+  MagnifyingGlassIcon,
+} from '@heroicons/react/24/outline';
 import Account from '../../Account';
 import { Alert } from '../../types/AlertTypes';
 import {
@@ -74,13 +73,13 @@ function TaskBar(props: TaskBarProps) {
         action={() => props.alert(aboutMenu(props.version))}
       />
       <MiniButton
-        icon={ExternalLinkIcon}
+        icon={ArrowTopRightOnSquareIcon}
         color="green"
         display="Share"
         action={() => props.alert(shareMenu())}
       />
       <MiniButton
-        icon={CogIcon}
+        icon={Cog6ToothIcon}
         color="yellow"
         display="Settings"
         action={() => props.alert(settingsMenu(props.f2))}
@@ -98,7 +97,7 @@ function TaskBar(props: TaskBarProps) {
           switchName="tab"
           color={TabBarButtonColors['Search']}
         >
-          <SearchIcon className="w-5 h-5" />
+          <MagnifyingGlassIcon className="w-5 h-5" />
         </TabBarButton>
         <TabBarButton
           name="My List"

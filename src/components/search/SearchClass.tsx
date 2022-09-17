@@ -1,7 +1,7 @@
 import Utility from '../../utility/Utility';
 import { useDrag } from 'react-dnd';
-import { BookmarkIcon } from '@heroicons/react/outline';
-import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/solid';
+import { BookmarkIcon } from '@heroicons/react/24/outline';
+import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import {
   Course,
   CourseDragItem,

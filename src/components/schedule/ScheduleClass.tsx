@@ -2,8 +2,8 @@ import {
   BookmarkIcon,
   DocumentIcon,
   TrashIcon,
-} from '@heroicons/react/outline';
-import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/solid';
+} from '@heroicons/react/24/outline';
+import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
 import {

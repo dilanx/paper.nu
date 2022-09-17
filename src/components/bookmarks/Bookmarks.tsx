@@ -1,4 +1,3 @@
-import React from 'react';
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {

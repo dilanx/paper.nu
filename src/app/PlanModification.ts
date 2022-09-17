@@ -1,4 +1,8 @@
-import { ExclamationIcon, PlusIcon, TrashIcon } from '@heroicons/react/outline';
+import {
+  ExclamationTriangleIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 import PlanManager from '../PlanManager';
 import { AppType } from '../types/BaseTypes';
 import { Course, CourseLocation } from '../types/PlanTypes';
@@ -35,7 +39,7 @@ function courseConfirmationPrompts(
         confirmButton: 'Add anyway',
         confirmButtonColor: 'red',
         iconColor: 'red',
-        icon: ExclamationIcon,
+        icon: ExclamationTriangleIcon,
         action: () => {
           confirmationCallback();
         },
@@ -57,7 +61,7 @@ function courseConfirmationPrompts(
         confirmButton: 'Add anyway',
         confirmButtonColor: 'red',
         iconColor: 'red',
-        icon: ExclamationIcon,
+        icon: ExclamationTriangleIcon,
         action: () => {
           confirmationCallback();
         },

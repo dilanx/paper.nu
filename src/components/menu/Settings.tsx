@@ -1,9 +1,9 @@
 import {
   CalendarIcon,
-  CogIcon,
-  CollectionIcon,
-  DotsHorizontalIcon,
-} from '@heroicons/react/outline';
+  Cog6ToothIcon,
+  RectangleStackIcon,
+  EllipsisHorizontalIcon,
+} from '@heroicons/react/24/outline';
 import debugModule from 'debug';
 import { AlertData } from '../../types/AlertTypes';
 import { PlanSpecialFunctions } from '../../types/PlanTypes';
@@ -14,7 +14,7 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
   message: `Customize your Plan Northwestern experience! These settings are saved in your browser and not in the URL.`,
   cancelButton: 'Close',
   iconColor: 'yellow',
-  icon: CogIcon,
+  icon: Cog6ToothIcon,
   tabs: {
     switchName: 'settings_tab',
     colorMap: {
@@ -26,7 +26,7 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
     tabs: [
       {
         name: 'General',
-        display: <CogIcon className="w-5 h-5" />,
+        display: <Cog6ToothIcon className="w-5 h-5" />,
         options: [
           {
             switch: 'dark',
@@ -55,7 +55,7 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
       },
       {
         name: 'Plan',
-        display: <CollectionIcon className="w-5 h-5" />,
+        display: <RectangleStackIcon className="w-5 h-5" />,
         options: [
           {
             switch: 'compact',
@@ -111,7 +111,7 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
       },
       {
         name: 'Advanced',
-        display: <DotsHorizontalIcon className="w-5 h-5" />,
+        display: <EllipsisHorizontalIcon className="w-5 h-5" />,
         options: [
           {
             switch: 'reduced_motion',

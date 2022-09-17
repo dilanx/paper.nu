@@ -1,4 +1,4 @@
-import { CalendarIcon, CollectionIcon } from '@heroicons/react/solid';
+import { CalendarIcon, RectangleStackIcon } from '@heroicons/react/24/solid';
 import { Color, IconElement, UserOptions } from '../../types/BaseTypes';
 import { Mode } from '../../utility/Constants';
 
@@ -43,7 +43,7 @@ function ModeSwitch({ switches, changeMode }: ModeSwitchProps) {
   return (
     <div className="flex justify-center items-center my-1 gap-4 mx-4">
       <ModeSwitchButton
-        icon={CollectionIcon}
+        icon={RectangleStackIcon}
         text="Plan"
         color="purple"
         active={switches.get.mode === Mode.PLAN}

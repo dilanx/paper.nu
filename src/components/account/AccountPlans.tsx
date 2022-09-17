@@ -1,9 +1,9 @@
 import {
   CloudIcon,
-  LogoutIcon,
+  ArrowRightOnRectangleIcon,
   PlusIcon,
   TrashIcon,
-} from '@heroicons/react/outline';
+} from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import React from 'react';
 import toast from 'react-hot-toast';
@@ -230,7 +230,7 @@ class AccountPlans extends React.Component<
       confirmButton: 'Log out',
       confirmButtonColor: 'rose',
       iconColor: 'rose',
-      icon: LogoutIcon,
+      icon: ArrowRightOnRectangleIcon,
       action: () => {
         Account.logOut();
       },

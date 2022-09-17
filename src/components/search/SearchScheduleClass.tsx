@@ -1,5 +1,5 @@
-import { BookmarkIcon, MinusIcon } from '@heroicons/react/outline';
-import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/solid';
+import { BookmarkIcon, MinusIcon } from '@heroicons/react/24/outline';
+import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import { motion } from 'framer-motion';
 import { useDrag } from 'react-dnd';
 import { Color } from '../../types/BaseTypes';

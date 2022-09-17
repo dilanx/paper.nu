@@ -1,4 +1,4 @@
-import { PlusIcon } from '@heroicons/react/outline';
+import { PlusIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import PlanManager from '../../PlanManager';
 import { Alert } from '../../types/AlertTypes';

@@ -20,8 +20,8 @@ import {
   TrashIcon,
   DocumentIcon,
   BookmarkIcon,
-} from '@heroicons/react/outline';
-import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/solid';
+} from '@heroicons/react/24/outline';
+import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import { UserOptions } from '../../types/BaseTypes';
 
 interface ClassProps {
