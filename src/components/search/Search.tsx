@@ -432,6 +432,9 @@ class Search extends React.Component<SearchProps, SearchState> {
                   >
                     <FilterIcon className="w-5 h-5" />
                   </SearchButton>
+                  <SearchButton action={() => {}} tooltip="Change term">
+                    temp
+                  </SearchButton>
                 </div>
               )}
             </div>

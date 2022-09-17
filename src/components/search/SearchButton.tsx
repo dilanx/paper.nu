@@ -21,7 +21,7 @@ function SearchButton({
                 font-medium p-1 rounded-lg opacity-60 transition-all duration-150
                 hover:opacity-100 active:bg-${color}-300 active:text-${color}-800 active:opacity-100
                 dark:active:bg-gray-500 dark:active:text-${color}-200
-                ${tooltip ? 'px-2 relative group' : 'flex-grow'}`}
+                ${tooltip ? 'px-4 relative group' : 'flex-grow'}`}
       onClick={() => action()}
     >
       {children}
