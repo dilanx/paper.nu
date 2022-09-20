@@ -44,7 +44,7 @@ function loadData(params: URLSearchParams): PlanData | 'malformed' | 'empty' {
           let courseId = subj + ' ' + num;
 
           let course = PlanManager.getCourse(courseId);
-          if (course == null) return 'malformed';
+          if (!course) return 'malformed';
           classData.push(course);
           ds('course loaded: %s (y%dq%d)', courseId, year, quarter);
         }
@@ -79,7 +79,7 @@ function loadData(params: URLSearchParams): PlanData | 'malformed' | 'empty' {
             let courseId = subj + ' ' + num;
 
             let course = PlanManager.getCourse(courseId);
-            if (course == null) return 'malformed';
+            if (!course) return 'malformed';
             if (i === 0) {
               bookmarksNoCredit.add(course);
               ds('plan bookmark added: %s (credit = false)', courseId);
@@ -283,7 +283,7 @@ const PlanManager = {
       }
     }
 
-    return null;
+    return undefined;
   },
 
   getCourse: (courseId: string) => {
@@ -292,7 +292,6 @@ const PlanManager = {
         return course;
       }
     }
-    return null;
   },
 
   getCourseColor: (courseId: string) => {

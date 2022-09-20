@@ -1,4 +1,5 @@
 import { Color, ColorMap, IconElement, ReadUserOptions } from './BaseTypes';
+import { SideCardData } from './SideCardTypes';
 
 export interface AlertDataExtra {
   title: string;

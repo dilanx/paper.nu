@@ -9,6 +9,7 @@ import {
   ScheduleModificationFunctions,
   ValidScheduleSection,
 } from '../../types/ScheduleTypes';
+import { SideCard } from '../../types/SideCardTypes';
 import Utility from '../../utility/Utility';
 import Day from './Day';
 import HoursColumn from './HoursColumn';
@@ -17,6 +18,7 @@ import UtilityBar from './UtilityBar';
 interface ScheduleProps {
   schedule: ScheduleData;
   alert: Alert;
+  sideCard?: SideCard;
   interactions?: ScheduleInteractions;
   sf: ScheduleModificationFunctions;
   switches: UserOptions;
@@ -70,6 +72,7 @@ class Schedule extends React.Component<ScheduleProps> {
           sections={sections}
           bookmarks={this.props.schedule.bookmarks}
           alert={this.props.alert}
+          sideCard={this.props.sideCard}
           interactions={this.props.interactions}
           sf={this.props.sf}
           switches={this.props.switches}

@@ -14,6 +14,14 @@ import PlanManager from './PlanManager';
 import { PlanData } from './types/PlanTypes';
 var d = debug('save-data-manager');
 
+const DEFAULT_SWITCHES: ReadUserOptions = {
+  notifications: true,
+  settings_tab: 'General',
+  mode: Mode.PLAN,
+  schedule_image_watermark: true,
+  schedule_warnings: true,
+};
+
 function matchAccountId(accountData: AccountDataMap, content: string) {
   for (let id in accountData) {
     if (accountData[id].content === content) {
@@ -207,13 +215,10 @@ let SaveDataManager = {
       save: boolean | undefined
     ) => void
   ): UserOptions => {
-    let switches: ReadUserOptions = {
-      notifications: true,
-      settings_tab: 'General',
-      mode: Mode.PLAN,
-      schedule_image_watermark: true,
-      schedule_warnings: true,
-    };
+    let switches = Object.assign<ReadUserOptions, ReadUserOptions>(
+      {},
+      DEFAULT_SWITCHES
+    );
     let keys = Object.keys(localStorage);
     for (let i = 0; i < keys.length; i++) {
       if (keys[i].startsWith('switch_')) {

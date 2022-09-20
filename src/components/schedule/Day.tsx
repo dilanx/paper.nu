@@ -6,6 +6,7 @@ import {
   ScheduleModificationFunctions,
   ValidScheduleSection,
 } from '../../types/ScheduleTypes';
+import { SideCard } from '../../types/SideCardTypes';
 import { getLayout } from '../../utility/Layout';
 import Utility from '../../utility/Utility';
 import ScheduleClass from './ScheduleClass';
@@ -30,6 +31,7 @@ interface DayProps {
   sections?: ValidScheduleSection[];
   bookmarks: ScheduleBookmarks;
   alert: Alert;
+  sideCard?: SideCard;
   interactions?: ScheduleInteractions;
   sf: ScheduleModificationFunctions;
   switches: UserOptions;
@@ -50,6 +52,7 @@ function Day(props: DayProps) {
         section={section}
         bookmarks={props.bookmarks}
         alert={props.alert}
+        sideCard={props.sideCard}
         interactions={props.interactions}
         sf={props.sf}
         switches={props.switches}

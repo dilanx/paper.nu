@@ -1,6 +1,8 @@
 import {
   ExclamationTriangleIcon,
   ArrowDownTrayIcon,
+  ClockIcon,
+  UserIcon,
 } from '@heroicons/react/24/outline';
 import debug from 'debug';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
@@ -37,6 +39,7 @@ import Bookmarks from './components/bookmarks/Bookmarks';
 import Alert from './components/menu/alert/Alert';
 import Info from './components/menu/Info';
 import ModeSwitch from './components/menu/ModeSwitch';
+import SideCard from './components/menu/side-card/SideCard';
 import TaskBar from './components/menu/TaskBar';
 import Content from './components/plan/Content';
 import Schedule from './components/schedule/Schedule';
@@ -55,6 +58,7 @@ import {
   ScheduleInteractions,
   ScheduleModificationFunctions,
 } from './types/ScheduleTypes';
+import { SideCardData } from './types/SideCardTypes';
 import { Mode } from './utility/Constants';
 import PlanError from './utility/PlanError';
 import Utility from './utility/Utility';
@@ -331,6 +335,14 @@ class App extends React.Component<{}, AppState> {
     this.setState({ alertData });
   }
 
+  showSideCard(sideCardData: SideCardData) {
+    this.setState({ sideCardData });
+  }
+
+  closeSideCard() {
+    this.setState({ sideCardData: undefined });
+  }
+
   postShowAlert() {
     this.setState({ alertData: undefined });
   }
@@ -396,6 +408,14 @@ class App extends React.Component<{}, AppState> {
                 onClose={() => {
                   this.postShowAlert();
                 }}
+              />
+            )}
+
+            {this.state.sideCardData && (
+              <SideCard
+                data={this.state.sideCardData}
+                switches={switches}
+                close={() => this.closeSideCard()}
               />
             )}
 
@@ -493,6 +513,9 @@ class App extends React.Component<{}, AppState> {
                       schedule={this.state.schedule}
                       alert={(alertData) => {
                         this.showAlert(alertData);
+                      }}
+                      sideCard={(sideCardData) => {
+                        this.showSideCard(sideCardData);
                       }}
                       interactions={this.state.scheduleInteractions}
                       sf={this.state.sf}

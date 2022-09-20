@@ -10,12 +10,14 @@ import {
   ScheduleInteractions,
   ScheduleModificationFunctions,
 } from './ScheduleTypes';
+import { SideCardData } from './SideCardTypes';
 
 export interface AppState {
   data: PlanData;
   schedule: ScheduleData;
   switches: UserOptions;
   alertData?: AlertData;
+  sideCardData?: SideCardData;
   f: PlanModificationFunctions;
   f2: PlanSpecialFunctions;
   sf: ScheduleModificationFunctions;
@@ -42,6 +44,7 @@ export interface ReadUserOptions {
   show_times?: boolean;
   debug?: boolean;
   schedule_warnings?: boolean;
+  section_info_details?: string;
 }
 
 export interface UserOptions {

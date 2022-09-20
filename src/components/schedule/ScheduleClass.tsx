@@ -1,7 +1,14 @@
 import {
+  AcademicCapIcon,
   BookmarkIcon,
+  BuildingLibraryIcon,
+  ClockIcon,
   DocumentIcon,
+  ListBulletIcon,
+  MapPinIcon,
+  PuzzlePieceIcon,
   TrashIcon,
+  UserIcon,
 } from '@heroicons/react/24/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import PlanManager from '../../PlanManager';
@@ -13,7 +20,8 @@ import {
   NontoggleableAlertDataEditButton,
   ToggleableAlertDataEditButton,
 } from '../../types/AlertTypes';
-import { UserOptions } from '../../types/BaseTypes';
+import { IconElement, UserOptions } from '../../types/BaseTypes';
+import { Course } from '../../types/PlanTypes';
 import {
   ScheduleBookmarks,
   ScheduleCourse,
@@ -21,12 +29,18 @@ import {
   ScheduleModificationFunctions,
   ScheduleSection,
 } from '../../types/ScheduleTypes';
+import {
+  SideCard,
+  SideCardData,
+  SideCardDataItem,
+} from '../../types/SideCardTypes';
 import Utility from '../../utility/Utility';
 
 interface ScheduleClassProps {
   section: ScheduleSection;
   bookmarks: ScheduleBookmarks;
   alert: Alert;
+  sideCard?: SideCard;
   interactions?: ScheduleInteractions;
   sf: ScheduleModificationFunctions;
   switches: UserOptions;
@@ -34,61 +48,88 @@ interface ScheduleClassProps {
   split?: { i: number; l: number };
 }
 
+function getDetails(
+  detail: string,
+  section: ScheduleSection,
+  course?: Course
+): [IconElement, string | undefined] | undefined {
+  switch (detail) {
+    case 'COMPONENT':
+      return [
+        PuzzlePieceIcon,
+        Utility.capitalizeFirstLetter(
+          Utility.convertSectionComponent(section.component)
+        ),
+      ];
+    case 'TIME SLOT':
+      return [
+        ClockIcon,
+        `${
+          section.meeting_days && section.start_time && section.end_time
+            ? `${Utility.convertAllDaysToString(
+                section.meeting_days
+              )} ${Utility.convertTime(
+                section.start_time,
+                true
+              )} - ${Utility.convertTime(section.end_time, true)}`
+            : undefined
+        }`,
+      ];
+    case 'INSTRUCTOR':
+      return [UserIcon, section.instructors?.join(', ')];
+    case 'LOCATION':
+      return [MapPinIcon, section.room?.building_name];
+    case 'PREREQUISITES':
+      return [ListBulletIcon, course?.prereqs];
+    case 'DISTRIBUTION AREAS':
+      return [
+        BuildingLibraryIcon,
+        course?.distros
+          ? Utility.convertDistros(course.distros).join(', ')
+          : undefined,
+      ];
+    case 'UNITS':
+      return [AcademicCapIcon, course?.units];
+  }
+}
+
 function openInfo(props: ScheduleClassProps) {
+  if (!props.sideCard) return;
   const section = props.section;
   const name = section.subject + ' ' + section.number;
   const course = PlanManager.getCourse(name);
   const scheduleCourse = ScheduleManager.getCourseById(
     section.section_id.split('-')[0]
   );
-  const color = PlanManager.getCourseColor(name);
 
-  const extras: AlertDataExtra[] = [];
+  const items = props.switches.get.section_info_details?.split(',') ?? [
+    'COMPONENT',
+    'TIME SLOT',
+    'INSTRUCTOR',
+    'LOCATION',
+    'PREREQUISITES',
+    'DISTRIBUTION AREAS',
+    'UNITS',
+  ];
 
-  extras.push({
-    title: 'COMPONENT',
-    content: Utility.capitalizeFirstLetter(
-      Utility.convertSectionComponent(section.component)
-    ),
-  });
-  extras.push({
-    title: 'TIME SLOT',
-    content: `${
-      section.meeting_days && section.start_time && section.end_time
-        ? `${Utility.convertAllDaysToString(
-            section.meeting_days
-          )} ${Utility.convertTime(
-            section.start_time,
-            true
-          )} - ${Utility.convertTime(section.end_time, true)}`
-        : 'No meeting times provided'
-    }`,
-  });
-  extras.push({
-    title: 'INSTRUCTOR' + ((section.instructors?.length || 0) > 1 ? 'S' : ''),
-    content: section.instructors?.join(', ') || 'No instructor provided',
-  });
-  extras.push({
-    title: 'LOCATION',
-    content: section.room?.building_name || 'No location provided',
-  });
-
-  if (course) {
-    if (course.prereqs) {
-      extras.push({
-        title: 'PREREQUISITES',
-        content: course.prereqs,
-      });
-    }
-
-    if (course.distros) {
-      let distros = Utility.convertDistros(course.distros);
-      extras.push({
-        title: 'DISTRIBUTION AREAS',
-        content: distros.join(', '),
-      });
-    }
-  }
+  const sideCardData: SideCardData = {
+    type: 'SECTION INFO',
+    themeColor: PlanManager.getCourseColor(name),
+    title: name,
+    subtitle: section.title,
+    message: course?.description ?? 'No course description available',
+    items: items.reduce<SideCardDataItem[]>((filtered, item) => {
+      const [icon, value] = getDetails(item, section, course) ?? [];
+      if (value) {
+        filtered.push({
+          key: item,
+          icon,
+          value,
+        });
+      }
+      return filtered;
+    }, []),
+  };
 
   const editButtons: AlertDataEditButton[] = [];
 
@@ -132,16 +173,7 @@ function openInfo(props: ScheduleClassProps) {
   };
   editButtons.push(remove);
 
-  props.alert({
-    title: name,
-    subtitle: section.title,
-    message: course?.description ?? 'No course description found',
-    cancelButton: 'Close',
-    iconColor: color,
-    icon: DocumentIcon,
-    extras: extras,
-    editButtons: editButtons,
-  });
+  props.sideCard(sideCardData);
 }
 
 function ScheduleClass(props: ScheduleClassProps) {
