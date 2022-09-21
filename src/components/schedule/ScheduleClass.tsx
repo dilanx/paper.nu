@@ -4,6 +4,7 @@ import {
   BuildingLibraryIcon,
   ClockIcon,
   DocumentIcon,
+  HashtagIcon,
   ListBulletIcon,
   MapPinIcon,
   PuzzlePieceIcon,
@@ -54,6 +55,8 @@ function getDetails(
   course?: Course
 ): [IconElement, string | undefined] | undefined {
   switch (detail) {
+    case 'SECTION NUMBER':
+      return [HashtagIcon, section.section];
     case 'COMPONENT':
       return [
         PuzzlePieceIcon,
@@ -103,6 +106,7 @@ function openInfo(props: ScheduleClassProps) {
   );
 
   const items = props.switches.get.section_info_details?.split(',') ?? [
+    'SECTION NUMBER',
     'COMPONENT',
     'TIME SLOT',
     'INSTRUCTOR',

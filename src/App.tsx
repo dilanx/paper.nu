@@ -411,13 +411,15 @@ class App extends React.Component<{}, AppState> {
               />
             )}
 
-            {this.state.sideCardData && (
-              <SideCard
-                data={this.state.sideCardData}
-                switches={switches}
-                close={() => this.closeSideCard()}
-              />
-            )}
+            <AnimatePresence>
+              {this.state.sideCardData && (
+                <SideCard
+                  data={this.state.sideCardData}
+                  switches={switches}
+                  close={() => this.closeSideCard()}
+                />
+              )}
+            </AnimatePresence>
 
             <div className="bg-white dark:bg-gray-800 grid grid-cols-1 lg:grid-cols-8">
               <div className="col-span-2 px-4 h-192 md:h-screen flex flex-col">
@@ -496,7 +498,7 @@ class App extends React.Component<{}, AppState> {
                   switches.get.compact ? 'compact-mode ' : ''
                 } col-span-6 block pt-0 lg:h-screen lg:overflow-y-scroll no-scrollbar`}
               >
-                <AnimatePresence exitBeforeEnter>
+                <AnimatePresence mode="wait">
                   {switches.get.mode === Mode.PLAN ? (
                     <Content
                       data={this.state.data}

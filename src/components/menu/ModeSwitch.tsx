@@ -20,7 +20,7 @@ function ModeSwitchButton({
   return (
     <button
       className={`flex justify-center items-center gap-1 px-4 py-0.5 rounded-md flex-1 transition-all duration-150
-        border border-${color}-600 dark:border-${color}-400 ${
+        border-2 border-${color}-600 dark:border-${color}-400 ${
         active
           ? `bg-${color}-600 text-white dark:bg-${color}-400 dark:text-gray-800`
           : `text-${color}-600 hover:bg-opacity-50 hover:bg-${color}-100 active:bg-opacity-100
