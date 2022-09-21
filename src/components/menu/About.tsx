@@ -2,7 +2,7 @@ import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { AlertData } from '../../types/AlertTypes';
 
 const aboutMenu = (version: string): AlertData => ({
-  title: 'Plan Northwestern',
+  title: 'paper.nu',
   customSubtitle: (
     <p className="text-md font-light text-gray-500 dark:text-gray-400">
       version {version} by{' '}
