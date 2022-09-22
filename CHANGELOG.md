@@ -1,5 +1,11 @@
 # Plan Northwestern Change Log
 
+### 1.2.3
+
+_2022-09-22_
+
+-   Added system status embed.
+
 ### 1.2.2
 
 _2022-07-05_
