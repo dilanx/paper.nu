@@ -14,7 +14,7 @@ function SideCard({ data, switches, close }: SideCardProps) {
   return (
     <div className="fixed w-screen md:max-w-md h-screen top-0 right-0 z-40 px-4 py-8">
       <motion.div
-        className="w-full h-full bg-white dark:bg-gray-700 rounded-xl shadow-xl p-4"
+        className="w-full h-full bg-white dark:bg-gray-700 rounded-xl shadow-xl p-4 overflow-y-scroll no-scrollbar"
         initial={{
           x: 448,
         }}
