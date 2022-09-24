@@ -20,56 +20,76 @@ import {
   TrashIcon,
   DocumentIcon,
   BookmarkIcon,
+  ListBulletIcon,
+  BuildingLibraryIcon,
+  AcademicCapIcon,
 } from '@heroicons/react/24/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
-import { UserOptions } from '../../types/BaseTypes';
+import { IconElement, UserOptions } from '../../types/BaseTypes';
+import {
+  SideCard,
+  SideCardData,
+  SideCardDataItem,
+} from '../../types/SideCardTypes';
 
 interface ClassProps {
   course: Course;
   bookmarks: BookmarksData;
-  alert: Alert;
+  sideCard: SideCard;
   location: CourseLocation;
   f: PlanModificationFunctions;
   switches: UserOptions;
 }
 
+function getDetails(
+  detail: string,
+  course: Course
+): [IconElement, string | undefined] | undefined {
+  switch (detail) {
+    case 'PREREQUISITES':
+      return [ListBulletIcon, course.prereqs];
+    case 'DISTRIBUTION AREAS':
+      return [
+        BuildingLibraryIcon,
+        course.distros
+          ? Utility.convertDistros(course.distros).join(', ')
+          : undefined,
+      ];
+    case 'UNITS':
+      return [AcademicCapIcon, course.units];
+  }
+}
+
 function openInfo(props: ClassProps) {
-  let course = props.course;
-  let color = PlanManager.getCourseColor(course.id);
+  const course = props.course;
+  const placeholder = course.placeholder;
 
-  if (course.placeholder) {
-    props.alert({
-      title: 'Placeholder',
-      subtitle: course.name,
-      message: `If you aren't sure which course to take to fulfill a certain requirement, you can use a placeholder! Search using 'placeholder' or by requirement category to find placeholders.`,
-      cancelButton: 'Close',
-      iconColor: color,
-      icon: DocumentIcon,
-    });
-    return;
-  }
+  const items = props.switches.get.course_info_details?.split(',') ?? [
+    'PREREQUISITES',
+    'DISTRIBUTION AREAS',
+    'UNITS',
+  ];
 
-  let extras = [];
-
-  if (course.prereqs) {
-    extras.push({
-      title: 'PREREQUISITES',
-      content: course.prereqs,
-    });
-  }
-
-  if (course.distros) {
-    let distros = Utility.convertDistros(course.distros);
-    extras.push({
-      title: 'DISTRIBUTION AREAS',
-      content: distros.join(', '),
-    });
-  }
-
-  extras.push({
-    title: 'UNITS',
-    content: course.units,
-  });
+  const sideCardData: SideCardData = {
+    type: 'COURSE INFO',
+    themeColor: PlanManager.getCourseColor(course.id),
+    title: placeholder ? 'Placeholder' : course.id,
+    subtitle: course.name,
+    message: placeholder
+      ? `If you aren't sure which course to take to fulfill a certain requirement, you can use a placeholder! Search using 'placeholder' or by requirement category to find placeholders.`
+      : course.description,
+    items: items.reduce<SideCardDataItem[]>((filtered, item) => {
+      const [icon, value] = getDetails(item, course) ?? [];
+      if (value) {
+        filtered.push({
+          key: item,
+          icon,
+          value,
+        });
+      }
+      return filtered;
+    }, []),
+  };
 
   const bookmarks = props.bookmarks;
   const {
@@ -113,16 +133,7 @@ function openInfo(props: ClassProps) {
     },
   };
 
-  props.alert({
-    title: course.id,
-    subtitle: course.name,
-    message: course.description,
-    cancelButton: 'Close',
-    iconColor: color,
-    icon: DocumentIcon,
-    extras: extras,
-    editButtons: [bookmarkToggle, remove],
-  });
+  props.sideCard(sideCardData);
 }
 
 const variants = {

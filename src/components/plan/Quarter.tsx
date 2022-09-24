@@ -1,17 +1,17 @@
-import { useDrop } from 'react-dnd';
 import { motion } from 'framer-motion';
+import { useDrop } from 'react-dnd';
 import PlanManager from '../../PlanManager';
-import { Alert } from '../../types/AlertTypes';
 import { Color, UserOptions } from '../../types/BaseTypes';
 import {
-  CourseDragItem,
-  CourseLocation,
-  Course,
-  PlanModificationFunctions,
   BookmarksData,
+  Course,
+  CourseDragItem,
   CourseDropResult,
+  CourseLocation,
   DropCollectedProps,
+  PlanModificationFunctions,
 } from '../../types/PlanTypes';
+import { SideCard } from '../../types/SideCardTypes';
 import Class from './Class';
 
 interface QuarterProps {
@@ -19,7 +19,7 @@ interface QuarterProps {
   bookmarks: BookmarksData;
   location: CourseLocation;
   f: PlanModificationFunctions;
-  alert: Alert;
+  sideCard: SideCard;
   switches: UserOptions;
   title: string;
   color: Color;
@@ -67,7 +67,7 @@ function Quarter(props: QuarterProps) {
           <Class
             course={classData}
             bookmarks={props.bookmarks}
-            alert={props.alert}
+            sideCard={props.sideCard}
             location={props.location}
             f={props.f}
             switches={props.switches}

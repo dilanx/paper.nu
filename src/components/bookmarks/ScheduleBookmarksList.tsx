@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import ScheduleManager from '../../ScheduleManager';
-import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {
   ScheduleData,
@@ -12,7 +11,6 @@ import SearchScheduleClass from '../search/SearchScheduleClass';
 
 interface ScheduleBookmarksListProps {
   schedule: ScheduleData;
-  alert: Alert;
   switches: UserOptions;
   sf: ScheduleModificationFunctions;
   interactions: ScheduleInteractions;

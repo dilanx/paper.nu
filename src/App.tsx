@@ -427,6 +427,7 @@ class App extends React.Component<{}, AppState> {
                 <ModeSwitch
                   switches={switches}
                   changeMode={(mode) => {
+                    this.closeSideCard();
                     discardChanges(this, () => {
                       this.setSwitch('mode', mode, true);
                       this.setState({ loadingLogin: true });
@@ -451,8 +452,8 @@ class App extends React.Component<{}, AppState> {
                   <Bookmarks
                     bookmarks={this.state.data.bookmarks}
                     schedule={this.state.schedule}
-                    alert={(alertData) => {
-                      this.showAlert(alertData);
+                    sideCard={(sideCardData) => {
+                      this.showSideCard(sideCardData);
                     }}
                     f={this.state.f}
                     sf={this.state.sf}
@@ -506,6 +507,9 @@ class App extends React.Component<{}, AppState> {
                       f2={this.state.f2}
                       alert={(alertData) => {
                         this.showAlert(alertData);
+                      }}
+                      sideCard={(sideCardData) => {
+                        this.showSideCard(sideCardData);
                       }}
                       switches={switches}
                       key="plan"

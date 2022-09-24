@@ -30,7 +30,6 @@ interface DayProps {
   end: number;
   sections?: ValidScheduleSection[];
   bookmarks: ScheduleBookmarks;
-  alert: Alert;
   sideCard?: SideCard;
   interactions?: ScheduleInteractions;
   sf: ScheduleModificationFunctions;
@@ -51,7 +50,6 @@ function Day(props: DayProps) {
       <ScheduleClass
         section={section}
         bookmarks={props.bookmarks}
-        alert={props.alert}
         sideCard={props.sideCard}
         interactions={props.interactions}
         sf={props.sf}

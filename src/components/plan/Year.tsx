@@ -1,22 +1,22 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import Quarter from './Quarter';
-import Utility from '../../utility/Utility';
 import {
-  PlusIcon,
-  ChevronUpIcon,
   ChevronDownIcon,
+  ChevronUpIcon,
+  PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
+import { motion } from 'framer-motion';
+import React from 'react';
+import { UserOptions } from '../../types/BaseTypes';
 import {
-  Course,
   BookmarksData,
+  Course,
   PlanModificationFunctions,
   PlanSpecialFunctions,
 } from '../../types/PlanTypes';
-import { Alert } from '../../types/AlertTypes';
-import { UserOptions } from '../../types/BaseTypes';
+import { SideCard } from '../../types/SideCardTypes';
+import Utility from '../../utility/Utility';
 import Tooltip from '../generic/Tooltip';
+import Quarter from './Quarter';
 
 interface YearProps {
   data: Course[][];
@@ -24,7 +24,7 @@ interface YearProps {
   year: number;
   f: PlanModificationFunctions;
   f2: PlanSpecialFunctions;
-  alert: Alert;
+  sideCard: SideCard;
   switches: UserOptions;
   title: string;
 }
@@ -66,7 +66,7 @@ class Year extends React.Component<YearProps, YearState> {
             bookmarks={this.props.bookmarks}
             location={{ year: this.props.year, quarter: index }}
             f={this.props.f}
-            alert={this.props.alert}
+            sideCard={this.props.sideCard}
             switches={this.props.switches}
             title={title}
             color={color}

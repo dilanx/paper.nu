@@ -44,6 +44,7 @@ export interface ReadUserOptions {
   show_times?: boolean;
   debug?: boolean;
   schedule_warnings?: boolean;
+  course_info_details?: string;
   section_info_details?: string;
 }
 

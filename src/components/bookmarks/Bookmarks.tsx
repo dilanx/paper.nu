@@ -1,4 +1,3 @@
-import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {
   BookmarksData,
@@ -9,6 +8,7 @@ import {
   ScheduleInteractions,
   ScheduleModificationFunctions,
 } from '../../types/ScheduleTypes';
+import { SideCard } from '../../types/SideCardTypes';
 import { Mode } from '../../utility/Constants';
 import BookmarksList from './BookmarksList';
 import ScheduleBookmarksList from './ScheduleBookmarksList';
@@ -16,7 +16,7 @@ import ScheduleBookmarksList from './ScheduleBookmarksList';
 interface BookmarksProps {
   bookmarks: BookmarksData;
   schedule: ScheduleData;
-  alert: Alert;
+  sideCard: SideCard;
   f: PlanModificationFunctions;
   sf: ScheduleModificationFunctions;
   scheduleInteractions: ScheduleInteractions;
@@ -38,14 +38,14 @@ function Bookmarks(props: BookmarksProps) {
           <BookmarksList
             credit={false}
             bookmarks={props.bookmarks}
-            alert={props.alert}
+            sideCard={props.sideCard}
             f={props.f}
             switches={props.switches}
           />
           <BookmarksList
             credit={true}
             bookmarks={props.bookmarks}
-            alert={props.alert}
+            sideCard={props.sideCard}
             f={props.f}
             switches={props.switches}
           />
@@ -54,7 +54,6 @@ function Bookmarks(props: BookmarksProps) {
       {mode === Mode.SCHEDULE && (
         <ScheduleBookmarksList
           schedule={props.schedule}
-          alert={props.alert}
           switches={props.switches}
           sf={props.sf}
           interactions={props.scheduleInteractions}

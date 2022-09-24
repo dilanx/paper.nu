@@ -11,12 +11,14 @@ import {
 import Utility from '../../utility/Utility';
 import Year from './Year';
 import { motion } from 'framer-motion';
+import { SideCard } from '../../types/SideCardTypes';
 
 interface ContentProps {
   data: PlanData;
   f: PlanModificationFunctions;
   f2: PlanSpecialFunctions;
   alert: Alert;
+  sideCard: SideCard;
   switches: UserOptions;
 }
 class Content extends React.Component<ContentProps> {
@@ -32,7 +34,7 @@ class Content extends React.Component<ContentProps> {
             year={index}
             f={this.props.f}
             f2={this.props.f2}
-            alert={this.props.alert}
+            sideCard={this.props.sideCard}
             switches={this.props.switches}
             title={Utility.convertYear(index)}
             key={index}

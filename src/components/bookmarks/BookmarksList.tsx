@@ -1,19 +1,19 @@
 import { motion } from 'framer-motion';
 import { useDrop } from 'react-dnd';
-import Class from '../plan/Class';
 import PlanManager from '../../PlanManager';
+import { UserOptions } from '../../types/BaseTypes';
 import {
-  CourseDragItem,
   BookmarksData,
+  CourseDragItem,
   PlanModificationFunctions,
 } from '../../types/PlanTypes';
-import { UserOptions } from '../../types/BaseTypes';
-import { Alert } from '../../types/AlertTypes';
+import { SideCard } from '../../types/SideCardTypes';
+import Class from '../plan/Class';
 
 interface BookmarksListProps {
   credit: boolean;
   bookmarks: BookmarksData;
-  alert: Alert;
+  sideCard: SideCard;
   f: PlanModificationFunctions;
   switches: UserOptions;
 }
@@ -52,7 +52,7 @@ function BookmarksList(props: BookmarksListProps) {
         <Class
           course={classData}
           bookmarks={props.bookmarks}
-          alert={props.alert}
+          sideCard={props.sideCard}
           location={{ year: -1, quarter: props.credit ? 1 : 0 }}
           f={props.f}
           switches={props.switches}

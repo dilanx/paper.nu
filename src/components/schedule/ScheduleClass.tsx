@@ -3,7 +3,6 @@ import {
   BookmarkIcon,
   BuildingLibraryIcon,
   ClockIcon,
-  DocumentIcon,
   HashtagIcon,
   ListBulletIcon,
   MapPinIcon,
@@ -15,9 +14,7 @@ import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
 import {
-  Alert,
   AlertDataEditButton,
-  AlertDataExtra,
   NontoggleableAlertDataEditButton,
   ToggleableAlertDataEditButton,
 } from '../../types/AlertTypes';
@@ -40,7 +37,6 @@ import Utility from '../../utility/Utility';
 interface ScheduleClassProps {
   section: ScheduleSection;
   bookmarks: ScheduleBookmarks;
-  alert: Alert;
   sideCard?: SideCard;
   interactions?: ScheduleInteractions;
   sf: ScheduleModificationFunctions;
