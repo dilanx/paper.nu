@@ -1,8 +1,6 @@
 import {
-  ExclamationTriangleIcon,
   ArrowDownTrayIcon,
-  ClockIcon,
-  UserIcon,
+  ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline';
 import debug from 'debug';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
