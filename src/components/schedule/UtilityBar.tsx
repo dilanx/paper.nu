@@ -145,6 +145,7 @@ function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
             alert={alert}
             switches={switches}
             sf={undefined as any}
+            ff={undefined as any}
             imageMode={true}
           />
         </div>

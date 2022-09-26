@@ -1,8 +1,8 @@
 import { Color } from '../../../types/BaseTypes';
-import { SideCardDataItem } from '../../../types/SideCardTypes';
+import { SideCardItemData } from '../../../types/SideCardTypes';
 
 interface SideCardItemProps {
-  data: SideCardDataItem;
+  data: SideCardItemData;
   color: Color;
 }
 

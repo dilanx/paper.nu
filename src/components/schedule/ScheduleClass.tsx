@@ -1,6 +1,5 @@
 import {
   AcademicCapIcon,
-  BookmarkIcon,
   BuildingLibraryIcon,
   ClockIcon,
   HashtagIcon,
@@ -10,27 +9,22 @@ import {
   TrashIcon,
   UserIcon,
 } from '@heroicons/react/24/outline';
-import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
-import {
-  AlertDataEditButton,
-  NontoggleableAlertDataEditButton,
-  ToggleableAlertDataEditButton,
-} from '../../types/AlertTypes';
 import { IconElement, UserOptions } from '../../types/BaseTypes';
 import { Course } from '../../types/PlanTypes';
 import {
   ScheduleBookmarks,
-  ScheduleCourse,
   ScheduleInteractions,
   ScheduleModificationFunctions,
   ScheduleSection,
 } from '../../types/ScheduleTypes';
+import { SearchModificationFunctions } from '../../types/SearchTypes';
 import {
+  AnySideCardButtonData,
   SideCard,
   SideCardData,
-  SideCardDataItem,
+  SideCardItemData,
 } from '../../types/SideCardTypes';
 import Utility from '../../utility/Utility';
 
@@ -40,6 +34,7 @@ interface ScheduleClassProps {
   sideCard?: SideCard;
   interactions?: ScheduleInteractions;
   sf: ScheduleModificationFunctions;
+  ff: SearchModificationFunctions;
   switches: UserOptions;
   imageMode?: boolean;
   split?: { i: number; l: number };
@@ -112,13 +107,49 @@ function openInfo(props: ScheduleClassProps) {
     'UNITS',
   ];
 
+  const sideCardButtons: AnySideCardButtonData[] = [
+    {
+      text: 'Show all sections',
+      onClick: () => props.ff.set(name, scheduleCourse?.course_id),
+    },
+    {
+      text: 'Remove section',
+      danger: true,
+      onClick: (close) => {
+        props.sf.removeSection(section);
+        close();
+      },
+    },
+  ];
+
+  if (scheduleCourse) {
+    sideCardButtons.splice(1, 0, {
+      toggle: true,
+      data: props.bookmarks,
+      key: scheduleCourse,
+      indexProperty: 'course_id',
+      enabled: {
+        text: 'Remove from My List',
+        onClick: () => {
+          props.sf.removeScheduleBookmark(scheduleCourse);
+        },
+      },
+      disabled: {
+        text: 'Add to My List',
+        onClick: () => {
+          props.sf.addScheduleBookmark(scheduleCourse);
+        },
+      },
+    });
+  }
+
   const sideCardData: SideCardData = {
     type: 'SECTION INFO',
     themeColor: PlanManager.getCourseColor(name),
     title: name,
     subtitle: section.title,
     message: course?.description ?? 'No course description available',
-    items: items.reduce<SideCardDataItem[]>((filtered, item) => {
+    items: items.reduce<SideCardItemData[]>((filtered, item) => {
       const [icon, value] = getDetails(item, section, course) ?? [];
       if (value) {
         filtered.push({
@@ -129,49 +160,8 @@ function openInfo(props: ScheduleClassProps) {
       }
       return filtered;
     }, []),
+    buttons: sideCardButtons,
   };
-
-  const editButtons: AlertDataEditButton[] = [];
-
-  if (scheduleCourse) {
-    const bookmarkToggle: ToggleableAlertDataEditButton<ScheduleCourse> = {
-      toggle: true,
-      data: props.bookmarks,
-      key: scheduleCourse,
-      indexProperty: 'course_id',
-      enabled: {
-        title: 'Remove from My List',
-        icon: <BookmarkIconSolid className="w-6 h-6" />,
-        color: 'indigo',
-        action: () => {
-          props.sf.removeScheduleBookmark(scheduleCourse);
-        },
-      },
-      disabled: {
-        title: 'Add to My List',
-        icon: <BookmarkIcon className="w-6 h-6" />,
-        color: 'indigo',
-        action: () => {
-          props.sf.addScheduleBookmark(scheduleCourse);
-        },
-      },
-    };
-    editButtons.push(bookmarkToggle);
-  }
-
-  const remove: NontoggleableAlertDataEditButton = {
-    toggle: false,
-    buttonData: {
-      title: 'Remove course',
-      icon: <TrashIcon className="w-6 h-6" />,
-      color: 'red',
-      action: () => {
-        props.sf.removeSection(section);
-      },
-      close: true,
-    },
-  };
-  editButtons.push(remove);
 
   props.sideCard(sideCardData);
 }

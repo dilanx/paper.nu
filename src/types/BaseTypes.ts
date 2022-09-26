@@ -10,6 +10,7 @@ import {
   ScheduleInteractions,
   ScheduleModificationFunctions,
 } from './ScheduleTypes';
+import { SearchDefaults, SearchModificationFunctions } from './SearchTypes';
 import { SideCardData } from './SideCardTypes';
 
 export interface AppState {
@@ -21,10 +22,12 @@ export interface AppState {
   f: PlanModificationFunctions;
   f2: PlanSpecialFunctions;
   sf: ScheduleModificationFunctions;
+  ff: SearchModificationFunctions;
   loadingLogin: boolean;
   unsavedChanges: boolean;
   originalDataString: string;
   scheduleInteractions: ScheduleInteractions;
+  searchDefaults?: SearchDefaults;
 }
 
 export interface ReadUserOptions {

@@ -6,13 +6,39 @@ export interface SideCardData {
   title: string;
   subtitle?: string;
   message?: string;
-  items?: SideCardDataItem[];
+  items?: SideCardItemData[];
+  buttons?: (SideCardButtonData | ToggleableSideCardButtonData)[];
 }
 
-export interface SideCardDataItem {
+export interface SideCardItemData {
   key: string;
   icon?: IconElement;
   value: string;
+}
+
+export interface SideCardButtonData {
+  text: string;
+  onClick: (close: () => void) => void;
+  danger?: boolean;
+}
+
+export interface ToggleableSideCardButtonData<T = any> {
+  toggle: true;
+  data: Set<T> | T[];
+  key: T;
+  indexProperty?: keyof T;
+  enabled: SideCardButtonData;
+  disabled: SideCardButtonData;
+}
+
+export type AnySideCardButtonData =
+  | SideCardButtonData
+  | ToggleableSideCardButtonData;
+
+export function sideCardButtonIsToggleable(
+  button: SideCardButtonData | ToggleableSideCardButtonData
+): button is ToggleableSideCardButtonData {
+  return (button as ToggleableSideCardButtonData).toggle === true;
 }
 
 export interface SideCard {

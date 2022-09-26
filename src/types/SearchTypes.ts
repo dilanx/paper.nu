@@ -47,8 +47,18 @@ export interface FilterDisplay {
 export type FilterDisplayMap = {
   [key in FilterBadgeName]?: FilterDisplay;
 };
+
 export interface SearchResultsElements {
   results?: JSX.Element[];
   placeholder?: JSX.Element[];
   shortcut?: SearchShortcut;
+}
+
+export interface SearchModificationFunctions {
+  set: (query: string, current: string | undefined) => void;
+}
+
+export interface SearchDefaults {
+  query?: string;
+  scheduleCurrent?: string;
 }

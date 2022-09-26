@@ -9,6 +9,7 @@ import {
   ScheduleModificationFunctions,
   ValidScheduleSection,
 } from '../../types/ScheduleTypes';
+import { SearchModificationFunctions } from '../../types/SearchTypes';
 import { SideCard } from '../../types/SideCardTypes';
 import Utility from '../../utility/Utility';
 import Day from './Day';
@@ -21,6 +22,7 @@ interface ScheduleProps {
   sideCard?: SideCard;
   interactions?: ScheduleInteractions;
   sf: ScheduleModificationFunctions;
+  ff: SearchModificationFunctions;
   switches: UserOptions;
   imageMode?: boolean;
 }
@@ -74,6 +76,7 @@ class Schedule extends React.Component<ScheduleProps> {
           sideCard={this.props.sideCard}
           interactions={this.props.interactions}
           sf={this.props.sf}
+          ff={this.props.ff}
           switches={this.props.switches}
           imageMode={imageMode}
           key={`day-${i}`}

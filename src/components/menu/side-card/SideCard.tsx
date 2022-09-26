@@ -2,6 +2,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import { UserOptions } from '../../../types/BaseTypes';
 import { SideCardData } from '../../../types/SideCardTypes';
+import SideCardButton from './SideCardButton';
 import SideCardItem from './SideCardItem';
 
 interface SideCardProps {
@@ -66,6 +67,17 @@ function SideCard({ data, switches, close }: SideCardProps) {
                 key={`side-card-item-${i}`}
                 data={item}
                 color={data.themeColor}
+              />
+            ))}
+          </div>
+        )}
+        {data.buttons && (
+          <div className="m-4 mt-8">
+            {data.buttons.map((button, i) => (
+              <SideCardButton
+                key={`side-card-button-${i}`}
+                data={button}
+                close={close}
               />
             ))}
           </div>

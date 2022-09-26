@@ -29,6 +29,7 @@ import {
 } from '../../types/ScheduleTypes';
 import {
   FilterOptions,
+  SearchDefaults,
   SearchFilter,
   SearchResultsElements,
   SearchShortcut,
@@ -52,6 +53,7 @@ interface SearchProps {
   sf: ScheduleModificationFunctions;
   scheduleInteractions: ScheduleInteractions;
   alert: Alert;
+  defaults?: SearchDefaults;
 }
 
 interface SearchState {
@@ -72,13 +74,14 @@ class Search extends React.Component<SearchProps, SearchState> {
     super(props);
 
     this.state = {
-      search: '',
+      search: props.defaults?.query ?? '',
       mode: SearchMode.NORMAL,
       filter: {
         get: {},
         set: (filter, returnToNormalMode = false) =>
           this.updateFilter(filter, returnToNormalMode),
       },
+      scheduleCurrent: props.defaults?.scheduleCurrent,
       forceDisplay: false,
     };
     this.searchFieldRef = React.createRef();

@@ -1,36 +1,35 @@
-import { useDrag } from 'react-dnd';
+import {
+  AcademicCapIcon,
+  BookmarkIcon,
+  BuildingLibraryIcon,
+  ListBulletIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
+import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import { motion } from 'framer-motion';
+import { useDrag } from 'react-dnd';
+import { removeBookmark } from '../../app/PlanModification';
+import PlanManager from '../../PlanManager';
 import {
-  Course,
-  CourseLocation,
-  BookmarksData,
-  PlanModificationFunctions,
-  CourseDragItem,
-  CourseDropResult,
-  DragCollectProps,
-} from '../../types/PlanTypes';
-import {
-  Alert,
   NontoggleableAlertDataEditButton,
   ToggleableAlertDataEditButton,
 } from '../../types/AlertTypes';
-import PlanManager from '../../PlanManager';
-import Utility from '../../utility/Utility';
-import {
-  TrashIcon,
-  DocumentIcon,
-  BookmarkIcon,
-  ListBulletIcon,
-  BuildingLibraryIcon,
-  AcademicCapIcon,
-} from '@heroicons/react/24/outline';
-import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import { IconElement, UserOptions } from '../../types/BaseTypes';
+import {
+  BookmarksData,
+  Course,
+  CourseDragItem,
+  CourseDropResult,
+  CourseLocation,
+  DragCollectProps,
+  PlanModificationFunctions,
+} from '../../types/PlanTypes';
 import {
   SideCard,
   SideCardData,
-  SideCardDataItem,
+  SideCardItemData,
 } from '../../types/SideCardTypes';
+import Utility from '../../utility/Utility';
 
 interface ClassProps {
   course: Course;
@@ -61,7 +60,12 @@ function getDetails(
 }
 
 function openInfo(props: ClassProps) {
-  const course = props.course;
+  const {
+    course,
+    location,
+    bookmarks,
+    f: { removeCourse, addBookmark, removeBookmark },
+  } = props;
   const placeholder = course.placeholder;
 
   const items = props.switches.get.course_info_details?.split(',') ?? [
@@ -78,7 +82,7 @@ function openInfo(props: ClassProps) {
     message: placeholder
       ? `If you aren't sure which course to take to fulfill a certain requirement, you can use a placeholder! Search using 'placeholder' or by requirement category to find placeholders.`
       : course.description,
-    items: items.reduce<SideCardDataItem[]>((filtered, item) => {
+    items: items.reduce<SideCardItemData[]>((filtered, item) => {
       const [icon, value] = getDetails(item, course) ?? [];
       if (value) {
         filtered.push({
@@ -89,48 +93,33 @@ function openInfo(props: ClassProps) {
       }
       return filtered;
     }, []),
-  };
-
-  const bookmarks = props.bookmarks;
-  const {
-    removeCourse,
-    addBookmark: addFavorite,
-    removeBookmark: removeFavorite,
-  } = props.f;
-
-  const bookmarkToggle: ToggleableAlertDataEditButton<Course> = {
-    toggle: true,
-    data: bookmarks.noCredit,
-    key: course,
-    enabled: {
-      title: 'Remove from My List',
-      icon: <BookmarkIconSolid className="w-6 h-6" />,
-      color: 'indigo',
-      action: () => {
-        removeFavorite(course, false);
+    buttons: [
+      {
+        toggle: true,
+        data: bookmarks.noCredit,
+        key: course,
+        enabled: {
+          text: 'Remove from My List',
+          onClick: () => {
+            removeBookmark(course, false);
+          },
+        },
+        disabled: {
+          text: 'Add to My List',
+          onClick: () => {
+            addBookmark(course, false);
+          },
+        },
       },
-    },
-    disabled: {
-      title: 'Add to My List',
-      icon: <BookmarkIcon className="w-6 h-6" />,
-      color: 'indigo',
-      action: () => {
-        addFavorite(course, false);
+      {
+        text: 'Remove course',
+        danger: true,
+        onClick: (close) => {
+          removeCourse(course, location);
+          close();
+        },
       },
-    },
-  };
-
-  const remove: NontoggleableAlertDataEditButton = {
-    toggle: false,
-    buttonData: {
-      title: 'Remove course',
-      icon: <TrashIcon className="w-6 h-6" />,
-      color: 'red',
-      action: () => {
-        removeCourse(course, props.location);
-      },
-      close: true,
-    },
+    ],
   };
 
   props.sideCard(sideCardData);

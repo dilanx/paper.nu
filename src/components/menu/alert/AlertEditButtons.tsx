@@ -27,7 +27,7 @@ export const getAlertEditButtons = (
             (value) => value[indexProperty] === key[indexProperty]
           );
         } else {
-          data.includes(key);
+          enabled = data.includes(key);
         }
       }
 

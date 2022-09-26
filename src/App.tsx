@@ -58,6 +58,7 @@ import {
   ScheduleInteractions,
   ScheduleModificationFunctions,
 } from './types/ScheduleTypes';
+import { SearchModificationFunctions } from './types/SearchTypes';
 import { SideCardData } from './types/SideCardTypes';
 import { Mode } from './utility/Constants';
 import PlanError from './utility/PlanError';
@@ -129,6 +130,17 @@ class App extends React.Component<{}, AppState> {
       removeScheduleBookmark: (course) => removeScheduleBookmark(app, course),
     };
 
+    const ff: SearchModificationFunctions = {
+      set: (query, current) => {
+        this.setState({
+          searchDefaults: {
+            query,
+            scheduleCurrent: current,
+          },
+        });
+      },
+    };
+
     if (defaultSwitches.get.dark) {
       document.body.style.backgroundColor = Utility.BACKGROUND_DARK;
       document
@@ -151,6 +163,7 @@ class App extends React.Component<{}, AppState> {
       f,
       f2,
       sf,
+      ff,
       loadingLogin: false,
       unsavedChanges: false,
       originalDataString: '',
@@ -447,6 +460,8 @@ class App extends React.Component<{}, AppState> {
                   alert={(alertData) => {
                     this.showAlert(alertData);
                   }}
+                  defaults={this.state.searchDefaults}
+                  key={`search-` + this.state.searchDefaults?.query}
                 />
                 {tab === 'My List' && (
                   <Bookmarks
@@ -525,6 +540,7 @@ class App extends React.Component<{}, AppState> {
                       }}
                       interactions={this.state.scheduleInteractions}
                       sf={this.state.sf}
+                      ff={this.state.ff}
                       switches={switches}
                       key="schedule"
                     />
