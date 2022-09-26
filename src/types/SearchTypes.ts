@@ -61,4 +61,5 @@ export interface SearchModificationFunctions {
 export interface SearchDefaults {
   query?: string;
   scheduleCurrent?: string;
+  updated?: boolean;
 }

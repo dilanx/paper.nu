@@ -136,6 +136,7 @@ class App extends React.Component<{}, AppState> {
           searchDefaults: {
             query,
             scheduleCurrent: current,
+            updated: !this.state.searchDefaults?.updated,
           },
         });
       },
@@ -461,7 +462,6 @@ class App extends React.Component<{}, AppState> {
                     this.showAlert(alertData);
                   }}
                   defaults={this.state.searchDefaults}
-                  key={`search-` + this.state.searchDefaults?.query}
                 />
                 {tab === 'My List' && (
                   <Bookmarks

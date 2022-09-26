@@ -286,6 +286,15 @@ class Search extends React.Component<SearchProps, SearchState> {
     };
   }
 
+  componentDidUpdate(prevProps: Readonly<SearchProps>) {
+    if (prevProps.defaults?.updated !== this.props.defaults?.updated) {
+      this.setState({
+        search: this.props.defaults?.query ?? '',
+        scheduleCurrent: this.props.defaults?.scheduleCurrent,
+      });
+    }
+  }
+
   render() {
     const search = this.state.search;
     const appMode = this.props.switches.get.mode as Mode;
