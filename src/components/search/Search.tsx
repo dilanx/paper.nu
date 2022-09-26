@@ -361,7 +361,7 @@ class Search extends React.Component<SearchProps, SearchState> {
               {Object.keys(filter.get).length > 0 && (
                 <SearchFilterDisplay filter={filter} />
               )}
-              {queryEmpty && (
+              {queryEmpty && appMode === Mode.SCHEDULE && (
                 <div className="flex justify-center gap-2 m-4">
                   <SearchButton
                     active={
