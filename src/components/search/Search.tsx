@@ -496,8 +496,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                 MY LIST
               </p>
               <button
-                className="block mx-auto bg-indigo-500 text-white font-medium w-4/5 p-0.5 my-2 opacity-100 hover:opacity-60
-                            transition-all duration-150 rounded-md shadow-sm"
+                className="block mx-auto bg-indigo-500 text-white font-medium w-4/5 p-0.5 my-2 opacity-100 hover:opacity-60 rounded-md shadow-sm"
                 onClick={() => {
                   if (!current) return;
                   if (bookmarks.noCredit.has(current)) {
@@ -512,8 +511,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                   : 'Add to bookmarks'}
               </button>
               <button
-                className="block mx-auto bg-indigo-800 dark:bg-indigo-400 text-white font-medium w-4/5 p-0.5 my-2 opacity-100 hover:opacity-60
-                            transition-all duration-150 rounded-md shadow-sm"
+                className="block mx-auto bg-indigo-800 dark:bg-indigo-400 text-white font-medium w-4/5 p-0.5 my-2 opacity-100 hover:opacity-60 rounded-md shadow-sm"
                 onClick={() => {
                   if (!current) return;
                   if (bookmarks.forCredit.has(current)) {
@@ -534,7 +532,7 @@ class Search extends React.Component<SearchProps, SearchState> {
         {current && (
           <button
             className="block mx-auto my-8 bg-gray-500 text-white font-medium
-                        w-4/5 p-2 opacity-100 hover:opacity-60 transition-all duration-150 rounded-md shadow-sm"
+                        w-4/5 p-2 opacity-100 hover:opacity-60 rounded-md shadow-sm"
             onClick={() => {
               this.setState({ current: undefined });
             }}

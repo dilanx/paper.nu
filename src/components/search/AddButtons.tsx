@@ -12,7 +12,7 @@ function AddButton(props: AddButtonProps) {
   return (
     <button
       className={`text-center bg-${props.color}-400 text-white font-medium p-2 block
-        mx-auto w-2/3 rounded-md opacity-100 hover:opacity-60 shadow-sm transition-all duration-150 my-2`}
+        mx-auto w-2/3 rounded-md opacity-100 hover:opacity-60 shadow-sm my-2`}
       onClick={() => {
         props.action();
       }}

@@ -256,8 +256,7 @@ export default function Alert(props: AlertProps) {
                         bg-${data.confirmButtonColor}-500
                         opacity-100 hover:bg-${data.confirmButtonColor}-600 active:bg-${data.confirmButtonColor}-700
                         disabled:opacity-30 disabled:cursor-not-allowed
-                        text-base font-medium text-white outline-none sm:ml-3 sm:w-auto sm:text-sm 
-                        transition-all duration-150`}
+                        text-base font-medium text-white outline-none sm:ml-3 sm:w-auto sm:text-sm`}
                       disabled={badInput}
                       onClick={() => {
                         if (data.form) {

@@ -16,7 +16,7 @@ function BrowseButton({ symbol, name, action, color }: BrowseButtonProps) {
     <button
       className={`w-full border-4 border-${primary}-200 dark:border-${primary}-500 bg-${primary}-100 dark:bg-gray-800
                 rounded-lg px-4 py-2 text-left hover:border-${secondary}-400 dark:hover:border-${secondary}-300
-                transition-all duration-150 active:bg-green-50 active:border-green-300 dark:active:border-green-200
+                active:bg-green-50 active:border-green-300 dark:active:border-green-200
                 text-gray-600 dark:text-gray-200`}
       onClick={() => action()}
     >

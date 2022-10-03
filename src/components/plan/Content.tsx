@@ -68,7 +68,7 @@ class Content extends React.Component<ContentProps> {
           {content.courses.length < 10 && (
             <button
               className="block px-5 py-1 bg-gray-200 text-gray-400 hover:bg-gray-300 hover:text-gray-500
-                            dark:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-300 transition-all duration-150 rounded-lg shadow-sm"
+                            dark:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-300 rounded-lg shadow-sm"
               onClick={() => {
                 this.props.alert({
                   title: 'Add a year?',

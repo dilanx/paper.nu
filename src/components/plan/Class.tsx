@@ -1,19 +1,12 @@
 import {
   AcademicCapIcon,
-  BookmarkIcon,
   BuildingLibraryIcon,
   ListBulletIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import { motion } from 'framer-motion';
 import { useDrag } from 'react-dnd';
-import { removeBookmark } from '../../app/PlanModification';
 import PlanManager from '../../PlanManager';
-import {
-  NontoggleableAlertDataEditButton,
-  ToggleableAlertDataEditButton,
-} from '../../types/AlertTypes';
 import { IconElement, UserOptions } from '../../types/BaseTypes';
 import {
   BookmarksData,

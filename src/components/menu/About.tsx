@@ -7,7 +7,7 @@ const aboutMenu = (version: string): AlertData => ({
     <p className="text-md font-light text-gray-500 dark:text-gray-400">
       version {version} by{' '}
       <a
-        className="text-purple-500 dark:text-purple-300 opacity-100 hover:opacity-60 transition-all duration-150"
+        className="text-purple-500 dark:text-purple-300 opacity-100 hover:opacity-60"
         href="https://www.dilanxd.com"
         target="_blank"
         rel="noreferrer"

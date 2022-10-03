@@ -12,7 +12,7 @@ function UtilityBarButton(props: UtilityBarButtonProps) {
   const color = props.color;
   return (
     <button
-      className={`hover:text-${color}-500 transition-all duration-150 relative group`}
+      className={`hover:text-${color}-500 relative group`}
       onClick={() => props.action()}
     >
       <props.icon className="w-6 h-6" />

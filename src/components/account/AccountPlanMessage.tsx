@@ -22,7 +22,7 @@ function AccountPlanMessage(props: AccountPlanMessageProps) {
       </p>
       {props.button && (
         <button
-          className="m-2 bg-rose-500 text-white rounded-lg p-2 shadow-lg hover:opacity-75 active:opacity-60 transition-opacity duration-150"
+          className="m-2 bg-rose-500 text-white rounded-lg p-2 shadow-lg hover:opacity-75 active:opacity-60"
           onClick={() => {
             props.button?.action();
           }}

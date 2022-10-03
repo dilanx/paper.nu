@@ -33,8 +33,7 @@ export const getAlertOptions = (
           {!singleAction &&
             (enabled ? (
               <button
-                className="block mx-auto bg-emerald-400 text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
-                            m-1 p-2 w-full rounded-md shadow-sm"
+                className="block mx-auto bg-emerald-400 text-white text-sm font-medium opacity-100 hover:opacity-60 m-1 p-2 w-full rounded-md shadow-sm"
                 onClick={() => {
                   switches.set(option.switch!, false, option.saveToStorage);
                   if (option.bonusAction) {
@@ -46,8 +45,7 @@ export const getAlertOptions = (
               </button>
             ) : (
               <button
-                className="block mx-auto bg-red-400 text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
-                            m-1 p-2 w-full rounded-md shadow-sm"
+                className="block mx-auto bg-red-400 text-white text-sm font-medium opacity-100 hover:opacity-60 m-1 p-2 w-full rounded-md shadow-sm"
                 onClick={() => {
                   switches.set(option.switch!, true, option.saveToStorage);
                   if (option.bonusAction) {
@@ -64,8 +62,8 @@ export const getAlertOptions = (
                 option.confirmation && confirmation[option.confirmation]
                   ? 'bg-red-500 dark:bg-red-500'
                   : 'bg-gray-600 dark:bg-gray-500'
-              } text-white text-sm font-medium opacity-100 hover:opacity-60 transition-all duration-150
-                            m-1 p-2 w-full rounded-md shadow-md'`}
+              } text-white text-sm font-medium opacity-100 hover:opacity-60
+                m-1 p-2 w-full rounded-md shadow-md'`}
               onClick={() => {
                 if (option.confirmation) {
                   if (!confirmation[option.confirmation]) {

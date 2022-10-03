@@ -338,7 +338,7 @@ class AccountPlans extends React.Component<
             {items.length < (isSchedule ? 10 : 5) && (
               <button
                 className="block mx-auto my-2 px-8 py-1 bg-rose-300 text-white hover:bg-rose-400
-                                dark:bg-rose-600 dark:hover:bg-rose-500 transition-all duration-150 rounded-lg shadow-sm"
+                                dark:bg-rose-600 dark:hover:bg-rose-500 rounded-lg shadow-sm"
                 onClick={() => {
                   this.create(isSchedule);
                 }}
@@ -348,7 +348,7 @@ class AccountPlans extends React.Component<
             )}
             <button
               className="block mx-auto my-2 px-8 py-1 bg-gray-200 text-gray-400 hover:bg-gray-300 hover:text-gray-500
-                            dark:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-300 transition-all duration-150 rounded-lg shadow-sm"
+                            dark:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-300 rounded-lg shadow-sm"
               onClick={() => {
                 this.logOut();
               }}

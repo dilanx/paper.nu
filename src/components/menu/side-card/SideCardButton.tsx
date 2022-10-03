@@ -41,7 +41,7 @@ function SideCardButton({ data, close }: SideCardButtonProps) {
             active:bg-red-500 active:text-gray-100 dark:active:bg-red-600 dark:active:text-gray-100`
           : `text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 active:bg-gray-300 dark:active:bg-gray-500`
       }
-        rounded-lg shadow-sm transition-all duration-150`}
+        rounded-lg shadow-sm`}
       onClick={() => info.onClick(close)}
     >
       {info.text}

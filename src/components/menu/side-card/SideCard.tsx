@@ -38,7 +38,7 @@ function SideCard({ data, switches, close }: SideCardProps) {
           </p>
           <div>
             <button
-              className="text-gray-600 dark:text-gray-500 flex items-center hover:text-red-400 dark:hover:text-red-400 active:text-red-500 dark:active:text-red-300 transition-colors duration-150"
+              className="text-gray-600 dark:text-gray-500 flex items-center hover:text-red-400 dark:hover:text-red-400 active:text-red-500 dark:active:text-red-300"
               onClick={() => close()}
             >
               <XMarkIcon className="w-7 h-7" />
