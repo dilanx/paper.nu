@@ -325,7 +325,7 @@ class Search extends React.Component<SearchProps, SearchState> {
             <div className="sticky top-0 p-2 mb-2 bg-white dark:bg-gray-800 z-10 rounded-lg">
               <div className="block mt-4 mb-2 mx-auto w-11/12 relative">
                 <input
-                  className="w-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 shadow-md
+                  className="w-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 shadow-sm
                     rounded-lg outline-none hover:border-gray-500 focus:border-black dark:hover:border-gray-400 dark:focus:border-white text-lg p-2 px-4
                     transition-all duration-150 text-black dark:text-white"
                   ref={this.searchFieldRef}
