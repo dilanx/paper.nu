@@ -751,10 +751,8 @@ class App extends React.Component<{}, AppState> {
                                 minWidth: '12rem',
                                 fontSize: '0.875rem',
                                 fontWeight: '500',
-                                backgroundColor: darkMode
-                                    ? '#262626'
-                                    : undefined,
-                                color: darkMode ? '#ffffff' : undefined,
+                                backgroundColor: true ? '#262626' : undefined,
+                                color: true ? '#ffffff' : undefined,
                             },
                         }}
                     />
@@ -764,7 +762,7 @@ class App extends React.Component<{}, AppState> {
                         switches.get.reduced_motion ? 'always' : 'never'
                     }
                 >
-                    <div className={`${darkMode ? 'dark' : ''} relative`}>
+                    <div className={`dark relative`}>
                         {this.state.alertData && (
                             <Alert
                                 data={this.state.alertData}
@@ -781,7 +779,7 @@ class App extends React.Component<{}, AppState> {
                             />
                         )}
 
-                        <div className="bg-white dark:bg-gray-800 grid grid-cols-1 lg:grid-cols-8">
+                        <div className="bg-white dark:bg-black grid grid-cols-1 lg:grid-cols-8">
                             <div className="col-span-2 px-4 h-192 md:h-screen flex flex-col">
                                 <Info />
                                 <Search

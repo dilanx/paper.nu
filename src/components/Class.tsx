@@ -172,7 +172,7 @@ function Class(props: ClassProps) {
         <motion.div variants={variants}>
             <div
                 ref={drag}
-                className={`p-2 rounded-lg bg-opacity-60 bg-${color}-100 dark:bg-gray-800
+                className={`p-2 rounded-lg bg-opacity-60 bg-${color}-100 dark:bg-black
             border-2 border-${color}-300 border-opacity-60 overflow-visible w-full text-left compact:px-2 compact:py-05
             hover:shadow-md transition ease-in-out duration-300 transform hover:-translate-y-1 group ${
                 isDragging ? 'cursor-grab' : 'cursor-pointer'

@@ -87,7 +87,7 @@ function BookmarksList(props: BookmarksListProps) {
                     ${
                         isOver
                             ? 'border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50'
-                            : `border-solid bg-gray-50 dark:bg-gray-800
+                            : `border-solid bg-gray-50 dark:bg-black
                         ${
                             props.credit
                                 ? 'border-indigo-800 dark:border-indigo-400'

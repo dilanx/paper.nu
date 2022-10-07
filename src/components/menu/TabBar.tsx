@@ -58,7 +58,7 @@ export function TabBarButton(props: TabBarButtonProps) {
             className={`px-2 py-1 ${
                 props.name === props.selected
                     ? `bg-${color}-400 dark:bg-${color}-500 text-white`
-                    : `bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-300
+                    : `bg-white dark:bg-black text-gray-500 dark:text-gray-400
                     hover:bg-${color}-100 hover:text-${color}-600 dark:hover:text-${color}-400
                     transition-all duration-150 ${
                         props.name === 'Loading' ? 'cursor-not-allowed' : ''
