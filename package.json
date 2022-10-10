@@ -1,6 +1,6 @@
 {
   "name": "plan-northwestern",
-  "version": "1.2.3-special",
+  "version": "1.2.3",
   "private": true,
   "homepage": "https://www.plan-nu.com",
   "dependencies": {

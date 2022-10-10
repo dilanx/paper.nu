@@ -79,11 +79,11 @@ class Year extends React.Component<YearProps, YearState> {
         return (
             <motion.div initial="hidden" animate="visible" variants={variants}>
                 <div
-                    className="relative p-4 border-4 border-gray-200 dark:border-gray-900 rounded-lg m-5 shadow-sm bg-white dark:bg-black
+                    className="relative p-4 border-4 border-gray-200 dark:border-gray-700 rounded-lg m-5 shadow-sm bg-white dark:bg-gray-800
                     compact:border-0 compact:shadow-none compact:my-0 compact:py-2 transition-all duration-150"
                 >
                     <p
-                        className={`text-center text-2xl text-gray-300 font-bold compact:text-sm compact:text-black dark:text-gray-700 ${
+                        className={`text-center text-2xl text-gray-300 font-bold compact:text-sm compact:text-black dark:text-gray-500 ${
                             this.state.hidden ? '' : 'pb-2'
                         }`}
                     >
@@ -100,7 +100,7 @@ class Year extends React.Component<YearProps, YearState> {
                             {quarters}
                         </div>
                     )}
-                    <div className="absolute right-1 top-1 text-gray-300 dark:text-gray-700">
+                    <div className="absolute right-1 top-1 text-gray-300 dark:text-gray-500">
                         {quarters.length < 4 && (
                             <button
                                 className="inline-block p-1 bg-transparent hover:text-yellow-300 dark:hover:text-yellow-300 relative group"

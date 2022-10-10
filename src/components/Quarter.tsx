@@ -78,7 +78,7 @@ function Quarter(props: QuarterProps) {
         } else {
             classes = (
                 <div
-                    className="p-2 compact:px-2 compact:py-0.5 rounded-lg bg-white dark:bg-black border-2 border-dashed border-black dark:border-gray-500
+                    className="p-2 compact:px-2 compact:py-0.5 rounded-lg bg-white dark:bg-gray-900 border-2 border-dashed border-black dark:border-gray-500
                     overflow-hidden whitespace-nowrap opacity-40"
                 >
                     <p className="text-md font-bold text-black dark:text-white">
@@ -107,7 +107,7 @@ function Quarter(props: QuarterProps) {
             ${
                 isOver
                     ? `border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50`
-                    : `border-solid bg-${props.color}-50 dark:bg-black border-${props.color}-400`
+                    : `border-solid bg-${props.color}-50 dark:bg-gray-800 border-${props.color}-400`
             }
                 space-y-3 h-full shadow-lg compact:py-2 compact:shadow-sm`}
             >

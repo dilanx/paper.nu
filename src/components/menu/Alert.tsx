@@ -7,7 +7,6 @@ import {
 } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import { TabBar, TabBarButton } from './TabBar';
-import { EmojiHappyIcon } from '@heroicons/react/outline';
 
 interface AlertProps {
     data: AlertData;
@@ -239,7 +238,9 @@ export default function Alert(props: AlertProps) {
             <Dialog
                 as="div"
                 initialFocus={initialFocus}
-                className={`dark relative z-10`}
+                className={`${
+                    props.switches.get.dark ? 'dark' : ''
+                } relative z-10`}
                 onClose={() => close()}
             >
                 <Transition.Child
@@ -270,10 +271,9 @@ export default function Alert(props: AlertProps) {
                                     <div className="sm:flex sm:items-start">
                                         <div
                                             ref={initialFocus}
-                                            className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-black sm:mx-0 sm:h-10 sm:w-10`}
+                                            className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-${data.iconBackgroundColor}-100 sm:mx-0 sm:h-10 sm:w-10`}
                                         >
-                                            {/* {data.icon} */}
-                                            <EmojiHappyIcon className="h-6 w-6 text-white" />
+                                            {data.icon}
                                         </div>
                                         <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                                             <Dialog.Title

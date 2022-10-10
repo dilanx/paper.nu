@@ -107,7 +107,7 @@ let Utility = {
             case 2:
                 return 'THIRD YEAR';
             case 3:
-                return 'NINTH YEAR';
+                return 'FOURTH YEAR';
             case 4:
                 return 'FIFTH YEAR';
             case 5:
@@ -117,7 +117,7 @@ let Utility = {
             case 7:
                 return 'EIGHTH YEAR';
             case 8:
-                return 'FOURTH YEAR';
+                return 'NINTH YEAR';
             case 9:
                 return 'TENTH YEAR';
             default:

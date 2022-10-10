@@ -54,7 +54,7 @@ function SearchClass(props: SearchClassProps) {
             ref={drag}
             className={`p-2 rounded-lg bg-opacity-60 bg-${
                 props.color
-            }-100 dark:bg-black
+            }-100 dark:bg-gray-800
             rounded-lg border-2 border-${
                 props.color
             }-300 border-opacity-60 group

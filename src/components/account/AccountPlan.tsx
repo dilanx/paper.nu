@@ -28,7 +28,7 @@ function AccountPlan(props: AccountPlanProps) {
                     props.active
                         ? 'border-emerald-400 bg-emerald-50'
                         : 'border-rose-400 bg-rose-50'
-                }  dark:bg-black w-full my-4 text-left px-4 py-8 rounded-lg text-black
+                }  dark:bg-gray-800 w-full my-4 text-left px-4 py-8 rounded-lg text-black
             hover:shadow-md transition ease-in-out duration-300 transform hover:-translate-y-1
             focus:shadow-inner focus:translate-y-0 group cursor-pointer`}
                 onClick={() => {

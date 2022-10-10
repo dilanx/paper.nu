@@ -48,10 +48,10 @@ class Content extends React.Component<ContentProps> {
         }
 
         return (
-            <div className="bg-white dark:bg-black">
+            <div className="bg-white dark:bg-gray-800">
                 {years}
                 <div className="flex m-5 justify-center gap-4">
-                    <div className="border-2 border-gray-200 rounded-lg p-1 w-48 dark:border-gray-800 shadow-sm">
+                    <div className="border-2 border-gray-200 rounded-lg p-1 w-48 dark:border-gray-600 shadow-sm">
                         <p className="text-center text-sm font-light text-gray-400 dark:text-gray-400">
                             <span className="font-medium">{units}</span> total{' '}
                             {unitString}
@@ -60,7 +60,7 @@ class Content extends React.Component<ContentProps> {
                     {content.courses.length < 10 && (
                         <button
                             className="block px-5 py-1 bg-gray-200 text-gray-400 hover:bg-gray-300 hover:text-gray-500
-                            dark:bg-gray-800 dark:hover:bg-gray-600 dark:hover:text-gray-300 transition-all duration-150 rounded-lg shadow-sm"
+                            dark:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-300 transition-all duration-150 rounded-lg shadow-sm"
                             onClick={() => {
                                 this.props.alert({
                                     title: 'Add a year?',

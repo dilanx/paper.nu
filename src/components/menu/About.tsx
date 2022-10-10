@@ -2,14 +2,22 @@ import { InformationCircleIcon } from '@heroicons/react/outline';
 import { AlertData } from '../../types/AlertTypes';
 
 const aboutMenu = (version: string): AlertData => ({
-    title: "It's that time of the year.",
+    title: 'Plan Northwestern',
     customSubtitle: (
         <p className="text-md font-light text-gray-500 dark:text-gray-400">
-            SPAC 9. Tonight. Be there.
+            version {version} by{' '}
+            <a
+                className="text-purple-500 dark:text-purple-300 opacity-100 hover:opacity-60 transition-all duration-150"
+                href="https://www.dilanxd.com"
+                target="_blank"
+                rel="noreferrer"
+            >
+                Dilan N
+            </a>
         </p>
     ),
     message:
-        'The normal version of Plan Northwestern will return by tomorrow, October 8.',
+        'An easy and organized way to plan out your classes at Northwestern. Data is all saved in the URL, so save the link to your plan to access it later or share with friends. You can also create an account and save your plans there.',
     confirmButton: 'View on GitHub',
     confirmButtonColor: 'purple',
     cancelButton: 'Close',
