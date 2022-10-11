@@ -5,6 +5,7 @@ export interface SideCardData {
   themeColor: Color;
   title: string;
   subtitle?: string;
+  alertMessage?: string;
   message?: string;
   items?: SideCardItemData[];
   buttons?: (SideCardButtonData | ToggleableSideCardButtonData)[];

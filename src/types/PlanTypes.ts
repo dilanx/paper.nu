@@ -2,6 +2,7 @@ import { Color } from './BaseTypes';
 
 export interface RawCourseData {
   courses: Course[];
+  legacy: Course[];
   majors: { [key: string]: { id: string; display: string; color: Color } };
   major_ids: { [key: string]: string };
   shortcuts: { [key: string]: string[] };
@@ -29,6 +30,7 @@ export interface Course {
   prereqs?: string;
   distros?: string;
   placeholder?: boolean;
+  legacy?: boolean;
 }
 
 export interface CourseLocation {

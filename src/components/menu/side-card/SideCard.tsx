@@ -45,6 +45,13 @@ function SideCard({ data, switches, close }: SideCardProps) {
             </button>
           </div>
         </div>
+        {data.alertMessage && (
+          <div className="my-4 p-2 border-2 border-red-500 dark:border-red-400 bg-red-100 dark:bg-gray-700 rounded-lg">
+            <p className="text-sm text-red-600 dark:text-red-300 font-medium text-center">
+              {data.alertMessage}
+            </p>
+          </div>
+        )}
         <p
           className={`text-2xl font-bold text-gray-800 dark:text-gray-50 text-center sm:text-left`}
         >

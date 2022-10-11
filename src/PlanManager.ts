@@ -292,6 +292,12 @@ const PlanManager = {
         return course;
       }
     }
+    for (let course of courseData.legacy) {
+      if (course.id === courseId) {
+        course.legacy = true;
+        return course;
+      }
+    }
   },
 
   getCourseColor: (courseId: string) => {
