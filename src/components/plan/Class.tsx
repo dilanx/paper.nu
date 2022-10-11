@@ -1,5 +1,6 @@
 import {
   AcademicCapIcon,
+  ArrowPathIcon,
   BuildingLibraryIcon,
   ListBulletIcon,
   TrashIcon,
@@ -49,6 +50,8 @@ function getDetails(
       ];
     case 'UNITS':
       return [AcademicCapIcon, course.units];
+    case 'REPEATABLE FOR CREDIT':
+      return [ArrowPathIcon, course.repeatable ? 'Yes' : 'No'];
   }
 }
 
@@ -65,6 +68,7 @@ function openInfo(props: ClassProps) {
     'PREREQUISITES',
     'DISTRIBUTION AREAS',
     'UNITS',
+    'REPEATABLE FOR CREDIT',
   ];
 
   const sideCardData: SideCardData = {
