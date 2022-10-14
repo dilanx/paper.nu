@@ -165,7 +165,6 @@ const ScheduleManager = {
     });
 
     let total = courseIdResults.length + courseNameResults.length;
-    dp('search: %s (%d results)', query, total);
     if (total === 0) return 'no_results';
 
     let limitExceeded = false;
