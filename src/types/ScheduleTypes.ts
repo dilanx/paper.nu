@@ -41,7 +41,6 @@ export interface ScheduleSectionInstructor {
 export interface ScheduleSection {
   section_id: string;
   instructors?: ScheduleSectionInstructor[];
-  mode: string | null;
   title: string;
   subject: string;
   number: string;
