@@ -251,7 +251,7 @@ class App extends React.Component<{}, AppState> {
   initialize(params: URLSearchParams | undefined, callback: () => void) {
     d('initializing');
     SaveDataManager.load(params, this.state.switches)
-      .then(({ mode, data, activeId, originalDataString, method }) => {
+      .then(({ mode, data, activeId, originalDataString, method, termId }) => {
         const modeStr = mode === Mode.PLAN ? 'plan' : 'schedule';
         if (data === 'malformed') {
           this.showAlert({
@@ -272,6 +272,12 @@ class App extends React.Component<{}, AppState> {
         );
         this.setState({ originalDataString, unsavedChanges: false });
         if (data === 'empty') {
+          this.setState({
+            schedule: {
+              termId,
+              ...this.state.schedule,
+            },
+          });
           return;
         }
 

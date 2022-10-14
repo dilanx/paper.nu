@@ -4,6 +4,7 @@ export interface Time {
 }
 
 export interface ScheduleData {
+  termId?: string;
   schedule: ScheduleDataMap;
   bookmarks: ScheduleBookmarks;
 }
@@ -28,9 +29,18 @@ export interface ScheduleCourse {
   hide_section_ids?: string[];
 }
 
+export interface ScheduleSectionInstructor {
+  name?: string;
+  phone?: string;
+  campus_address?: string;
+  office_hours?: string;
+  bio?: string;
+  url?: string;
+}
+
 export interface ScheduleSection {
   section_id: string;
-  instructors?: string[];
+  instructors?: ScheduleSectionInstructor[];
   mode: string | null;
   title: string;
   subject: string;
@@ -39,16 +49,10 @@ export interface ScheduleSection {
   meeting_days?: string;
   start_time?: Time;
   end_time?: Time;
-  room?: {
-    building_name?: string;
-  };
+  room?: string;
   start_date?: string;
   end_date?: string;
   component: string;
-  course_descriptions?: {
-    name: string;
-    desc: string;
-  }[];
   preview?: boolean;
 }
 
@@ -132,4 +136,10 @@ export interface ScheduleModificationFunctions {
   removeSection: (section: ScheduleSection) => void;
   addScheduleBookmark: (course: ScheduleCourse) => void;
   removeScheduleBookmark: (course: ScheduleCourse) => void;
+}
+
+export interface ScheduleDataCache {
+  termId: string;
+  updated: string;
+  data: ScheduleCourse[];
 }

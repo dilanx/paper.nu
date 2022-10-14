@@ -72,7 +72,7 @@ function getDetails(
     case 'INSTRUCTOR':
       return [UserIcon, section.instructors?.join(', ')];
     case 'LOCATION':
-      return [MapPinIcon, section.room?.building_name];
+      return [MapPinIcon, section.room];
     case 'PREREQUISITES':
       return [ListBulletIcon, course?.prereqs];
     case 'DISTRIBUTION AREAS':
@@ -177,7 +177,7 @@ function ScheduleClass(props: ScheduleClassProps) {
   const endDif = length / 60;
 
   const instructorLastNames = instructors
-    ?.map((i) => i.split(' ').pop())
+    ?.map((i) => i.name?.split(' ').pop())
     .join(', ');
 
   let left = '0%';

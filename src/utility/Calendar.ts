@@ -72,8 +72,8 @@ export function exportScheduleAsICS(validSections: ValidScheduleDataMap) {
           : ''
       }`,
       description: section.title,
-      location: section.room?.building_name,
-      geo: ScheduleManager.getLocation(section.room?.building_name),
+      location: section.room,
+      geo: ScheduleManager.getLocation(section.room),
       recurrenceRule: getRecurrenceRule(section),
     };
     events.push(event);

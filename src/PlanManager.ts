@@ -1,5 +1,5 @@
 import debug from 'debug';
-import JSONCourseData from './data/plan_data.json';
+import { getPlanData } from './DataManager';
 import { UserOptions } from './types/BaseTypes';
 import { Course, PlanData, RawCourseData } from './types/PlanTypes';
 import {
@@ -10,10 +10,24 @@ import {
 var ds = debug('plan-manager:ser');
 var dp = debug('plan-manager:op');
 
-const courseData = JSONCourseData as RawCourseData;
+let courseData: RawCourseData | undefined = undefined;
 const SEARCH_RESULT_LIMIT = 100;
 
-function loadData(params: URLSearchParams): PlanData | 'malformed' | 'empty' {
+async function loadCourseData() {
+  if (!courseData) {
+    courseData = await getPlanData();
+  }
+}
+
+async function loadData(
+  params: URLSearchParams
+): Promise<PlanData | 'malformed' | 'empty'> {
+  loadCourseData();
+
+  if (!courseData) {
+    return 'malformed';
+  }
+
   let allCourseData: Course[][][] = [
     [[], [], []],
     [[], [], []],
@@ -109,6 +123,11 @@ function loadData(params: URLSearchParams): PlanData | 'malformed' | 'empty' {
 function saveData({ courses, bookmarks }: PlanData) {
   let params = new URLSearchParams();
 
+  if (!courseData) {
+    ds('course data is not loaded');
+    return params;
+  }
+
   for (let y = 0; y < courses.length; y++) {
     for (let q = 0; q < courses[y].length; q++) {
       let classes = courses[y][q]
@@ -116,7 +135,7 @@ function saveData({ courses, bookmarks }: PlanData) {
           let sp = course.id.split(' ');
           let subj = sp[0];
           let num = sp[1];
-          let subjId = courseData.majors[subj].id;
+          let subjId = courseData?.majors[subj].id;
           return subjId + '_' + num;
         })
         .join(',');
@@ -133,7 +152,7 @@ function saveData({ courses, bookmarks }: PlanData) {
       let sp = courseId.split(' ');
       let subj = sp[0];
       let num = sp[1];
-      let subjId = courseData.majors[subj].id;
+      let subjId = courseData?.majors[subj].id;
       return subjId + '_' + num;
     };
 
@@ -162,7 +181,8 @@ function countCourseUnitsInHundreds(courseList: Course[] | Set<Course>) {
 }
 
 const PlanManager = {
-  data: courseData,
+  isPlanDataLoaded: () => !!courseData,
+  loadPlanData: async () => await loadCourseData(),
 
   prepareQuery: (query: string) => {
     query = query.toLowerCase().replace(/-|_/g, ' ');
@@ -170,7 +190,7 @@ const PlanManager = {
 
     let firstWord = query.split(' ')[0];
     let shortcut: SearchShortcut | undefined;
-    if (courseData.shortcuts[firstWord]) {
+    if (courseData?.shortcuts[firstWord]) {
       let shortcuts = courseData.shortcuts[firstWord];
       let remainder = query.substring(firstWord.length + 1);
       terms = shortcuts.map(
@@ -198,6 +218,10 @@ const PlanManager = {
       if (term.length < 3) {
         return 'too_short';
       }
+    }
+
+    if (!courseData) {
+      return 'not_loaded';
     }
 
     let courseIdResults: Course[] = [];
@@ -287,6 +311,7 @@ const PlanManager = {
   },
 
   getCourse: (courseId: string) => {
+    if (!courseData) return;
     for (let course of courseData.courses) {
       if (course.id === courseId) {
         return course;
@@ -301,24 +326,25 @@ const PlanManager = {
   },
 
   getCourseColor: (courseId: string) => {
+    if (!courseData) return 'gray';
     let subj = courseId.split(' ')[0];
     return courseData.majors[subj].color;
   },
 
-  loadFromURL: (params: URLSearchParams) => {
-    return loadData(params);
+  loadFromURL: async (params: URLSearchParams) => {
+    return await loadData(params);
   },
 
-  loadFromStorage: () => {
+  loadFromStorage: async () => {
     let dataStr = localStorage.getItem('data');
     if (!dataStr) return 'empty';
     let params = new URLSearchParams(dataStr);
-    return loadData(params);
+    return await loadData(params);
   },
 
-  loadFromString: (dataStr?: string) => {
+  loadFromString: async (dataStr?: string) => {
     if (!dataStr) return 'empty';
-    return loadData(new URLSearchParams(dataStr));
+    return await loadData(new URLSearchParams(dataStr));
   },
 
   getDataString: (data: PlanData) => {

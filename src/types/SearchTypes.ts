@@ -11,7 +11,11 @@ export interface SearchShortcut {
   with: string;
 }
 
-export type SearchError = 'no_query' | 'too_short' | 'no_results';
+export type SearchError =
+  | 'no_query'
+  | 'too_short'
+  | 'no_results'
+  | 'not_loaded';
 
 export interface SearchFilter {
   get: FilterOptions;

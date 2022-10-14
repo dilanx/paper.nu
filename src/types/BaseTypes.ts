@@ -68,6 +68,7 @@ export interface LoadResponse<T> {
   activeId?: string;
   originalDataString: string;
   method: LoadMethods;
+  termId?: string;
 }
 
 export type Color =
@@ -103,3 +104,14 @@ export type StringMap = { [key: string]: string };
 export type AppType = React.Component<{}, AppState>;
 
 export type TextValidator = (value: string) => boolean;
+
+export interface DataMapInformation {
+  latest: string;
+  plan: string;
+  terms: {
+    [term: string]: {
+      name: string;
+      updated: string;
+    };
+  };
+}

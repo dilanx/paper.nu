@@ -226,6 +226,17 @@ class Search extends React.Component<SearchProps, SearchState> {
       };
     }
 
+    if (results === 'not_loaded') {
+      return {
+        placeholder: [
+          this.searchMessage(
+            'Data unavailable.',
+            'It looks like the course data failed to load. Try refreshing the page.'
+          ),
+        ],
+      };
+    }
+
     let courseList = [];
     if (appMode === Mode.PLAN) {
       for (let course of results.results as Course[]) {

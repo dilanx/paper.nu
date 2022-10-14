@@ -1,6 +1,6 @@
 import debug from 'debug';
-import JSONCourseData from './data/schedule_data.json';
 import JSONSchoolData from './data/school.json';
+import { getScheduleData } from './DataManager';
 import PlanManager from './PlanManager';
 import { UserOptions } from './types/BaseTypes';
 import {
@@ -18,14 +18,43 @@ import Utility from './utility/Utility';
 var ds = debug('schedule-manager:ser');
 var dp = debug('schedule-manager:op');
 
-const scheduleData = JSONCourseData as ScheduleCourse[];
+let term: string | undefined = undefined;
+let scheduleData: ScheduleCourse[] | undefined = undefined;
 const school = JSONSchoolData as RawSchoolData;
 const SEARCH_RESULT_LIMIT = 50;
 
-function loadData(
+async function loadData(
   params: URLSearchParams
-): ScheduleData | 'malformed' | 'empty' {
+): Promise<ScheduleData | 'malformed' | 'empty'> {
+  if (!PlanManager.isPlanDataLoaded()) {
+    await PlanManager.loadPlanData();
+  }
+  const termId = params.get('t');
+  if (!scheduleData) {
+    let res = await getScheduleData(termId ?? undefined);
+
+    if (res) {
+      term = res.termId;
+      scheduleData = res.data;
+    } else {
+      if (termId) {
+        res = await getScheduleData(termId);
+        term = res?.termId;
+        scheduleData = res?.data;
+      }
+      return 'malformed';
+    }
+  }
+
+  if (!termId) {
+    if (params.has('s') || params.has('sf')) {
+      return 'malformed';
+    }
+    return 'empty';
+  }
+
   let data: ScheduleData = {
+    termId: termId,
     schedule: {},
     bookmarks: [],
   };
@@ -73,6 +102,8 @@ function saveData(data: ScheduleData) {
   let schedule = data.schedule;
   let bookmarks = data.bookmarks;
 
+  params.set('t', data.termId ?? '');
+
   let s = [];
   for (let id in schedule) {
     s.push(id);
@@ -91,8 +122,6 @@ function saveData(data: ScheduleData) {
 }
 
 const ScheduleManager = {
-  data: scheduleData,
-
   search: (
     query: string,
     filter?: FilterOptions
@@ -115,7 +144,7 @@ const ScheduleManager = {
     let courseIdResults: ScheduleCourse[] = [];
     let courseNameResults: ScheduleCourse[] = [];
 
-    data.forEach((course) => {
+    data?.forEach((course) => {
       course.hide_section_ids = [];
       if (filterExists) {
         for (const section of course.sections) {
@@ -171,6 +200,7 @@ const ScheduleManager = {
   },
 
   getCourseById: (id: string): ScheduleCourse | undefined => {
+    if (!scheduleData) return;
     for (let course of scheduleData) {
       if (course.course_id === id) {
         return course;
@@ -190,7 +220,7 @@ const ScheduleManager = {
   },
 
   getCourseColor: (subject: string) => {
-    return PlanManager.data.majors[subject]?.color ?? 'gray';
+    return PlanManager.getCourseColor(subject);
   },
 
   getAllSchoolSymbols: () => {
@@ -265,7 +295,7 @@ const ScheduleManager = {
       if (
         !section.instructors ||
         !section.instructors.some((instructor) =>
-          instructor.toLowerCase().includes(filter.instructor!)
+          instructor.name?.toLowerCase().includes(filter.instructor!)
         )
       ) {
         return false;
@@ -274,8 +304,8 @@ const ScheduleManager = {
 
     if (filter.location) {
       if (
-        !section.room?.building_name ||
-        !section.room.building_name.toLowerCase().includes(filter.location)
+        !section.room ||
+        !section.room.toLowerCase().includes(filter.location)
       ) {
         return false;
       }
@@ -312,20 +342,20 @@ const ScheduleManager = {
     }
   },
 
-  loadFromURL: (params: URLSearchParams) => {
-    return loadData(params);
+  loadFromURL: async (params: URLSearchParams) => {
+    return await loadData(params);
   },
 
-  loadFromStorage: () => {
+  loadFromStorage: async () => {
     let dataStr = localStorage.getItem('schedule');
     if (!dataStr) return 'empty';
     let params = new URLSearchParams(dataStr);
-    return loadData(params);
+    return await loadData(params);
   },
 
-  loadFromString: (dataStr?: string) => {
+  loadFromString: async (dataStr?: string) => {
     if (!dataStr) return 'empty';
-    return loadData(new URLSearchParams(dataStr));
+    return await loadData(new URLSearchParams(dataStr));
   },
 
   getDataString: (data: ScheduleData) => {

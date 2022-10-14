@@ -81,11 +81,9 @@ function SearchScheduleSection({
               : 'no times'}
           </p>
           <p className="text-sm font-light">
-            {section.instructors?.join(', ')}
+            {section.instructors?.map((i) => i.name).join(', ')}
           </p>
-          <p className="text-sm font-light">
-            {section.room?.building_name ?? 'no location'}
-          </p>
+          <p className="text-sm font-light">{section.room ?? 'no location'}</p>
         </div>
       </button>
     </motion.div>

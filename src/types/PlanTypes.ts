@@ -3,9 +3,17 @@ import { Color } from './BaseTypes';
 export interface RawCourseData {
   courses: Course[];
   legacy: Course[];
-  majors: { [key: string]: { id: string; display: string; color: Color } };
+  majors: MajorData;
   major_ids: { [key: string]: string };
   shortcuts: { [key: string]: string[] };
+}
+
+export interface MajorData {
+  [key: string]: {
+    id: string;
+    display: string;
+    color: Color;
+  };
 }
 
 export interface PlanData {
@@ -24,9 +32,6 @@ export interface Course {
   units: string;
   repeatable: boolean;
   description: string;
-  career: string;
-  nu_id: string;
-  offered?: string;
   prereqs?: string;
   distros?: string;
   placeholder?: boolean;
@@ -71,4 +76,9 @@ export interface DragCollectProps {
 
 export interface DropCollectedProps {
   isOver: boolean;
+}
+
+export interface PlanDataCache {
+  updated: string;
+  data: RawCourseData;
 }

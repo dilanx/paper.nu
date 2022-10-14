@@ -43,21 +43,21 @@ function activate(
         return;
       }
 
-      let data = (isSchedule ? ScheduleManager : PlanManager).loadFromString(
-        item.content
-      );
+      (isSchedule ? ScheduleManager : PlanManager)
+        .loadFromString(item.content)
+        .then((data) => {
+          if (data === 'malformed') {
+            app.setState({
+              alertData: Utility.errorAlert(
+                `account_activate_${errText}`,
+                'Malformed Data'
+              ),
+            });
+            return;
+          }
 
-      if (data === 'malformed') {
-        app.setState({
-          alertData: Utility.errorAlert(
-            `account_activate_${errText}`,
-            'Malformed Data'
-          ),
+          callback(item, data);
         });
-        return;
-      }
-
-      callback(item, data);
     })
     .catch((error: PlanError) => {
       app.setState({

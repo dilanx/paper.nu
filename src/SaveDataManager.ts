@@ -1,4 +1,8 @@
+import debug from 'debug';
 import Account from './Account';
+import { getDataMapInformation } from './DataManager';
+import PlanManager from './PlanManager';
+import ScheduleManager from './ScheduleManager';
 import { AccountDataMap } from './types/AccountTypes';
 import {
   LoadMethods,
@@ -6,12 +10,9 @@ import {
   ReadUserOptions,
   UserOptions,
 } from './types/BaseTypes';
-import debug from 'debug';
-import ScheduleManager from './ScheduleManager';
-import { Mode } from './utility/Constants';
-import { ScheduleData } from './types/ScheduleTypes';
-import PlanManager from './PlanManager';
 import { PlanData } from './types/PlanTypes';
+import { ScheduleData } from './types/ScheduleTypes';
+import { Mode } from './utility/Constants';
 var d = debug('save-data-manager');
 
 const DEFAULT_SWITCHES: ReadUserOptions = {
@@ -50,7 +51,7 @@ let SaveDataManager = {
 
     if (params) {
       d('trying to load schedule URL data');
-      let scheduleData = ScheduleManager.loadFromURL(params);
+      let scheduleData = await ScheduleManager.loadFromURL(params);
       if (scheduleData !== 'empty') {
         if (scheduleData !== 'malformed') {
           d('schedule URL load successful');
@@ -79,7 +80,7 @@ let SaveDataManager = {
       }
 
       d('no schedule URL data to load, trying plan URL data instead');
-      let planData = PlanManager.loadFromURL(params);
+      let planData = await PlanManager.loadFromURL(params);
       if (planData !== 'empty') {
         if (planData !== 'malformed') {
           d('plan URL load successful');
@@ -118,7 +119,7 @@ let SaveDataManager = {
       if (accountPlans && storedPlanId) {
         if (storedPlanId in accountPlans) {
           let content = accountPlans[storedPlanId].content;
-          let data = PlanManager.loadFromString(content);
+          let data = await PlanManager.loadFromString(content);
           if (data !== 'empty') {
             if (data !== 'malformed') {
               d('account plan load successful: %s', storedPlanId);
@@ -140,7 +141,7 @@ let SaveDataManager = {
       }
 
       d('nothing to load from account, trying storage instead');
-      let data = PlanManager.loadFromStorage();
+      let data = await PlanManager.loadFromStorage();
       if (data !== 'empty') {
         if (data !== 'malformed') {
           PlanManager.save(data);
@@ -160,7 +161,7 @@ let SaveDataManager = {
       if (accountSchedules && storedScheduleId) {
         if (storedScheduleId in accountSchedules) {
           let content = accountSchedules[storedScheduleId].content;
-          let data = ScheduleManager.loadFromString(content);
+          let data = await ScheduleManager.loadFromString(content);
           if (data !== 'empty') {
             if (data !== 'malformed') {
               d('account scheedule load successful: %s', storedScheduleId);
@@ -182,7 +183,7 @@ let SaveDataManager = {
       }
 
       d('nothing to load from account, trying storage instead');
-      let data = ScheduleManager.loadFromStorage();
+      let data = await ScheduleManager.loadFromStorage();
       if (data !== 'empty') {
         if (data !== 'malformed') {
           ScheduleManager.save(data);
@@ -206,6 +207,7 @@ let SaveDataManager = {
       activeId,
       originalDataString,
       method,
+      termId: (await getDataMapInformation()).latest,
     };
   },
   loadSwitchesFromStorage: (
