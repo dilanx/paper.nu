@@ -18,7 +18,6 @@ import Utility from './utility/Utility';
 var ds = debug('schedule-manager:ser');
 var dp = debug('schedule-manager:op');
 
-let term: string | undefined = undefined;
 let scheduleData: ScheduleCourse[] | undefined = undefined;
 const school = JSONSchoolData as RawSchoolData;
 const SEARCH_RESULT_LIMIT = 50;
@@ -29,17 +28,15 @@ async function loadData(
   if (!PlanManager.isPlanDataLoaded()) {
     await PlanManager.loadPlanData();
   }
-  const termId = params.get('t');
+  let termId = params.get('t');
   if (!scheduleData) {
     let res = await getScheduleData(termId ?? undefined);
 
     if (res) {
-      term = res.termId;
       scheduleData = res.data;
     } else {
       if (termId) {
         res = await getScheduleData(termId);
-        term = res?.termId;
         scheduleData = res?.data;
       }
       return 'malformed';
