@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { Color, IconElement } from './BaseTypes';
 
 export interface SideCardData {
@@ -14,7 +15,7 @@ export interface SideCardData {
 export interface SideCardItemData {
   key: string;
   icon?: IconElement;
-  value: string;
+  value: ReactNode;
 }
 
 export interface SideCardButtonData {

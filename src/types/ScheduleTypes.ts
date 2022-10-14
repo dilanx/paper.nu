@@ -52,6 +52,8 @@ export interface ScheduleSection {
   start_date?: string;
   end_date?: string;
   component: string;
+  capacity?: string;
+  enrl_req?: string;
   preview?: boolean;
 }
 

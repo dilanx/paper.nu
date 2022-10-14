@@ -2,15 +2,19 @@ import {
   AcademicCapIcon,
   BuildingLibraryIcon,
   ClockIcon,
+  DocumentCheckIcon,
   HashtagIcon,
   ListBulletIcon,
   MapPinIcon,
   PuzzlePieceIcon,
   TrashIcon,
   UserIcon,
+  UsersIcon,
 } from '@heroicons/react/24/outline';
+import { ReactNode } from 'react';
 import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
+import { Alert } from '../../types/AlertTypes';
 import { IconElement, UserOptions } from '../../types/BaseTypes';
 import { Course } from '../../types/PlanTypes';
 import {
@@ -31,6 +35,7 @@ import Utility from '../../utility/Utility';
 interface ScheduleClassProps {
   section: ScheduleSection;
   bookmarks: ScheduleBookmarks;
+  alert?: Alert;
   sideCard?: SideCard;
   interactions?: ScheduleInteractions;
   sf: ScheduleModificationFunctions;
@@ -43,8 +48,9 @@ interface ScheduleClassProps {
 function getDetails(
   detail: string,
   section: ScheduleSection,
-  course?: Course
-): [IconElement, string | undefined] | undefined {
+  course?: Course,
+  alert?: Alert
+): [IconElement, ReactNode] | undefined {
   switch (detail) {
     case 'SECTION NUMBER':
       return [HashtagIcon, section.section];
@@ -70,7 +76,50 @@ function getDetails(
         }`,
       ];
     case 'INSTRUCTOR':
-      return [UserIcon, section.instructors?.join(', ')];
+      return [
+        UserIcon,
+        section.instructors?.map((instructor, i) => (
+          <button
+            className="my-1 underline underline-offset-4
+              hover:text-rose-500 dark:hover:text-rose-300
+              active:text-rose-600 dark:active:text-rose-200"
+            key={`section-info-instructor-${i}`}
+            onClick={() => {
+              alert?.({
+                icon: UserIcon,
+                title: instructor.name ?? 'No name',
+                subtitle: `${section.subject} ${section.number} (section ${section.section})`,
+                iconColor: 'rose',
+                cancelButton: 'Close',
+                extras: [
+                  {
+                    title: 'Phone Number',
+                    content: instructor.phone ?? 'Not provided',
+                  },
+                  {
+                    title: 'Campus Address',
+                    content: instructor.campus_address ?? 'Not provided',
+                  },
+                  {
+                    title: 'Office Hours',
+                    content: instructor.office_hours ?? 'Not provided',
+                  },
+                  {
+                    title: 'Bio',
+                    content: instructor.bio ?? 'Not provided',
+                  },
+                  {
+                    title: 'URL',
+                    content: instructor.url ?? 'Not provided',
+                  },
+                ],
+              });
+            }}
+          >
+            {instructor.name}
+          </button>
+        )),
+      ];
     case 'LOCATION':
       return [MapPinIcon, section.room];
     case 'PREREQUISITES':
@@ -84,6 +133,10 @@ function getDetails(
       ];
     case 'UNITS':
       return [AcademicCapIcon, course?.units];
+    case 'CAPACITY':
+      return [UsersIcon, section.capacity];
+    case 'ENROLLMENT REQUIREMENTS':
+      return [DocumentCheckIcon, section.enrl_req];
   }
 }
 
@@ -105,6 +158,8 @@ function openInfo(props: ScheduleClassProps) {
     'PREREQUISITES',
     'DISTRIBUTION AREAS',
     'UNITS',
+    'CAPACITY',
+    'ENROLLMENT REQUIREMENTS',
   ];
 
   const sideCardButtons: AnySideCardButtonData[] = [
@@ -150,7 +205,8 @@ function openInfo(props: ScheduleClassProps) {
     subtitle: section.title,
     message: course?.description ?? 'No course description available',
     items: items.reduce<SideCardItemData[]>((filtered, item) => {
-      const [icon, value] = getDetails(item, section, course) ?? [];
+      const [icon, value] =
+        getDetails(item, section, course, props.alert) ?? [];
       if (value) {
         filtered.push({
           key: item,

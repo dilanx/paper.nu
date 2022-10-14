@@ -73,6 +73,7 @@ class Schedule extends React.Component<ScheduleProps> {
           end={end}
           sections={sections}
           bookmarks={this.props.schedule.bookmarks}
+          alert={this.props.alert}
           sideCard={this.props.sideCard}
           interactions={this.props.interactions}
           sf={this.props.sf}
