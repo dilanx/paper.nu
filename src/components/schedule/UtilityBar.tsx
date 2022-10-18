@@ -1,11 +1,10 @@
-import { CalendarIcon, CameraIcon, PlusIcon } from '@heroicons/react/24/solid';
+import { CalendarIcon, CameraIcon } from '@heroicons/react/24/solid';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import { ScheduleData } from '../../types/ScheduleTypes';
 import { exportScheduleAsICS, getSections } from '../../utility/Calendar';
-import { customSectionForm } from '../../utility/Forms';
 import { exportScheduleAsImage } from '../../utility/Image';
 import Utility from '../../utility/Utility';
 import Schedule from './Schedule';
