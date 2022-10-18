@@ -40,6 +40,7 @@ import ModeSwitch from './components/menu/ModeSwitch';
 import SideCard from './components/menu/side-card/SideCard';
 import TaskBar from './components/menu/TaskBar';
 import Content from './components/plan/Content';
+import CampusMap from './components/schedule/CampusMap';
 import Schedule from './components/schedule/Schedule';
 import Search from './components/search/Search';
 import SaveDataManager from './SaveDataManager';
@@ -429,6 +430,15 @@ class App extends React.Component<{}, AppState> {
               />
             )}
 
+            {this.state.map && (
+              <CampusMap
+                schedule={this.state.schedule.schedule}
+                switches={switches}
+                onClose={() => {
+                  this.setState({ map: false });
+                }}
+              />
+            )}
             <AnimatePresence>
               {this.state.sideCardData && (
                 <SideCard
@@ -546,6 +556,9 @@ class App extends React.Component<{}, AppState> {
                       sf={this.state.sf}
                       ff={this.state.ff}
                       switches={switches}
+                      openMap={() => {
+                        this.setState({ map: true });
+                      }}
                       key="schedule"
                     />
                   )}

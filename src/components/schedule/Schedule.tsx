@@ -25,6 +25,7 @@ interface ScheduleProps {
   ff: SearchModificationFunctions;
   switches: UserOptions;
   imageMode?: boolean;
+  openMap?: () => void;
 }
 
 class Schedule extends React.Component<ScheduleProps> {
@@ -115,6 +116,7 @@ class Schedule extends React.Component<ScheduleProps> {
             schedule={this.props.schedule}
             switches={this.props.switches}
             alert={this.props.alert}
+            openMap={this.props.openMap}
           />
         )}
 

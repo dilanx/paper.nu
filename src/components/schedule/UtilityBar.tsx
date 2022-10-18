@@ -1,3 +1,4 @@
+import { MapIcon } from '@heroicons/react/24/outline';
 import { CalendarIcon, CameraIcon } from '@heroicons/react/24/solid';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -14,9 +15,10 @@ interface UtilityBarProps {
   schedule: ScheduleData;
   switches: UserOptions;
   alert: Alert;
+  openMap?: () => void;
 }
 
-function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
+function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
   const [takeImage, setTakeImage] = useState(false);
 
   useEffect(() => {
@@ -92,6 +94,16 @@ function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
             cancelButton: 'Cancel',
             action: () => exportScheduleAsICS(validSections),
           });
+        }}
+      />
+      <UtilityBarButton
+        icon={MapIcon}
+        color="emerald"
+        display="View campus map"
+        action={() => {
+          if (openMap) {
+            openMap();
+          }
         }}
       />
       {/* <UtilityBarButton

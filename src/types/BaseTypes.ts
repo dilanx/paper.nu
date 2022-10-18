@@ -28,6 +28,7 @@ export interface AppState {
   originalDataString: string;
   scheduleInteractions: ScheduleInteractions;
   searchDefaults?: SearchDefaults;
+  map?: boolean;
 }
 
 export interface ReadUserOptions {
@@ -49,6 +50,7 @@ export interface ReadUserOptions {
   schedule_warnings?: boolean;
   course_info_details?: string;
   section_info_details?: string;
+  minimap?: boolean;
 }
 
 export interface UserOptions {
