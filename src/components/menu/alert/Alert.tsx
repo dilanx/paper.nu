@@ -196,8 +196,8 @@ export default function Alert(props: AlertProps) {
                                                   !data.textInput.match
                                                     ? 'focus:border-gray-500 focus:active:border-gray-300'
                                                     : badInput
-                                                    ? 'focus:border-green-500 focus:active:border-green-500'
-                                                    : 'focus:border-red-500 focus:active:border-red-500'
+                                                    ? 'focus:border-red-500 focus:active:border-red-500'
+                                                    : 'focus:border-green-500 focus:active:border-green-500'
                                                 }`}
                             placeholder={data.textInput.placeholder}
                             onChange={(event) => {
@@ -205,7 +205,7 @@ export default function Alert(props: AlertProps) {
                             }}
                           />
                           <p className="text-sm text-red-500 mx-2 my-1">
-                            {!badInput &&
+                            {badInput &&
                               inputText.length > 0 &&
                               data.textInput.matchError}
                           </p>
