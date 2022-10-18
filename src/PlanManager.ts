@@ -327,7 +327,7 @@ const PlanManager = {
   getCourseColor: (courseId: string) => {
     if (!courseData) return 'gray';
     let subj = courseId.split(' ')[0];
-    return courseData.majors[subj].color;
+    return courseData.majors[subj]?.color ?? 'gray';
   },
 
   loadFromURL: async (params: URLSearchParams) => {
