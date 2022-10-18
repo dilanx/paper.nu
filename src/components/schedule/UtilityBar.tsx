@@ -95,7 +95,7 @@ function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
           });
         }}
       />
-      <UtilityBarButton
+      {/* <UtilityBarButton
         icon={PlusIcon}
         color="pink"
         display="Add custom section"
@@ -136,7 +136,7 @@ function UtilityBar({ schedule, switches, alert }: UtilityBarProps) {
             cancelButton: 'Cancel',
           });
         }}
-      />
+      /> */}
 
       {takeImage && (
         <div className="relative">
