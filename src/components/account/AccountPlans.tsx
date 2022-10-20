@@ -292,7 +292,7 @@ class AccountPlans extends React.Component<
             icon={<CloudIcon className="w-12 h-12" />}
             title="Save your stuff"
             description="By creating an account, you can save up to 5 plans and 10 schedules. You can access them from any device at any time. It's super simple."
-            button={{
+            primaryButton={{
               text: 'Log in',
               action: () => {
                 Account.logIn();
@@ -321,10 +321,16 @@ class AccountPlans extends React.Component<
             title={`Create your first ${t}`}
             description={`Your account is all set up! Now, you can create your first ${t}.
               Any current ${t} data you have loaded right now will stay, and you'll have the option to save it to your new ${t}.`}
-            button={{
+            primaryButton={{
               text: `Create a ${t}`,
               action: () => {
                 this.create(isSchedule);
+              },
+            }}
+            secondaryButton={{
+              text: 'Log out',
+              action: () => {
+                this.logOut();
               },
             }}
           />

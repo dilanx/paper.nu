@@ -2,7 +2,11 @@ interface AccountPlanMessageProps {
   icon: JSX.Element;
   title: string;
   description: string;
-  button?: {
+  primaryButton?: {
+    text: string;
+    action: () => void;
+  };
+  secondaryButton?: {
     text: string;
     action: () => void;
   };
@@ -20,14 +24,20 @@ function AccountPlanMessage(props: AccountPlanMessageProps) {
       <p className="text-sm font-light text-gray-700 dark:text-gray-300 m-2">
         {props.description}
       </p>
-      {props.button && (
+      {props.primaryButton && (
         <button
           className="m-2 bg-rose-500 text-white rounded-lg p-2 shadow-lg hover:opacity-75 active:opacity-60"
-          onClick={() => {
-            props.button?.action();
-          }}
+          onClick={() => props.primaryButton?.action()}
         >
-          {props.button.text}
+          {props.primaryButton.text}
+        </button>
+      )}
+      {props.secondaryButton && (
+        <button
+          className="mx-8 my-2 p-1 bg-gray-300 text-gray-500 dark:bg-gray-500 dark:text-gray-100 rounded-lg shadow-sm hover:opacity-75 active:opacity-60"
+          onClick={() => props.secondaryButton?.action()}
+        >
+          {props.secondaryButton.text}
         </button>
       )}
     </div>
