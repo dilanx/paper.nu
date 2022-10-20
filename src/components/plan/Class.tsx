@@ -77,7 +77,7 @@ function openInfo(props: ClassProps) {
     title: placeholder ? 'Placeholder' : course.id,
     subtitle: course.name,
     alertMessage: course.legacy
-      ? "This course is no longer in the Northwestern course catalog. It will not appear in search results unless the 'Legacy' filter is applied."
+      ? "This course is no longer in the Northwestern course catalog. It will not appear in search results unless the 'Include Legacy Courses' filter is applied."
       : undefined,
     message: placeholder
       ? `If you aren't sure which course to take to fulfill a certain requirement, you can use a placeholder! Search using 'placeholder' or by requirement category to find placeholders.`
