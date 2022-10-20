@@ -502,7 +502,7 @@ class Search extends React.Component<SearchProps, SearchState> {
               {placeholder}
               {results}
             </div>
-            {this.props.switches.get.minimap && (
+            {appMode === Mode.SCHEDULE && this.props.switches.get.minimap && (
               <div className="mt-2 h-[25vh] bg-white dark:bg-gray-800 rounded-lg">
                 <CampusMinimap
                   expand={this.props.expandMap}
