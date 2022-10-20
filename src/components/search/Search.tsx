@@ -138,16 +138,15 @@ class Search extends React.Component<SearchProps, SearchState> {
     appMode: Mode,
     searchMode: SearchMode
   ): SearchResultsElements {
-    if (searchMode !== SearchMode.NORMAL) {
-      return {};
-    }
-
     let results =
       appMode === Mode.PLAN
         ? PlanManager.search(query)
         : ScheduleManager.search(query, filter);
 
     if (results === 'no_query') {
+      if (searchMode !== SearchMode.NORMAL) {
+        return {};
+      }
       return {
         placeholder:
           appMode === Mode.PLAN
