@@ -40,7 +40,7 @@ import ModeSwitch from './components/menu/ModeSwitch';
 import SideCard from './components/menu/side-card/SideCard';
 import TaskBar from './components/menu/TaskBar';
 import Content from './components/plan/Content';
-import CampusMap from './components/schedule/CampusMap';
+import CampusMap from './components/map/CampusMap';
 import Schedule from './components/schedule/Schedule';
 import Search from './components/search/Search';
 import SaveDataManager from './SaveDataManager';
@@ -476,6 +476,7 @@ class App extends React.Component<{}, AppState> {
                     this.showAlert(alertData);
                   }}
                   defaults={this.state.searchDefaults}
+                  expandMap={() => this.setState({ map: true })}
                 />
                 {tab === 'My List' && (
                   <Bookmarks

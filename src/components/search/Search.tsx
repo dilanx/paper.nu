@@ -37,6 +37,7 @@ import {
 import { Mode, SearchMode } from '../../utility/Constants';
 import { searchFilterForm } from '../../utility/Forms';
 import Utility from '../../utility/Utility';
+import CampusMinimap from '../map/CampusMinimap';
 import AddButtons from './AddButtons';
 import MiniContentBlock from './MiniContentBlock';
 import SearchBrowse from './SearchBrowse';
@@ -54,6 +55,7 @@ interface SearchProps {
   scheduleInteractions: ScheduleInteractions;
   alert: Alert;
   defaults?: SearchDefaults;
+  expandMap: () => void;
 }
 
 interface SearchState {
@@ -328,12 +330,11 @@ class Search extends React.Component<SearchProps, SearchState> {
       <div
         className={`${
           this.props.switches.get.tab === 'Search' ? '' : 'hidden '
-        }border-4 border-gray-400 dark:border-gray-500 my-2 rounded-lg shadow-lg h-full
-                overflow-y-scroll no-scrollbar`}
+        }border-4 border-gray-400 dark:border-gray-500 my-2 rounded-lg shadow-lg flex-1 flex flex-col overflow-hidden`}
       >
         {!current && (
           <>
-            <div className="sticky top-0 p-2 mb-2 bg-white dark:bg-gray-800 z-10 rounded-lg">
+            <div className="p-2 mb-2 bg-white dark:bg-gray-800 rounded-lg">
               <div className="block mt-4 mb-2 mx-auto w-11/12 relative">
                 <input
                   className="w-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 shadow-sm
@@ -470,17 +471,32 @@ class Search extends React.Component<SearchProps, SearchState> {
                 </div>
               )}
             </div>
-            {queryEmpty && !results && searchMode === SearchMode.BROWSE && (
-              <SearchBrowse
-                filter={this.state.filter}
-                school={this.state.browseSchool}
-                setSchool={(school) => {
-                  this.setState({ browseSchool: school });
-                }}
-              />
+            <div className="flex-1 overflow-hidden overflow-y-scroll no-scrollbar">
+              {queryEmpty && !results && searchMode === SearchMode.BROWSE && (
+                <SearchBrowse
+                  filter={this.state.filter}
+                  school={this.state.browseSchool}
+                  setSchool={(school) => {
+                    this.setState({ browseSchool: school });
+                  }}
+                />
+              )}
+              {placeholder}
+              {results}
+            </div>
+            {this.props.switches.get.minimap && (
+              <div className="mt-2 h-[25vh] bg-white dark:bg-gray-800 rounded-lg">
+                <CampusMinimap
+                  expand={this.props.expandMap}
+                  section={
+                    this.props.scheduleInteractions.previewSection.get ||
+                    this.props.schedule.schedule[
+                      this.props.scheduleInteractions.hoverSection.get || ''
+                    ]
+                  }
+                />
+              </div>
             )}
-            {placeholder}
-            {results}
           </>
         )}
 
