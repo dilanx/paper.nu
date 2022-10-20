@@ -14,7 +14,9 @@ class Info extends React.Component<InfoProps> {
                 dark:bg-gray-800 rounded-xl transition-all duration-300 text-black dark:text-white`}
       >
         <PaperAirplaneIcon className="w-6 h-6 drop-shadow-md" />
-        <p className="font-extralight drop-shadow-md text-2xl">paper.nu</p>
+        <p className="font-light drop-shadow-md text-2xl tracking-wide">
+          paper
+        </p>
       </div>
     );
   }
