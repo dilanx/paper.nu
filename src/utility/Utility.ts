@@ -276,6 +276,7 @@ let Utility = {
       case 'distros':
       case 'unitGeq':
       case 'unitLeq':
+      case 'include':
         return mode === Mode.PLAN;
       case 'startAfter':
       case 'startBefore':
@@ -313,6 +314,8 @@ let Utility = {
         return ['teal', 'p'];
       case 'units':
         return ['purple', 'p'];
+      case 'include':
+        return ['violet', 'p'];
       default:
         return ['gray', 'b'];
     }
@@ -386,8 +389,12 @@ let Utility = {
     if (value) return parseFloat(value);
   },
 
-  safeArray: (value: any[]): any[] | undefined =>
-    value.length === 0 ? undefined : value,
+  safeArrayCommaSplit: (value: any): any[] | undefined => {
+    if (value) {
+      const sp = value.split(',');
+      if (sp.length > 0) return sp;
+    }
+  },
 };
 
 export default Utility;

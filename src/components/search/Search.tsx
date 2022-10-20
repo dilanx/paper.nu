@@ -447,6 +447,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                             distros,
                             unitGeq,
                             unitLeq,
+                            include,
                           }) => {
                             filter.set({
                               subject: Utility.safe(subject)?.toUpperCase(),
@@ -454,20 +455,17 @@ class Search extends React.Component<SearchProps, SearchState> {
                               startBefore: Utility.parseTime(startBefore),
                               endAfter: Utility.parseTime(endAfter),
                               endBefore: Utility.parseTime(endBefore),
-                              meetingDays: Utility.safeArray(
-                                meetingDays ? meetingDays.split(',') : []
-                              ),
-                              components: Utility.safeArray(
-                                components ? components.split(',') : []
-                              ),
+                              meetingDays:
+                                Utility.safeArrayCommaSplit(meetingDays),
+                              components:
+                                Utility.safeArrayCommaSplit(components),
                               instructor:
                                 Utility.safe(instructor)?.toLowerCase(),
                               location: Utility.safe(location)?.toLowerCase(),
-                              distros: Utility.safeArray(
-                                distros ? distros.split(',') : []
-                              ),
+                              distros: Utility.safeArrayCommaSplit(distros),
                               unitGeq: Utility.safeNumber(unitGeq),
                               unitLeq: Utility.safeNumber(unitLeq),
+                              include: Utility.safeArrayCommaSplit(include),
                             });
                           },
                         },

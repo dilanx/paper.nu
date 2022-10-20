@@ -28,6 +28,7 @@ function filtersAsStrings({
   distros,
   unitGeq,
   unitLeq,
+  include,
 }: FilterOptions): FilterDisplayMap {
   const filters: FilterDisplayMap = {};
 
@@ -90,6 +91,10 @@ function filtersAsStrings({
     const geq = unitGeq ? unitGeq : 0;
     const leq = unitLeq ? unitLeq : 99;
     filters['units'] = display(`${geq} - ${leq}`, 'unitGeq', 'unitLeq');
+  }
+
+  if (include) {
+    filters['include'] = display(include.join(', '), 'include');
   }
 
   return filters;

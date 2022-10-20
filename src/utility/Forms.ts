@@ -158,6 +158,11 @@ export function planSearchFilterForm(
         }),
       ],
     },
+    {
+      title: 'INCLUDE',
+      fullRow: true,
+      fields: [sel('include', ['Legacy Courses'], filter.include)],
+    },
   ];
 }
 

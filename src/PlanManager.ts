@@ -218,8 +218,10 @@ const PlanManager = {
 
     const filterExists =
       filter &&
-      Object.keys(filter).filter((f) =>
-        Utility.filterBelongsTo(f as keyof FilterOptions, Mode.PLAN)
+      Object.keys(filter).filter(
+        (f) =>
+          f !== 'include' &&
+          Utility.filterBelongsTo(f as keyof FilterOptions, Mode.PLAN)
       ).length > 0;
 
     if (!filterExists) {
@@ -240,7 +242,7 @@ const PlanManager = {
     let courseIdResults: Course[] = [];
     let courseNameResults: Course[] = [];
 
-    courseData.courses.forEach((course) => {
+    const checkCourse = (course: Course) => {
       if (filterExists && !PlanManager.courseMatchesFilter(course, filter)) {
         return;
       }
@@ -254,7 +256,13 @@ const PlanManager = {
           courseNameResults.push(course);
         }
       }
-    });
+    };
+
+    courseData.courses.forEach(checkCourse);
+
+    if (filter?.include?.includes('Legacy Courses')) {
+      courseData.legacy.forEach(checkCourse);
+    }
 
     let total = courseIdResults.length + courseNameResults.length;
     if (total === 0) return 'no_results';

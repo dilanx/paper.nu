@@ -35,6 +35,7 @@ export interface FilterOptions {
   distros?: string[];
   unitGeq?: number;
   unitLeq?: number;
+  include?: string[];
 }
 
 export type FilterBadgeName =
@@ -46,7 +47,8 @@ export type FilterBadgeName =
   | 'instructor'
   | 'location'
   | 'distros'
-  | 'units';
+  | 'units'
+  | 'include';
 
 export interface FilterDisplay {
   value: string;
