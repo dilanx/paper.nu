@@ -41,7 +41,6 @@ interface DayProps {
 }
 
 function Day(props: DayProps) {
-  // TODO improve performance with memoization
   let hours: JSX.Element[] = [
     <Cell day={props.index} key={`day-${props.index}-x`} />,
   ];
