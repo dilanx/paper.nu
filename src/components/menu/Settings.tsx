@@ -46,7 +46,7 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
           {
             switch: 'save_location_top',
             title: 'Save button location',
-            description: `When editing a plan linked to your account that has unsaved changes, a save button appears at the bottom right of the window by default. You can move it to the top right if you'd prefer.`,
+            description: `When editing a plan or schedule linked to your account that has unsaved changes, a save button appears at the bottom right of the window by default. You can move it to the top right if you'd prefer.`,
             buttonTextOn: 'Top right',
             buttonTextOff: 'Bottom right',
             saveToStorage: true,
