@@ -105,7 +105,8 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
           {
             switch: 'schedule_warnings',
             title: 'Schedule warnings',
-            description: ``,
+            description: `You'll get warnings for trying things like adding a conflicting section to your schedule.`,
+            saveToStorage: true,
           },
         ],
       },
