@@ -144,6 +144,18 @@ let SaveDataManager = {
       let data = await PlanManager.loadFromStorage();
       if (data !== 'empty') {
         if (data !== 'malformed') {
+          d('plan storage load successful');
+          method = 'Storage';
+          if (accountPlans) {
+            let dataStr = PlanManager.getDataString(data);
+            let id = matchAccountId(accountPlans, dataStr);
+            if (id) {
+              d('matched content to account plan: %s', id);
+              activeId = id;
+              originalDataString = dataStr;
+              method = 'Account';
+            }
+          }
           PlanManager.save(data);
           d('plan data loaded');
         }
@@ -152,7 +164,7 @@ let SaveDataManager = {
           data,
           activeId,
           originalDataString,
-          method: 'Storage',
+          method,
         };
         return response;
       }
@@ -164,7 +176,7 @@ let SaveDataManager = {
           let data = await ScheduleManager.loadFromString(content);
           if (data !== 'empty') {
             if (data !== 'malformed') {
-              d('account scheedule load successful: %s', storedScheduleId);
+              d('account schedule load successful: %s', storedScheduleId);
               activeId = storedScheduleId;
               originalDataString = content;
               ScheduleManager.save(data);
@@ -186,6 +198,18 @@ let SaveDataManager = {
       let data = await ScheduleManager.loadFromStorage();
       if (data !== 'empty') {
         if (data !== 'malformed') {
+          d('schedule storage load successful');
+          method = 'Storage';
+          if (accountPlans) {
+            let dataStr = ScheduleManager.getDataString(data);
+            let id = matchAccountId(accountPlans, dataStr);
+            if (id) {
+              d('matched content to account schedule: %s', id);
+              activeId = id;
+              originalDataString = dataStr;
+              method = 'Account';
+            }
+          }
           ScheduleManager.save(data);
           d('schedule data loaded');
         }
@@ -194,7 +218,7 @@ let SaveDataManager = {
           data,
           activeId,
           originalDataString,
-          method: 'Storage',
+          method,
         };
         return response;
       }
