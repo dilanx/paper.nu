@@ -477,6 +477,7 @@ class App extends React.Component<{}, AppState> {
                   }}
                   defaults={this.state.searchDefaults}
                   expandMap={() => this.setState({ map: true })}
+                  loading={this.state.loadingLogin}
                 />
                 {tab === 'My List' && (
                   <Bookmarks

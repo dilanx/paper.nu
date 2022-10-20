@@ -12,6 +12,7 @@ import {
   CalendarDaysIcon,
 } from '@heroicons/react/24/solid';
 import React from 'react';
+import { SpinnerCircularFixed } from 'spinners-react';
 import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
 import { Alert } from '../../types/AlertTypes';
@@ -59,6 +60,7 @@ interface SearchProps {
   alert: Alert;
   defaults?: SearchDefaults;
   expandMap: () => void;
+  loading?: boolean;
 }
 
 interface SearchState {
@@ -315,6 +317,7 @@ class Search extends React.Component<SearchProps, SearchState> {
     const appMode = this.props.switches.get.mode as Mode;
     const searchMode = this.state.mode;
     const filter = this.state.filter;
+    const darkMode = this.props.switches.get.dark;
 
     let { results, placeholder, shortcut } = this.getResults(
       search,
@@ -333,10 +336,24 @@ class Search extends React.Component<SearchProps, SearchState> {
         className={`${
           this.props.switches.get.tab === 'Search' ? '' : 'hidden '
         }border-4 border-gray-400 dark:border-gray-500 my-2 rounded-lg shadow-lg flex-1 flex flex-col overflow-hidden ${
-          current ? 'overflow-y-scroll no-scrollbar' : ''
+          this.props.loading
+            ? 'justify-center items-center'
+            : current
+            ? 'overflow-y-scroll no-scrollbar'
+            : ''
         }`}
       >
-        {!current && (
+        {this.props.loading ? (
+          <SpinnerCircularFixed
+            size={64}
+            thickness={160}
+            speed={200}
+            color={darkMode ? 'rgb(212, 212, 212)' : 'rgb(115, 115, 115)'}
+            secondaryColor={
+              darkMode ? 'rgb(64, 64, 64)' : 'rgba(245, 245, 245)'
+            }
+          />
+        ) : !current ? (
           <>
             <div className="p-2 mb-2 bg-white dark:bg-gray-800 rounded-lg">
               <div className="block mt-4 mb-2 mx-auto w-11/12 relative">
@@ -514,9 +531,7 @@ class Search extends React.Component<SearchProps, SearchState> {
               </div>
             )}
           </>
-        )}
-
-        {current && (
+        ) : (
           <>
             <SearchClass
               course={current}
@@ -569,19 +584,16 @@ class Search extends React.Component<SearchProps, SearchState> {
                   : 'Add for credit'}
               </button>
             </div>
-          </>
-        )}
-
-        {current && (
-          <button
-            className="block mx-auto my-8 bg-gray-500 text-white font-medium
+            <button
+              className="block mx-auto my-8 bg-gray-500 text-white font-medium
                         w-4/5 p-2 opacity-100 hover:opacity-60 rounded-md shadow-sm"
-            onClick={() => {
-              this.setState({ current: undefined });
-            }}
-          >
-            Back
-          </button>
+              onClick={() => {
+                this.setState({ current: undefined });
+              }}
+            >
+              Back
+            </button>
+          </>
         )}
       </div>
     );
