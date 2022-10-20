@@ -1,4 +1,5 @@
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import { Color } from '../../types/BaseTypes';
 import {
   FilterBadgeName,
   FilterDisplay,
@@ -6,7 +7,7 @@ import {
   FilterOptions,
   SearchFilter,
 } from '../../types/SearchTypes';
-import { ComponentMap, DayMap } from '../../utility/Constants';
+import { ComponentMap, DayMap, DistroMap, Mode } from '../../utility/Constants';
 import Utility from '../../utility/Utility';
 
 const display = (
@@ -24,6 +25,9 @@ function filtersAsStrings({
   components,
   instructor,
   location,
+  distros,
+  unitGeq,
+  unitLeq,
 }: FilterOptions): FilterDisplayMap {
   const filters: FilterDisplayMap = {};
 
@@ -75,6 +79,19 @@ function filtersAsStrings({
     filters['location'] = display(location, 'location');
   }
 
+  if (distros) {
+    filters['distros'] = display(
+      distros.sort((a, b) => DistroMap[a] - DistroMap[b]).join(', '),
+      'distros'
+    );
+  }
+
+  if (unitGeq || unitLeq) {
+    const geq = unitGeq ? unitGeq : 0;
+    const leq = unitLeq ? unitLeq : 99;
+    filters['units'] = display(`${geq} - ${leq}`, 'unitGeq', 'unitLeq');
+  }
+
   return filters;
 }
 
@@ -82,10 +99,15 @@ interface SearchFilterBadgeProps {
   name: FilterBadgeName;
   value: string;
   remove: () => void;
+  color: Color;
 }
 
-function SearchFilterBadge({ name, value, remove }: SearchFilterBadgeProps) {
-  const color = Utility.getFilterBadgeColor(name);
+function SearchFilterBadge({
+  name,
+  value,
+  remove,
+  color,
+}: SearchFilterBadgeProps) {
   return (
     <button
       className="flex text-xs rounded-lg overflow-hidden group relative shadow-sm"
@@ -110,27 +132,42 @@ function SearchFilterBadge({ name, value, remove }: SearchFilterBadgeProps) {
 
 interface SearchFilterDisplayProps {
   filter: SearchFilter;
+  appMode: Mode;
 }
 
-function SearchFilterDisplay({ filter }: SearchFilterDisplayProps) {
+function SearchFilterDisplay({ filter, appMode }: SearchFilterDisplayProps) {
   const filterDisplay = filtersAsStrings(filter.get);
-  const badges = Object.keys(filterDisplay).map((f) => {
-    const name = f as FilterBadgeName;
-    const d = filterDisplay[name]!;
-    const toRemove: Partial<FilterOptions> = {};
-    for (const key of d.relatedKeys) {
-      toRemove[key] = undefined;
-    }
+  const badges = Object.keys(filterDisplay).reduce<JSX.Element[]>(
+    (total, f) => {
+      const name = f as FilterBadgeName;
+      const d = filterDisplay[name]!;
+      const toRemove: Partial<FilterOptions> = {};
+      for (const key of d.relatedKeys) {
+        toRemove[key] = undefined;
+      }
 
-    return (
-      <SearchFilterBadge
-        name={name}
-        value={d.value}
-        remove={() => filter.set(toRemove)}
-        key={`filter-badge-${f}`}
-      />
-    );
-  });
+      const [color, mode] = Utility.getFilterBadgeInfo(name);
+
+      if (
+        mode === 'b' ||
+        (mode === 'p' && appMode === Mode.PLAN) ||
+        (mode === 's' && appMode === Mode.SCHEDULE)
+      ) {
+        total.push(
+          <SearchFilterBadge
+            name={name}
+            value={d.value}
+            remove={() => filter.set(toRemove)}
+            color={color}
+            key={`filter-badge-${f}`}
+          />
+        );
+      }
+
+      return total;
+    },
+    []
+  );
   return <div className="flex flex-wrap gap-2 justify-center">{badges}</div>;
 }
 

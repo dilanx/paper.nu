@@ -32,6 +32,9 @@ export interface FilterOptions {
   components?: string[];
   instructor?: string;
   location?: string;
+  distros?: string[];
+  unitGeq?: number;
+  unitLeq?: number;
 }
 
 export type FilterBadgeName =
@@ -41,7 +44,9 @@ export type FilterBadgeName =
   | 'meeting days'
   | 'components'
   | 'instructor'
-  | 'location';
+  | 'location'
+  | 'distros'
+  | 'units';
 
 export interface FilterDisplay {
   value: string;

@@ -127,7 +127,7 @@ export interface AlertData {
   textHTML?: JSX.Element;
   form?: {
     sections: AlertFormSection[];
-    onSubmit: (repsonse: AlertFormResponse) => void;
+    onSubmit: (response: AlertFormResponse) => void;
   };
   confirmButton?: string;
   confirmButtonColor?: Color;

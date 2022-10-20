@@ -13,7 +13,7 @@ import {
   Time,
 } from './types/ScheduleTypes';
 import { FilterOptions, SearchError, SearchResults } from './types/SearchTypes';
-import { Days } from './utility/Constants';
+import { Days, Mode } from './utility/Constants';
 import Utility from './utility/Utility';
 var ds = debug('schedule-manager:ser');
 var dp = debug('schedule-manager:op');
@@ -123,8 +123,14 @@ const ScheduleManager = {
     query: string,
     filter?: FilterOptions
   ): SearchResults<ScheduleCourse> | SearchError => {
+    // TODO this is repetitive between both search functions so it should be abstracted
+    // TODO useTransition when searching
     let { terms, shortcut } = PlanManager.prepareQuery(query);
-    const filterExists = filter && Object.keys(filter).length > 0;
+    const filterExists =
+      filter &&
+      Object.keys(filter).filter((f) =>
+        Utility.filterBelongsTo(f as keyof FilterOptions, Mode.SCHEDULE)
+      ).length > 0;
     if (!filterExists) {
       for (let term of terms) {
         if (term.length === 0) {

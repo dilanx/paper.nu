@@ -4,7 +4,8 @@ import { AlertData } from '../types/AlertTypes';
 import { Color } from '../types/BaseTypes';
 import { PlanErrorLocation } from '../types/ErrorTypes';
 import { ScheduleDataMap, ScheduleDate, Time } from '../types/ScheduleTypes';
-import { FilterBadgeName } from '../types/SearchTypes';
+import { FilterBadgeName, FilterOptions } from '../types/SearchTypes';
+import { Mode } from './Constants';
 
 let Utility = {
   BACKGROUND_LIGHT: '#FFFFFF',
@@ -268,24 +269,52 @@ let Utility = {
     return text.charAt(0).toUpperCase() + text.slice(1);
   },
 
-  getFilterBadgeColor: (filterBadgeName: FilterBadgeName): Color => {
+  filterBelongsTo: (option: keyof FilterOptions, mode: Mode) => {
+    switch (option) {
+      case 'subject':
+        return true;
+      case 'distros':
+      case 'unitGeq':
+      case 'unitLeq':
+        return mode === Mode.PLAN;
+      case 'startAfter':
+      case 'startBefore':
+      case 'endAfter':
+      case 'endBefore':
+      case 'meetingDays':
+      case 'components':
+      case 'instructor':
+      case 'location':
+        return mode === Mode.SCHEDULE;
+      default:
+        return false;
+    }
+  },
+
+  getFilterBadgeInfo: (
+    filterBadgeName: FilterBadgeName
+  ): [Color, 'p' | 's' | 'b'] => {
     switch (filterBadgeName) {
       case 'subject':
-        return 'blue';
+        return ['blue', 'b'];
       case 'start':
-        return 'green';
+        return ['green', 's'];
       case 'end':
-        return 'red';
+        return ['red', 's'];
       case 'meeting days':
-        return 'fuchsia';
+        return ['fuchsia', 's'];
       case 'components':
-        return 'amber';
+        return ['amber', 's'];
       case 'instructor':
-        return 'pink';
+        return ['pink', 's'];
       case 'location':
-        return 'lime';
+        return ['lime', 's'];
+      case 'distros':
+        return ['teal', 'p'];
+      case 'units':
+        return ['purple', 'p'];
       default:
-        return 'gray';
+        return ['gray', 'b'];
     }
   },
 
@@ -351,6 +380,10 @@ let Utility = {
 
   safe: (value: any): any | undefined => {
     if (value) return value;
+  },
+
+  safeNumber: (value: any): number | undefined => {
+    if (value) return parseFloat(value);
   },
 
   safeArray: (value: any[]): any[] | undefined =>

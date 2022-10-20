@@ -1,3 +1,4 @@
+import PlanManager from '../PlanManager';
 import ScheduleManager from '../ScheduleManager';
 import {
   AlertFormFieldMultiSelect,
@@ -8,9 +9,12 @@ import {
 import { TextValidator } from '../types/BaseTypes';
 import { Time } from '../types/ScheduleTypes';
 import { FilterOptions } from '../types/SearchTypes';
+import { Components, Days, Distros } from './Constants';
 import Utility from './Utility';
 
-export function searchFilterForm(filter: FilterOptions): AlertFormSection[] {
+export function scheduleSearchFilterForm(
+  filter: FilterOptions
+): AlertFormSection[] {
   const text = (
     name: string,
     placeholder: string,
@@ -73,20 +77,12 @@ export function searchFilterForm(filter: FilterOptions): AlertFormSection[] {
     {
       title: 'MEETING DAYS',
       fullRow: true,
-      fields: [
-        sel('meetingDays', ['Mo', 'Tu', 'We', 'Th', 'Fr'], filter.meetingDays),
-      ],
+      fields: [sel('meetingDays', Days, filter.meetingDays)],
     },
     {
       title: 'COMPONENTS',
       fullRow: true,
-      fields: [
-        sel(
-          'components',
-          ['LEC', 'DIS', 'LAB', 'SEM', 'PED'],
-          filter.components
-        ),
-      ],
+      fields: [sel('components', Components, filter.components)],
     },
     {
       title: 'INSTRUCTOR',
@@ -98,6 +94,68 @@ export function searchFilterForm(filter: FilterOptions): AlertFormSection[] {
       fullRow: true,
       fields: [
         text('location', 'ex. Technological Institute', filter.location),
+      ],
+    },
+  ];
+}
+
+export function planSearchFilterForm(
+  filter: FilterOptions
+): AlertFormSection[] {
+  const text = (
+    name: string,
+    placeholder: string,
+    current?: string,
+    validator?: TextValidator
+  ): AlertFormFieldText => ({
+    name,
+    type: 'text',
+    placeholder,
+    defaultValue: current,
+    validator,
+  });
+  const sel = (
+    name: string,
+    options: string[],
+    current?: string[]
+  ): AlertFormFieldMultiSelect => ({
+    name,
+    type: 'multi-select',
+    options,
+    defaultValue: current?.join(','),
+  });
+
+  return [
+    {
+      title: 'SUBJECT',
+      fullRow: true,
+      fields: [
+        text('subject', 'ex. COMP_SCI', filter.subject, (value) =>
+          PlanManager.isValidSubject(value.toUpperCase())
+        ),
+      ],
+    },
+    {
+      title: 'DISTRIBUTION AREAS',
+      fullRow: true,
+      fields: [sel('distros', Distros, filter.distros)],
+    },
+    {
+      title: 'UNITS AT LEAST',
+      fields: [
+        text('unitGeq', '', filter.unitGeq?.toString(), (v) => {
+          const value = parseFloat(v);
+          return !isNaN(value) && value >= 0 && value <= 99;
+        }),
+      ],
+    },
+    {
+      title: 'UNITS AT MOST',
+      fields: [
+        text('unitLeq', '', filter.unitLeq?.toString(), (v) => {
+          const value = parseFloat(v);
+          return !isNaN(value) && value >= 0 && value <= 99;
+        }),
       ],
     },
   ];

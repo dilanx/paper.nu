@@ -35,7 +35,10 @@ import {
   SearchShortcut,
 } from '../../types/SearchTypes';
 import { Mode, SearchMode } from '../../utility/Constants';
-import { searchFilterForm } from '../../utility/Forms';
+import {
+  planSearchFilterForm,
+  scheduleSearchFilterForm,
+} from '../../utility/Forms';
 import Utility from '../../utility/Utility';
 import CampusMinimap from '../map/CampusMinimap';
 import AddButtons from './AddButtons';
@@ -140,7 +143,7 @@ class Search extends React.Component<SearchProps, SearchState> {
   ): SearchResultsElements {
     let results =
       appMode === Mode.PLAN
-        ? PlanManager.search(query)
+        ? PlanManager.search(query, filter)
         : ScheduleManager.search(query, filter);
 
     if (results === 'no_query') {
@@ -329,7 +332,9 @@ class Search extends React.Component<SearchProps, SearchState> {
       <div
         className={`${
           this.props.switches.get.tab === 'Search' ? '' : 'hidden '
-        }border-4 border-gray-400 dark:border-gray-500 my-2 rounded-lg shadow-lg flex-1 flex flex-col overflow-hidden`}
+        }border-4 border-gray-400 dark:border-gray-500 my-2 rounded-lg shadow-lg flex-1 flex flex-col overflow-hidden ${
+          current ? 'overflow-y-scroll no-scrollbar' : ''
+        }`}
       >
         {!current && (
           <>
@@ -379,9 +384,9 @@ class Search extends React.Component<SearchProps, SearchState> {
                 </p>
               )}
               {Object.keys(filter.get).length > 0 && (
-                <SearchFilterDisplay filter={filter} />
+                <SearchFilterDisplay filter={filter} appMode={appMode} />
               )}
-              {queryEmpty && appMode === Mode.SCHEDULE && (
+              {queryEmpty && (
                 <div className="flex justify-center gap-2 m-4">
                   <SearchButton
                     active={
@@ -421,10 +426,14 @@ class Search extends React.Component<SearchProps, SearchState> {
                       this.props.alert({
                         title: 'Edit search filters',
                         icon: FunnelIcon,
-                        message:
-                          'Filter search results by any combination of the properties below.',
+                        message: `Filter search results for ${
+                          appMode === Mode.PLAN ? 'plan' : 'schedule'
+                        } data by any combination of the properties below.`,
                         form: {
-                          sections: searchFilterForm(filter.get),
+                          sections:
+                            appMode === Mode.PLAN
+                              ? planSearchFilterForm(filter.get)
+                              : scheduleSearchFilterForm(filter.get),
                           onSubmit: ({
                             subject,
                             startAfter,
@@ -435,6 +444,9 @@ class Search extends React.Component<SearchProps, SearchState> {
                             components,
                             instructor,
                             location,
+                            distros,
+                            unitGeq,
+                            unitLeq,
                           }) => {
                             filter.set({
                               subject: Utility.safe(subject)?.toUpperCase(),
@@ -451,6 +463,11 @@ class Search extends React.Component<SearchProps, SearchState> {
                               instructor:
                                 Utility.safe(instructor)?.toLowerCase(),
                               location: Utility.safe(location)?.toLowerCase(),
+                              distros: Utility.safeArray(
+                                distros ? distros.split(',') : []
+                              ),
+                              unitGeq: Utility.safeNumber(unitGeq),
+                              unitLeq: Utility.safeNumber(unitLeq),
                             });
                           },
                         },
@@ -464,9 +481,11 @@ class Search extends React.Component<SearchProps, SearchState> {
                   >
                     <FunnelIcon className="w-5 h-5" />
                   </SearchButton>
-                  <SearchButton action={() => {}} tooltip="Change term">
-                    <CalendarDaysIcon className="w-5 h-5" />
-                  </SearchButton>
+                  {appMode === Mode.SCHEDULE && (
+                    <SearchButton action={() => {}} tooltip="Change term">
+                      <CalendarDaysIcon className="w-5 h-5" />
+                    </SearchButton>
+                  )}
                 </div>
               )}
             </div>

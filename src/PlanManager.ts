@@ -3,10 +3,13 @@ import { getPlanData } from './DataManager';
 import { UserOptions } from './types/BaseTypes';
 import { Course, PlanData, RawCourseData } from './types/PlanTypes';
 import {
+  FilterOptions,
   SearchError,
   SearchResults,
   SearchShortcut,
 } from './types/SearchTypes';
+import { DistroMap, Mode } from './utility/Constants';
+import Utility from './utility/Utility';
 var ds = debug('plan-manager:ser');
 var dp = debug('plan-manager:op');
 
@@ -208,15 +211,26 @@ const PlanManager = {
     };
   },
 
-  search: (query: string): SearchResults<Course> | SearchError => {
+  search: (
+    query: string,
+    filter?: FilterOptions
+  ): SearchResults<Course> | SearchError => {
     let { terms, shortcut } = PlanManager.prepareQuery(query);
 
-    for (let term of terms) {
-      if (term.length === 0) {
-        return 'no_query';
-      }
-      if (term.length < 3) {
-        return 'too_short';
+    const filterExists =
+      filter &&
+      Object.keys(filter).filter((f) =>
+        Utility.filterBelongsTo(f as keyof FilterOptions, Mode.PLAN)
+      ).length > 0;
+
+    if (!filterExists) {
+      for (let term of terms) {
+        if (term.length === 0) {
+          return 'no_query';
+        }
+        if (term.length < 3) {
+          return 'too_short';
+        }
       }
     }
 
@@ -228,6 +242,10 @@ const PlanManager = {
     let courseNameResults: Course[] = [];
 
     courseData.courses.forEach((course) => {
+      if (filterExists && !PlanManager.courseMatchesFilter(course, filter)) {
+        return;
+      }
+
       for (let term of terms) {
         if (course.id.toLowerCase().replace(/-|_/g, ' ').includes(term)) {
           courseIdResults.push(course);
@@ -266,6 +284,29 @@ const PlanManager = {
       shortcut: shortcut,
       limitExceeded: limitExceeded ? total - SEARCH_RESULT_LIMIT : undefined,
     };
+  },
+
+  courseMatchesFilter: (course: Course, filter?: FilterOptions): boolean => {
+    if (!filter) return true;
+    if (filter.subject && filter.subject !== course.id.split(' ')[0])
+      return false;
+    if (filter.distros) {
+      if (
+        !filter.distros.some((d) =>
+          course.distros?.includes(DistroMap[d].toString())
+        )
+      ) {
+        return false;
+      }
+    }
+
+    const units = parseFloat(course.units);
+    if (!isNaN(units)) {
+      if (filter.unitGeq && units < filter.unitGeq) return false;
+      if (filter.unitLeq && units > filter.unitLeq) return false;
+    }
+
+    return true;
   },
 
   getTotalCredits: ({ courses, bookmarks: { forCredit } }: PlanData) => {
@@ -328,6 +369,11 @@ const PlanManager = {
     if (!courseData) return 'gray';
     let subj = courseId.split(' ')[0];
     return courseData.majors[subj]?.color ?? 'gray';
+  },
+
+  isValidSubject: (subject: string) => {
+    if (!courseData) return false;
+    return !!courseData.majors[subject];
   },
 
   loadFromURL: async (params: URLSearchParams) => {
