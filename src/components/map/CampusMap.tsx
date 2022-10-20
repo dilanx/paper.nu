@@ -161,15 +161,15 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
                   </button>
                 </div>
                 {locations.length > 0 && (
-                  <div className="absolute right-2 p-2 bottom-8 md:bottom-1/2 md:translate-y-1/2 z-[500] flex flex-col bg-white bg-opacity-50 rounded-l-lg">
-                    <p className="text-xs italic text-gray-600 font-bold">
+                  <div className="absolute right-2 p-2 bottom-8 md:bottom-1/2 md:translate-y-1/2 z-[500] flex flex-col bg-white dark:bg-gray-700 bg-opacity-50 dark:bg-opacity-50 rounded-l-lg">
+                    <p className="text-xs italic text-gray-600 dark:text-gray-200 font-bold">
                       Hover to find class
                     </p>
-                    {locations.map(({ location, sections, color }, i) => (
+                    {locations.map(({ location, sections }, i) => (
                       <Fragment key={`map-list-${i}`}>
                         {sections.map((section, j) => (
                           <div
-                            className="w-full text-right text-sm text-gray-500 font-medium flex gap-2 cursor-pointer hover:text-black"
+                            className="w-full text-right text-sm font-medium flex gap-2 cursor-pointer text-gray-500 hover:text-black dark:text-gray-300 dark:hover:text-white"
                             key={`map-list-${i}-${j}`}
                             onMouseEnter={() => setFlyPosition(location)}
                             onMouseLeave={() => setFlyPosition(undefined)}
