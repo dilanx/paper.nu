@@ -11,7 +11,6 @@ import {
 import { DistroMap, Mode } from './utility/Constants';
 import Utility from './utility/Utility';
 var ds = debug('plan-manager:ser');
-var dp = debug('plan-manager:op');
 
 let courseData: RawCourseData | undefined = undefined;
 const SEARCH_RESULT_LIMIT = 100;
