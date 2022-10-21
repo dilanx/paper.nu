@@ -5,6 +5,7 @@ import {
   ArrowTopRightOnSquareIcon,
   InformationCircleIcon,
   MagnifyingGlassIcon,
+  PencilSquareIcon,
 } from '@heroicons/react/24/outline';
 import Account from '../../Account';
 import { Alert } from '../../types/AlertTypes';
@@ -18,7 +19,7 @@ import { PlanSpecialFunctions } from '../../types/PlanTypes';
 import { Mode } from '../../utility/Constants';
 import Tooltip from '../generic/Tooltip';
 import settingsMenu from './Settings';
-import shareMenu from './Share';
+import feedbackMenu from './Feedback';
 import { TabBar, TabBarButton } from './TabBar';
 
 interface MiniButtonProps {
@@ -26,6 +27,25 @@ interface MiniButtonProps {
   color: Color;
   display: string;
   action: () => void;
+}
+
+function AboutMiniButton({ openAboutMenu }: { openAboutMenu: () => void }) {
+  return (
+    <button
+      className="p-1 border-2 border-gray-400 dark:border-gray-500 rounded-lg text-gray-500 dark:text-gray-300
+    hover:border-black dark:hover:border-white hover:text-black dark:hover:text-white relative group"
+      onClick={() => openAboutMenu()}
+    >
+      <InformationCircleIcon className="w-5 h-5" />
+      <div
+        className="hidden group-hover:block absolute p-1 border-2 rounded-md whitespace-nowrap
+            bg-white dark:bg-gray-800 border-black dark:border-white text-black dark:text-white text-sm font-medium
+            -top-10 left-1/2 -translate-x-1/2 z-10"
+      >
+        About
+      </div>
+    </button>
+  );
 }
 
 function MiniButton(props: MiniButtonProps) {
@@ -66,17 +86,12 @@ function TaskBar(props: TaskBarProps) {
   const switches = props.switches;
   return (
     <div className="flex mx-auto mt-2 mb-4 gap-2">
+      <AboutMiniButton openAboutMenu={props.openAboutMenu} />
       <MiniButton
-        icon={InformationCircleIcon}
-        color="purple"
-        display="About"
-        action={() => props.openAboutMenu()}
-      />
-      <MiniButton
-        icon={ArrowTopRightOnSquareIcon}
-        color="green"
-        display="Share"
-        action={() => props.alert(shareMenu())}
+        icon={PencilSquareIcon}
+        color="violet"
+        display="Feedback"
+        action={() => props.alert(feedbackMenu())}
       />
       <MiniButton
         icon={Cog6ToothIcon}
