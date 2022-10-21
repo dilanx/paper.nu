@@ -95,7 +95,7 @@ function TaskBar(props: TaskBarProps) {
       />
       <MiniButton
         icon={Cog6ToothIcon}
-        color="yellow"
+        color="orange"
         display="Settings"
         action={() => props.alert(settingsMenu(props.f2))}
       />

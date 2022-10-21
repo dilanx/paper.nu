@@ -63,7 +63,7 @@ function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
       />
       <UtilityBarButton
         icon={CameraIcon}
-        color="orange"
+        color="sky"
         display="Export as image"
         action={() => {
           alert({
@@ -72,8 +72,8 @@ function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
             message:
               'This will export your schedule as an image, which you can then share!',
             confirmButton: 'Download',
-            confirmButtonColor: 'orange',
-            iconColor: 'orange',
+            confirmButtonColor: 'sky',
+            iconColor: 'sky',
             cancelButton: 'Cancel',
             action: () => setTakeImage(true),
           });
@@ -81,7 +81,7 @@ function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
       />
       <UtilityBarButton
         icon={CalendarIcon}
-        color="cyan"
+        color="red"
         display="Export to calendar"
         action={() => {
           const { validSections, invalidSections } = getSections(schedule);
@@ -115,8 +115,8 @@ function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
               </p>
             ),
             confirmButton: 'Download',
-            confirmButtonColor: 'cyan',
-            iconColor: 'cyan',
+            confirmButtonColor: 'red',
+            iconColor: 'red',
             cancelButton: 'Cancel',
             action: () => exportScheduleAsICS(validSections),
           });
