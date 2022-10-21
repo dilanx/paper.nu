@@ -51,7 +51,7 @@ function About({ switches, onClose }: AboutProps) {
                     paper
                   </p>
                   <p className="font-light text-center">
-                    the ultimate Northwestern course scheduling tool
+                    the ultimate Northwestern course planning tool
                   </p>
                 </div>
                 <div className="my-8 flex flex-col sm:flex-row w-full justify-center items-center gap-2 sm:gap-4">
@@ -111,41 +111,54 @@ function About({ switches, onClose }: AboutProps) {
                 </div>
                 <div className="flex flex-col items-center gap-2 font-light text-sm my-8">
                   <p>the future of</p>
-                  <a
-                    className="block w-full hover:opacity-75"
-                    href="https://dilan.blog"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <div className="flex gap-2 flex-col sm:flex-row dark:text-black">
-                      <div className="flex-1 p-4 rounded-xl bg-purple-50 dark:bg-purple-300 flex items-center gap-2">
-                        <img
-                          className="w-8 h-8"
-                          src={planImage}
-                          alt="Plan Northwestern logo"
-                        />
-                        <div className="text-center flex-grow">
-                          <p className="font-medium">Plan Northwestern</p>
-                          <p>by Dilan Nair</p>
-                        </div>
-                      </div>
-                      <div className="flex-1 p-4 rounded-lg bg-green-50 dark:bg-green-300 flex items-center gap-2">
-                        <img
-                          className="w-8 h-8"
-                          src={saladImage}
-                          alt="salad.nu logo"
-                        />
-                        <div className="text-center flex-grow">
-                          <p className="font-medium">salad.nu</p>
-                          <p>by Andy Xu</p>
-                        </div>
+                  <div className="flex gap-2 flex-col sm:flex-row dark:text-black w-full">
+                    <div className="flex-1 p-4 rounded-xl bg-purple-50 dark:bg-purple-300 flex items-center gap-2">
+                      <img
+                        className="w-8 h-8"
+                        src={planImage}
+                        alt="Plan Northwestern logo"
+                      />
+                      <div className="text-center flex-grow">
+                        <p className="font-medium">Plan Northwestern</p>
+                        <p>
+                          by{' '}
+                          <a
+                            className="underline underline-offset-4 hover:opacity-50"
+                            href="https://www.dilanxd.com"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Dilan Nair
+                          </a>
+                        </p>
                       </div>
                     </div>
-                  </a>
+                    <div className="flex-1 p-4 rounded-lg bg-green-50 dark:bg-green-300 flex items-center gap-2">
+                      <img
+                        className="w-8 h-8"
+                        src={saladImage}
+                        alt="salad.nu logo"
+                      />
+                      <div className="text-center flex-grow">
+                        <p className="font-medium">salad.nu</p>
+                        <p>
+                          by{' '}
+                          <a
+                            className="underline underline-offset-4 hover:opacity-50"
+                            href="https://github.com/Everthings"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Andy Xu
+                          </a>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div>
-                  <p className="text-center text-sm font-bold text-gray-400">
-                    VERSION {process.env.REACT_APP_VERSION}
+                  <p className="text-center text-xs font-bold text-gray-600 dark:text-gray-400">
+                    PAPER.NU VERSION {process.env.REACT_APP_VERSION}
                   </p>
                 </div>
                 <button
