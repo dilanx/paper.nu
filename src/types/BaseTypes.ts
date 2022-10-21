@@ -28,6 +28,7 @@ export interface AppState {
   originalDataString: string;
   scheduleInteractions: ScheduleInteractions;
   searchDefaults?: SearchDefaults;
+  about?: boolean;
   map?: boolean;
 }
 

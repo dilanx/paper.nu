@@ -17,7 +17,6 @@ import {
 import { PlanSpecialFunctions } from '../../types/PlanTypes';
 import { Mode } from '../../utility/Constants';
 import Tooltip from '../generic/Tooltip';
-import aboutMenu from './About';
 import settingsMenu from './Settings';
 import shareMenu from './Share';
 import { TabBar, TabBarButton } from './TabBar';
@@ -55,6 +54,7 @@ const TabBarButtonColors: ColorMap = {
 };
 
 interface TaskBarProps {
+  openAboutMenu: () => void;
   alert: Alert;
   version: string;
   switches: UserOptions;
@@ -70,7 +70,7 @@ function TaskBar(props: TaskBarProps) {
         icon={InformationCircleIcon}
         color="purple"
         display="About"
-        action={() => props.alert(aboutMenu(props.version))}
+        action={() => props.openAboutMenu()}
       />
       <MiniButton
         icon={ArrowTopRightOnSquareIcon}

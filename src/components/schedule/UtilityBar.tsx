@@ -1,5 +1,9 @@
-import { MapIcon } from '@heroicons/react/24/outline';
-import { CalendarIcon, CameraIcon } from '@heroicons/react/24/solid';
+import {
+  CalendarIcon,
+  CameraIcon,
+  ArrowTopRightOnSquareIcon,
+  MapIcon,
+} from '@heroicons/react/24/solid';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Alert } from '../../types/AlertTypes';
@@ -35,6 +39,28 @@ function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
       className="absolute z-20 left-2 lg:left-0 top-1/2 -translate-y-1/2 border-2 border-green-300 p-1 rounded-xl bg-green-100 dark:bg-gray-700
                 gap-2 flex flex-col opacity-40 hover:opacity-100 hover:shadow-lg transition-all duration-150 text-gray-600 dark:text-gray-300"
     >
+      <UtilityBarButton
+        icon={ArrowTopRightOnSquareIcon}
+        color="pink"
+        display="Share"
+        action={() => {
+          alert({
+            title: 'Ready to share!',
+            message:
+              'All of your data is stored in the URL. When you make changes, the URL is updated to reflect them. Save it somewhere, or share with a friend!',
+            confirmButton: 'Copy to clipboard',
+            confirmButtonColor: 'pink',
+            cancelButton: 'Close',
+            iconColor: 'pink',
+            icon: ArrowTopRightOnSquareIcon,
+            textView: window.location.href,
+            action: () => {
+              navigator.clipboard.writeText(window.location.href);
+              toast.success('URL copied to clipboard');
+            },
+          });
+        }}
+      />
       <UtilityBarButton
         icon={CameraIcon}
         color="orange"

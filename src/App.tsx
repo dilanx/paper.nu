@@ -62,6 +62,7 @@ import { SideCardData } from './types/SideCardTypes';
 import { Mode } from './utility/Constants';
 import PlanError from './utility/PlanError';
 import Utility from './utility/Utility';
+import About from './components/menu/about/About';
 var d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? 'UNKNOWN';
@@ -430,6 +431,13 @@ class App extends React.Component<{}, AppState> {
               />
             )}
 
+            {this.state.about && (
+              <About
+                switches={switches}
+                onClose={() => this.setState({ about: false })}
+              />
+            )}
+
             {this.state.map && (
               <CampusMap
                 schedule={this.state.schedule.schedule}
@@ -515,6 +523,7 @@ class App extends React.Component<{}, AppState> {
                   />
                 )}
                 <TaskBar
+                  openAboutMenu={() => this.setState({ about: true })}
                   alert={(alertData) => {
                     this.showAlert(alertData);
                   }}
