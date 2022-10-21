@@ -335,7 +335,7 @@ class Search extends React.Component<SearchProps, SearchState> {
       <div
         className={`${
           this.props.switches.get.tab === 'Search' ? '' : 'hidden '
-        }border-4 border-gray-400 dark:border-gray-500 my-2 rounded-lg shadow-lg flex-1 flex flex-col overflow-hidden ${
+        }border-4 border-gray-400 dark:border-gray-500 my-2 rounded-2xl shadow-lg flex-1 flex flex-col overflow-hidden ${
           this.props.loading
             ? 'justify-center items-center'
             : current

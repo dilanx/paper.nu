@@ -281,7 +281,7 @@ class AccountPlans extends React.Component<
       <motion.div
         initial="hidden"
         animate="visible"
-        className="border-4 border-rose-300 my-2 rounded-lg shadow-lg h-full
+        className="border-4 border-rose-300 my-2 rounded-2xl shadow-lg h-full
             overflow-y-scroll no-scrollbar"
       >
         <p className="text-center text-2xl text-rose-300 font-bold my-4">
