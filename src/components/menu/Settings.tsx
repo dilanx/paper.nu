@@ -13,7 +13,7 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
   title: 'Settings',
   message: `Customize your Plan Northwestern experience! These settings are saved in your browser and not in the URL.`,
   cancelButton: 'Close',
-  iconColor: 'orange',
+  color: 'orange',
   icon: Cog6ToothIcon,
   tabs: {
     switchName: 'settings_tab',

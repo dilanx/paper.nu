@@ -2,7 +2,6 @@ import {
   BookmarkIcon,
   CloudIcon,
   Cog6ToothIcon,
-  ArrowTopRightOnSquareIcon,
   InformationCircleIcon,
   MagnifyingGlassIcon,
   PencilSquareIcon,
@@ -18,8 +17,8 @@ import {
 import { PlanSpecialFunctions } from '../../types/PlanTypes';
 import { Mode } from '../../utility/Constants';
 import Tooltip from '../generic/Tooltip';
-import settingsMenu from './Settings';
 import feedbackMenu from './Feedback';
+import settingsMenu from './Settings';
 import { TabBar, TabBarButton } from './TabBar';
 
 interface MiniButtonProps {

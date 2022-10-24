@@ -242,9 +242,8 @@ let Utility = {
                       Check out the site status to see if what you're experiencing is a known issue.
                       If it's not, please let me know. Make sure to note the error message below.`,
       confirmButton: 'View status',
-      confirmButtonColor: 'red',
       cancelButton: 'Close',
-      iconColor: 'red',
+      color: 'red',
       icon: ExclamationTriangleIcon,
       textView: error + ' - ' + from,
       action: () => {

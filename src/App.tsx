@@ -63,6 +63,7 @@ import { Mode } from './utility/Constants';
 import PlanError from './utility/PlanError';
 import Utility from './utility/Utility';
 import About from './components/menu/about/About';
+import { getTermName } from './DataManager';
 var d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? 'UNKNOWN';
@@ -253,62 +254,86 @@ class App extends React.Component<{}, AppState> {
   initialize(params: URLSearchParams | undefined, callback: () => void) {
     d('initializing');
     SaveDataManager.load(params, this.state.switches)
-      .then(({ mode, data, activeId, originalDataString, method, termId }) => {
-        const modeStr = mode === Mode.PLAN ? 'plan' : 'schedule';
-        if (data === 'malformed') {
-          this.showAlert({
-            title: `Unable to load ${modeStr}.`,
-            message: `The ${modeStr} you're trying to access is not valid. If you're loading it through a URL, ensure that it hasn't been manually modified.`,
-            confirmButton: 'What a shame.',
-            confirmButtonColor: 'red',
-            iconColor: 'red',
-            icon: ExclamationTriangleIcon,
-          });
-          return;
-        }
-        this.setSwitch('mode', mode);
-        this.setSwitch(
-          mode === Mode.PLAN ? 'active_plan_id' : 'active_schedule_id',
+      .then(
+        ({
+          mode,
+          data,
           activeId,
-          true
-        );
-        this.setState({ originalDataString, unsavedChanges: false });
-        if (data === 'empty') {
-          this.setState({
-            schedule: {
-              termId,
-              ...this.state.schedule,
-            },
-          });
-          return;
-        }
+          originalDataString,
+          method,
+          latestTermId,
+        }) => {
+          const modeStr = mode === Mode.PLAN ? 'plan' : 'schedule';
+          if (data === 'malformed') {
+            this.setState({
+              schedule: {
+                termId: latestTermId,
+                ...this.state.schedule,
+              },
+            });
+            this.showAlert({
+              title: `Unable to load ${modeStr}.`,
+              message: `The ${modeStr} you're trying to access is not valid. If you're loading it through a URL, ensure that it hasn't been manually modified.`,
+              confirmButton: 'What a shame.',
+              color: 'red',
+              icon: ExclamationTriangleIcon,
+            });
+            return;
+          }
+          this.setSwitch('mode', mode);
+          this.setSwitch(
+            mode === Mode.PLAN ? 'active_plan_id' : 'active_schedule_id',
+            activeId,
+            true
+          );
+          this.setState({ originalDataString, unsavedChanges: false });
+          if (data === 'empty') {
+            this.setState({
+              schedule: {
+                termId: latestTermId,
+                ...this.state.schedule,
+              },
+            });
+            return;
+          }
 
-        switch (mode) {
-          case Mode.PLAN:
-            this.setState({ data: data as PlanData });
-            break;
-          case Mode.SCHEDULE:
-            this.setState({ schedule: data as ScheduleData });
-            break;
-        }
+          switch (mode) {
+            case Mode.PLAN:
+              this.setState({ data: data as PlanData });
+              break;
+            case Mode.SCHEDULE:
+              this.setState({ schedule: data as ScheduleData });
+              break;
+          }
 
-        switch (method) {
-          case 'URL':
-            toast.success(`Loaded ${modeStr} from URL`);
-            break;
-          case 'Account':
-            toast.success(
-              `Loaded ${modeStr}: ` +
-                (mode === Mode.PLAN
-                  ? Account.getPlanName(activeId)
-                  : Account.getScheduleName(activeId))
-            );
-            break;
-          case 'Storage':
-            toast.success(`Loaded recently edited ${modeStr}`);
-            break;
+          switch (method) {
+            case 'URL':
+              toast.success(`Loaded ${modeStr} from URL`);
+              break;
+            case 'Account':
+              toast.success(
+                `Loaded ${modeStr}: ` +
+                  (mode === Mode.PLAN
+                    ? Account.getPlanName(activeId)
+                    : Account.getScheduleName(activeId))
+              );
+              break;
+            case 'Storage':
+              toast.success(`Loaded recently edited ${modeStr}`);
+              break;
+            case 'TermChange':
+              const sdata = data as ScheduleData;
+              toast.success(
+                `Changed term to ${
+                  sdata.termId
+                    ? getTermName(sdata.termId) || 'unknown'
+                    : 'unknown'
+                }`
+              );
+              break;
+          }
         }
-      })
+      )
       .catch((error: PlanError) => {
         this.showAlert(
           Utility.errorAlert('account_initial_login', error.message)
@@ -486,6 +511,28 @@ class App extends React.Component<{}, AppState> {
                   defaults={this.state.searchDefaults}
                   expandMap={() => this.setState({ map: true })}
                   loading={this.state.loadingLogin}
+                  term={
+                    this.state.schedule.termId
+                      ? {
+                          id: this.state.schedule.termId,
+                          name:
+                            getTermName(this.state.schedule.termId) ||
+                            'unknown',
+                        }
+                      : undefined
+                  }
+                  switchTerm={(termId) => {
+                    this.closeSideCard();
+                    this.setState({ loadingLogin: true });
+                    this.initialize(
+                      new URLSearchParams({
+                        t: termId,
+                      }),
+                      () => {
+                        this.setState({ loadingLogin: false });
+                      }
+                    );
+                  }}
                 />
                 {tab === 'My List' && (
                   <Bookmarks
@@ -520,6 +567,7 @@ class App extends React.Component<{}, AppState> {
                         `active_${isSchedule ? 'schedule' : 'plan'}_id`
                       ]
                     }
+                    loading={this.state.loadingLogin}
                   />
                 )}
                 <TaskBar

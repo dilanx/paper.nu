@@ -28,6 +28,7 @@ interface AccountPlansProps {
   activateSchedule: (scheduleId: string) => void;
   deactivate: () => void;
   activeId?: string;
+  loading: boolean;
 }
 
 interface AccountPlansState {
@@ -113,8 +114,7 @@ class AccountPlans extends React.Component<
       message: `Let's add a new ${t} to your account! You'll need to give it a name.`,
       cancelButton: 'Cancel',
       confirmButton: 'Create',
-      confirmButtonColor: 'rose',
-      iconColor: 'rose',
+      color: 'rose',
       icon: PlusIcon,
       textInput: {
         placeholder: 'Name',
@@ -170,8 +170,7 @@ class AccountPlans extends React.Component<
       message: `Are you sure you want to delete your ${t} named '${name}' from your account? If it's active right now, it'll stay there, but it won't be linked to your account anymore.`,
       cancelButton: 'Cancel',
       confirmButton: 'Delete',
-      confirmButtonColor: 'red',
-      iconColor: 'red',
+      color: 'red',
       icon: TrashIcon,
       action: () => {
         self.setState({ loading: true });
@@ -228,8 +227,7 @@ class AccountPlans extends React.Component<
       message: `Are you sure you want to log out? Make sure your changes are saved!`,
       cancelButton: 'Cancel',
       confirmButton: 'Log out',
-      confirmButtonColor: 'rose',
-      iconColor: 'rose',
+      color: 'rose',
       icon: ArrowRightOnRectangleIcon,
       action: () => {
         Account.logOut();
@@ -299,11 +297,11 @@ class AccountPlans extends React.Component<
               },
             }}
           />
-        ) : this.state.loading ? (
+        ) : this.state.loading || this.props.loading ? (
           <AccountPlanMessage
             icon={
               <SpinnerCircularFixed
-                size={50}
+                size={64}
                 thickness={160}
                 speed={200}
                 color={darkMode ? 'rgb(251, 113, 133)' : 'rgb(244, 63, 94)'}
@@ -312,8 +310,6 @@ class AccountPlans extends React.Component<
                 }
               />
             }
-            title="Wait..."
-            description="Walk sign is not on to cross Sheridan Road."
           />
         ) : items.length === 0 ? (
           <AccountPlanMessage

@@ -75,9 +75,8 @@ class Content extends React.Component<ContentProps> {
                   message:
                     'This will add another year to your plan. You can remove it by removing all classes from that year and refreshing the page.',
                   confirmButton: 'Add year',
-                  confirmButtonColor: 'cyan',
                   cancelButton: 'Close',
-                  iconColor: 'cyan',
+                  color: 'cyan',
                   icon: PlusIcon,
                   action: () => {
                     this.props.f2.addYear();

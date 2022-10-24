@@ -1,5 +1,6 @@
 import {
   AlertFormFieldMultiSelect,
+  AlertFormFieldSingleSelect,
   AlertFormFieldText,
   AlertFormFieldTime,
   AlertFormResponse,
@@ -8,6 +9,7 @@ import {
 } from '../../../types/AlertTypes';
 import MultiSelectInput from '../../generic/MultiSelectInput';
 import Section from '../../generic/Section';
+import SingleSelectInput from '../../generic/SingleSelectInput';
 import TextInput from '../../generic/TextInput';
 import TimeInput from '../../generic/TimeInput';
 
@@ -19,6 +21,7 @@ export const getAlertForm = (
   sections.map((section) => (
     <Section
       title={section.title}
+      description={section.description}
       fullRow={section.fullRow}
       key={`alert-form-section-${section.title}`}
     >
@@ -32,6 +35,7 @@ export const getAlertForm = (
               validator={field.validator}
               maxLength={field.maxLength}
               required={field.required}
+              paragraph={field.paragraph}
               key={`alert-form-field-${field.name}`}
             />
           );
@@ -42,6 +46,18 @@ export const getAlertForm = (
               value={values[field.name]}
               setValue={(value) => setValue(field.name, value)}
               placeholder={field.placeholder}
+              required={field.required}
+              key={`alert-form-field-${field.name}`}
+            />
+          );
+        }
+        if (formFieldIs<AlertFormFieldSingleSelect>(field, 'single-select')) {
+          return (
+            <SingleSelectInput
+              title={field.name}
+              options={field.options}
+              value={values[field.name]}
+              setValue={(value) => setValue(field.name, value)}
               required={field.required}
               key={`alert-form-field-${field.name}`}
             />

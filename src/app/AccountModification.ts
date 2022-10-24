@@ -43,21 +43,37 @@ function activate(
         return;
       }
 
-      (isSchedule ? ScheduleManager : PlanManager)
-        .loadFromString(item.content)
-        .then((data) => {
-          if (data === 'malformed') {
-            app.setState({
-              alertData: Utility.errorAlert(
-                `account_activate_${errText}`,
-                'Malformed Data'
-              ),
-            });
-            return;
-          }
+      if (!item.content) {
+        callback(item, 'empty');
+        return;
+      }
 
-          callback(item, data);
-        });
+      let confirmNonAccountOverwrite =
+        app.state.switches.get.active_plan_id === 'None' &&
+        window.location.search.length > 0;
+
+      discardChanges(
+        app,
+        () => {
+          app.setState({ loadingLogin: true });
+          (isSchedule ? ScheduleManager : PlanManager)
+            .loadFromString(item.content)
+            .then((data) => {
+              if (data === 'malformed') {
+                app.setState({
+                  alertData: Utility.errorAlert(
+                    `account_activate_${errText}`,
+                    'Malformed Data'
+                  ),
+                });
+                return;
+              }
+
+              callback(item, data);
+            });
+        },
+        confirmNonAccountOverwrite
+      );
     })
     .catch((error: PlanError) => {
       app.setState({
@@ -83,27 +99,18 @@ export function activateAccountPlan(app: AppType, planId: string) {
       return;
     }
 
-    let confirmNonAccountOverwrite =
-      app.state.switches.get.active_plan_id === 'None' &&
-      window.location.search.length > 0;
-
-    discardChanges(
-      app,
-      () => {
-        app.state.switches.set('active_plan_id', planId, true);
-        app.setState(
-          {
-            data: data as PlanData,
-            originalDataString: item.content,
-          },
-          () => {
-            PlanManager.save(data as PlanData);
-            toast.success('Activated plan: ' + Account.getPlanName(planId));
-            d('plan activated: %s', planId);
-          }
-        );
+    app.state.switches.set('active_plan_id', planId, true);
+    app.setState(
+      {
+        data: data as PlanData,
+        originalDataString: item.content,
+        loadingLogin: false,
       },
-      confirmNonAccountOverwrite
+      () => {
+        PlanManager.save(data as PlanData);
+        toast.success('Activated plan: ' + Account.getPlanName(planId));
+        d('plan activated: %s', planId);
+      }
     );
   });
 }
@@ -116,6 +123,7 @@ export function activateAccountSchedule(app: AppType, scheduleId: string) {
       app.setState({
         originalDataString: item.content,
         unsavedChanges: window.location.search.length > 0,
+        loadingLogin: false,
       });
       toast.success(
         'Activated schedule: ' + Account.getScheduleName(scheduleId)
@@ -124,29 +132,20 @@ export function activateAccountSchedule(app: AppType, scheduleId: string) {
       return;
     }
 
-    let confirmNonAccountOverwrite =
-      app.state.switches.get.active_schedule_id === 'None' &&
-      window.location.search.length > 0;
-
-    discardChanges(
-      app,
-      () => {
-        app.state.switches.set('active_schedule_id', scheduleId, true);
-        app.setState(
-          {
-            schedule: data as ScheduleData,
-            originalDataString: item.content,
-          },
-          () => {
-            ScheduleManager.save(data as ScheduleData);
-            toast.success(
-              'Activated schedule: ' + Account.getScheduleName(scheduleId)
-            );
-            d('schedule activated: %s', scheduleId);
-          }
-        );
+    app.state.switches.set('active_schedule_id', scheduleId, true);
+    app.setState(
+      {
+        schedule: data as ScheduleData,
+        originalDataString: item.content,
+        loadingLogin: false,
       },
-      confirmNonAccountOverwrite
+      () => {
+        ScheduleManager.save(data as ScheduleData);
+        toast.success(
+          'Activated schedule: ' + Account.getScheduleName(scheduleId)
+        );
+        d('schedule activated: %s', scheduleId);
+      }
     );
   });
 }
@@ -225,9 +224,8 @@ export function discardChanges(
         title: 'Hold on...',
         message,
         confirmButton: 'Yes, continue',
-        confirmButtonColor: 'red',
         cancelButton: 'Go back',
-        iconColor: 'red',
+        color: 'red',
         icon: ExclamationTriangleIcon,
         action: () => {
           app.setState({ unsavedChanges: false });

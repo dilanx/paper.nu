@@ -13,6 +13,26 @@ localforage.config({
   driver: [localforage.INDEXEDDB, localforage.LOCALSTORAGE],
 });
 
+export function getTermName(termId: string) {
+  return info?.terms[termId]?.name;
+}
+
+export function getTerms() {
+  if (!info) return;
+  return Object.keys(info.terms).map((termId) => ({
+    value: termId,
+    label: info?.terms[termId].name,
+  }));
+}
+
+export function getTermInfo(termId: string) {
+  if (!info) return;
+  return {
+    value: termId,
+    label: info.terms[termId].name,
+  };
+}
+
 export async function getDataMapInformation() {
   d('data map information: get');
   if (info) {

@@ -4,6 +4,8 @@ import {
   AccountModificationFunctions,
   AccountData,
 } from '../../types/AccountTypes';
+import ScheduleManager from '../../ScheduleManager';
+import { getTermName } from '../../DataManager';
 
 interface AccountPlanProps {
   id: string;
@@ -20,6 +22,9 @@ const variants = {
 function AccountPlan(props: AccountPlanProps) {
   let id = props.id;
   let plan = props.plan;
+  const termId = ScheduleManager.getTermFromDataString(plan.content);
+  const termName = termId ? getTermName(termId) : undefined;
+
   return (
     <motion.div variants={variants}>
       <div
@@ -42,8 +47,9 @@ function AccountPlan(props: AccountPlanProps) {
         <p className="text-lg font-semibold text-black dark:text-white">
           {plan.name.toUpperCase()}
         </p>
-        <p className="text-sm font-light text-gray-600 dark:text-gray-300">
-          Last updated{' '}
+        <p className="text-xs font-medium text-gray-600 dark:text-gray-300">
+          {termId ? (termName ? termName : 'unknown term') + ' • ' : ''}last
+          updated{' '}
           {plan.lastUpdated
             ? new Date(plan.lastUpdated).toLocaleDateString()
             : 'N/A'}

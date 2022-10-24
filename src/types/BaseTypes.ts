@@ -63,7 +63,7 @@ export interface BaseProps {
   switches: UserOptions;
 }
 
-export type LoadMethods = 'None' | 'URL' | 'Account' | 'Storage';
+export type LoadMethods = 'None' | 'URL' | 'Account' | 'Storage' | 'TermChange';
 
 export interface LoadResponse<T> {
   mode: Mode;
@@ -71,7 +71,7 @@ export interface LoadResponse<T> {
   activeId?: string;
   originalDataString: string;
   method: LoadMethods;
-  termId?: string;
+  latestTermId: string;
 }
 
 export type Color =

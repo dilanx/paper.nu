@@ -49,9 +49,8 @@ function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
             message:
               'All of your data is stored in the URL. When you make changes, the URL is updated to reflect them. Save it somewhere, or share with a friend!',
             confirmButton: 'Copy to clipboard',
-            confirmButtonColor: 'pink',
             cancelButton: 'Close',
-            iconColor: 'pink',
+            color: 'pink',
             icon: ArrowTopRightOnSquareIcon,
             textView: window.location.href,
             action: () => {
@@ -72,8 +71,7 @@ function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
             message:
               'This will export your schedule as an image, which you can then share!',
             confirmButton: 'Download',
-            confirmButtonColor: 'sky',
-            iconColor: 'sky',
+            color: 'sky',
             cancelButton: 'Cancel',
             action: () => setTakeImage(true),
           });
@@ -115,8 +113,7 @@ function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
               </p>
             ),
             confirmButton: 'Download',
-            confirmButtonColor: 'red',
-            iconColor: 'red',
+            color: 'red',
             cancelButton: 'Cancel',
             action: () => exportScheduleAsICS(validSections),
           });
@@ -147,7 +144,6 @@ function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
               message:
                 "Custom sections can only be added to schedules linked to an account. Make sure you're logged in and have a schedule activated!",
               confirmButton: 'Get started',
-              confirmButtonColor: 'pink',
               iconColor: 'pink',
               cancelButton: 'Close',
               action: () => {
@@ -168,7 +164,6 @@ function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
               },
             },
             confirmButton: 'Add',
-            confirmButtonColor: 'pink',
             iconColor: 'pink',
             cancelButton: 'Cancel',
           });

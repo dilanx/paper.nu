@@ -7,6 +7,7 @@ import {
 } from '../../../types/AlertTypes';
 import { UserOptions } from '../../../types/BaseTypes';
 import { formIsValid } from '../../../utility/AlertFormInputValidation';
+import SelectMenu from '../../generic/SelectMenu';
 import { TabBar, TabBarButton } from '../TabBar';
 import { getAlertEditButtons } from './AlertEditButtons';
 import { getAlertExtras } from './AlertExtras';
@@ -20,19 +21,24 @@ interface AlertProps {
   onClose: () => void;
 }
 
-export default function Alert(props: AlertProps) {
+export default function Alert({
+  data,
+  switches,
+  onConfirm,
+  onClose,
+}: AlertProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [confirmation, setConfirmation] = useState<AlertConfirmationState>({});
-  const [inputText, setInputText] = useState('');
+  const [textValue, setTextValue] = useState<string | undefined>(
+    data.selectMenu?.defaultValue
+  );
   const [badInput, setBadInput] = useState(false);
-
-  const data = props.data;
 
   useEffect(() => {
     if (data.textInput?.match) {
-      setBadInput(!data.textInput.match.test(inputText));
+      setBadInput(!data.textInput.match.test(textValue ?? ''));
     }
-  }, [data.textInput, inputText]);
+  }, [data.textInput, textValue]);
 
   let defaultFormValues: AlertFormResponse = {};
   if (data.form) {
@@ -61,7 +67,7 @@ export default function Alert(props: AlertProps) {
 
   function confirm() {
     setIsOpen(false);
-    props.onConfirm(props.data.textInput ? inputText : undefined);
+    onConfirm(textValue);
   }
 
   const extraList = getAlertExtras(data.extras);
@@ -72,10 +78,10 @@ export default function Alert(props: AlertProps) {
 
   if (data.tabs) {
     let tabs = data.tabs;
-    let selected = props.switches.get[tabs.switchName] as string;
+    let selected = switches.get[tabs.switchName] as string;
     tabBar = (
       <TabBar
-        switches={props.switches}
+        switches={switches}
         switchName={tabs.switchName}
         tabLoading={false}
         colorMap={tabs.colorMap}
@@ -88,7 +94,7 @@ export default function Alert(props: AlertProps) {
             <TabBarButton
               name={tab.name}
               selected={selected}
-              switches={props.switches}
+              switches={switches}
               switchName={tabs.switchName}
               color={tabs.colorMap[tab.name]}
               disableClick={tab.disableClick}
@@ -105,7 +111,7 @@ export default function Alert(props: AlertProps) {
 
   let optionList = getAlertOptions(
     options,
-    props.switches,
+    switches,
     confirmation,
     setConfirmation
   );
@@ -117,7 +123,7 @@ export default function Alert(props: AlertProps) {
       <Dialog
         as="div"
         initialFocus={initialFocus}
-        className={`${props.switches.get.dark ? 'dark' : ''} relative z-40`}
+        className={`${switches.get.dark ? 'dark' : ''} relative z-40`}
         onClose={() => close()}
       >
         <Transition.Child
@@ -128,7 +134,7 @@ export default function Alert(props: AlertProps) {
           leave="ease-in duration-200"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
-          afterLeave={() => props.onClose()}
+          afterLeave={() => onClose()}
         >
           <div className="fixed inset-0 bg-black bg-opacity-25" />
         </Transition.Child>
@@ -148,10 +154,10 @@ export default function Alert(props: AlertProps) {
                   <div className="sm:flex sm:items-start">
                     <div
                       ref={initialFocus}
-                      className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-${data.iconColor}-100 dark:bg-gray-600 sm:mx-0 sm:h-10 sm:w-10`}
+                      className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-${data.color}-100 dark:bg-gray-600 sm:mx-0 sm:h-10 sm:w-10`}
                     >
                       <data.icon
-                        className={`w-6 h-6 text-${data.iconColor}-600 dark:text-${data.iconColor}-300`}
+                        className={`w-6 h-6 text-${data.color}-600 dark:text-${data.color}-300`}
                         aria-hidden="true"
                       />
                     </div>
@@ -192,7 +198,8 @@ export default function Alert(props: AlertProps) {
                                                 outline-none border-2 border-gray-200 hover:border-gray-400 dark:border-gray-800 dark:hover:border-gray-500 
                                                 transition-all duration-150 
                                                 ${
-                                                  inputText.length === 0 ||
+                                                  !textValue ||
+                                                  textValue.length === 0 ||
                                                   !data.textInput.match
                                                     ? 'focus:border-gray-500 focus:active:border-gray-300'
                                                     : badInput
@@ -201,12 +208,13 @@ export default function Alert(props: AlertProps) {
                                                 }`}
                             placeholder={data.textInput.placeholder}
                             onChange={(event) => {
-                              setInputText(event.target.value);
+                              setTextValue(event.target.value);
                             }}
                           />
                           <p className="text-sm text-red-500 mx-2 my-1">
                             {badInput &&
-                              inputText.length > 0 &&
+                              textValue &&
+                              textValue.length > 0 &&
                               data.textInput.matchError}
                           </p>
                         </div>
@@ -221,6 +229,14 @@ export default function Alert(props: AlertProps) {
                             {data.textView}
                           </p>
                         </div>
+                      )}
+                      {data.selectMenu && (
+                        <SelectMenu
+                          options={data.selectMenu.options}
+                          value={textValue}
+                          setValue={(value) => setTextValue(value)}
+                          color={data.color}
+                        />
                       )}
                     </div>
                   </div>
@@ -253,8 +269,8 @@ export default function Alert(props: AlertProps) {
                       type="button"
                       ref={confirmButton}
                       className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 
-                        bg-${data.confirmButtonColor}-500
-                        opacity-100 hover:bg-${data.confirmButtonColor}-600 active:bg-${data.confirmButtonColor}-700
+                        bg-${data.color}-500
+                        opacity-100 hover:bg-${data.color}-600 active:bg-${data.color}-700
                         disabled:opacity-30 disabled:cursor-not-allowed
                         text-base font-medium text-white outline-none sm:ml-3 sm:w-auto sm:text-sm`}
                       disabled={badInput}

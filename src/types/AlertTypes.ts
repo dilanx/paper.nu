@@ -62,11 +62,12 @@ export function editButtonIsToggleable(
 
 export interface AlertFormSection {
   title: string;
+  description?: string;
   fullRow?: boolean;
   fields: AlertFormField[];
 }
 
-type AlertFormFieldType = 'text' | 'time' | 'multi-select';
+type AlertFormFieldType = 'text' | 'time' | 'single-select' | 'multi-select';
 
 export interface AlertFormField {
   name: string;
@@ -80,11 +81,17 @@ export interface AlertFormFieldText extends AlertFormField {
   placeholder?: string;
   validator?: (value: string) => boolean;
   maxLength?: number;
+  paragraph?: boolean;
 }
 
 export interface AlertFormFieldTime extends AlertFormField {
   type: 'time';
   placeholder?: string;
+}
+
+export interface AlertFormFieldSingleSelect extends AlertFormField {
+  type: 'single-select';
+  options: string[];
 }
 
 export interface AlertFormFieldMultiSelect extends AlertFormField {
@@ -101,6 +108,11 @@ export function formFieldIs<T extends AlertFormField>(
 
 export interface AlertFormResponse {
   [field: string]: string;
+}
+
+export interface SelectMenuOption {
+  value: string;
+  label?: string;
 }
 
 export interface AlertData {
@@ -129,11 +141,14 @@ export interface AlertData {
     sections: AlertFormSection[];
     onSubmit: (response: AlertFormResponse) => void;
   };
+  selectMenu?: {
+    options: SelectMenuOption[];
+    defaultValue?: string;
+  };
   confirmButton?: string;
-  confirmButtonColor?: Color;
-  iconColor: Color;
+  color: Color;
   cancelButton?: string;
-  action?: (inputText?: string) => void;
+  action?: (value?: string) => void;
 }
 
 export interface Alert {

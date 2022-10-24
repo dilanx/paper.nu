@@ -41,6 +41,7 @@ let SaveDataManager = {
     let accountPlans: AccountDataMap | undefined = undefined;
     let accountSchedules: AccountDataMap | undefined = undefined;
     let method: LoadMethods = 'None';
+    const latestTermId = (await getDataMapInformation()).latest;
 
     if (Account.isLoggedIn()) {
       const accountInit = Account.init();
@@ -56,7 +57,10 @@ let SaveDataManager = {
         if (scheduleData !== 'malformed') {
           d('schedule URL load successful');
           method = 'URL';
-          if (accountSchedules) {
+          if (!params.has('s') && !params.has('sf')) {
+            d('no content, just term change');
+            method = 'TermChange';
+          } else if (accountSchedules) {
             let dataStr = params.toString();
             let id = matchAccountId(accountSchedules, dataStr);
             if (id) {
@@ -75,6 +79,7 @@ let SaveDataManager = {
           activeId,
           originalDataString,
           method,
+          latestTermId,
         };
         return response;
       }
@@ -104,6 +109,7 @@ let SaveDataManager = {
           activeId,
           originalDataString,
           method,
+          latestTermId,
         };
         return response;
       }
@@ -134,6 +140,7 @@ let SaveDataManager = {
               activeId,
               originalDataString,
               method: 'Account',
+              latestTermId,
             };
             return response;
           }
@@ -165,6 +172,7 @@ let SaveDataManager = {
           activeId,
           originalDataString,
           method,
+          latestTermId,
         };
         return response;
       }
@@ -188,6 +196,7 @@ let SaveDataManager = {
               activeId,
               originalDataString,
               method: 'Account',
+              latestTermId,
             };
             return response;
           }
@@ -219,6 +228,7 @@ let SaveDataManager = {
           activeId,
           originalDataString,
           method,
+          latestTermId,
         };
         return response;
       }
@@ -231,7 +241,7 @@ let SaveDataManager = {
       activeId,
       originalDataString,
       method,
-      termId: (await getDataMapInformation()).latest,
+      latestTermId,
     };
   },
   loadSwitchesFromStorage: (

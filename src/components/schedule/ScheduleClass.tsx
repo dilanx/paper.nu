@@ -89,7 +89,7 @@ function getDetails(
                 icon: UserIcon,
                 title: instructor.name ?? 'No name',
                 subtitle: `${section.subject} ${section.number} (section ${section.section})`,
-                iconColor: 'rose',
+                color: 'rose',
                 cancelButton: 'Close',
                 extras: [
                   {

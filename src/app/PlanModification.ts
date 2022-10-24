@@ -37,8 +37,7 @@ function courseConfirmationPrompts(
         ).toLowerCase()} year.`,
         cancelButton: 'Go back',
         confirmButton: 'Add anyway',
-        confirmButtonColor: 'red',
-        iconColor: 'red',
+        color: 'red',
         icon: ExclamationTriangleIcon,
         action: () => {
           confirmationCallback();
@@ -59,8 +58,7 @@ function courseConfirmationPrompts(
         message: `With app course, you'll have ${unitCount} units worth of classes app quarter, which is over Northwestern's maximum of 5.5 units.`,
         cancelButton: 'Go back',
         confirmButton: 'Add anyway',
-        confirmButtonColor: 'red',
-        iconColor: 'red',
+        color: 'red',
         icon: ExclamationTriangleIcon,
         action: () => {
           confirmationCallback();
@@ -228,9 +226,8 @@ export function addSummerQuarter(app: AppType, year: number) {
         year
       ).toLowerCase()}. You can remove it by removing all classes from that quarter and refreshing the page.`,
       confirmButton: 'Add quarter',
-      confirmButtonColor: 'yellow',
       cancelButton: 'Close',
-      iconColor: 'yellow',
+      color: 'yellow',
       icon: PlusIcon,
       action: () => {
         const data = app.state.data;
@@ -281,8 +278,7 @@ export function clearData(app: AppType, year?: number) {
         message: `All of the courses in your ${yearText} will be removed.`,
         cancelButton: 'Cancel',
         confirmButton: 'Clear',
-        confirmButtonColor: 'red',
-        iconColor: 'red',
+        color: 'red',
         icon: TrashIcon,
         action: () => {
           const oldData = app.state.data;

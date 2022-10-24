@@ -21,8 +21,7 @@ function courseConfirmationPrompts(
         message: `It looks like that section overlaps with ${overlaps.subject} ${overlaps.number} (section ${overlaps.section}). Are you sure you want to add it?`,
         cancelButton: 'Go back',
         confirmButton: 'Add anyway',
-        confirmButtonColor: 'red',
-        iconColor: 'red',
+        color: 'red',
         icon: ExclamationTriangleIcon,
         action: () => {
           confirmationCallback();

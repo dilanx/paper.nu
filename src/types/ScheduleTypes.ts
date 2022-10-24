@@ -144,3 +144,8 @@ export interface ScheduleDataCache {
   updated: string;
   data: ScheduleCourse[];
 }
+
+export interface TermInfo {
+  id: string;
+  name: string;
+}

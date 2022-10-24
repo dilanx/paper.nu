@@ -1,18 +1,19 @@
 import {
   ArrowRightIcon,
   ArrowSmallLeftIcon,
+  ArrowTopRightOnSquareIcon,
   CloudIcon,
   EllipsisHorizontalIcon,
-  ArrowTopRightOnSquareIcon,
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline';
 import {
-  XCircleIcon,
-  FunnelIcon,
   CalendarDaysIcon,
+  FunnelIcon,
+  XCircleIcon,
 } from '@heroicons/react/24/solid';
 import React from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';
+import { getTerms } from '../../DataManager';
 import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
 import { Alert } from '../../types/AlertTypes';
@@ -27,6 +28,7 @@ import {
   ScheduleData,
   ScheduleInteractions,
   ScheduleModificationFunctions,
+  TermInfo,
 } from '../../types/ScheduleTypes';
 import {
   FilterOptions,
@@ -61,6 +63,8 @@ interface SearchProps {
   defaults?: SearchDefaults;
   expandMap: () => void;
   loading?: boolean;
+  term?: TermInfo;
+  switchTerm: (termId: string) => void;
 }
 
 interface SearchState {
@@ -183,9 +187,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                 <div key="no-query">
                   <MiniContentBlock icon={MagnifyingGlassIcon} title="Search">
                     Use the search bar to search across every course offered{' '}
-                    <span className="font-bold">
-                      {process.env.REACT_APP_SCHEDULE_QUARTER}
-                    </span>{' '}
+                    <span className="font-bold">{this.props.term?.name}</span>{' '}
                     at Northwestern and view detailed information for each one.
                     Search courses by subject and number, title, time slot,
                     instructor, or location.
@@ -331,19 +333,21 @@ class Search extends React.Component<SearchProps, SearchState> {
 
     const queryEmpty = search.length === 0;
 
+    const loading = this.props.loading || !this.props.term;
+
     return (
       <div
         className={`${
           this.props.switches.get.tab === 'Search' ? '' : 'hidden '
         }border-4 border-gray-400 dark:border-gray-500 my-2 rounded-2xl shadow-lg flex-1 flex flex-col overflow-hidden ${
-          this.props.loading
+          loading
             ? 'justify-center items-center'
             : current
             ? 'overflow-y-scroll no-scrollbar'
             : ''
         }`}
       >
-        {this.props.loading ? (
+        {loading ? (
           <SpinnerCircularFixed
             size={64}
             thickness={160}
@@ -366,7 +370,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                   placeholder={`Search ${
                     appMode === Mode.PLAN
                       ? 'for classes...'
-                      : process.env.REACT_APP_SCHEDULE_QUARTER + '...'
+                      : this.props.term?.name + '...'
                   }`}
                   onChange={(event) => {
                     this.setState({
@@ -487,8 +491,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                           },
                         },
                         confirmButton: 'Apply',
-                        confirmButtonColor: 'orange',
-                        iconColor: 'orange',
+                        color: 'orange',
                         cancelButton: 'Cancel',
                       });
                     }}
@@ -497,7 +500,32 @@ class Search extends React.Component<SearchProps, SearchState> {
                     <FunnelIcon className="w-5 h-5" />
                   </SearchButton>
                   {appMode === Mode.SCHEDULE && (
-                    <SearchButton action={() => {}} tooltip="Change term">
+                    <SearchButton
+                      action={() => {
+                        this.props.alert({
+                          title: 'Change term',
+                          icon: CalendarDaysIcon,
+                          message:
+                            'Switching terms will allow you to create a schedule for a different quarter. This will clear everything on your current schedule.',
+                          color: 'sky',
+                          selectMenu: {
+                            options:
+                              getTerms()?.sort(
+                                (a, b) => parseInt(b.value) - parseInt(a.value)
+                              ) || [],
+                            defaultValue: this.props.term?.id,
+                          },
+                          confirmButton: 'Change',
+                          cancelButton: 'Cancel',
+                          action: (termId) => {
+                            if (termId) {
+                              this.props.switchTerm(termId);
+                            }
+                          },
+                        });
+                      }}
+                      tooltip="Change term"
+                    >
                       <CalendarDaysIcon className="w-5 h-5" />
                     </SearchButton>
                   )}

@@ -28,18 +28,16 @@ async function loadData(
     await PlanManager.loadPlanData();
   }
   let termId = params.get('t');
-  if (!scheduleData) {
-    let res = await getScheduleData(termId ?? undefined);
+  let res = await getScheduleData(termId ?? undefined);
 
-    if (res) {
-      scheduleData = res.data;
-    } else {
-      if (termId) {
-        res = await getScheduleData(termId);
-        scheduleData = res?.data;
-      }
-      return 'malformed';
+  if (res) {
+    scheduleData = res.data;
+  } else {
+    if (termId) {
+      res = await getScheduleData();
+      scheduleData = res?.data;
     }
+    return 'malformed';
   }
 
   if (!termId) {
@@ -55,11 +53,8 @@ async function loadData(
     bookmarks: [],
   };
 
-  let loadedSomething = false;
-
   try {
     if (params.has('s')) {
-      loadedSomething = true;
       let sections = params.get('s')!.split(',');
 
       let sectionData: ScheduleDataMap = {};
@@ -72,7 +67,6 @@ async function loadData(
       data.schedule = sectionData;
     }
     if (params.has('sf')) {
-      loadedSomething = true;
       let bookmarks = params.get('sf')!.split(',');
 
       let bookmarksData: ScheduleCourse[] = [];
@@ -87,8 +81,6 @@ async function loadData(
   } catch (e) {
     return 'malformed';
   }
-
-  if (!loadedSomething) return 'empty';
 
   return data;
 }
@@ -341,6 +333,12 @@ const ScheduleManager = {
         }
       }
     }
+  },
+
+  getTermFromDataString: (dataStr?: string) => {
+    if (!dataStr) return;
+    const params = new URLSearchParams(dataStr);
+    return params.get('t') || undefined;
   },
 
   loadFromURL: async (params: URLSearchParams) => {
