@@ -34,7 +34,7 @@ function courseConfirmationPrompts(
           exists.quarter
         ).title.toLowerCase()} quarter of your ${Utility.convertYear(
           exists.year
-        ).toLowerCase()} year.`,
+        ).toLowerCase()}.`,
         cancelButton: 'Go back',
         confirmButton: 'Add anyway',
         color: 'red',
