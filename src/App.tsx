@@ -299,7 +299,10 @@ class App extends React.Component<{}, AppState> {
 
           switch (mode) {
             case Mode.PLAN:
-              this.setState({ data: data as PlanData });
+              this.setState({
+                data: data as PlanData,
+                schedule: { termId: latestTermId, ...this.state.schedule },
+              });
               break;
             case Mode.SCHEDULE:
               this.setState({ schedule: data as ScheduleData });

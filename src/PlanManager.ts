@@ -132,16 +132,17 @@ function saveData({ courses, bookmarks }: PlanData) {
 
   for (let y = 0; y < courses.length; y++) {
     for (let q = 0; q < courses[y].length; q++) {
-      let classes = courses[y][q]
-        .map((course) => {
-          let sp = course.id.split(' ');
-          let subj = sp[0];
-          let num = sp[1];
-          let subjId = courseData?.majors[subj].id;
-          return subjId + '_' + num;
-        })
-        .join(',');
-      if (classes.length > 0) params.set(`y${y}q${q}`, classes);
+      let str = '';
+      for (let course of courses[y][q]) {
+        let sp = course.id.split(' ');
+        let subj = sp[0];
+        let num = sp[1];
+        let subjId = courseData?.majors[subj].id;
+        str += `${subjId}_${num},`;
+      }
+      if (str.length > 0) {
+        params.set(`y${y}q${q}`, str.substring(0, str.length - 1));
+      }
     }
   }
 
