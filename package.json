@@ -1,8 +1,8 @@
 {
-  "name": "plan-northwestern",
+  "name": "paper.nu",
   "version": "2.0.0",
   "private": true,
-  "homepage": "https://www.plan-nu.com",
+  "homepage": "https://www.paper.nu",
   "dependencies": {
     "@headlessui/react": "^1.7.2",
     "@heroicons/react": "^2.0.11",
