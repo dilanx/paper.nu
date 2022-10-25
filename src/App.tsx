@@ -270,6 +270,7 @@ class App extends React.Component<{}, AppState> {
                 termId: latestTermId,
                 ...this.state.schedule,
               },
+              latestTermId,
             });
             this.showAlert({
               title: `Unable to load ${modeStr}.`,
@@ -286,7 +287,11 @@ class App extends React.Component<{}, AppState> {
             activeId,
             true
           );
-          this.setState({ originalDataString, unsavedChanges: false });
+          this.setState({
+            originalDataString,
+            unsavedChanges: false,
+            latestTermId,
+          });
           if (data === 'empty') {
             this.setState({
               schedule: {
@@ -536,6 +541,7 @@ class App extends React.Component<{}, AppState> {
                       }
                     );
                   }}
+                  latestTermId={this.state.latestTermId}
                 />
                 {tab === 'My List' && (
                   <Bookmarks
@@ -548,6 +554,7 @@ class App extends React.Component<{}, AppState> {
                     sf={this.state.sf}
                     scheduleInteractions={this.state.scheduleInteractions}
                     switches={switches}
+                    loading={this.state.loadingLogin}
                   />
                 )}
                 {tab === 'Plans' && (
@@ -581,7 +588,6 @@ class App extends React.Component<{}, AppState> {
                   version={VERSION}
                   switches={switches}
                   f2={this.state.f2}
-                  tabLoading={this.state.loadingLogin}
                 />
               </div>
 

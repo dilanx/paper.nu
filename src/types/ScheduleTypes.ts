@@ -141,7 +141,8 @@ export interface ScheduleModificationFunctions {
 
 export interface ScheduleDataCache {
   termId: string;
-  updated: string;
+  dataUpdated: string;
+  cacheUpdated: number;
   data: ScheduleCourse[];
 }
 

@@ -97,12 +97,6 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
             saveToStorage: true,
           },
           {
-            switch: 'schedule_image_watermark',
-            title: 'Watermark on schedule images',
-            description: `If you download your schedule as an image, the site title will be displayed (non-instrusively) at the top right. You can disable this if you don't like it though.`,
-            saveToStorage: true,
-          },
-          {
             switch: 'schedule_warnings',
             title: 'Schedule warnings',
             description: `You'll get warnings for trying things like adding a conflicting section to your schedule.`,

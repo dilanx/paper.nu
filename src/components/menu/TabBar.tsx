@@ -11,7 +11,7 @@ import Tooltip from '../generic/Tooltip';
 interface TabBarProps {
   switches: UserOptions;
   switchName: keyof ReadUserOptions;
-  tabLoading: boolean;
+  tabLoading?: boolean;
   colorMap: ColorMap;
   children?: ReactNode;
 }

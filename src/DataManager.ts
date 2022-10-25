@@ -90,33 +90,77 @@ export async function getScheduleData(
     return;
   }
 
-  const data = await localforage.getItem<ScheduleDataCache>('schedule');
-  if (data) {
-    if (data.termId === termId) {
-      if (data.updated === info.terms[termId].updated) {
-        d('schedule data: cache hit');
-        return {
-          termId,
-          data: schedule(data.data),
-        };
+  const cacheLocations = ['schedule0', 'schedule1', 'schedule2'];
+  let saveToCache = -1;
+  let oldestCache = -1;
+  let oldestTime = -1;
+  let outOfDate = false;
+
+  for (let i = 0; i < cacheLocations.length; i++) {
+    const loc = cacheLocations[i];
+    d('schedule data: checking cache %s', loc);
+    const data = await localforage.getItem<ScheduleDataCache>(loc);
+    if (data) {
+      if (oldestTime < 0 || data.cacheUpdated < oldestTime) {
+        oldestTime = data.cacheUpdated;
+        oldestCache = i;
+      }
+
+      if (data.termId === termId) {
+        if (data.dataUpdated === info.terms[termId].updated) {
+          d('schedule data: cache hit');
+          return {
+            termId,
+            data: schedule(data.data),
+          };
+        } else {
+          d('schedule data: cache out of date, fetching data');
+          saveToCache = i;
+          outOfDate = true;
+          break;
+        }
       } else {
-        d('schedule data: cache out of date, fetching data');
+        d('schedule data: cache is for a different term, checking another');
       }
     } else {
-      d('schedule data: cache is for a different term, fetching data');
+      if (saveToCache < 0) saveToCache = i;
+      d(
+        `schedule data: cache empty${
+          i === cacheLocations.length - 1
+            ? ', all caches checked'
+            : ', checking another'
+        }`
+      );
     }
-  } else {
-    d('schedule data: cache miss, fetching data');
+  }
+
+  if (!outOfDate) {
+    d(
+      'schedule data: cache miss, fetching data and storing in cache %s',
+      cacheLocations[saveToCache]
+    );
+  } else if (saveToCache < 0) {
+    d(
+      'schedule data: all caches are full, fetching data and overwriting the oldest one (%s)',
+      cacheLocations[oldestCache]
+    );
+    saveToCache = oldestCache;
   }
 
   const res = await fetch(`https://cdn.dilanxd.com/paper-data/${termId}.json`);
   const json = await res.json();
 
-  await localforage.setItem('schedule', {
+  await localforage.setItem<ScheduleDataCache>(cacheLocations[saveToCache], {
     termId: termId,
-    updated: info.terms[termId].updated,
+    dataUpdated: info.terms[termId].updated,
     data: json,
+    cacheUpdated: Date.now(),
   });
+
+  d(
+    'schedule data: data fetched and stored in cache %s',
+    cacheLocations[saveToCache]
+  );
   return {
     termId,
     data: schedule(json),

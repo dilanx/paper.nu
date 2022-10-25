@@ -120,7 +120,7 @@ class Schedule extends React.Component<ScheduleProps> {
           />
         )}
 
-        {imageMode && this.props.switches.get.schedule_image_watermark && (
+        {imageMode && (
           <p className="absolute text-lg top-6 right-8 font-bold text-green-400 dark:text-green-200 opacity-50">
             PAPER.NU
           </p>

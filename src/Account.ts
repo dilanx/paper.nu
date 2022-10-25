@@ -176,7 +176,7 @@ let Account = {
     if (!planId) return 'Log in';
     if (planId === 'None') return 'None';
     if (!plans || !plans[planId]) {
-      return 'err';
+      return '-';
     }
     return plans[planId].name.toUpperCase();
   },
@@ -205,7 +205,7 @@ let Account = {
     if (!scheduleId) return 'Log in';
     if (scheduleId === 'None') return 'None';
     if (!schedules || !schedules[scheduleId]) {
-      return 'err';
+      return '-';
     }
     return schedules[scheduleId].name.toUpperCase();
   },

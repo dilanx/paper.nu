@@ -19,7 +19,6 @@ const DEFAULT_SWITCHES: ReadUserOptions = {
   notifications: true,
   settings_tab: 'General',
   mode: Mode.PLAN,
-  schedule_image_watermark: true,
   schedule_warnings: true,
 };
 

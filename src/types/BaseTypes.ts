@@ -30,13 +30,13 @@ export interface AppState {
   searchDefaults?: SearchDefaults;
   about?: boolean;
   map?: boolean;
+  latestTermId?: string;
 }
 
 export interface ReadUserOptions {
   notifications?: boolean;
   settings_tab?: string;
   mode?: Mode;
-  schedule_image_watermark?: boolean;
   active_plan_id?: string;
   active_schedule_id?: string;
   dark?: boolean;

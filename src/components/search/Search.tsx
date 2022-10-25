@@ -65,6 +65,7 @@ interface SearchProps {
   loading?: boolean;
   term?: TermInfo;
   switchTerm: (termId: string) => void;
+  latestTermId?: string;
 }
 
 interface SearchState {
@@ -280,7 +281,7 @@ class Search extends React.Component<SearchProps, SearchState> {
             schedule={this.props.schedule}
             sf={this.props.sf}
             filter={filter}
-            key={`search-${course.course_id}`}
+            key={`search-${course.course_id}-${course.subject}-${course.number}`}
           />
         );
       }
@@ -334,6 +335,9 @@ class Search extends React.Component<SearchProps, SearchState> {
     const queryEmpty = search.length === 0;
 
     const loading = this.props.loading || !this.props.term;
+    const newerTermAvailable =
+      this.props.latestTermId !== undefined &&
+      this.props.latestTermId !== this.props.term?.id;
 
     return (
       <div
@@ -525,12 +529,20 @@ class Search extends React.Component<SearchProps, SearchState> {
                         });
                       }}
                       tooltip="Change term"
+                      ring={newerTermAvailable}
                     >
                       <CalendarDaysIcon className="w-5 h-5" />
                     </SearchButton>
                   )}
                 </div>
               )}
+              {newerTermAvailable &&
+                appMode === Mode.SCHEDULE &&
+                queryEmpty && (
+                  <p className="text-center text-violet-600 dark:text-violet-400 text-xs font-medium">
+                    COURSES FOR A NEWER TERM ARE AVAILABLE
+                  </p>
+                )}
             </div>
             <div className="flex-1 overflow-hidden overflow-y-scroll no-scrollbar">
               {queryEmpty && !results && searchMode === SearchMode.BROWSE && (

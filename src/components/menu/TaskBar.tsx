@@ -78,7 +78,6 @@ interface TaskBarProps {
   version: string;
   switches: UserOptions;
   f2: PlanSpecialFunctions;
-  tabLoading: boolean;
 }
 
 function TaskBar(props: TaskBarProps) {
@@ -101,7 +100,6 @@ function TaskBar(props: TaskBarProps) {
       <TabBar
         switches={props.switches}
         switchName="tab"
-        tabLoading={props.tabLoading}
         colorMap={TabBarButtonColors}
       >
         <TabBarButton
