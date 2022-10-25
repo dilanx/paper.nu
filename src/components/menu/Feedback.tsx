@@ -11,8 +11,36 @@ const feedbackMenu = (): AlertData => ({
   color: 'violet',
   form: {
     sections: feedbackForm(),
-    onSubmit: ({ type }) => {
-      // TODO handle feedback submission
+    onSubmit: ({ type, message, email, share }) => {
+      let data: string | undefined = undefined;
+      if (share === 'Yes') {
+        data = decodeURIComponent(window.location.search);
+        if (data.startsWith('?')) data = data.substring(1);
+      }
+      const id = toast.loading('Submitting feedback...');
+
+      fetch('https://auth.dilanxd.com/plan-nu/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type,
+          message,
+          email: email || undefined,
+          data,
+        }),
+      })
+        .then((data) => {
+          if (data.ok) {
+            toast.success('Feedback submitted!', { id });
+          } else {
+            toast.error('Failed to submit feedback', { id });
+          }
+        })
+        .catch((err) => {
+          toast.error('Failed to submit feedback', { id });
+        });
     },
   },
   confirmButton: 'Submit',
