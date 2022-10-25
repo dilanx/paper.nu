@@ -11,7 +11,7 @@ import Utility from '../../utility/Utility';
 
 const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
   title: 'Settings',
-  message: `Customize your Plan Northwestern experience! These settings are saved in your browser and not in the URL.`,
+  message: `Customize your Paper experience with! These settings are saved in your browser and not in the URL.`,
   cancelButton: 'Close',
   color: 'orange',
   icon: Cog6ToothIcon,
