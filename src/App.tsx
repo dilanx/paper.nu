@@ -343,9 +343,7 @@ class App extends React.Component<{}, AppState> {
         }
       )
       .catch((error: PlanError) => {
-        this.showAlert(
-          Utility.errorAlert('account_initial_login', error.message)
-        );
+        this.showAlert(Utility.errorAlert('initialization', error.message));
       })
       .finally(() => {
         callback();
