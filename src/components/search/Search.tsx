@@ -1,15 +1,11 @@
-import React from 'react';
-import SearchClass from './SearchClass';
-import AddButtons from './AddButtons';
-import CourseManager from '../../CourseManager';
 import {
-    SearchIcon,
-    ArrowRightIcon,
+    CubeTransparentIcon,
     DotsHorizontalIcon,
-    CollectionIcon,
-    ExternalLinkIcon,
 } from '@heroicons/react/outline';
 import { XCircleIcon } from '@heroicons/react/solid';
+import React from 'react';
+import CourseManager from '../../CourseManager';
+import { UserOptions } from '../../types/BaseTypes';
 import {
     Course,
     PlanData,
@@ -17,7 +13,8 @@ import {
     SearchResultsElements,
     SearchShortcut,
 } from '../../types/PlanTypes';
-import { UserOptions } from '../../types/BaseTypes';
+import AddButtons from './AddButtons';
+import SearchClass from './SearchClass';
 
 interface MiniContentBlockProps {
     icon: JSX.Element;
@@ -36,6 +33,26 @@ function MiniContentBlock(props: MiniContentBlockProps) {
             </p>
             <p className="text-sm font-light text-gray-400 dark:text-gray-500">
                 {props.text}
+            </p>
+        </div>
+    );
+}
+
+function ComingSoon() {
+    return (
+        <div className="text-center p-4">
+            <div className="mx-auto my-1 flex items-center justify-center text-gray-500 dark:text-gray-400">
+                <CubeTransparentIcon className="w-8 h-8" />
+            </div>
+            <p className="text-lg font-medium text-gray-500 dark:text-gray-400">
+                It's almost time!
+            </p>
+            <p className="text-md font-normal text-gray-400 dark:text-gray-500">
+                On <span className="font-bold">November 1</span>, the Plan
+                Northwestern and salad.nu merge will be complete, and both sites
+                will automatically redirect you to the new site. All plan URLs
+                will still work and any of the plan data saved in your browser
+                will be loaded onto the new site.
             </p>
         </div>
     );
@@ -82,26 +99,7 @@ class Search extends React.Component<SearchProps, SearchState> {
             return {
                 results: [
                     <div key="no-query">
-                        <MiniContentBlock
-                            icon={<SearchIcon className="w-6 h-6" />}
-                            title="Search"
-                            text="Use the search bar to search across every course at Northwestern and view detailed information for each one."
-                        />
-                        <MiniContentBlock
-                            icon={<ArrowRightIcon className="w-6 h-6" />}
-                            title="Drag"
-                            text="Drag courses from this search area into the quarter you want. Alternatively, you can click on the course and select the quarter you want to add it to."
-                        />
-                        <MiniContentBlock
-                            icon={<CollectionIcon className="w-6 h-6" />}
-                            title="Save"
-                            text="Easily create an account to save multiple plans and access them from anywhere."
-                        />
-                        <MiniContentBlock
-                            icon={<ExternalLinkIcon className="w-6 h-6" />}
-                            title="Share"
-                            text="The URL updates as you modify your plan. Share it with others and they'll have a copy that they can view and edit."
-                        />
+                        <ComingSoon />
                     </div>,
                 ],
             };
