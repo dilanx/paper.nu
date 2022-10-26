@@ -45,7 +45,7 @@ import Schedule from './components/schedule/Schedule';
 import Search from './components/search/Search';
 import SaveDataManager from './SaveDataManager';
 import { AlertData } from './types/AlertTypes';
-import { AppState, ReadUserOptions } from './types/BaseTypes';
+import { AppType, AppState, ReadUserOptions } from './types/BaseTypes';
 import {
   Course,
   PlanData,
@@ -68,7 +68,7 @@ var d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? 'UNKNOWN';
 
-class App extends React.Component<{}, AppState> {
+class App extends React.Component<{}, AppState> implements AppType {
   constructor(props: {}) {
     super(props);
 

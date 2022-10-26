@@ -19,27 +19,22 @@ function activate(
   isSchedule: boolean,
   callback: (item: AccountData, data: PlanData | ScheduleData | 'empty') => void
 ) {
+  app.closeSideCard();
   const errText = isSchedule ? 'schedule' : 'plan';
   req
     .then((map) => {
       if (!map) {
-        app.setState({
-          alertData: Utility.errorAlert(
-            `account_activate_${errText}`,
-            'Undefined Map'
-          ),
-        });
+        app.showAlert(
+          Utility.errorAlert(`account_activate_${errText}`, 'Undefined Map')
+        );
         return;
       }
 
       const item = map[id];
       if (!item) {
-        app.setState({
-          alertData: Utility.errorAlert(
-            `account_activate_${errText}`,
-            'Undefined Item'
-          ),
-        });
+        app.showAlert(
+          Utility.errorAlert(`account_activate_${errText}`, 'Undefined Item')
+        );
         return;
       }
 
@@ -49,8 +44,9 @@ function activate(
       }
 
       let confirmNonAccountOverwrite =
-        app.state.switches.get.active_plan_id === 'None' &&
-        window.location.search.length > 0;
+        app.state.switches.get[
+          `active_${isSchedule ? 'schedule' : 'plan'}_id`
+        ] === 'None' && window.location.search.length > 0;
 
       discardChanges(
         app,
@@ -60,12 +56,12 @@ function activate(
             .loadFromString(item.content)
             .then((data) => {
               if (data === 'malformed') {
-                app.setState({
-                  alertData: Utility.errorAlert(
+                app.showAlert(
+                  Utility.errorAlert(
                     `account_activate_${errText}`,
                     'Malformed Data'
-                  ),
-                });
+                  )
+                );
                 return;
               }
 
@@ -76,12 +72,9 @@ function activate(
       );
     })
     .catch((error: PlanError) => {
-      app.setState({
-        alertData: Utility.errorAlert(
-          `account_activate_${errText}`,
-          error.message
-        ),
-      });
+      app.showAlert(
+        Utility.errorAlert(`account_activate_${errText}`, error.message)
+      );
     });
 }
 
@@ -169,9 +162,7 @@ export function update(app: AppType, isSchedule: boolean) {
   const t = isSchedule ? 'schedule' : 'plan';
   let activeId = app.state.switches.get[`active_${t}_id`];
   if (!activeId || activeId === 'None') {
-    app.setState({
-      alertData: Utility.errorAlert(`account_update_${t}`, 'Nothing Active'),
-    });
+    app.showAlert(Utility.errorAlert(`account_update_${t}`, 'Nothing Active'));
     return;
   }
 
@@ -201,8 +192,8 @@ export function update(app: AppType, isSchedule: boolean) {
       error: (err) => {
         app.setState({
           unsavedChanges: true,
-          alertData: Utility.errorAlert(`account_update_${t}`, err.message),
         });
+        app.showAlert(Utility.errorAlert(`account_update_${t}`, err.message));
         return 'Something went wrong';
       },
     }
@@ -219,18 +210,16 @@ export function discardChanges(
     : 'It looks like you have some unsaved changes. Navigating away will cause them not to be saved to your account. Are you sure?';
 
   if (confirmNonAccountOverwrite || app.state.unsavedChanges) {
-    app.setState({
-      alertData: {
-        title: 'Hold on...',
-        message,
-        confirmButton: 'Yes, continue',
-        cancelButton: 'Go back',
-        color: 'red',
-        icon: ExclamationTriangleIcon,
-        action: () => {
-          app.setState({ unsavedChanges: false });
-          action();
-        },
+    app.showAlert({
+      title: 'Hold on...',
+      message,
+      confirmButton: 'Yes, continue',
+      cancelButton: 'Go back',
+      color: 'red',
+      icon: ExclamationTriangleIcon,
+      action: () => {
+        app.setState({ unsavedChanges: false });
+        action();
       },
     });
     return;

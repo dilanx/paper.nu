@@ -1,3 +1,4 @@
+import { Component, ComponentProps } from 'react';
 import { Mode } from '../utility/Constants';
 import { AlertData } from './AlertTypes';
 import {
@@ -100,11 +101,16 @@ export type Color =
 
 export type ColorMap = { [key: string]: Color };
 
-export type IconElement = (props: React.ComponentProps<'svg'>) => JSX.Element;
+export type IconElement = (props: ComponentProps<'svg'>) => JSX.Element;
 
 export type StringMap = { [key: string]: string };
 
-export type AppType = React.Component<{}, AppState>;
+//export type AppType = React.Component<{}, AppState>;
+
+export interface AppType extends Component<{}, AppState> {
+  closeSideCard(): void;
+  showAlert(alertData: AlertData): void;
+}
 
 export type TextValidator = (value: string) => boolean;
 

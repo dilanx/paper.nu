@@ -15,17 +15,15 @@ function courseConfirmationPrompts(
   const overlaps = ScheduleManager.sectionsOverlap(section, data.schedule);
 
   if (overlaps && app.state.switches.get.schedule_warnings) {
-    app.setState({
-      alertData: {
-        title: 'Overlapping sections',
-        message: `It looks like that section overlaps with ${overlaps.subject} ${overlaps.number} (section ${overlaps.section}). Are you sure you want to add it?`,
-        cancelButton: 'Go back',
-        confirmButton: 'Add anyway',
-        color: 'red',
-        icon: ExclamationTriangleIcon,
-        action: () => {
-          confirmationCallback();
-        },
+    app.showAlert({
+      title: 'Overlapping sections',
+      message: `It looks like that section overlaps with ${overlaps.subject} ${overlaps.number} (section ${overlaps.section}). Are you sure you want to add it?`,
+      cancelButton: 'Go back',
+      confirmButton: 'Add anyway',
+      color: 'red',
+      icon: ExclamationTriangleIcon,
+      action: () => {
+        confirmationCallback();
       },
     });
     return;

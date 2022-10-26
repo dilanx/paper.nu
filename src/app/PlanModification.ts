@@ -25,23 +25,21 @@ function courseConfirmationPrompts(
   const exists = PlanManager.duplicateCourse(course, data);
 
   if (!repeatable && exists && !isPlaceholder && !ignoreExistCheck) {
-    app.setState({
-      alertData: {
-        title: 'Course already planned',
-        message: `You already have ${
-          course.id
-        } on your plan during the ${Utility.convertQuarter(
-          exists.quarter
-        ).title.toLowerCase()} quarter of your ${Utility.convertYear(
-          exists.year
-        ).toLowerCase()}.`,
-        cancelButton: 'Go back',
-        confirmButton: 'Add anyway',
-        color: 'red',
-        icon: ExclamationTriangleIcon,
-        action: () => {
-          confirmationCallback();
-        },
+    app.showAlert({
+      title: 'Course already planned',
+      message: `You already have ${
+        course.id
+      } on your plan during the ${Utility.convertQuarter(
+        exists.quarter
+      ).title.toLowerCase()} quarter of your ${Utility.convertYear(
+        exists.year
+      ).toLowerCase()}.`,
+      cancelButton: 'Go back',
+      confirmButton: 'Add anyway',
+      color: 'red',
+      icon: ExclamationTriangleIcon,
+      action: () => {
+        confirmationCallback();
       },
     });
     return;
@@ -52,17 +50,15 @@ function courseConfirmationPrompts(
     parseFloat(course.units);
 
   if (unitCount > 5.5) {
-    app.setState({
-      alertData: {
-        title: 'Too many classes',
-        message: `With app course, you'll have ${unitCount} units worth of classes app quarter, which is over Northwestern's maximum of 5.5 units.`,
-        cancelButton: 'Go back',
-        confirmButton: 'Add anyway',
-        color: 'red',
-        icon: ExclamationTriangleIcon,
-        action: () => {
-          confirmationCallback();
-        },
+    app.showAlert({
+      title: 'Too many classes',
+      message: `With app course, you'll have ${unitCount} units worth of classes app quarter, which is over Northwestern's maximum of 5.5 units.`,
+      cancelButton: 'Go back',
+      confirmButton: 'Add anyway',
+      color: 'red',
+      icon: ExclamationTriangleIcon,
+      action: () => {
+        confirmationCallback();
       },
     });
     return;
@@ -219,22 +215,20 @@ export function removeBookmark(
 }
 
 export function addSummerQuarter(app: AppType, year: number) {
-  app.setState({
-    alertData: {
-      title: 'Add summer quarter to app year?',
-      message: `app will add a summer quarter to your ${Utility.convertYear(
-        year
-      ).toLowerCase()}. You can remove it by removing all classes from that quarter and refreshing the page.`,
-      confirmButton: 'Add quarter',
-      cancelButton: 'Close',
-      color: 'yellow',
-      icon: PlusIcon,
-      action: () => {
-        const data = app.state.data;
-        data.courses[year].push([]);
-        app.setState({ data: data });
-        d('summer quarter added: y%d', year);
-      },
+  app.showAlert({
+    title: 'Add summer quarter to app year?',
+    message: `app will add a summer quarter to your ${Utility.convertYear(
+      year
+    ).toLowerCase()}. You can remove it by removing all classes from that quarter and refreshing the page.`,
+    confirmButton: 'Add quarter',
+    cancelButton: 'Close',
+    color: 'yellow',
+    icon: PlusIcon,
+    action: () => {
+      const data = app.state.data;
+      data.courses[year].push([]);
+      app.setState({ data: data });
+      d('summer quarter added: y%d', year);
     },
   });
 }
@@ -272,35 +266,33 @@ export function clearData(app: AppType, year?: number) {
     });
   } else {
     const yearText = Utility.convertYear(year).toLowerCase();
-    app.setState({
-      alertData: {
-        title: 'Clear app year?',
-        message: `All of the courses in your ${yearText} will be removed.`,
-        cancelButton: 'Cancel',
-        confirmButton: 'Clear',
-        color: 'red',
-        icon: TrashIcon,
-        action: () => {
-          const oldData = app.state.data;
-          const courses = app.state.data.courses;
-          courses[year] = [[], [], []];
-          data = { courses: courses, bookmarks: oldData.bookmarks };
-          d('year cleared: y%d', year);
-          toast.success(`Cleared your ${yearText}`, {
-            iconTheme: {
-              primary: 'red',
-              secondary: 'white',
-            },
-          });
-          app.setState({
+    app.showAlert({
+      title: 'Clear app year?',
+      message: `All of the courses in your ${yearText} will be removed.`,
+      cancelButton: 'Cancel',
+      confirmButton: 'Clear',
+      color: 'red',
+      icon: TrashIcon,
+      action: () => {
+        const oldData = app.state.data;
+        const courses = app.state.data.courses;
+        courses[year] = [[], [], []];
+        data = { courses: courses, bookmarks: oldData.bookmarks };
+        d('year cleared: y%d', year);
+        toast.success(`Cleared your ${yearText}`, {
+          iconTheme: {
+            primary: 'red',
+            secondary: 'white',
+          },
+        });
+        app.setState({
+          data,
+          unsavedChanges: PlanManager.save(
             data,
-            unsavedChanges: PlanManager.save(
-              data,
-              app.state.switches,
-              app.state.originalDataString
-            ),
-          });
-        },
+            app.state.switches,
+            app.state.originalDataString
+          ),
+        });
       },
     });
   }
