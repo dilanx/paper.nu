@@ -364,6 +364,13 @@ let Utility = {
     return time1.h - time2.h;
   },
 
+  cleanEnrollmentRequirements: (text?: string) => {
+    if (text?.toLowerCase().startsWith('enrollment requirements: ')) {
+      return text.substring(25);
+    }
+    return text;
+  },
+
   forAllChildElements: (
     root: React.ReactNode,
     callback: (element: React.ReactElement) => void

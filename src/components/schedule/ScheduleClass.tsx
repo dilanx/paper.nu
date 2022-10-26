@@ -1,6 +1,7 @@
 import {
   AcademicCapIcon,
   BuildingLibraryIcon,
+  CalendarDaysIcon,
   ClockIcon,
   DocumentCheckIcon,
   HashtagIcon,
@@ -122,6 +123,13 @@ function getDetails(
       ];
     case 'LOCATION':
       return [MapPinIcon, section.room];
+    case 'START/END DATES':
+      return [
+        CalendarDaysIcon,
+        section.start_date && section.end_date
+          ? `${section.start_date} to ${section.end_date}`
+          : undefined,
+      ];
     case 'PREREQUISITES':
       return [ListBulletIcon, course?.prereqs];
     case 'DISTRIBUTION AREAS':
@@ -136,7 +144,10 @@ function getDetails(
     case 'CAPACITY':
       return [UsersIcon, section.capacity];
     case 'ENROLLMENT REQUIREMENTS':
-      return [DocumentCheckIcon, section.enrl_req];
+      return [
+        DocumentCheckIcon,
+        Utility.cleanEnrollmentRequirements(section.enrl_req),
+      ];
   }
 }
 
@@ -155,6 +166,7 @@ function openInfo(props: ScheduleClassProps) {
     'TIME SLOT',
     'INSTRUCTOR',
     'LOCATION',
+    'START/END DATES',
     'PREREQUISITES',
     'DISTRIBUTION AREAS',
     'UNITS',
