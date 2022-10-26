@@ -119,7 +119,7 @@ class AccountPlans extends React.Component<
       textInput: {
         placeholder: 'Name',
         match: /^[\w\-\s]{1,24}$/,
-        matchError: 'Alphanumeric, hyphens and spaces, 1-10 chars',
+        matchError: 'Alphanumeric, hyphens and spaces, 1-24 chars',
         focusByDefault: true,
       },
       action: (name) => {
