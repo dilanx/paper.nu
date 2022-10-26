@@ -201,10 +201,10 @@ export default function Alert({
                                                   !textValue ||
                                                   textValue.length === 0 ||
                                                   !data.textInput.match
-                                                    ? 'focus:border-gray-500 focus:active:border-gray-300'
+                                                    ? 'focus:border-gray-500'
                                                     : badInput
-                                                    ? 'focus:border-red-500 focus:active:border-red-500'
-                                                    : 'focus:border-green-500 focus:active:border-green-500'
+                                                    ? 'focus:border-red-500'
+                                                    : 'focus:border-green-500'
                                                 }`}
                             placeholder={data.textInput.placeholder}
                             onChange={(event) => {

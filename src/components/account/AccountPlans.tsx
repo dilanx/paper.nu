@@ -118,7 +118,7 @@ class AccountPlans extends React.Component<
       icon: PlusIcon,
       textInput: {
         placeholder: 'Name',
-        match: /^[\w\-\s]{1,10}$/,
+        match: /^[\w\-\s]{1,24}$/,
         matchError: 'Alphanumeric, hyphens and spaces, 1-10 chars',
         focusByDefault: true,
       },
