@@ -129,46 +129,6 @@ function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
           }
         }}
       />
-      {/* <UtilityBarButton
-        icon={PlusIcon}
-        color="pink"
-        display="Add custom section"
-        action={() => {
-          if (
-            !switches.get.active_schedule_id ||
-            switches.get.active_schedule_id === 'None'
-          ) {
-            alert({
-              title: 'Add custom section',
-              icon: PlusIcon,
-              message:
-                "Custom sections can only be added to schedules linked to an account. Make sure you're logged in and have a schedule activated!",
-              confirmButton: 'Get started',
-              iconColor: 'pink',
-              cancelButton: 'Close',
-              action: () => {
-                switches.set('tab', 'Plans');
-              },
-            });
-            return;
-          }
-          alert({
-            title: 'Add custom section',
-            icon: PlusIcon,
-            message:
-              'Enhance your schedule with custom sections! Each value can be whatever you want. These sections will not be saved to the URL and will only be linked to the active account schedule.',
-            form: {
-              sections: customSectionForm(),
-              onSubmit: (response) => {
-                console.log(response);
-              },
-            },
-            confirmButton: 'Add',
-            iconColor: 'pink',
-            cancelButton: 'Cancel',
-          });
-        }}
-      /> */}
 
       {takeImage && (
         <div className="relative">
