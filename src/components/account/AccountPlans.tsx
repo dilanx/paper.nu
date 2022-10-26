@@ -244,34 +244,60 @@ class AccountPlans extends React.Component<
     if (isSchedule) {
       if (this.state.schedules) {
         let self = this;
-        items = Object.keys(this.state.schedules).map((scheduleId, i) => {
-          let schedule = this.state.schedules![scheduleId];
-          return (
-            <AccountPlan
-              id={scheduleId}
-              plan={schedule}
-              fa={self.state.fa}
-              active={scheduleId === self.props.activeId}
-              key={`account-schedule-${i}`}
-            />
-          );
-        });
+        items = Object.keys(this.state.schedules)
+          .sort((a, b) => {
+            let sa = this.state.schedules![a];
+            let sb = this.state.schedules![b];
+
+            const diff =
+              (sa.lastUpdated || sa.createdAt) -
+              (sb.lastUpdated || sb.createdAt);
+
+            if (diff > 0) return -1;
+            if (diff < 0) return 1;
+            return 0;
+          })
+          .map((scheduleId, i) => {
+            let schedule = this.state.schedules![scheduleId];
+            return (
+              <AccountPlan
+                id={scheduleId}
+                plan={schedule}
+                fa={self.state.fa}
+                active={scheduleId === self.props.activeId}
+                key={`account-schedule-${i}`}
+              />
+            );
+          });
       }
     } else {
       if (this.state.plans) {
         let self = this;
-        items = Object.keys(this.state.plans).map((planId, i) => {
-          let plan = this.state.plans![planId];
-          return (
-            <AccountPlan
-              id={planId}
-              plan={plan}
-              fa={self.state.fa}
-              active={planId === self.props.activeId}
-              key={`account-plan-${i}`}
-            />
-          );
-        });
+        items = Object.keys(this.state.plans)
+          .sort((a, b) => {
+            let pa = this.state.plans![a];
+            let pb = this.state.plans![b];
+
+            const diff =
+              (pa.lastUpdated || pa.createdAt) -
+              (pb.lastUpdated || pb.createdAt);
+
+            if (diff > 0) return -1;
+            if (diff < 0) return 1;
+            return 0;
+          })
+          .map((planId, i) => {
+            let plan = this.state.plans![planId];
+            return (
+              <AccountPlan
+                id={planId}
+                plan={plan}
+                fa={self.state.fa}
+                active={planId === self.props.activeId}
+                key={`account-plan-${i}`}
+              />
+            );
+          });
       }
     }
 
