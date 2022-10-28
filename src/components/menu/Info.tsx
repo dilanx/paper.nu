@@ -1,25 +1,22 @@
-import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
-import React from 'react';
-import { Mode } from '../../utility/Constants';
+import paperBlack from '../../assets/paper-full-black.png';
+import paperWhite from '../../assets/paper-full-white.png';
 
 interface InfoProps {
-  mode: Mode;
+  dark?: boolean;
 }
 
-class Info extends React.Component<InfoProps> {
-  render() {
-    return (
-      <div
-        className={`flex items-center gap-2 justify-center mt-4 mb-2 px-4 py-2 text-center whitespace-nowrap border-2 border-black dark:border-white
-                dark:bg-gray-800 rounded-xl transition-all duration-300 text-black dark:text-white`}
-      >
-        <PaperAirplaneIcon className="w-6 h-6 drop-shadow-md" />
-        <p className="font-light drop-shadow-md text-2xl tracking-wide">
-          paper
-        </p>
-      </div>
-    );
-  }
+function Info({ dark }: InfoProps) {
+  return (
+    <div
+      className={`flex items-center gap-2 justify-center mt-4 mb-2 px-4 text-center whitespace-nowrap dark:bg-gray-800 transition-all duration-300 text-black dark:text-white`}
+    >
+      {dark ? (
+        <img src={paperWhite} alt="paper.nu" className="h-[52px]" />
+      ) : (
+        <img src={paperBlack} alt="paper.nu" className="h-[52px]" />
+      )}
+    </div>
+  );
 }
 
 export default Info;

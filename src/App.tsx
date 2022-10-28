@@ -490,7 +490,7 @@ class App extends React.Component<{}, AppState> implements AppType {
 
             <div className="bg-white dark:bg-gray-800 grid grid-cols-1 lg:grid-cols-8">
               <div className="col-span-2 px-4 h-192 md:h-screen flex flex-col">
-                <Info mode={switches.get.mode!} />
+                <Info dark={darkMode} />
                 <ModeSwitch
                   switches={switches}
                   changeMode={(mode) => {
