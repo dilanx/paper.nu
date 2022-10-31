@@ -52,25 +52,6 @@ import SearchClass from './SearchClass';
 import SearchFilterDisplay from './SearchFilterDisplay';
 import SearchScheduleClass from './SearchScheduleClass';
 
-function ComingSoon() {
-  return (
-    <div className="text-center p-4">
-      <div className="mx-auto my-1 flex items-center justify-center text-gray-500 dark:text-gray-400">
-        <CubeTransparentIcon className="w-8 h-8" />
-      </div>
-      <p className="text-lg font-medium text-gray-500 dark:text-gray-400">
-        It's almost time!
-      </p>
-      <p className="text-md font-normal text-gray-400 dark:text-gray-500">
-        On <span className="font-bold">November 1</span>, the Plan Northwestern
-        and salad.nu merge will be complete, and both sites will automatically
-        redirect you to the new site. All plan URLs will still work and any of
-        the plan data saved in your browser will be loaded onto the new site.
-      </p>
-    </div>
-  );
-}
-
 interface SearchProps {
   data: PlanData;
   schedule: ScheduleData;
