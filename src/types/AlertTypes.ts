@@ -1,88 +1,156 @@
-import { ColorMap } from './BaseTypes';
+import { Color, ColorMap, IconElement, ReadUserOptions } from './BaseTypes';
 
 export interface AlertDataExtra {
-    title: string;
-    content: string;
+  title: string;
+  content: string;
 }
 
 export interface AlertDataOption {
-    name: string;
-    title: string;
-    description: string;
-    singleAction?: () => void;
-    saveToStorage?: boolean;
-    buttonTextOn: string;
-    buttonTextOff?: string;
-    bonusAction?: (newSwitch: boolean) => void;
-    requireConfirmation?: boolean;
+  switch?: keyof ReadUserOptions;
+  title: string;
+  description: string;
+  singleAction?: () => void;
+  saveToStorage?: boolean;
+  buttonTextOn?: string;
+  buttonTextOff?: string;
+  bonusAction?: (newSwitch: boolean) => void;
+  confirmation?: string;
+}
+
+export interface AlertConfirmationState {
+  [key: string]: boolean;
 }
 
 export interface AlertDataTab {
-    name: string;
-    display: JSX.Element;
-    disableClick?: boolean;
-    options?: AlertDataOption[];
+  name: string;
+  display: JSX.Element;
+  disableClick?: boolean;
+  options?: AlertDataOption[];
 }
 
 export interface AlertDataEditButtonData {
-    title: string;
-    icon: JSX.Element;
-    color: string;
-    action: () => void;
-    close?: boolean;
+  title: string;
+  icon: JSX.Element;
+  color: Color;
+  action: () => void;
+  close?: boolean;
 }
 
 export type AlertDataEditButton =
-    | ToggleableAlertDataEditButton<any>
-    | NontoggleableAlertDataEditButton;
+  | ToggleableAlertDataEditButton<any>
+  | NontoggleableAlertDataEditButton;
 
 export interface NontoggleableAlertDataEditButton {
-    toggle: false;
-    buttonData: AlertDataEditButtonData;
+  toggle: false;
+  buttonData: AlertDataEditButtonData;
 }
 
 export interface ToggleableAlertDataEditButton<T> {
-    toggle: true;
-    data: Set<T>;
-    key: T;
-    enabled: AlertDataEditButtonData;
-    disabled: AlertDataEditButtonData;
+  toggle: true;
+  data: Set<T> | T[];
+  key: T;
+  indexProperty?: keyof T;
+  enabled: AlertDataEditButtonData;
+  disabled: AlertDataEditButtonData;
 }
 
 export function editButtonIsToggleable(
-    button: AlertDataEditButton
+  button: AlertDataEditButton
 ): button is ToggleableAlertDataEditButton<any> {
-    return button.toggle;
+  return button.toggle;
+}
+
+export interface AlertFormSection {
+  title: string;
+  description?: string;
+  fullRow?: boolean;
+  fields: AlertFormField[];
+}
+
+type AlertFormFieldType = 'text' | 'time' | 'single-select' | 'multi-select';
+
+export interface AlertFormField {
+  name: string;
+  type: AlertFormFieldType;
+  defaultValue?: string;
+  required?: boolean;
+}
+
+export interface AlertFormFieldText extends AlertFormField {
+  type: 'text';
+  placeholder?: string;
+  validator?: (value: string) => boolean;
+  maxLength?: number;
+  paragraph?: boolean;
+}
+
+export interface AlertFormFieldTime extends AlertFormField {
+  type: 'time';
+  placeholder?: string;
+}
+
+export interface AlertFormFieldSingleSelect extends AlertFormField {
+  type: 'single-select';
+  options: string[];
+}
+
+export interface AlertFormFieldMultiSelect extends AlertFormField {
+  type: 'multi-select';
+  options: string[];
+}
+
+export function formFieldIs<T extends AlertFormField>(
+  field: AlertFormField,
+  type: AlertFormFieldType
+): field is T {
+  return field.type === type;
+}
+
+export interface AlertFormResponse {
+  [field: string]: string;
+}
+
+export interface SelectMenuOption {
+  value: string;
+  label?: string;
 }
 
 export interface AlertData {
-    icon: JSX.Element;
-    title: string;
-    subtitle?: string;
-    customSubtitle?: JSX.Element;
-    message: string;
-    extras?: AlertDataExtra[];
-    options?: AlertDataOption[];
-    tabs?: {
-        switchName: string;
-        colorMap: ColorMap;
-        tabs: AlertDataTab[];
-    };
-    editButtons?: AlertDataEditButton[];
-    textView?: string;
-    textInput?: {
-        placeholder?: string;
-        match?: RegExp;
-        matchError?: string;
-        focusByDefault?: boolean;
-    };
-    confirmButton: string;
-    confirmButtonColor: string;
-    iconBackgroundColor: string;
-    cancelButton?: string;
-    action?: (inputText?: string) => void;
+  icon: IconElement;
+  title: string;
+  subtitle?: string;
+  customSubtitle?: JSX.Element;
+  message?: string;
+  extras?: AlertDataExtra[];
+  options?: AlertDataOption[];
+  tabs?: {
+    switchName: keyof ReadUserOptions;
+    colorMap: ColorMap;
+    tabs: AlertDataTab[];
+  };
+  editButtons?: AlertDataEditButton[];
+  textView?: string;
+  textInput?: {
+    placeholder?: string;
+    match?: RegExp;
+    matchError?: string;
+    focusByDefault?: boolean;
+  };
+  textHTML?: JSX.Element;
+  form?: {
+    sections: AlertFormSection[];
+    onSubmit: (response: AlertFormResponse) => void;
+  };
+  selectMenu?: {
+    options: SelectMenuOption[];
+    defaultValue?: string;
+  };
+  confirmButton?: string;
+  color: Color;
+  cancelButton?: string;
+  action?: (value?: string) => void;
 }
 
 export interface Alert {
-    (alertData: AlertData): void;
+  (alertData: AlertData): void;
 }

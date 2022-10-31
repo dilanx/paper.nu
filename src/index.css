@@ -3,65 +3,73 @@
 @tailwind utilities;
 
 @layer utilities {
-    /* Chrome, Safari and Opera */
-    .no-scrollbar::-webkit-scrollbar {
-        display: none;
-    }
+  /* Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 
-    .no-scrollbar {
-        -ms-overflow-style: none; /* IE and Edge */
-        scrollbar-width: none; /* Firefox */
-    }
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 
-    @keyframes spin {
-        from {
-            transform: translate(-50%, -50%) rotate(0);
-        }
-        to {
-            transform: translate(-50%, -50%) rotate(360deg);
-        }
-    }
+  .schedule-grid-cols {
+    grid-template-columns: 3.2rem repeat(5, minmax(0, 1fr));
+  }
 
-    .rainbow-border-button {
-        position: relative;
-        overflow: hidden;
-        padding: 16px;
-        border-radius: 16px;
-        transition: all 150ms linear;
-    }
+  .alert-data a {
+    @apply text-purple-800 dark:text-purple-300 hover:underline;
+  }
 
-    .rainbow-border-button::before {
-        content: '';
-        display: block;
-        background: conic-gradient(
-            #f87171,
-            #facc15,
-            #a3e635,
-            #22d3ee,
-            #60a5fa,
-            #a78bfa,
-            #f472b6
-        );
-        width: calc(100% * 1.41421356237);
-        padding-bottom: calc(100% * 1.41421356237);
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        border-radius: 100%;
-        z-index: -2;
-        transition: all 150ms linear;
+  @keyframes spin {
+    from {
+      transform: translate(-50%, -50%) rotate(0);
     }
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
 
-    .rainbow-border-button:hover::before {
-        animation: spin 5s linear infinite;
-    }
+  .rainbow-border-button {
+    position: relative;
+    overflow: hidden;
+    padding: 16px;
+    border-radius: 16px;
+    transition: all 150ms linear;
+  }
 
-    .rainbow-border-button::after {
-        content: '';
-        position: absolute;
-        inset: 8px;
-        z-index: -1;
-        border-radius: 8px;
-    }
+  .rainbow-border-button::before {
+    content: '';
+    display: block;
+    background: conic-gradient(
+      #f87171,
+      #facc15,
+      #a3e635,
+      #22d3ee,
+      #60a5fa,
+      #a78bfa,
+      #f472b6
+    );
+    width: calc(100% * 1.41421356237);
+    padding-bottom: calc(100% * 1.41421356237);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 100%;
+    z-index: -2;
+    transition: all 150ms linear;
+  }
+
+  .rainbow-border-button:hover::before {
+    animation: spin 5s linear infinite;
+  }
+
+  .rainbow-border-button::after {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    z-index: -1;
+    border-radius: 8px;
+  }
 }
