@@ -4,13 +4,34 @@
 
 _2022-10-31_
 
-The change log for version 2.0.0 will be available soon.
+Plan Northwestern is now **Paper**, and has replaced both salad.nu and the original version of Plan Northwestern.
+
+**General**
+
+- **Powerful search!** Use the search filter and subject browsing to narrow search results by subject, meeting days and times (schedule only), section components (schedule only), instructor (schedule only), location (schedule only), distribution areas (plan only for now), and unit count (plan only).
+- **Detailed course information!** View a LOT more data about each course or section, all from within Paper.
+- **Advanced data management and caching system!** Get the latest data without taking a performance hit! The advanced client-side and server-side caching system allows for data only to be refreshed if actually necessary.
+- Submit feedback without having to leave the site.
+- Improved settings menu for more customizability.
+- Various UI and text changes, dependency updates, and bug fixes.
+
+**Schedule (NEW!)**
+
+- Course sections for a specific quarter can be scheduled within a week view.
+- The existing account system and URL system have been adapted to work with schedules.
+- **Exports!**
+  - Export schedule as an image (1920x1080 regardless of device).
+  - Export schedule as an ICS file (supported by popular calendar apps like Apple Calendar, Google Calendar, and Outlook).
+- **Map!**
+  - View a full-screen map to see where all of your courses are from a nice, large view (and hover over sections on the map sidebar to fly to those locations).
+  - Toggle the minimap, which appears at the bottom of the search menu and will show the location of a section you're hovering over.
+- **Huge data set!** Data for the past 8 years (starting Fall 2020) is accessible.
 
 ### 1.2.3
 
 _2022-09-22_
 
--   Added system status embed.
+- Added system status embed.
 
 ### 1.2.2
 
