@@ -1,5 +1,12 @@
 # Paper Change Log
 
+### 2.0.1
+
+_2022-11-01_
+
+- Updated feedback submission information.
+- Update alert option button styling.
+
 ### 2.0.0
 
 _2022-10-31_

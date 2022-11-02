@@ -9,6 +9,17 @@ const feedbackMenu = (): AlertData => ({
     'Find a bug or notice some courses are missing? Have a cool feature suggestion? Let us know!',
   icon: PencilSquareIcon,
   color: 'violet',
+  options: [
+    {
+      title: 'View current submissions',
+      description:
+        'BEFORE SUBMITTING, PLEASE CHECK IF YOUR ISSUE HAS ALREADY BEEN REPORTED! You can also see the status of your submission.',
+      buttonTextOn: 'View All Feedback',
+      singleAction: () => {
+        window.open('https://feedback.dilanxd.com/app/paper.nu', '_blank');
+      },
+    },
+  ],
   form: {
     sections: feedbackForm(),
     onSubmit: ({ type, message, email, share }) => {
@@ -33,12 +44,32 @@ const feedbackMenu = (): AlertData => ({
       })
         .then((data) => {
           if (data.ok) {
-            toast.success('Feedback submitted!', { id });
+            data
+              .json()
+              .then((data) => {
+                toast.success(
+                  () => (
+                    <span>
+                      Feedback submitted!{' '}
+                      <a
+                        className="text-violet-500 dark:text-violet-400 hover:underline"
+                        href={`https://feedback.dilanxd.com/item/${data.id}`}
+                      >
+                        View
+                      </a>
+                    </span>
+                  ),
+                  { id }
+                );
+              })
+              .catch(() => {
+                toast.error('Failed to submit feedback', { id });
+              });
           } else {
             toast.error('Failed to submit feedback', { id });
           }
         })
-        .catch((err) => {
+        .catch(() => {
           toast.error('Failed to submit feedback', { id });
         });
     },

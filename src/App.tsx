@@ -429,6 +429,7 @@ class App extends React.Component<{}, AppState> implements AppType {
       <DndProvider backend={HTML5Backend}>
         {switches.get.notifications && (
           <Toaster
+            containerClassName={`${darkMode ? 'dark' : ''}`}
             position="top-right"
             reverseOrder={false}
             toastOptions={{
