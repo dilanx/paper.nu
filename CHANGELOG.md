@@ -1,5 +1,12 @@
 # Paper Change Log
 
+### 2.0.2
+
+_2022-11-03_
+
+- Updated feedback submission information.
+- Added ability to clear entire local course data cache.
+
 ### 2.0.1
 
 _2022-11-01_

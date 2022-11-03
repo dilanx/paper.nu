@@ -5,6 +5,7 @@ import {
   EllipsisHorizontalIcon,
 } from '@heroicons/react/24/outline';
 import debugModule from 'debug';
+import { clearCache } from '../../DataManager';
 import { AlertData } from '../../types/AlertTypes';
 import { PlanSpecialFunctions } from '../../types/PlanTypes';
 import Utility from '../../utility/Utility';
@@ -50,6 +51,18 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
             buttonTextOn: 'Top right',
             buttonTextOff: 'Bottom right',
             saveToStorage: true,
+          },
+          {
+            title: 'Clear local course data cache',
+            description:
+              'This clears all of the course data stored in your browser. Clearing the data cache will not delete any plans or schedules, including ones saved in your browser. THE SITE WILL RELOAD!',
+            buttonTextOn: 'Clear',
+            confirmation: 'clear_local_cache',
+            singleAction: () => {
+              clearCache().finally(() => {
+                window.location.reload();
+              });
+            },
           },
         ],
       },
