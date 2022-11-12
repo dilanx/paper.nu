@@ -23,6 +23,7 @@ interface QuarterProps {
   switches: UserOptions;
   title: string;
   color: Color;
+  yearHasSummer: boolean;
 }
 
 const variants = {
@@ -109,7 +110,9 @@ function Quarter(props: QuarterProps) {
                 ? `border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50`
                 : `border-solid bg-${props.color}-50 dark:bg-gray-800 border-${props.color}-400`
             }
-                space-y-3 h-full shadow-lg compact:py-2 compact:shadow-sm`}
+                space-y-3 h-full shadow-lg compact:py-2 compact:shadow-sm ${
+                  props.yearHasSummer ? 'lg:px-4' : ''
+                }`}
       >
         <p className="text-center font-bold text-md m-0 p-0 text-gray-600 dark:text-gray-400 compact:text-sm">
           {props.title}

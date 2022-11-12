@@ -11,6 +11,10 @@ _2022-11-XX_
 - If using a new version with significant enhancements for the first time, a change log preview modal will appear.
 - Various UI changes and bug fixes.
 
+**Plan**
+
+- If a year has a summer quarter (four quarters fit in the same space as three), spacing is reduced so more class information is visible.
+
 **Schedule**
 
 - Filter schedule sections by distribution area.

@@ -70,6 +70,7 @@ class Year extends React.Component<YearProps, YearState> {
             switches={this.props.switches}
             title={title}
             color={color}
+            yearHasSummer={content.length === 4}
             key={this.props.year + '-' + index}
           />
         );
@@ -91,9 +92,11 @@ class Year extends React.Component<YearProps, YearState> {
           </p>
           {!this.state.hidden && (
             <div
-              className={`grid grid-cols-1 ${
-                quarters.length === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'
-              } gap-12`}
+              className={`grid grid-cols-1 gap-12 ${
+                quarters.length === 4
+                  ? 'lg:grid-cols-4 lg:gap-4'
+                  : 'lg:grid-cols-3'
+              }`}
             >
               {quarters}
             </div>
