@@ -64,6 +64,8 @@ import PlanError from './utility/PlanError';
 import Utility from './utility/Utility';
 import About from './components/menu/about/About';
 import { getTermName } from './DataManager';
+import ChangeLogPreview from './components/menu/ChangeLogPreview';
+import clp from './app/ChangeLogPreview';
 var d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? 'UNKNOWN';
@@ -155,6 +157,8 @@ class App extends React.Component<{}, AppState> implements AppType {
         ?.setAttribute('content', Utility.BACKGROUND_LIGHT);
     }
 
+    const lastVersion = localStorage.getItem('version');
+
     this.state = {
       data: data,
       schedule: {
@@ -166,6 +170,7 @@ class App extends React.Component<{}, AppState> implements AppType {
       f2,
       sf,
       ff,
+      clp: !lastVersion || lastVersion !== VERSION,
       loadingLogin: false,
       unsavedChanges: false,
       originalDataString: '',
@@ -467,6 +472,17 @@ class App extends React.Component<{}, AppState> implements AppType {
               <About
                 switches={switches}
                 onClose={() => this.setState({ about: false })}
+              />
+            )}
+
+            {this.state.clp && (
+              <ChangeLogPreview
+                info={clp}
+                switches={switches}
+                onClose={() => {
+                  localStorage.setItem('version', VERSION);
+                  this.setState({ clp: false });
+                }}
               />
             )}
 

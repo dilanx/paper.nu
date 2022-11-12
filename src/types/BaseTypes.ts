@@ -30,6 +30,7 @@ export interface AppState {
   scheduleInteractions: ScheduleInteractions;
   searchDefaults?: SearchDefaults;
   about?: boolean;
+  clp?: boolean;
   map?: boolean;
   latestTermId?: string;
 }
@@ -123,4 +124,12 @@ export interface DataMapInformation {
       updated: string;
     };
   };
+}
+
+export interface ChangeLogPreviewInformation {
+  version: string;
+  items: {
+    title: string;
+    description?: string;
+  }[];
 }

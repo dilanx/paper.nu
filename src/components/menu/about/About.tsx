@@ -62,7 +62,7 @@ function About({ switches, onClose }: AboutProps) {
                   <AboutButton href="https://www.dilanxd.com/paper">
                     Learn more
                   </AboutButton>
-                  <AboutButton href="https://github.com/dilanx/paper.nu/blob/main/CHANGELOG.md">
+                  <AboutButton href="https://www.dilanxd.com/paper/changelog">
                     Change log
                   </AboutButton>
                   <AboutButton href="https://github.com/dilanx/paper.nu">
