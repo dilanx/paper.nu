@@ -20,6 +20,7 @@ const DEFAULT_SWITCHES: ReadUserOptions = {
   settings_tab: 'General',
   mode: Mode.PLAN,
   schedule_warnings: true,
+  minimap: true,
 };
 
 function matchAccountId(accountData: AccountDataMap, content: string) {
