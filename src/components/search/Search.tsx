@@ -415,9 +415,21 @@ class Search extends React.Component<SearchProps, SearchState> {
                 <div className="flex justify-center gap-2 m-4">
                   <SearchButton
                     active={
-                      searchMode === SearchMode.BROWSE ? 'green' : undefined
+                      searchMode === SearchMode.BROWSE || filter.get.subject
+                        ? 'green'
+                        : undefined
                     }
                     action={() => {
+                      if (filter.get.subject) {
+                        const subj = filter.get.subject;
+                        filter.set({ subject: undefined });
+                        this.setState({
+                          mode: SearchMode.BROWSE,
+                          browseSchool:
+                            ScheduleManager.getSchoolOfSubject(subj),
+                        });
+                        return;
+                      }
                       if (searchMode !== SearchMode.BROWSE) {
                         this.setState({
                           mode: SearchMode.BROWSE,
@@ -437,8 +449,9 @@ class Search extends React.Component<SearchProps, SearchState> {
                       });
                     }}
                   >
-                    {searchMode === SearchMode.BROWSE &&
-                    this.state.browseSchool ? (
+                    {(searchMode === SearchMode.BROWSE &&
+                      this.state.browseSchool) ||
+                    filter.get.subject ? (
                       <div className="flex w-full justify-center items-center gap-1">
                         <ArrowSmallLeftIcon className="w-5 h-5" /> Back
                       </div>

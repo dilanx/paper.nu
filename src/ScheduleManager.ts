@@ -239,6 +239,14 @@ const ScheduleManager = {
     return school.schools[symbol]?.subjects ?? [];
   },
 
+  getSchoolOfSubject: (subject: string) => {
+    for (const s in school.schools) {
+      if (school.schools[s].subjects.some((s) => s.symbol === subject)) {
+        return s;
+      }
+    }
+  },
+
   sectionMatchesFilter: (
     section: ScheduleSection,
     filter?: FilterOptions
