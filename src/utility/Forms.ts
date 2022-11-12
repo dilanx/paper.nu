@@ -81,6 +81,11 @@ export function scheduleSearchFilterForm(
       fields: [sel('meetingDays', Days, filter.meetingDays)],
     },
     {
+      title: 'DISTRIBUTION AREAS',
+      fullRow: true,
+      fields: [sel('distros', Distros, filter.distros)],
+    },
+    {
       title: 'COMPONENTS',
       fullRow: true,
       fields: [sel('components', Components, filter.components)],

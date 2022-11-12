@@ -6,12 +6,13 @@ _2022-11-XX_
 
 **General**
 
-- You can now rename plans and schedules saved to your account.
-- You can now return to subject browsing using a back button even after a subject filter has been applied.
+- Rename plans and schedules saved to your account.
+- Return to subject browsing using a back button even after a subject filter has been applied.
 
 **Schedule**
 
-- You can now save up to 20 schedules to your account (as opposed to 10 previously).
+- Filter schedule sections by distribution area.
+- Save up to 20 schedules to your account (as opposed to 10 previously).
 - A lot information about each section is now available.
 
 ### 2.0.2

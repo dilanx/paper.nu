@@ -271,8 +271,8 @@ let Utility = {
   filterBelongsTo: (option: keyof FilterOptions, mode: Mode) => {
     switch (option) {
       case 'subject':
-        return true;
       case 'distros':
+        return true;
       case 'unitGeq':
       case 'unitLeq':
       case 'include':
@@ -310,7 +310,7 @@ let Utility = {
       case 'location':
         return ['lime', 's'];
       case 'distros':
-        return ['teal', 'p'];
+        return ['teal', 'b'];
       case 'units':
         return ['purple', 'p'];
       case 'include':

@@ -13,7 +13,7 @@ import {
   Time,
 } from './types/ScheduleTypes';
 import { FilterOptions, SearchError, SearchResults } from './types/SearchTypes';
-import { Days, Mode } from './utility/Constants';
+import { Days, DistroMap, Mode } from './utility/Constants';
 import Utility from './utility/Utility';
 var ds = debug('schedule-manager:ser');
 
@@ -280,6 +280,16 @@ const ScheduleManager = {
         !section.meeting_days ||
         !Array.from(section.meeting_days).every((d) =>
           filter.meetingDays?.includes(Days[parseInt(d)])
+        )
+      ) {
+        return false;
+      }
+    }
+
+    if (filter.distros) {
+      if (
+        !filter.distros.some((d) =>
+          section.distros?.includes(DistroMap[d].toString())
         )
       ) {
         return false;
