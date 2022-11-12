@@ -13,9 +13,9 @@ function SideCardItem({ data, color }: SideCardItemProps) {
         {data.icon && <data.icon className="w-5 h-5" />}
         <p className="tracking-wider">{data.key}</p>
       </div>
-      <p className="text-center text-gray-800 dark:text-gray-100 font-medium">
+      <div className="text-center text-gray-800 dark:text-gray-100 font-medium">
         {data.value}
-      </p>
+      </div>
     </div>
   );
 }

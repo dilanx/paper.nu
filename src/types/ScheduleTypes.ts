@@ -38,6 +38,8 @@ export interface ScheduleSectionInstructor {
   url?: string;
 }
 
+export type ScheduleSectionDescription = [string, string];
+
 export interface ScheduleSection {
   section_id: string;
   instructors?: ScheduleSectionInstructor[];
@@ -54,6 +56,8 @@ export interface ScheduleSection {
   component: string;
   capacity?: string;
   enrl_req?: string;
+  descs?: ScheduleSectionDescription[];
+  distros?: string;
   preview?: boolean;
 }
 

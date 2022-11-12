@@ -5,6 +5,7 @@ import {
   ClockIcon,
   DocumentCheckIcon,
   HashtagIcon,
+  InformationCircleIcon,
   ListBulletIcon,
   MapPinIcon,
   PuzzlePieceIcon,
@@ -135,8 +136,8 @@ function getDetails(
     case 'DISTRIBUTION AREAS':
       return [
         BuildingLibraryIcon,
-        course?.distros
-          ? Utility.convertDistros(course.distros).join(', ')
+        section?.distros
+          ? Utility.convertDistros(section.distros).join(', ')
           : undefined,
       ];
     case 'UNITS':
@@ -147,6 +148,20 @@ function getDetails(
       return [
         DocumentCheckIcon,
         Utility.cleanEnrollmentRequirements(section.enrl_req),
+      ];
+    case 'DESCRIPTIONS':
+      return [
+        InformationCircleIcon,
+        section?.descs ? (
+          <div className="flex flex-col gap-2">
+            {section.descs.map(([name, value], i) => (
+              <div key={`section-info-desc-${i}`}>
+                <p>{name}</p>
+                <p className="text-left font-light text-sm">{value}</p>
+              </div>
+            ))}
+          </div>
+        ) : undefined,
       ];
   }
 }
@@ -172,6 +187,7 @@ function openInfo(props: ScheduleClassProps) {
     'UNITS',
     'CAPACITY',
     'ENROLLMENT REQUIREMENTS',
+    'DESCRIPTIONS',
   ];
 
   const sideCardButtons: AnySideCardButtonData[] = [
