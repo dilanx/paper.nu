@@ -1,8 +1,10 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { PaperAirplaneIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment, useState } from 'react';
 import planImage from '../../../assets/plan.svg';
 import saladImage from '../../../assets/salad.png';
+import paperBlack from '../../../assets/paper-full-vertical-black.png';
+import paperWhite from '../../../assets/paper-full-vertical-white.png';
 import { UserOptions } from '../../../types/BaseTypes';
 import AboutButton from './AboutButton';
 
@@ -13,12 +15,13 @@ interface AboutProps {
 
 function About({ switches, onClose }: AboutProps) {
   const [open, setOpen] = useState(true);
+  const dark = switches.get.dark;
 
   return (
     <Transition appear show={open} as={Fragment}>
       <Dialog
         as="div"
-        className={`${switches.get.dark ? 'dark' : ''} relative z-40`}
+        className={`${dark ? 'dark' : ''} relative z-40`}
         onClose={() => setOpen(false)}
       >
         <Transition.Child
@@ -46,16 +49,17 @@ function About({ switches, onClose }: AboutProps) {
             >
               <Dialog.Panel className="inline-block align-bottom bg-white text-black dark:text-gray-300 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full dark:bg-gray-700 p-8 relative">
                 <div className="flex flex-col w-full items-center gap-2 dark:text-white">
-                  <PaperAirplaneIcon className="w-10 h-10" />
-                  <p className="font-light drop-shadow-md text-3xl tracking-wide text-center">
-                    paper
-                  </p>
+                  <img
+                    src={dark ? paperWhite : paperBlack}
+                    alt="paper.nu"
+                    className="h-[172px]"
+                  />
                   <p className="font-light text-center">
                     the ultimate Northwestern course planning tool
                   </p>
                 </div>
                 <div className="my-8 flex flex-col sm:flex-row w-full justify-center items-center gap-2 sm:gap-4">
-                  <AboutButton href="https://www.dilanxd.com/paper.nu">
+                  <AboutButton href="https://www.dilanxd.com/paper">
                     Learn more
                   </AboutButton>
                   <AboutButton href="https://github.com/dilanx/paper.nu/blob/main/CHANGELOG.md">
