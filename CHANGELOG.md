@@ -7,7 +7,7 @@ _2022-11-XX_
 **General**
 
 - You can now rename plans and schedules saved to your account.
-- You can now return to subject browsing even after a subject filter has been applied.
+- You can now return to subject browsing using a back button even after a subject filter has been applied.
 
 **Schedule**
 
