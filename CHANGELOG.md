@@ -16,6 +16,7 @@ _2022-11-XX_
 - Save up to 20 schedules to your account (as opposed to 10 previously).
 - A lot information about each section is now available.
 - The minimap is now enabled by default because apparently a lot of people didn't know it existed. It can still be toggled in the full map view.
+- Drastically increased the default opacity of the utility bar on the left side of the schedule so it's more obvious.
 
 ### 2.0.2
 
