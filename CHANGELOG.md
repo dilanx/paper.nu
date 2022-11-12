@@ -8,6 +8,7 @@ _2022-11-XX_
 
 - Rename plans and schedules saved to your account.
 - Return to subject browsing using a back button even after a subject filter has been applied.
+- If using a new version with significant enhancements for the first time, a change log preview modal will appear.
 - Various UI changes and bug fixes.
 
 **Schedule**
