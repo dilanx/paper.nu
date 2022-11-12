@@ -1,12 +1,14 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import ScheduleManager from '../../ScheduleManager';
+import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {
   ScheduleData,
   ScheduleInteractions,
   ScheduleModificationFunctions,
 } from '../../types/ScheduleTypes';
+import { SideCard } from '../../types/SideCardTypes';
 import SearchScheduleClass from '../search/SearchScheduleClass';
 
 interface ScheduleBookmarksListProps {
@@ -14,6 +16,8 @@ interface ScheduleBookmarksListProps {
   switches: UserOptions;
   sf: ScheduleModificationFunctions;
   interactions: ScheduleInteractions;
+  sideCard: SideCard;
+  alert: Alert;
 }
 
 const variants = {
@@ -50,6 +54,9 @@ function ScheduleBookmarksList(props: ScheduleBookmarksListProps) {
           sf={props.sf}
           interactions={props.interactions}
           fromBookmarks={true}
+          sideCard={props.sideCard}
+          alert={props.alert}
+          switches={props.switches}
           key={`bookmark-${course.course_id}`}
         />
       );

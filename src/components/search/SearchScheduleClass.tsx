@@ -2,7 +2,8 @@ import { BookmarkIcon, MinusIcon } from '@heroicons/react/24/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import { motion } from 'framer-motion';
 import { useDrag } from 'react-dnd';
-import { Color } from '../../types/BaseTypes';
+import { Alert } from '../../types/AlertTypes';
+import { Color, UserOptions } from '../../types/BaseTypes';
 import {
   ScheduleCourse,
   ScheduleData,
@@ -10,6 +11,7 @@ import {
   ScheduleModificationFunctions,
 } from '../../types/ScheduleTypes';
 import { FilterOptions } from '../../types/SearchTypes';
+import { SideCard } from '../../types/SideCardTypes';
 import SearchScheduleSection from './SearchScheduleSection';
 
 interface SearchScheduleClassProps {
@@ -22,6 +24,9 @@ interface SearchScheduleClassProps {
   interactions: ScheduleInteractions;
   fromBookmarks?: boolean;
   filter?: FilterOptions;
+  sideCard: SideCard;
+  alert: Alert;
+  switches: UserOptions;
 }
 
 const variants = {
@@ -103,6 +108,9 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
                 sf={props.sf}
                 interactions={props.interactions}
                 alreadyAdded={section.section_id in props.schedule.schedule}
+                sideCard={props.sideCard}
+                alert={props.alert}
+                switches={props.switches}
                 key={`search-${section.section_id}`}
               />
             );

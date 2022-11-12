@@ -1,10 +1,14 @@
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
-import { Color } from '../../types/BaseTypes';
+import { Alert } from '../../types/AlertTypes';
+import { Color, UserOptions } from '../../types/BaseTypes';
 import {
   ScheduleInteractions,
   ScheduleModificationFunctions,
   ScheduleSection,
 } from '../../types/ScheduleTypes';
+import { SideCard } from '../../types/SideCardTypes';
+import { openInfo } from '../../utility/ScheduleSectionInfo';
 import Utility from '../../utility/Utility';
 
 interface SearchScheduleSectionProps {
@@ -13,6 +17,9 @@ interface SearchScheduleSectionProps {
   sf: ScheduleModificationFunctions;
   interactions: ScheduleInteractions;
   alreadyAdded: boolean;
+  sideCard: SideCard;
+  alert: Alert;
+  switches: UserOptions;
 }
 
 const variants = {
@@ -26,6 +33,9 @@ function SearchScheduleSection({
   sf,
   interactions,
   alreadyAdded,
+  sideCard,
+  alert,
+  switches,
 }: SearchScheduleSectionProps) {
   const disabled =
     alreadyAdded ||
@@ -34,7 +44,7 @@ function SearchScheduleSection({
     !section.end_time;
   return (
     <motion.div variants={variants} className={`w-full my-4`}>
-      <button
+      <div
         className={`w-full block text-left border-2 border-transparent relative
                 bg-gray-200 dark:bg-gray-700 dark:text-white bg-opacity-50 rounded-lg ${
                   disabled
@@ -85,7 +95,16 @@ function SearchScheduleSection({
           </p>
           <p className="text-sm font-light">{section.room ?? 'no location'}</p>
         </div>
-      </button>
+        <button
+          className="absolute bottom-1 right-1"
+          onClick={(e) => {
+            e.stopPropagation();
+            openInfo(sideCard, alert, switches, section);
+          }}
+        >
+          <InformationCircleIcon className="w-5 h-5 text-gray-600 dark:text-gray-300 opacity-60 hover:opacity-100 active:opacity-75" />
+        </button>
+      </div>
     </motion.div>
   );
 }

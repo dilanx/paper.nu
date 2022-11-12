@@ -528,6 +528,9 @@ class App extends React.Component<{}, AppState> implements AppType {
                   f={this.state.f}
                   sf={this.state.sf}
                   scheduleInteractions={this.state.scheduleInteractions}
+                  sideCard={(sideCardData) => {
+                    this.showSideCard(sideCardData);
+                  }}
                   alert={(alertData) => {
                     this.showAlert(alertData);
                   }}
@@ -564,6 +567,9 @@ class App extends React.Component<{}, AppState> implements AppType {
                     schedule={this.state.schedule}
                     sideCard={(sideCardData) => {
                       this.showSideCard(sideCardData);
+                    }}
+                    alert={(alertData) => {
+                      this.showAlert(alertData);
                     }}
                     f={this.state.f}
                     sf={this.state.sf}

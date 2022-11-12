@@ -37,6 +37,7 @@ import {
   SearchResultsElements,
   SearchShortcut,
 } from '../../types/SearchTypes';
+import { SideCard } from '../../types/SideCardTypes';
 import { Mode, SearchMode } from '../../utility/Constants';
 import {
   planSearchFilterForm,
@@ -59,6 +60,7 @@ interface SearchProps {
   f: PlanModificationFunctions;
   sf: ScheduleModificationFunctions;
   scheduleInteractions: ScheduleInteractions;
+  sideCard: SideCard;
   alert: Alert;
   defaults?: SearchDefaults;
   expandMap: () => void;
@@ -281,6 +283,9 @@ class Search extends React.Component<SearchProps, SearchState> {
             schedule={this.props.schedule}
             sf={this.props.sf}
             filter={filter}
+            sideCard={this.props.sideCard}
+            alert={this.props.alert}
+            switches={this.props.switches}
             key={`search-${course.course_id}-${course.subject}-${course.number}`}
           />
         );

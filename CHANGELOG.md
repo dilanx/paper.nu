@@ -16,6 +16,7 @@ _2022-11-XX_
 - Filter schedule sections by distribution area.
 - Save up to 20 schedules to your account (as opposed to 10 previously).
 - A lot information about each section is now available.
+- View section information from within the search results (without having to add it to your schedule first).
 - The minimap is now enabled by default because apparently a lot of people didn't know it existed. It can still be toggled in the full map view.
 - Drastically increased the default opacity of the utility bar on the left side of the schedule so it's more obvious.
 - If a section on your schedule is no longer offered in the upcoming quarter (thus the data is now unavailable), only that section will disappear from the schedule rather than Paper considering the entire schedule malformed.

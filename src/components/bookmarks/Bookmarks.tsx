@@ -1,4 +1,5 @@
 import { SpinnerCircularFixed } from 'spinners-react';
+import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {
   BookmarksData,
@@ -19,6 +20,7 @@ interface BookmarksProps {
   bookmarks: BookmarksData;
   schedule: ScheduleData;
   sideCard: SideCard;
+  alert: Alert;
   f: PlanModificationFunctions;
   sf: ScheduleModificationFunctions;
   scheduleInteractions: ScheduleInteractions;
@@ -74,6 +76,8 @@ function Bookmarks(props: BookmarksProps) {
           switches={props.switches}
           sf={props.sf}
           interactions={props.scheduleInteractions}
+          sideCard={props.sideCard}
+          alert={props.alert}
         />
       )}
     </div>
