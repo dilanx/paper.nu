@@ -27,5 +27,6 @@ export interface AccountData {
 export interface AccountModificationFunctions {
   activate: (id: string) => void;
   deactivate: () => void;
+  rename: (id: string, name: string) => void;
   delete: (id: string, name: string) => void;
 }

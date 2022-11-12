@@ -1,5 +1,17 @@
 # Paper Change Log
 
+### 2.1.0
+
+_2022-11-XX_
+
+**General**
+
+- You can now rename plans and schedules saved to your account.
+
+**Schedule**
+
+- You can now save up to 20 schedules to your account (as opposed to 10 previously).
+
 ### 2.0.2
 
 _2022-11-03_

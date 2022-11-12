@@ -135,6 +135,7 @@ export interface AlertData {
     match?: RegExp;
     matchError?: string;
     focusByDefault?: boolean;
+    defaultValue?: string;
   };
   textHTML?: JSX.Element;
   form?: {

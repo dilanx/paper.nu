@@ -168,6 +168,10 @@ let Account = {
     dp('plans: delete');
     return operation('plans/' + planId, 'DELETE');
   },
+  editPlanInfo: (planId: string, newName: string) => {
+    dp('plans: edit info');
+    return operation('plans/' + planId, 'PATCH', { name: newName });
+  },
   updatePlan: (planId: string, content: string) => {
     dp('plans: update');
     return operation('plans/' + planId, 'PATCH', { content });
@@ -196,6 +200,10 @@ let Account = {
   deleteSchedule: (scheduleId: string) => {
     dp('schedules: delete');
     return operation('schedules/' + scheduleId, 'DELETE');
+  },
+  editScheduleInfo: (scheduleId: string, newName: string) => {
+    dp('schedules: edit info');
+    return operation('schedules/' + scheduleId, 'PATCH', { name: newName });
   },
   updateSchedule: (scheduleId: string, content: string) => {
     dp('schedules: update');

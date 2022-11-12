@@ -30,7 +30,7 @@ export default function Alert({
   const [isOpen, setIsOpen] = useState(true);
   const [confirmation, setConfirmation] = useState<AlertConfirmationState>({});
   const [textValue, setTextValue] = useState<string | undefined>(
-    data.selectMenu?.defaultValue
+    data.selectMenu?.defaultValue || data.textInput?.defaultValue
   );
   const [badInput, setBadInput] = useState(false);
 
@@ -207,6 +207,7 @@ export default function Alert({
                                                     : 'focus:border-green-500'
                                                 }`}
                             placeholder={data.textInput.placeholder}
+                            defaultValue={data.textInput.defaultValue}
                             onChange={(event) => {
                               setTextValue(event.target.value);
                             }}

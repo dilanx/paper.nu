@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import {
   AccountModificationFunctions,
   AccountData,
@@ -54,17 +54,30 @@ function AccountPlan(props: AccountPlanProps) {
             ? new Date(plan.lastUpdated).toLocaleDateString()
             : 'N/A'}
         </p>
-        <button
-          className="absolute -top-2 -right-2 p-0.5 rounded-full bg-gray-200 hover:bg-red-100 dark:bg-gray-700
+        <div className="absolute -top-2 -right-2 flex rounded-full overflow-hidden">
+          <button
+            className="px-1 py-0.5 bg-gray-200 hover:bg-sky-100 dark:bg-gray-700
+                        text-gray-500 dark:text-white text-xs opacity-80 hover:text-sky-400 dark:hover:text-sky-400 hover:opacity-100
+                        transition-all duration-150 hidden group-hover:block z-20"
+            onClick={(e) => {
+              e.stopPropagation();
+              props.fa.rename(id, plan.name);
+            }}
+          >
+            <PencilIcon className="w-5 h-5" />
+          </button>
+          <button
+            className="px-1 py-0.5 bg-gray-200 hover:bg-red-100 dark:bg-gray-700
                         text-gray-500 dark:text-white text-xs opacity-80 hover:text-red-400 dark:hover:text-red-400 hover:opacity-100
                         transition-all duration-150 hidden group-hover:block z-20"
-          onClick={(e) => {
-            e.stopPropagation();
-            props.fa.delete(id, plan.name);
-          }}
-        >
-          <TrashIcon className="w-5 h-5" />
-        </button>
+            onClick={(e) => {
+              e.stopPropagation();
+              props.fa.delete(id, plan.name);
+            }}
+          >
+            <TrashIcon className="w-5 h-5" />
+          </button>
+        </div>
         {props.active ? (
           <p className="absolute bottom-1 right-2 font-bold text-green-400">
             ACTIVE

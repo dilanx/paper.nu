@@ -3,6 +3,7 @@ import {
   ArrowRightOnRectangleIcon,
   PlusIcon,
   TrashIcon,
+  PencilIcon,
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import React from 'react';
@@ -58,6 +59,9 @@ class AccountPlans extends React.Component<
       },
       deactivate: () => {
         props.deactivate();
+      },
+      rename: (id, name) => {
+        self.edit(id, name);
       },
       delete: (id, name) => {
         self.delete(id, name);
@@ -151,6 +155,62 @@ class AccountPlans extends React.Component<
             error: (error: PlanError) => {
               self.props.alert(
                 Utility.errorAlert(`account_create_${t}`, error.message)
+              );
+              return 'Something went wrong';
+            },
+          }
+        );
+      },
+    });
+  }
+
+  edit(id: string, name: string) {
+    const self = this;
+    const isSchedule = this.props.switches.get.mode === Mode.SCHEDULE;
+    const t = isSchedule ? 'schedule' : 'plan';
+    this.props.alert({
+      title: `Editing ${name}`,
+      message: `Enter a new name for this ${t}.`,
+      cancelButton: 'Cancel',
+      confirmButton: 'Save',
+      color: 'sky',
+      icon: PencilIcon,
+      textInput: {
+        placeholder: 'Name',
+        match: /^[\w\-\s]{1,24}$/,
+        matchError: 'Alphanumeric, hyphens and spaces, 1-24 chars',
+        focusByDefault: true,
+        defaultValue: name,
+      },
+      action: (newName) => {
+        if (!newName) {
+          self.props.alert(Utility.errorAlert(`account_edit_${t}`, 'No Name'));
+          return;
+        }
+        self.setState({ loading: true });
+        toast.promise(
+          isSchedule
+            ? Account.editScheduleInfo(id, newName)
+            : Account.editPlanInfo(id, newName),
+          {
+            loading: `Updating ${t}...`,
+            success: (res) => {
+              if (isSchedule) {
+                self.setState({
+                  schedules: res,
+                  loading: false,
+                });
+              } else {
+                self.setState({
+                  plans: res,
+                  loading: false,
+                });
+              }
+              return `Renamed ${name.toUpperCase()} to ${newName.toUpperCase()}`;
+            },
+            error: (error: PlanError) => {
+              self.props.alert(
+                Utility.errorAlert(`account_edit_${t}`, error.message)
               );
               return 'Something went wrong';
             },
@@ -363,7 +423,7 @@ class AccountPlans extends React.Component<
               Activating empty {t}s won't overwrite current {t} data.
             </p>
             <div className="block m-4">{items}</div>
-            {items.length < (isSchedule ? 10 : 5) && (
+            {items.length < (isSchedule ? 20 : 5) && (
               <button
                 className="block mx-auto my-2 px-8 py-1 bg-rose-300 text-white hover:bg-rose-400
                                 dark:bg-rose-600 dark:hover:bg-rose-500 rounded-lg shadow-sm"
