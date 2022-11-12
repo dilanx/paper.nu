@@ -60,7 +60,10 @@ async function loadData(
       let sectionData: ScheduleDataMap = {};
       for (let id of sections) {
         let section = ScheduleManager.getSectionById(id);
-        if (!section) return 'malformed';
+        if (!section) {
+          ds('course section not found: %s', id);
+          continue;
+        }
         sectionData[id] = section;
         ds('course section loaded: %s', id);
       }
@@ -72,7 +75,10 @@ async function loadData(
       let bookmarksData: ScheduleCourse[] = [];
       for (let id of bookmarks) {
         let course = ScheduleManager.getCourseById(id);
-        if (!course) return 'malformed';
+        if (!course) {
+          ds('course not found: %s', id);
+          continue;
+        }
         bookmarksData.push(course);
         ds('schedule bookmark added: %s', id);
       }
