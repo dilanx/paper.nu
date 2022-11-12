@@ -261,7 +261,22 @@ function ScheduleClass(props: ScheduleClassProps) {
   const endDif = length / 60;
 
   const instructorLastNames = instructors
-    ?.map((i) => i.name?.split(' ').pop())
+    ?.map((i) => {
+      if (i.name) {
+        const nameParts = i.name.split(' ');
+        let last = nameParts[nameParts.length - 1];
+        if (last.endsWith('.')) {
+          last = last.slice(0, -1);
+        }
+        if (
+          (last.toLowerCase() === 'jr' || last.toLowerCase() === 'sr') &&
+          nameParts.length > 2
+        ) {
+          last = nameParts[nameParts.length - 2];
+        }
+        return last;
+      }
+    })
     .join(', ');
 
   let left = '0%';
