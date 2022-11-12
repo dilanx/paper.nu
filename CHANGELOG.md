@@ -11,6 +11,7 @@ _2022-11-XX_
 **Schedule**
 
 - You can now save up to 20 schedules to your account (as opposed to 10 previously).
+- A lot information about each section is now available.
 
 ### 2.0.2
 
