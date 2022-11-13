@@ -61,14 +61,14 @@ function ChangeLogPreview({ switches, info, onClose }: ChangeLogPreviewProps) {
                   <p className="text-xl text-center font-medium">
                     What's new in version {info.version}
                   </p>
-                  <p className="text-sm text-center font-light mb-8">
+                  <p className="text-sm text-center font-light mb-4 text-gray-600 dark:text-gray-300">
                     This version brings a combination of things I wanted to add
                     and features that you all requested. Here are some of the
                     big ones. Check it out!
                   </p>
                   <ul className="w-full list-disc">
                     {info.items.map(({ title, description }, i) => (
-                      <li key={`clp-item-${i}`}>
+                      <li className="my-4" key={`clp-item-${i}`}>
                         <p className="font-medium">{title}</p>
                         <p className="text-sm font-light">{description}</p>
                       </li>
@@ -98,7 +98,7 @@ function ChangeLogPreview({ switches, info, onClose }: ChangeLogPreviewProps) {
                       );
                     }}
                   >
-                    Full Change Log
+                    View all changes in v{info.version}
                   </button>
                 </div>
               </Dialog.Panel>
