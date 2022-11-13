@@ -20,7 +20,7 @@ const feedbackMenu = (): AlertData => ({
           target="_blank"
           rel="noreferrer"
         >
-          feedback site
+          <strong>feedback site</strong>
         </a>
         . You can also see the status of your submissions and developer
         responses.
