@@ -127,7 +127,6 @@ export interface DataMapInformation {
 }
 
 export interface ChangeLogPreviewInformation {
-  version: string;
   items: {
     title: string;
     description?: string;

@@ -59,7 +59,7 @@ function ChangeLogPreview({ switches, info, onClose }: ChangeLogPreviewProps) {
                     ref={initialFocus}
                   />
                   <p className="text-xl text-center font-medium">
-                    What's new in version {info.version}
+                    What's new in version {process.env.REACT_APP_VERSION}
                   </p>
                   <p className="text-sm text-center font-light mb-4 text-gray-600 dark:text-gray-300">
                     This version brings a combination of things I wanted to add
@@ -98,7 +98,7 @@ function ChangeLogPreview({ switches, info, onClose }: ChangeLogPreviewProps) {
                       );
                     }}
                   >
-                    View all changes in v{info.version}
+                    View all changes in v{process.env.REACT_APP_VERSION}
                   </button>
                 </div>
               </Dialog.Panel>

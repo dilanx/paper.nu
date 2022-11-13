@@ -68,7 +68,8 @@ import ChangeLogPreview from './components/menu/ChangeLogPreview';
 import clp from './app/ChangeLogPreview';
 var d = debug('app');
 
-const VERSION = process.env.REACT_APP_VERSION ?? 'UNKNOWN';
+const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
+const VERSION_NO_PATCH = VERSION.split('.').slice(0, 2).join('.');
 
 class App extends React.Component<{}, AppState> implements AppType {
   constructor(props: {}) {
@@ -157,7 +158,7 @@ class App extends React.Component<{}, AppState> implements AppType {
         ?.setAttribute('content', Utility.BACKGROUND_LIGHT);
     }
 
-    const lastVersion = localStorage.getItem('version');
+    const lastVersion = localStorage.getItem('v');
 
     this.state = {
       data: data,
@@ -170,7 +171,7 @@ class App extends React.Component<{}, AppState> implements AppType {
       f2,
       sf,
       ff,
-      clp: !lastVersion || lastVersion !== VERSION,
+      clp: !lastVersion || lastVersion !== VERSION_NO_PATCH,
       loadingLogin: false,
       unsavedChanges: false,
       originalDataString: '',
@@ -475,12 +476,12 @@ class App extends React.Component<{}, AppState> implements AppType {
               />
             )}
 
-            {this.state.clp && (
+            {this.state.clp && clp.items.length > 0 && (
               <ChangeLogPreview
                 info={clp}
                 switches={switches}
                 onClose={() => {
-                  localStorage.setItem('version', VERSION);
+                  localStorage.setItem('v', VERSION_NO_PATCH);
                   this.setState({ clp: false });
                 }}
               />
