@@ -54,7 +54,7 @@ function AccountPlan(props: AccountPlanProps) {
             ? new Date(plan.lastUpdated).toLocaleDateString()
             : 'N/A'}
         </p>
-        <div className="absolute -top-2 -right-2 flex rounded-full overflow-hidden">
+        <div className="absolute -top-2 -right-2 flex rounded-lg overflow-hidden">
           <button
             className="px-1 py-0.5 bg-gray-200 hover:bg-sky-100 dark:bg-gray-700
                         text-gray-500 dark:text-white text-xs opacity-80 hover:text-sky-400 dark:hover:text-sky-400 hover:opacity-100
