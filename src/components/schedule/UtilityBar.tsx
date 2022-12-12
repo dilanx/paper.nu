@@ -115,6 +115,8 @@ function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
             confirmButton: 'Download',
             color: 'red',
             cancelButton: 'Cancel',
+            notice:
+              "I'm aware of an issue some people are experiencing with exporting their schedule to calendar. I've been able to recreate this issue with certain schedules, so I'll fix it soon!",
             action: () => exportScheduleAsICS(validSections),
           });
         }}

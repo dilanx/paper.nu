@@ -12,6 +12,7 @@ import { TabBar, TabBarButton } from '../TabBar';
 import { getAlertEditButtons } from './AlertEditButtons';
 import { getAlertExtras } from './AlertExtras';
 import { getAlertForm } from './AlertForm';
+import { getAlertNotice } from './AlertNotice';
 import { getAlertOptions } from './AlertOptions';
 
 interface AlertProps {
@@ -239,6 +240,7 @@ export default function Alert({
                           color={data.color}
                         />
                       )}
+                      {data.notice && getAlertNotice(data.notice)}
                     </div>
                   </div>
                 </div>

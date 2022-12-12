@@ -1,8 +1,14 @@
 # Paper Change Log
 
+### 2.1.1
+
+_2022-12-11_
+
+- Alert modals can now include developer notices when necessary.
+
 ### 2.1.0
 
-_2022-11-XX_
+_2022-11-12_
 
 **General**
 
