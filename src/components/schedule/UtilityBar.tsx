@@ -36,8 +36,8 @@ function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
 
   return (
     <div
-      className="absolute z-20 left-2 lg:left-0 top-1/2 -translate-y-1/2 border-2 border-green-300 p-1 rounded-xl bg-green-100 dark:bg-gray-700
-                gap-2 flex flex-col opacity-75 hover:opacity-100 hover:shadow-lg transition-all duration-150 text-gray-600 dark:text-gray-300"
+      className="absolute left-2 top-1/2 z-20 flex -translate-y-1/2 flex-col gap-2 rounded-xl border-2 border-green-300 bg-green-100
+                p-1 text-gray-600 opacity-75 transition-all duration-150 hover:opacity-100 hover:shadow-lg dark:bg-gray-700 dark:text-gray-300 lg:left-0"
     >
       <UtilityBarButton
         icon={ArrowTopRightOnSquareIcon}

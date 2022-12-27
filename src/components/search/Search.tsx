@@ -135,7 +135,7 @@ class Search extends React.Component<SearchProps, SearchState> {
   searchMessage(title: string, subtitle: string) {
     return (
       <div
-        className="text-center text-gray-600 dark:text-gray-400 px-4"
+        className="px-4 text-center text-gray-600 dark:text-gray-400"
         key="search-message"
       >
         <p className="text-lg font-medium">{title}</p>
@@ -348,11 +348,11 @@ class Search extends React.Component<SearchProps, SearchState> {
       <div
         className={`${
           this.props.switches.get.tab === 'Search' ? '' : 'hidden '
-        }border-4 border-gray-400 dark:border-gray-500 my-2 rounded-2xl shadow-lg flex-1 flex flex-col overflow-hidden ${
+        }border-4 my-2 flex flex-1 flex-col overflow-hidden rounded-2xl border-gray-400 shadow-lg dark:border-gray-500 ${
           loading
-            ? 'justify-center items-center'
+            ? 'items-center justify-center'
             : current
-            ? 'overflow-y-scroll no-scrollbar'
+            ? 'no-scrollbar overflow-y-scroll'
             : ''
         }`}
       >
@@ -368,12 +368,12 @@ class Search extends React.Component<SearchProps, SearchState> {
           />
         ) : !current ? (
           <>
-            <div className="p-2 mb-2 bg-white dark:bg-gray-800 rounded-lg">
-              <div className="block mt-4 mb-2 mx-auto w-11/12 relative">
+            <div className="mb-2 rounded-lg bg-white p-2 dark:bg-gray-800">
+              <div className="relative mx-auto mt-4 mb-2 block w-11/12">
                 <input
-                  className="w-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 shadow-sm
-                    rounded-lg outline-none hover:border-gray-500 focus:border-black dark:hover:border-gray-400 dark:focus:border-white text-lg p-2 px-4
-                    transition-all duration-150 text-black dark:text-white"
+                  className="w-full rounded-lg border-2 border-gray-300 bg-white p-2 px-4
+                    text-lg text-black shadow-sm outline-none transition-all duration-150 hover:border-gray-500 focus:border-black dark:border-gray-700
+                    dark:bg-gray-800 dark:text-white dark:hover:border-gray-400 dark:focus:border-white"
                   ref={this.searchFieldRef}
                   value={search}
                   placeholder={`Search ${
@@ -390,25 +390,25 @@ class Search extends React.Component<SearchProps, SearchState> {
                 />
                 {!queryEmpty && (
                   <button
-                    className="block absolute right-4 top-0 bottom-0 my-2 text-gray-300 hover:text-red-400 active:text-red-300 
-                                            dark:text-gray-600 dark:hover:text-red-400 dark:active:text-red-500 transition-colors duration-150"
+                    className="absolute right-4 top-0 bottom-0 my-2 block text-gray-300 transition-colors duration-150 
+                                            hover:text-red-400 active:text-red-300 dark:text-gray-600 dark:hover:text-red-400 dark:active:text-red-500"
                     onClick={() => {
                       this.setState({ search: '' });
                       this.searchFieldRef.current?.focus();
                     }}
                   >
-                    <XCircleIcon className="w-5 h-5" />
+                    <XCircleIcon className="h-5 w-5" />
                   </button>
                 )}
               </div>
               {shortcut && (
-                <p className="text-center text-sm m-1 p-0 text-gray-500 dark:text-gray-400">
+                <p className="m-1 p-0 text-center text-sm text-gray-500 dark:text-gray-400">
                   replacing{' '}
-                  <span className="text-black dark:text-white font-medium">
+                  <span className="font-medium text-black dark:text-white">
                     {shortcut.replacing}
                   </span>{' '}
                   with{' '}
-                  <span className="text-black dark:text-white font-medium">
+                  <span className="font-medium text-black dark:text-white">
                     {shortcut.with}
                   </span>
                 </p>
@@ -417,7 +417,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                 <SearchFilterDisplay filter={filter} appMode={appMode} />
               )}
               {queryEmpty && (
-                <div className="flex justify-center gap-2 m-4">
+                <div className="m-4 flex justify-center gap-2">
                   <SearchButton
                     active={
                       searchMode === SearchMode.BROWSE || filter.get.subject
@@ -457,8 +457,8 @@ class Search extends React.Component<SearchProps, SearchState> {
                     {(searchMode === SearchMode.BROWSE &&
                       this.state.browseSchool) ||
                     filter.get.subject ? (
-                      <div className="flex w-full justify-center items-center gap-1">
-                        <ArrowSmallLeftIcon className="w-5 h-5" /> Back
+                      <div className="flex w-full items-center justify-center gap-1">
+                        <ArrowSmallLeftIcon className="h-5 w-5" /> Back
                       </div>
                     ) : (
                       'Browse'
@@ -519,7 +519,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                     }}
                     tooltip="Edit filter"
                   >
-                    <FunnelIcon className="w-5 h-5" />
+                    <FunnelIcon className="h-5 w-5" />
                   </SearchButton>
                   {appMode === Mode.SCHEDULE && (
                     <SearchButton
@@ -549,7 +549,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                       tooltip="Change term"
                       ring={newerTermAvailable}
                     >
-                      <CalendarDaysIcon className="w-5 h-5" />
+                      <CalendarDaysIcon className="h-5 w-5" />
                     </SearchButton>
                   )}
                 </div>
@@ -557,12 +557,12 @@ class Search extends React.Component<SearchProps, SearchState> {
               {newerTermAvailable &&
                 appMode === Mode.SCHEDULE &&
                 queryEmpty && (
-                  <p className="text-center text-violet-600 dark:text-violet-400 text-xs font-medium">
+                  <p className="text-center text-xs font-medium text-violet-600 dark:text-violet-400">
                     COURSES FOR A NEWER TERM ARE AVAILABLE
                   </p>
                 )}
             </div>
-            <div className="flex-1 overflow-hidden overflow-y-scroll no-scrollbar">
+            <div className="no-scrollbar flex-1 overflow-hidden overflow-y-scroll">
               {queryEmpty && !results && searchMode === SearchMode.BROWSE && (
                 <SearchBrowse
                   filter={this.state.filter}
@@ -576,7 +576,7 @@ class Search extends React.Component<SearchProps, SearchState> {
               {results}
             </div>
             {appMode === Mode.SCHEDULE && this.props.switches.get.minimap && (
-              <div className="mt-2 h-[25vh] bg-white dark:bg-gray-800 rounded-lg">
+              <div className="mt-2 h-[25vh] rounded-lg bg-white dark:bg-gray-800">
                 <CampusMinimap
                   expand={this.props.expandMap}
                   section={
@@ -608,11 +608,11 @@ class Search extends React.Component<SearchProps, SearchState> {
               courses={this.props.data.courses}
             />
             <div className="py-2">
-              <p className="text-center text-gray-500 font-bold p-2 text-sm">
+              <p className="p-2 text-center text-sm font-bold text-gray-500">
                 MY LIST
               </p>
               <button
-                className="block mx-auto bg-indigo-500 text-white font-medium w-4/5 p-0.5 my-2 opacity-100 hover:opacity-60 rounded-md shadow-sm"
+                className="mx-auto my-2 block w-4/5 rounded-md bg-indigo-500 p-0.5 font-medium text-white opacity-100 shadow-sm hover:opacity-60"
                 onClick={() => {
                   if (!current) return;
                   if (bookmarks.noCredit.has(current)) {
@@ -627,7 +627,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                   : 'Add to bookmarks'}
               </button>
               <button
-                className="block mx-auto bg-indigo-800 dark:bg-indigo-400 text-white font-medium w-4/5 p-0.5 my-2 opacity-100 hover:opacity-60 rounded-md shadow-sm"
+                className="mx-auto my-2 block w-4/5 rounded-md bg-indigo-800 p-0.5 font-medium text-white opacity-100 shadow-sm hover:opacity-60 dark:bg-indigo-400"
                 onClick={() => {
                   if (!current) return;
                   if (bookmarks.forCredit.has(current)) {
@@ -643,8 +643,8 @@ class Search extends React.Component<SearchProps, SearchState> {
               </button>
             </div>
             <button
-              className="block mx-auto my-8 bg-gray-500 text-white font-medium
-                        w-4/5 p-2 opacity-100 hover:opacity-60 rounded-md shadow-sm"
+              className="mx-auto my-8 block w-4/5 rounded-md bg-gray-500
+                        p-2 font-medium text-white opacity-100 shadow-sm hover:opacity-60"
               onClick={() => {
                 this.setState({ current: undefined });
               }}

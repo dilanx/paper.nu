@@ -115,21 +115,21 @@ function SearchFilterBadge({
 }: SearchFilterBadgeProps) {
   return (
     <button
-      className="flex text-xs rounded-lg overflow-hidden group relative shadow-sm"
+      className="group relative flex overflow-hidden rounded-lg text-xs shadow-sm"
       onClick={() => remove()}
     >
       <p className={`px-1 py-0.5 bg-${color}-500 text-white`}>{name}</p>
       <p
         className={`px-1 py-0.5 bg-${color}-100 dark:bg-gray-600 text-${color}-500 dark:text-${color}-300
-          font-bold overflow-hidden whitespace-nowrap text-ellipsis`}
+          overflow-hidden text-ellipsis whitespace-nowrap font-bold`}
       >
         {value}
       </p>
       <p
-        className={`absolute top-0 left-0 w-full h-full text-white bg-${color}-400
-                    rounded-lg hidden group-hover:flex justify-center items-center bg-opacity-80 group-active:bg-opacity-100`}
+        className={`absolute top-0 left-0 h-full w-full text-white bg-${color}-400
+                    hidden items-center justify-center rounded-lg bg-opacity-80 group-hover:flex group-active:bg-opacity-100`}
       >
-        <XMarkIcon className="w-4 h-4" />
+        <XMarkIcon className="h-4 w-4" />
       </p>
     </button>
   );
@@ -173,7 +173,7 @@ function SearchFilterDisplay({ filter, appMode }: SearchFilterDisplayProps) {
     },
     []
   );
-  return <div className="flex flex-wrap gap-2 justify-center">{badges}</div>;
+  return <div className="flex flex-wrap justify-center gap-2">{badges}</div>;
 }
 
 export default SearchFilterDisplay;

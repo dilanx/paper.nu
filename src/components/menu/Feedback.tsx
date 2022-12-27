@@ -84,7 +84,7 @@ const feedbackMenu = (): AlertData => ({
                     <span>
                       Feedback submitted!{' '}
                       <a
-                        className="text-violet-500 dark:text-violet-400 hover:underline"
+                        className="text-violet-500 hover:underline dark:text-violet-400"
                         href={`https://feedback.dilanxd.com/item/${data.id}`}
                       >
                         View

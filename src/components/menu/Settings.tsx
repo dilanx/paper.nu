@@ -27,7 +27,7 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
     tabs: [
       {
         name: 'General',
-        display: <Cog6ToothIcon className="w-5 h-5" />,
+        display: <Cog6ToothIcon className="h-5 w-5" />,
         options: [
           {
             switch: 'dark',
@@ -68,7 +68,7 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
       },
       {
         name: 'Plan',
-        display: <RectangleStackIcon className="w-5 h-5" />,
+        display: <RectangleStackIcon className="h-5 w-5" />,
         options: [
           {
             switch: 'compact',
@@ -101,7 +101,7 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
       },
       {
         name: 'Schedule',
-        display: <CalendarIcon className="w-5 h-5" />,
+        display: <CalendarIcon className="h-5 w-5" />,
         options: [
           {
             switch: 'show_times',
@@ -119,7 +119,7 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
       },
       {
         name: 'Advanced',
-        display: <EllipsisHorizontalIcon className="w-5 h-5" />,
+        display: <EllipsisHorizontalIcon className="h-5 w-5" />,
         options: [
           {
             switch: 'reduced_motion',

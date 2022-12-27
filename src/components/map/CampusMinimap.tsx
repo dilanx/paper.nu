@@ -23,13 +23,13 @@ function CampusMinimap({ expand, section }: CampusMinimapProps) {
     : DEFAULT_POSITION;
 
   return (
-    <div className="w-full h-full relative">
+    <div className="relative h-full w-full">
       <MapContainer
         center={DEFAULT_POSITION}
         zoom={DEFAULT_ZOOM}
         zoomControl={false}
         attributionControl={false}
-        className="w-full h-full"
+        className="h-full w-full"
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -59,7 +59,7 @@ function CampusMinimap({ expand, section }: CampusMinimapProps) {
         className="absolute top-2 right-2 z-20 text-gray-500 hover:text-emerald-500 active:text-emerald-600"
         onClick={() => expand()}
       >
-        <ArrowsPointingOutIcon className="w-6 h-6" />
+        <ArrowsPointingOutIcon className="h-6 w-6" />
       </button>
     </div>
   );

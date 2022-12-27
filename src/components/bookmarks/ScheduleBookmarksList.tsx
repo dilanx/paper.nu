@@ -63,7 +63,7 @@ function ScheduleBookmarksList(props: ScheduleBookmarksListProps) {
     });
   } else {
     classes = (
-      <div className={`text-center overflow-hidden whitespace-normal`}>
+      <div className={`overflow-hidden whitespace-normal text-center`}>
         <p className="text-sm font-light text-gray-500 dark:text-gray-400">
           Find a class you're interested in but don't have a spot for it on your
           schedule yet? Bookmark it for later using the bookmark button found on
@@ -75,8 +75,8 @@ function ScheduleBookmarksList(props: ScheduleBookmarksListProps) {
 
   return (
     <motion.div initial="hidden" animate="visible" variants={variants}>
-      <div className="compact-mode relative m-4 rounded-lg px-1 pt-4 pb-8 border-2 border-indigo-500 space-y-3 shadow-lg">
-        <p className="text-center font-bold text-md m-0 p-0 text-gray-600 dark:text-gray-400">
+      <div className="compact-mode relative m-4 space-y-3 rounded-lg border-2 border-indigo-500 px-1 pt-4 pb-8 shadow-lg">
+        <p className="text-md m-0 p-0 text-center font-bold text-gray-600 dark:text-gray-400">
           BOOKMARKED COURSES
         </p>
         <div className="space-y-2">{classes}</div>

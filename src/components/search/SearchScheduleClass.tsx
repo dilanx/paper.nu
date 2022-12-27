@@ -69,13 +69,13 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
   return (
     <div
       ref={drag}
-      className={`p-2 rounded-lg bg-opacity-60 dark:bg-gray-800 border-2 relative
+      className={`relative rounded-lg border-2 bg-opacity-60 p-2 dark:bg-gray-800
             ${
               props.selected
-                ? `bg-white border-${props.color}-400 shadow-lg -translate-y-2`
-                : `bg-${props.color}-100 border-${props.color}-300 border-opacity-60 hover:shadow-md hover:-translate-y-1`
+                ? `bg-white border-${props.color}-400 -translate-y-2 shadow-lg`
+                : `bg-${props.color}-100 border-${props.color}-300 border-opacity-60 hover:-translate-y-1 hover:shadow-md`
             }
-            group transition ease-in-out duration-300 m-4 cursor-pointer ${
+            group m-4 cursor-pointer transition duration-300 ease-in-out ${
               isDragging ? 'cursor-grab ' : 'cursor-pointer'
             }`}
       onClick={() => {
@@ -116,7 +116,7 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
             );
           })}
           {hidden > 0 && (
-            <p className="m-0 text-sm text-center text-gray-400 font-medium">
+            <p className="m-0 text-center text-sm font-medium text-gray-400">
               {hidden} section{hidden > 1 ? 's' : ''} hidden by filter
             </p>
           )}
@@ -125,9 +125,9 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
 
       {!props.selected && (
         <button
-          className="absolute -top-2 -right-2 p-1 rounded-full bg-gray-200 hover:bg-indigo-100 dark:bg-gray-700
-                        text-gray-500 dark:text-white text-xs opacity-80 hover:text-indigo-400 dark:hover:text-indigo-400 hover:opacity-100
-                        transition-all duration-150 hidden group-hover:block z-20"
+          className="absolute -top-2 -right-2 z-20 hidden rounded-full bg-gray-200 p-1
+                        text-xs text-gray-500 opacity-80 transition-all duration-150 hover:bg-indigo-100 hover:text-indigo-400
+                        hover:opacity-100 group-hover:block dark:bg-gray-700 dark:text-white dark:hover:text-indigo-400"
           onClick={(e) => {
             e.stopPropagation();
             if (isBookmarked) {
@@ -139,12 +139,12 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
         >
           {isBookmarked ? (
             props.fromBookmarks ? (
-              <MinusIcon className="w-5 h-5" />
+              <MinusIcon className="h-5 w-5" />
             ) : (
-              <BookmarkIconSolid className="w-5 h-5" />
+              <BookmarkIconSolid className="h-5 w-5" />
             )
           ) : (
-            <BookmarkIcon className="w-5 h-5" />
+            <BookmarkIcon className="h-5 w-5" />
           )}
         </button>
       )}

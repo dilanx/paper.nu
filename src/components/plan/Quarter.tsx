@@ -79,13 +79,13 @@ function Quarter(props: QuarterProps) {
     } else {
       classes = (
         <div
-          className="p-2 compact:px-2 compact:py-0.5 rounded-lg bg-white dark:bg-gray-900 border-2 border-dashed border-black dark:border-gray-500
-                    overflow-hidden whitespace-nowrap opacity-40"
+          className="overflow-hidden whitespace-nowrap rounded-lg border-2 border-dashed border-black bg-white p-2 opacity-40 compact:px-2
+                    compact:py-0.5 dark:border-gray-500 dark:bg-gray-900"
         >
           <p className="text-md font-bold text-black dark:text-white">
             No classes to show.
           </p>
-          <p className="compact:hidden text-xs dark:text-white">
+          <p className="text-xs compact:hidden dark:text-white">
             Use the search bar.
           </p>
         </div>
@@ -104,22 +104,22 @@ function Quarter(props: QuarterProps) {
     <motion.div variants={variants}>
       <div
         ref={drop}
-        className={`relative block rounded-lg px-8 pt-4 pb-8 border-2
+        className={`relative block rounded-lg border-2 px-8 pt-4 pb-8
             ${
               isOver
                 ? `border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50`
                 : `border-solid bg-${props.color}-50 dark:bg-gray-800 border-${props.color}-400`
             }
-                space-y-3 h-full shadow-lg compact:py-2 compact:shadow-sm ${
+                h-full space-y-3 shadow-lg compact:py-2 compact:shadow-sm ${
                   props.yearHasSummer ? 'lg:px-4' : ''
                 }`}
       >
-        <p className="text-center font-bold text-md m-0 p-0 text-gray-600 dark:text-gray-400 compact:text-sm">
+        <p className="text-md m-0 p-0 text-center font-bold text-gray-600 compact:text-sm dark:text-gray-400">
           {props.title}
         </p>
         {classes}
         {props.switches.get.quarter_units && (
-          <p className="absolute right-2 top-0 text-right text-xs p-0 m-0 text-gray-400 font-normal">
+          <p className="absolute right-2 top-0 m-0 p-0 text-right text-xs font-normal text-gray-400">
             <span className="font-medium">{units}</span> {unitString}
           </p>
         )}

@@ -43,12 +43,12 @@ function SearchScheduleSection({
     !section.start_time ||
     !section.end_time;
   return (
-    <motion.div variants={variants} className={`w-full my-4`}>
+    <motion.div variants={variants} className={`my-4 w-full`}>
       <div
-        className={`w-full block text-left border-2 border-transparent relative
-                bg-gray-200 dark:bg-gray-700 dark:text-white bg-opacity-50 rounded-lg ${
+        className={`relative block w-full rounded-lg border-2 border-transparent
+                bg-gray-200 bg-opacity-50 text-left dark:bg-gray-700 dark:text-white ${
                   disabled
-                    ? 'opacity-60 cursor-not-allowed'
+                    ? 'cursor-not-allowed opacity-60'
                     : `hover:border-${color}-400`
                 }`}
         onMouseEnter={() => {
@@ -65,7 +65,7 @@ function SearchScheduleSection({
           }
         }}
       >
-        <p className="px-2 text-md font-bold overflow-hidden whitespace-nowrap">
+        <p className="text-md overflow-hidden whitespace-nowrap px-2 font-bold">
           {section.section}
           <span className="pl-2 text-sm font-normal">
             {Utility.convertSectionComponent(section.component).toUpperCase()}
@@ -77,7 +77,7 @@ function SearchScheduleSection({
           )}
         </p>
         <hr className="mx-2 border border-gray-400 opacity-50" />
-        <div className="text-center py-4">
+        <div className="py-4 text-center">
           <p className="text-sm font-normal">
             {section.meeting_days
               ? Utility.convertAllDaysToString(section.meeting_days)
@@ -102,7 +102,7 @@ function SearchScheduleSection({
             openInfo(sideCard, alert, switches, section);
           }}
         >
-          <InformationCircleIcon className="w-5 h-5 text-gray-600 dark:text-gray-300 opacity-60 hover:opacity-100 active:opacity-75" />
+          <InformationCircleIcon className="h-5 w-5 text-gray-600 opacity-60 hover:opacity-100 active:opacity-75 dark:text-gray-300" />
         </button>
       </div>
     </motion.div>

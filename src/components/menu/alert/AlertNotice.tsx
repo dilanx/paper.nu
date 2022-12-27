@@ -1,6 +1,6 @@
 export const getAlertNotice = (message: string) => (
-  <div className="border-2 bg-red-100 dark:bg-gray-700 border-red-500 dark:border-red-400 rounded-lg p-2">
-    <p className="text-red-500 dark:text-red-400 font-bold">NOTICE</p>
+  <div className="rounded-lg border-2 border-red-500 bg-red-100 p-2 dark:border-red-400 dark:bg-gray-700">
+    <p className="font-bold text-red-500 dark:text-red-400">NOTICE</p>
     <p className="text-sm text-red-500 dark:text-red-400">{message}</p>
   </div>
 );

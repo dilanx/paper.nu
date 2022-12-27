@@ -54,7 +54,7 @@ export function TabBar(props: TabBarProps) {
                 darkMode ? 'rgb(64, 64, 64)' : 'rgba(245, 245, 245)'
               }
             />
-            <p className="lg:hidden xl:block m-0 text-sm lg:text-xs w-20 lg:w-12 overflow-hidden whitespace-nowrap text-ellipsis">
+            <p className="m-0 w-20 overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:hidden lg:w-12 lg:text-xs xl:block">
               Loading
             </p>
           </TabBarButton>
@@ -73,10 +73,10 @@ export function TabBarButton(props: TabBarButtonProps) {
       className={`px-2 py-1 ${
         props.name === props.selected
           ? `bg-${color}-400 dark:bg-${color}-500 text-white`
-          : `bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-300
+          : `bg-white text-gray-500 dark:bg-gray-800 dark:text-gray-300
                     hover:bg-${color}-100 hover:text-${color}-600 dark:hover:text-${color}-400
                     ${props.name === 'Loading' ? 'cursor-not-allowed' : ''}`
-      } flex items-center gap-1 group`}
+      } group flex items-center gap-1`}
       onClick={() => {
         if (props.disableClick) return;
         if (props.switchName) {

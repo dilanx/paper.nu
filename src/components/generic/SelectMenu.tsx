@@ -10,10 +10,10 @@ interface SelectMenuProps {
 
 function SelectMenu({ options, value, setValue, color }: SelectMenuProps) {
   return (
-    <div className="flex gap-2 flex-wrap m-2">
+    <div className="m-2 flex flex-wrap gap-2">
       {options.map((option, i) => (
         <button
-          className={`text-sm font-medium px-4 py-1 rounded-xl
+          className={`rounded-xl px-4 py-1 text-sm font-medium
           ${
             option.value === value
               ? `bg-${color}-500 text-white`

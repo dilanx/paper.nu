@@ -8,7 +8,7 @@ interface InfoProps {
 function Info({ dark }: InfoProps) {
   return (
     <div
-      className={`flex items-center gap-2 justify-center mt-4 mb-2 px-4 text-center whitespace-nowrap dark:bg-gray-800 transition-all duration-300 text-black dark:text-white`}
+      className={`mt-4 mb-2 flex items-center justify-center gap-2 whitespace-nowrap px-4 text-center text-black transition-all duration-300 dark:bg-gray-800 dark:text-white`}
     >
       <img
         src={dark ? paperWhite : paperBlack}

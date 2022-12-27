@@ -506,8 +506,8 @@ class App extends React.Component<{}, AppState> implements AppType {
               )}
             </AnimatePresence>
 
-            <div className="bg-white dark:bg-gray-800 grid grid-cols-1 lg:grid-cols-8">
-              <div className="col-span-2 px-4 h-192 md:h-screen flex flex-col">
+            <div className="grid grid-cols-1 bg-white dark:bg-gray-800 lg:grid-cols-8">
+              <div className="col-span-2 flex h-192 flex-col px-4 md:h-screen">
                 <Info dark={darkMode} />
                 <ModeSwitch
                   switches={switches}
@@ -616,7 +616,7 @@ class App extends React.Component<{}, AppState> implements AppType {
               <div
                 className={`${
                   switches.get.compact ? 'compact-mode ' : ''
-                } col-span-6 block pt-0 lg:h-screen lg:overflow-y-scroll no-scrollbar`}
+                } no-scrollbar col-span-6 block pt-0 lg:h-screen lg:overflow-y-scroll`}
               >
                 <AnimatePresence mode="wait">
                   {switches.get.mode === Mode.PLAN ? (
@@ -666,14 +666,14 @@ class App extends React.Component<{}, AppState> implements AppType {
                   }`}
                 >
                   <button
-                    className="flex items-center gap-2 rainbow-border-button shadow-lg opacity-75 hover:opacity-100 active:before:bg-none active:before:bg-emerald-400
-                      after:bg-gray-100 text-black dark:after:bg-gray-700 dark:text-white"
+                    className="rainbow-border-button flex items-center gap-2 text-black opacity-75 shadow-lg after:bg-gray-100 hover:opacity-100
+                      active:before:bg-emerald-400 active:before:bg-none dark:text-white dark:after:bg-gray-700"
                     onClick={() => {
                       update(this, isSchedule);
                     }}
                   >
                     <>
-                      <ArrowDownTrayIcon className="h-6 w-6 inline-block" />
+                      <ArrowDownTrayIcon className="inline-block h-6 w-6" />
                       <p className="inline-block text-lg font-extrabold">
                         SAVE
                       </p>

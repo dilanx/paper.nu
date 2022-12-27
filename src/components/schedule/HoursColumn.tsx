@@ -9,9 +9,9 @@ function HoursColumn({ start, end }: HoursColumnProps) {
   let hours: JSX.Element[] = [];
   for (let i = start; i <= end; i++) {
     hours.push(
-      <div className="h-full relative" key={`hour-${i}`}>
+      <div className="relative h-full" key={`hour-${i}`}>
         <p
-          className="m-0 pr-2 absolute bottom-0 translate-y-1/2 w-full
+          className="absolute bottom-0 m-0 w-full translate-y-1/2 pr-2
                         text-right text-sm text-gray-500 dark:text-gray-300"
         >
           {Utility.convertHour(i)}
@@ -20,7 +20,7 @@ function HoursColumn({ start, end }: HoursColumnProps) {
     );
   }
 
-  return <div className="flex flex-col justify-between h-full">{hours}</div>;
+  return <div className="flex h-full flex-col justify-between">{hours}</div>;
 }
 
 export default HoursColumn;

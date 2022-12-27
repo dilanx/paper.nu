@@ -67,8 +67,8 @@ function ScheduleClass(props: ScheduleClassProps) {
   return (
     <div
       className={`absolute z-10 rounded-lg bg-opacity-60
-                bg-${color}-100 dark:bg-gray-800 border-2 border-l-4 border-${color}-400 overflow-visible
-                cursor-pointer transition ease-in-out duration-300 group ${
+                bg-${color}-100 border-2 border-l-4 dark:bg-gray-800 border-${color}-400 group
+                cursor-pointer overflow-visible transition duration-300 ease-in-out ${
                   interactions?.hoverSection.get === section.section_id
                     ? '-translate-y-2 shadow-lg'
                     : ''
@@ -96,10 +96,10 @@ function ScheduleClass(props: ScheduleClassProps) {
         });
       }}
     >
-      <div className="w-full h-full relative">
+      <div className="relative h-full w-full">
         <div
-          className={`w-full h-full ${
-            imageMode ? 'overflow-hidden' : 'overflow-scroll no-scrollbar'
+          className={`h-full w-full ${
+            imageMode ? 'overflow-hidden' : 'no-scrollbar overflow-scroll'
           } p-2`}
         >
           <p
@@ -111,7 +111,7 @@ function ScheduleClass(props: ScheduleClassProps) {
             {section.component !== 'LEC' && (
               <>
                 {' '}
-                <span className="font-medium text-xs text-gray-600 dark:text-gray-400">
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
                   (
                   {Utility.convertSectionComponent(
                     section.component
@@ -121,16 +121,16 @@ function ScheduleClass(props: ScheduleClassProps) {
               </>
             )}
           </p>
-          <p className={`text-xs m-0 text-black dark:text-white text-light`}>
+          <p className={`text-light m-0 text-xs text-black dark:text-white`}>
             {title}
           </p>
-          <p className="m-0 text-xs text-gray-500 dark:text-gray-300 opacity-75 font-light">
+          <p className="m-0 text-xs font-light text-gray-500 opacity-75 dark:text-gray-300">
             {instructorLastNames}
           </p>
         </div>
         {switches.get.show_times && (
           <p
-            className={`m-0 text-right text-xs absolute bottom-1 right-1 text-${color}-500 dark:text-${color}-300 opacity-60 dark:opacity-90 font-semibold`}
+            className={`absolute bottom-1 right-1 m-0 text-right text-xs text-${color}-500 dark:text-${color}-300 font-semibold opacity-60 dark:opacity-90`}
           >
             {Utility.convertTime(start_time!) +
               ' - ' +
@@ -139,16 +139,16 @@ function ScheduleClass(props: ScheduleClassProps) {
         )}
       </div>
       <button
-        className={`absolute -top-2 -right-2 p-0.5 rounded-full
+        className={`absolute -top-2 -right-2 rounded-full p-0.5
                     ${
                       interactions?.hoverSection.get === section.section_id &&
                       interactions?.hoverDelete.get
-                        ? 'block text-red-400 bg-red-100 dark:bg-gray-700 opacity-100'
-                        : 'hidden bg-gray-200 opacity-80 text-gray-500 dark:text-white'
+                        ? 'block bg-red-100 text-red-400 opacity-100 dark:bg-gray-700'
+                        : 'hidden bg-gray-200 text-gray-500 opacity-80 dark:text-white'
                     }
-                    hover:bg-red-100 dark:bg-gray-700 text-xs
-                    hover:text-red-400 dark:hover:text-red-400 hover:opacity-100
-                    transition-all duration-150 group-hover:block z-20`}
+                    z-20 text-xs transition-all
+                    duration-150 hover:bg-red-100 hover:text-red-400
+                    hover:opacity-100 group-hover:block dark:bg-gray-700 dark:hover:text-red-400`}
         onMouseEnter={() => {
           if (interactions?.hoverSection.get === section.section_id) {
             interactions?.hoverDelete.set(true);
@@ -163,7 +163,7 @@ function ScheduleClass(props: ScheduleClassProps) {
           interactions?.multiClear(['hoverSection', 'hoverDelete']);
         }}
       >
-        <TrashIcon className="w-5 h-5" />
+        <TrashIcon className="h-5 w-5" />
       </button>
     </div>
   );

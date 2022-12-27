@@ -31,15 +31,15 @@ interface MiniButtonProps {
 function AboutMiniButton({ openAboutMenu }: { openAboutMenu: () => void }) {
   return (
     <button
-      className="p-1 border-2 border-gray-400 dark:border-gray-500 rounded-lg text-gray-500 dark:text-gray-300
-    hover:border-black dark:hover:border-white hover:text-black dark:hover:text-white relative group"
+      className="group relative rounded-lg border-2 border-gray-400 p-1 text-gray-500
+    hover:border-black hover:text-black dark:border-gray-500 dark:text-gray-300 dark:hover:border-white dark:hover:text-white"
       onClick={() => openAboutMenu()}
     >
-      <InformationCircleIcon className="w-5 h-5" />
+      <InformationCircleIcon className="h-5 w-5" />
       <div
-        className="hidden group-hover:block absolute p-1 border-2 rounded-md whitespace-nowrap
-            bg-white dark:bg-gray-800 border-black dark:border-white text-black dark:text-white text-sm font-medium
-            -top-10 left-1/2 -translate-x-1/2 z-10"
+        className="absolute -top-10 left-1/2 z-10 hidden -translate-x-1/2 whitespace-nowrap
+            rounded-md border-2 border-black bg-white p-1 text-sm font-medium text-black
+            group-hover:block dark:border-white dark:bg-gray-800 dark:text-white"
       >
         About
       </div>
@@ -51,14 +51,14 @@ function MiniButton(props: MiniButtonProps) {
   let color = props.color;
   return (
     <button
-      className={`p-1 border-2 border-gray-400 dark:border-gray-500 rounded-lg text-gray-500 dark:text-gray-300
+      className={`rounded-lg border-2 border-gray-400 p-1 text-gray-500 dark:border-gray-500 dark:text-gray-300
                 hover:border-${color}-500 dark:hover:border-${color}-500 hover:bg-${color}-50 dark:hover:bg-gray-800
-                hover:text-${color}-500 dark:hover:text-${color}-400 relative group`}
+                hover:text-${color}-500 dark:hover:text-${color}-400 group relative`}
       onClick={() => {
         props.action();
       }}
     >
-      <props.icon className="w-5 h-5" />
+      <props.icon className="h-5 w-5" />
       <Tooltip color={color} className="-top-10 left-1/2 -translate-x-1/2">
         {props.display}
       </Tooltip>
@@ -83,7 +83,7 @@ interface TaskBarProps {
 function TaskBar(props: TaskBarProps) {
   const switches = props.switches;
   return (
-    <div className="flex mx-auto mt-2 mb-4 gap-2">
+    <div className="mx-auto mt-2 mb-4 flex gap-2">
       <AboutMiniButton openAboutMenu={props.openAboutMenu} />
       <MiniButton
         icon={PencilSquareIcon}
@@ -109,7 +109,7 @@ function TaskBar(props: TaskBarProps) {
           switchName="tab"
           color={TabBarButtonColors['Search']}
         >
-          <MagnifyingGlassIcon className="w-5 h-5" />
+          <MagnifyingGlassIcon className="h-5 w-5" />
         </TabBarButton>
         <TabBarButton
           name="My List"
@@ -118,7 +118,7 @@ function TaskBar(props: TaskBarProps) {
           switchName="tab"
           color={TabBarButtonColors['My List']}
         >
-          <BookmarkIcon className="w-5 h-5" />
+          <BookmarkIcon className="h-5 w-5" />
         </TabBarButton>
         <TabBarButton
           name="Plans"
@@ -128,8 +128,8 @@ function TaskBar(props: TaskBarProps) {
           switchName="tab"
           color={TabBarButtonColors['Plans']}
         >
-          <CloudIcon className="w-5 h-5" />
-          <p className="lg:hidden xl:block m-0 text-sm lg:text-xs w-20 lg:w-12 overflow-hidden whitespace-nowrap text-ellipsis">
+          <CloudIcon className="h-5 w-5" />
+          <p className="m-0 w-20 overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:hidden lg:w-12 lg:text-xs xl:block">
             {switches.get.mode === Mode.SCHEDULE
               ? Account.getScheduleName(switches.get.active_schedule_id)
               : Account.getPlanName(switches.get.active_plan_id)}

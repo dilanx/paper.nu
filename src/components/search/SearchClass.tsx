@@ -37,7 +37,7 @@ function SearchClass(props: SearchClassProps) {
   for (let i = 0; i < distroStrings.length; i++) {
     distros.push(
       <p
-        className="m-0 p-0 text-xs text-gray-500 dark:text-gray-400 font-light"
+        className="m-0 p-0 text-xs font-light text-gray-500 dark:text-gray-400"
         key={`distro-${i}`}
       >
         {distroStrings[i]}
@@ -51,13 +51,9 @@ function SearchClass(props: SearchClassProps) {
   return (
     <div
       ref={drag}
-      className={`p-2 rounded-lg bg-opacity-60 bg-${
-        props.color
-      }-100 dark:bg-gray-800
-            rounded-lg border-2 border-${
-              props.color
-            }-300 border-opacity-60 group
-            hover:shadow-md transition ease-in-out duration-300 transform hover:-translate-y-1 m-4 cursor-pointer ${
+      className={`rounded-lg bg-opacity-60 p-2 bg-${props.color}-100 rounded-lg
+            border-2 dark:bg-gray-800 border-${props.color}-300 group m-4
+            transform cursor-pointer border-opacity-60 transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md ${
               isDragging ? 'cursor-grab ' : 'cursor-pointer'
             }`}
       onClick={() => {
@@ -70,38 +66,38 @@ function SearchClass(props: SearchClassProps) {
       <p className="text-sm text-black dark:text-gray-50">
         {isPlaceholder ? 'PLACEHOLDER' : course.name}
       </p>
-      <p className="text-xs mt-4 text-gray-700 dark:text-gray-300">
+      <p className="mt-4 text-xs text-gray-700 dark:text-gray-300">
         {isPlaceholder ? PLACEHOLDER_MESSAGE : course.description}
       </p>
       {course.prereqs && (
         <div className="mt-4">
-          <p className="text-xs text-gray-500 dark:text-gray-400 font-bold">
+          <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
             PREREQUISITES
           </p>
-          <p className="m-0 p-0 text-xs text-gray-500 dark:text-gray-400 font-light">
+          <p className="m-0 p-0 text-xs font-light text-gray-500 dark:text-gray-400">
             {course.prereqs}
           </p>
         </div>
       )}
       {distros.length > 0 && (
         <div className="mt-4">
-          <p className="text-xs text-gray-500 dark:text-gray-400 font-bold">
+          <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
             DISTRIBUTION AREAS
           </p>
           {distros}
         </div>
       )}
       <div className="mt-1">
-        <p className="text-xs text-right text-gray-500 dark:text-gray-400 font-light">
+        <p className="text-right text-xs font-light text-gray-500 dark:text-gray-400">
           <span className="font-medium">{units}</span>{' '}
           {units === 1 ? 'unit' : 'units'}
         </p>
       </div>
       {props.select && (
         <button
-          className="absolute -top-2 -right-2 p-1 rounded-full bg-gray-200 hover:bg-indigo-100 dark:bg-gray-700
-                    text-gray-500 dark:text-white text-xs opacity-80 hover:text-indigo-400 dark:hover:text-indigo-400 hover:opacity-100
-                    transition-all duration-150 hidden group-hover:block z-20"
+          className="absolute -top-2 -right-2 z-20 hidden rounded-full bg-gray-200 p-1
+                    text-xs text-gray-500 opacity-80 transition-all duration-150 hover:bg-indigo-100 hover:text-indigo-400
+                    hover:opacity-100 group-hover:block dark:bg-gray-700 dark:text-white dark:hover:text-indigo-400"
           onClick={(e) => {
             e.stopPropagation();
             if (isFavorite) {
@@ -112,9 +108,9 @@ function SearchClass(props: SearchClassProps) {
           }}
         >
           {isFavorite ? (
-            <BookmarkIconSolid className="w-5 h-5" />
+            <BookmarkIconSolid className="h-5 w-5" />
           ) : (
-            <BookmarkIcon className="w-5 h-5" />
+            <BookmarkIcon className="h-5 w-5" />
           )}
         </button>
       )}

@@ -50,18 +50,18 @@ function ChangeLogPreview({ switches, info, onClose }: ChangeLogPreviewProps) {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full dark:bg-gray-700">
-                <div className="flex flex-col w-full items-center gap-2 dark:text-white p-8">
+              <Dialog.Panel className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all dark:bg-gray-700 sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
+                <div className="flex w-full flex-col items-center gap-2 p-8 dark:text-white">
                   <img
                     src={dark ? paperWhite : paperBlack}
                     alt="paper.nu"
                     className="h-[40px]"
                     ref={initialFocus}
                   />
-                  <p className="text-xl text-center font-medium">
+                  <p className="text-center text-xl font-medium">
                     What's new in version {process.env.REACT_APP_VERSION}
                   </p>
-                  <p className="text-sm text-center font-light mb-4 text-gray-600 dark:text-gray-300">
+                  <p className="mb-4 text-center text-sm font-light text-gray-600 dark:text-gray-300">
                     This version brings a combination of things I wanted to add
                     and features that you all requested. Here are some of the
                     big ones. Check it out!
@@ -76,21 +76,21 @@ function ChangeLogPreview({ switches, info, onClose }: ChangeLogPreviewProps) {
                   </ul>
                 </div>
 
-                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse dark:bg-gray-800">
+                <div className="bg-gray-50 px-4 py-3 dark:bg-gray-800 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
                     type="button"
-                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2
-                                bg-white text-base font-medium text-gray-700 hover:bg-gray-100 active:bg-gray-200 active:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm
-                                dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600 dark:active:bg-gray-500"
+                    className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2
+                                text-base font-medium text-gray-700 shadow-sm hover:bg-gray-100 active:bg-gray-200 active:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600
+                                dark:active:bg-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                     onClick={() => setOpen(false)}
                   >
                     Close
                   </button>
                   <button
                     type="button"
-                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2
-                                bg-white text-base font-medium text-gray-700 hover:bg-gray-100 active:bg-gray-200 active:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm
-                                dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600 dark:active:bg-gray-500"
+                    className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2
+                                text-base font-medium text-gray-700 shadow-sm hover:bg-gray-100 active:bg-gray-200 active:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600
+                                dark:active:bg-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                     onClick={() => {
                       window.open(
                         'https://www.dilanxd.com/paper/changelog',

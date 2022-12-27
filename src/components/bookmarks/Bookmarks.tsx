@@ -33,10 +33,10 @@ function Bookmarks(props: BookmarksProps) {
   const darkMode = props.switches.get.dark;
   return (
     <div
-      className="border-4 border-indigo-300 my-2 rounded-2xl shadow-lg h-full
-            overflow-y-scroll no-scrollbar"
+      className="no-scrollbar my-2 h-full overflow-y-scroll rounded-2xl border-4
+            border-indigo-300 shadow-lg"
     >
-      <p className="text-center text-2xl text-indigo-300 font-bold my-4">
+      <p className="my-4 text-center text-2xl font-bold text-indigo-300">
         MY LIST
       </p>
       {props.loading ? (

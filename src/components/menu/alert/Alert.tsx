@@ -150,22 +150,22 @@ export default function Alert({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full dark:bg-gray-700">
-                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 dark:bg-gray-700">
+              <Dialog.Panel className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all dark:bg-gray-700 sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
+                <div className="bg-white px-4 pt-5 pb-4 dark:bg-gray-700 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
                     <div
                       ref={initialFocus}
-                      className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-${data.color}-100 dark:bg-gray-600 sm:mx-0 sm:h-10 sm:w-10`}
+                      className={`mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-${data.color}-100 dark:bg-gray-600 sm:mx-0 sm:h-10 sm:w-10`}
                     >
                       <data.icon
-                        className={`w-6 h-6 text-${data.color}-600 dark:text-${data.color}-300`}
+                        className={`h-6 w-6 text-${data.color}-600 dark:text-${data.color}-300`}
                         aria-hidden="true"
                       />
                     </div>
                     <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                       <Dialog.Title
                         as="h3"
-                        className="text-lg leading-6 font-medium text-black dark:text-white"
+                        className="text-lg font-medium leading-6 text-black dark:text-white"
                       >
                         {data.title}
                       </Dialog.Title>
@@ -194,10 +194,10 @@ export default function Alert({
                                 : undefined
                             }
                             type="text"
-                            className={`bg-gray-200 dark:bg-gray-800 text-black dark:text-white
-                                                mt-4 p-1 px-4 font-mono text-sm rounded-md md:w-96 overflow-scroll whitespace-nowrap overscroll-contain no-scrollbar 
-                                                outline-none border-2 border-gray-200 hover:border-gray-400 dark:border-gray-800 dark:hover:border-gray-500 
-                                                transition-all duration-150 
+                            className={`no-scrollbar mt-4 overflow-scroll overscroll-contain
+                                                whitespace-nowrap rounded-md border-2 border-gray-200 bg-gray-200 p-1 px-4 font-mono text-sm text-black outline-none 
+                                                transition-all duration-150 hover:border-gray-400 dark:border-gray-800 dark:bg-gray-800 dark:text-white 
+                                                dark:hover:border-gray-500 md:w-96 
                                                 ${
                                                   !textValue ||
                                                   textValue.length === 0 ||
@@ -213,7 +213,7 @@ export default function Alert({
                               setTextValue(event.target.value);
                             }}
                           />
-                          <p className="text-sm text-red-500 mx-2 my-1">
+                          <p className="mx-2 my-1 text-sm text-red-500">
                             {badInput &&
                               textValue &&
                               textValue.length > 0 &&
@@ -224,9 +224,9 @@ export default function Alert({
                       {data.textView && (
                         <div>
                           <p
-                            className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white
-                                            mt-4 p-1 px-4 font-mono text-sm rounded-md md:w-96 overflow-scroll whitespace-nowrap
-                                            overscroll-contain no-scrollbar"
+                            className="no-scrollbar mt-4 overflow-scroll overscroll-contain
+                                            whitespace-nowrap rounded-md bg-gray-200 p-1 px-4 font-mono text-sm text-black dark:bg-gray-800
+                                            dark:text-white md:w-96"
                           >
                             {data.textView}
                           </p>
@@ -266,16 +266,16 @@ export default function Alert({
                   </div>
                 )}
 
-                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse dark:bg-gray-800">
+                <div className="bg-gray-50 px-4 py-3 dark:bg-gray-800 sm:flex sm:flex-row-reverse sm:px-6">
                   {data.confirmButton && (
                     <button
                       type="button"
                       ref={confirmButton}
-                      className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 
+                      className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 shadow-sm 
                         bg-${data.color}-500
                         opacity-100 hover:bg-${data.color}-600 active:bg-${data.color}-700
-                        disabled:opacity-30 disabled:cursor-not-allowed
-                        text-base font-medium text-white outline-none sm:ml-3 sm:w-auto sm:text-sm`}
+                        text-base font-medium
+                        text-white outline-none disabled:cursor-not-allowed disabled:opacity-30 sm:ml-3 sm:w-auto sm:text-sm`}
                       disabled={badInput}
                       onClick={() => {
                         if (data.form) {
@@ -290,9 +290,9 @@ export default function Alert({
                   {data.cancelButton && (
                     <button
                       type="button"
-                      className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2
-                                bg-white text-base font-medium text-gray-700 hover:bg-gray-100 active:bg-gray-200 active:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm
-                                dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600 dark:active:bg-gray-500"
+                      className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2
+                                text-base font-medium text-gray-700 shadow-sm hover:bg-gray-100 active:bg-gray-200 active:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600
+                                dark:active:bg-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                       onClick={() => {
                         close();
                       }}

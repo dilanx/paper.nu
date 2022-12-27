@@ -18,7 +18,7 @@
   }
 
   .alert-data a {
-    @apply text-purple-800 dark:text-purple-300 hover:underline;
+    @apply text-purple-800 hover:underline dark:text-purple-300;
   }
 
   @keyframes spin {

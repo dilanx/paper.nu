@@ -62,7 +62,7 @@ function BookmarksList(props: BookmarksListProps) {
     });
   } else {
     classes = (
-      <div className={`text-center overflow-hidden whitespace-normal`}>
+      <div className={`overflow-hidden whitespace-normal text-center`}>
         <p className="text-sm font-light text-gray-500 dark:text-gray-400">
           {props.credit
             ? `Classes here are counted towards total credit (like classes you've received AP/IB credit for).`
@@ -83,7 +83,7 @@ function BookmarksList(props: BookmarksListProps) {
     <motion.div initial="hidden" animate="visible" variants={variants}>
       <div
         ref={drop}
-        className={`compact-mode relative m-4 rounded-lg px-4 pt-4 pb-8 border-2
+        className={`compact-mode relative m-4 rounded-lg border-2 px-4 pt-4 pb-8
                     ${
                       isOver
                         ? 'border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50'
@@ -95,12 +95,12 @@ function BookmarksList(props: BookmarksListProps) {
                         }`
                     } space-y-3 shadow-lg`}
       >
-        <p className="text-center font-bold text-md m-0 p-0 text-gray-600 dark:text-gray-400">
+        <p className="text-md m-0 p-0 text-center font-bold text-gray-600 dark:text-gray-400">
           {props.credit ? 'FOR CREDIT' : 'BOOKMARKED COURSES'}
         </p>
         <div className="space-y-2">{classes}</div>
         {props.credit && props.switches.get.quarter_units && (
-          <p className="absolute right-2 top-0 text-right text-xs p-0 m-0 text-gray-400 font-normal">
+          <p className="absolute right-2 top-0 m-0 p-0 text-right text-xs font-normal text-gray-400">
             <span className="font-medium">{units}</span> {unitString}
           </p>
         )}

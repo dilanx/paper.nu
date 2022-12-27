@@ -8,8 +8,8 @@ interface AboutButtonProps {
 function AboutButton({ children, href }: AboutButtonProps) {
   return (
     <a
-      className="flex-1 w-full py-2 border-2 border-black text-black dark:border-white dark:text-white rounded-lg text-sm font-medium
-        hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black shadow-sm text-center"
+      className="w-full flex-1 rounded-lg border-2 border-black py-2 text-center text-sm font-medium text-black shadow-sm
+        hover:bg-black hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-black"
       href={href}
       target="_blank"
       rel="noreferrer"

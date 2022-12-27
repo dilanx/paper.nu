@@ -89,7 +89,7 @@ class Schedule extends React.Component<ScheduleProps> {
     return (
       <motion.div
         className={`p-4 ${
-          imageMode ? 'w-imgw h-imgh absolute top-full' : 'h-full relative'
+          imageMode ? 'absolute top-full h-imgh w-imgw' : 'relative h-full'
         }`}
         id={imageMode ? 'schedule' : undefined}
         {...(!imageMode
@@ -102,8 +102,8 @@ class Schedule extends React.Component<ScheduleProps> {
           : {})}
       >
         <div
-          className={`p-4 border-4 border-green-200 bg-green-50 dark:bg-gray-800 bg-opacity-50 border-opacity-75 rounded-lg shadow-md grid
-                        schedule-grid-cols ${
+          className={`schedule-grid-cols grid rounded-lg border-4 border-green-200 border-opacity-75 bg-green-50 bg-opacity-50 p-4 shadow-md
+                        dark:bg-gray-800 ${
                           imageMode ? 'h-full' : 'h-192 lg:h-full'
                         }`}
         >
@@ -121,7 +121,7 @@ class Schedule extends React.Component<ScheduleProps> {
         )}
 
         {imageMode && (
-          <p className="absolute text-lg top-6 right-8 font-bold text-green-400 dark:text-green-200 opacity-50">
+          <p className="absolute top-6 right-8 text-lg font-bold text-green-400 opacity-50 dark:text-green-200">
             PAPER.NU
           </p>
         )}

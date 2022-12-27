@@ -78,7 +78,7 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
           <div className="fixed inset-0 bg-black bg-opacity-25" />
         </Transition.Child>
         <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex w-screen h-screen relative items-center justify-center p-4 md:p-16 text-center">
+          <div className="relative flex h-screen w-screen items-center justify-center p-4 text-center md:p-16">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -88,12 +88,12 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full h-full p-2 bg-white dark:bg-gray-700 rounded-lg relative overflow-hidden">
+              <Dialog.Panel className="relative h-full w-full overflow-hidden rounded-lg bg-white p-2 dark:bg-gray-700">
                 <MapContainer
                   center={DEFAULT_POSITION}
                   zoom={DEFAULT_ZOOM}
                   zoomControl={false}
-                  className="w-full h-full rounded-lg"
+                  className="h-full w-full rounded-lg"
                 >
                   <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -129,7 +129,7 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
                   ))}
                   <MapFlyTo position={flyPosition || DEFAULT_POSITION} />
                 </MapContainer>
-                <div className="absolute top-0 right-0 bg-white dark:bg-gray-700 p-2 z-[500] rounded-lg flex items-center gap-2">
+                <div className="absolute top-0 right-0 z-[500] flex items-center gap-2 rounded-lg bg-white p-2 dark:bg-gray-700">
                   <Switch
                     checked={minimap}
                     onChange={() => switches.set('minimap', !minimap, true)}
@@ -138,7 +138,7 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
                         ? 'bg-emerald-400 hover:bg-emerald-500 active:bg-emerald-600'
                         : 'bg-gray-600 hover:bg-gray-500 active:bg-gray-400'
                     }
-                      relative group inline-flex w-12 h-7 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
+                      group relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
                   >
                     <span
                       aria-hidden="true"
@@ -149,10 +149,10 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
                       Minimap
                     </Tooltip>
                   </Switch>
-                  <button className="relative group">
+                  <button className="group relative">
                     <XMarkIcon
-                      className="w-8 h-8 text-gray-600 dark:text-gray-500
-                      hover:text-red-400 dark:hover:text-red-400 active:text-red-500 dark:active:text-red-300"
+                      className="h-8 w-8 text-gray-600 hover:text-red-400
+                      active:text-red-500 dark:text-gray-500 dark:hover:text-red-400 dark:active:text-red-300"
                       onClick={() => setOpen(false)}
                     />
                     <Tooltip color="red" className="-bottom-10 right-0">
@@ -161,15 +161,15 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
                   </button>
                 </div>
                 {locations.length > 0 && (
-                  <div className="absolute right-2 p-2 bottom-8 md:bottom-1/2 md:translate-y-1/2 z-[500] flex flex-col bg-white dark:bg-gray-700 bg-opacity-50 dark:bg-opacity-50 rounded-l-lg">
-                    <p className="text-xs italic text-gray-600 dark:text-gray-200 font-bold">
+                  <div className="absolute right-2 bottom-8 z-[500] flex flex-col rounded-l-lg bg-white bg-opacity-50 p-2 dark:bg-gray-700 dark:bg-opacity-50 md:bottom-1/2 md:translate-y-1/2">
+                    <p className="text-xs font-bold italic text-gray-600 dark:text-gray-200">
                       Hover to find class
                     </p>
                     {locations.map(({ location, sections }, i) => (
                       <Fragment key={`map-list-${i}`}>
                         {sections.map((section, j) => (
                           <div
-                            className="w-full text-right text-sm font-medium flex gap-2 cursor-pointer text-gray-500 hover:text-black dark:text-gray-300 dark:hover:text-white"
+                            className="flex w-full cursor-pointer gap-2 text-right text-sm font-medium text-gray-500 hover:text-black dark:text-gray-300 dark:hover:text-white"
                             key={`map-list-${i}-${j}`}
                             onMouseEnter={() => setFlyPosition(location)}
                             onMouseLeave={() => setFlyPosition(undefined)}

@@ -40,7 +40,7 @@ export const getAlertEditButtons = (
 
     return (
       <button
-        className={`text-gray-500 hover:text-${color}-400 relative group`}
+        className={`text-gray-500 hover:text-${color}-400 group relative`}
         key={`edit-button-${i}`}
         onClick={() => {
           dataSet.action();

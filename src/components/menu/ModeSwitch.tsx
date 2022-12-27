@@ -19,8 +19,8 @@ function ModeSwitchButton({
 }: ModeSwitchButtonProps) {
   return (
     <button
-      className={`flex justify-center items-center gap-1 px-4 py-0.5 rounded-md flex-1 transition-all duration-150
-        border-2 border-${color}-600 dark:border-${color}-400 ${
+      className={`flex flex-1 items-center justify-center gap-1 rounded-md border-2 px-4 py-0.5 transition-all
+        duration-150 border-${color}-600 dark:border-${color}-400 ${
         active
           ? `bg-${color}-600 text-white dark:bg-${color}-400 dark:text-gray-800`
           : `text-${color}-600 hover:bg-opacity-50 hover:bg-${color}-100 active:bg-opacity-100
@@ -28,7 +28,7 @@ function ModeSwitchButton({
       }`}
       onClick={onClick}
     >
-      <props.icon className={`w-5 h-5`} />
+      <props.icon className={`h-5 w-5`} />
       <p className={`font-medium`}>{text}</p>
     </button>
   );
@@ -41,7 +41,7 @@ interface ModeSwitchProps {
 
 function ModeSwitch({ switches, changeMode }: ModeSwitchProps) {
   return (
-    <div className="flex justify-center items-center my-1 gap-4 mx-4">
+    <div className="my-1 mx-4 flex items-center justify-center gap-4">
       <ModeSwitchButton
         icon={RectangleStackIcon}
         text="Plan"

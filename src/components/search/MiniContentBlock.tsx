@@ -8,9 +8,9 @@ interface MiniContentBlockProps {
 
 function MiniContentBlock(props: MiniContentBlockProps) {
   return (
-    <div className="text-center p-4">
+    <div className="p-4 text-center">
       <div className="mx-auto my-1 flex items-center justify-center text-gray-500 dark:text-gray-400">
-        <props.icon className="w-6 h-6" />
+        <props.icon className="h-6 w-6" />
       </div>
       <p className="text-lg font-medium text-gray-500 dark:text-gray-400">
         {props.title}

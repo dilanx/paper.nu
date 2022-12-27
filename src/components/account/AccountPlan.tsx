@@ -33,9 +33,9 @@ function AccountPlan(props: AccountPlanProps) {
           props.active
             ? 'border-emerald-400 bg-emerald-50'
             : 'border-rose-400 bg-rose-50'
-        }  dark:bg-gray-800 w-full my-4 text-left px-4 py-8 rounded-lg text-black
-            hover:shadow-md transition ease-in-out duration-300 transform hover:-translate-y-1
-            active:opacity-50 group cursor-pointer`}
+        }  group my-4 w-full transform cursor-pointer rounded-lg px-4 py-8
+            text-left text-black transition duration-300 ease-in-out hover:-translate-y-1
+            hover:shadow-md active:opacity-50 dark:bg-gray-800`}
         onClick={() => {
           if (props.active) {
             props.fa.deactivate();
@@ -54,28 +54,28 @@ function AccountPlan(props: AccountPlanProps) {
             ? new Date(plan.lastUpdated).toLocaleDateString()
             : 'N/A'}
         </p>
-        <div className="absolute -top-2 -right-2 flex rounded-lg overflow-hidden">
+        <div className="absolute -top-2 -right-2 flex overflow-hidden rounded-lg">
           <button
-            className="px-1 py-0.5 bg-gray-200 hover:bg-sky-100 dark:bg-gray-700
-                        text-gray-500 dark:text-white text-xs opacity-80 hover:text-sky-400 dark:hover:text-sky-400 hover:opacity-100
-                        transition-all duration-150 hidden group-hover:block z-20"
+            className="z-20 hidden bg-gray-200 px-1 py-0.5
+                        text-xs text-gray-500 opacity-80 transition-all duration-150 hover:bg-sky-100 hover:text-sky-400
+                        hover:opacity-100 group-hover:block dark:bg-gray-700 dark:text-white dark:hover:text-sky-400"
             onClick={(e) => {
               e.stopPropagation();
               props.fa.rename(id, plan.name);
             }}
           >
-            <PencilIcon className="w-5 h-5" />
+            <PencilIcon className="h-5 w-5" />
           </button>
           <button
-            className="px-1 py-0.5 bg-gray-200 hover:bg-red-100 dark:bg-gray-700
-                        text-gray-500 dark:text-white text-xs opacity-80 hover:text-red-400 dark:hover:text-red-400 hover:opacity-100
-                        transition-all duration-150 hidden group-hover:block z-20"
+            className="z-20 hidden bg-gray-200 px-1 py-0.5
+                        text-xs text-gray-500 opacity-80 transition-all duration-150 hover:bg-red-100 hover:text-red-400
+                        hover:opacity-100 group-hover:block dark:bg-gray-700 dark:text-white dark:hover:text-red-400"
             onClick={(e) => {
               e.stopPropagation();
               props.fa.delete(id, plan.name);
             }}
           >
-            <TrashIcon className="w-5 h-5" />
+            <TrashIcon className="h-5 w-5" />
           </button>
         </div>
         {props.active ? (

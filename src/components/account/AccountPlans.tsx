@@ -365,15 +365,15 @@ class AccountPlans extends React.Component<
       <motion.div
         initial="hidden"
         animate="visible"
-        className="border-4 border-rose-300 my-2 rounded-2xl shadow-lg h-full
-            overflow-y-scroll no-scrollbar"
+        className="no-scrollbar my-2 h-full overflow-y-scroll rounded-2xl border-4
+            border-rose-300 shadow-lg"
       >
-        <p className="text-center text-2xl text-rose-300 font-bold my-4">
+        <p className="my-4 text-center text-2xl font-bold text-rose-300">
           {isSchedule ? 'SCHEDULES' : 'PLANS'}
         </p>
         {!this.state.loggedIn ? (
           <AccountPlanMessage
-            icon={<CloudIcon className="w-12 h-12" />}
+            icon={<CloudIcon className="h-12 w-12" />}
             title="Save your stuff"
             description="By creating an account, you can save up to 5 plans and 10 schedules. You can access them from any device at any time. It's super simple."
             primaryButton={{
@@ -399,7 +399,7 @@ class AccountPlans extends React.Component<
           />
         ) : items.length === 0 ? (
           <AccountPlanMessage
-            icon={<PlusIcon className="w-12 h-12" />}
+            icon={<PlusIcon className="h-12 w-12" />}
             title={`Create your first ${t}`}
             description={`Your account is all set up! Now, you can create your first ${t}.
               Any current ${t} data you have loaded right now will stay, and you'll have the option to save it to your new ${t}.`}
@@ -422,11 +422,11 @@ class AccountPlans extends React.Component<
               Select a {t} to activate it, and again to deactivate it.
               Activating empty {t}s won't overwrite current {t} data.
             </p>
-            <div className="block m-4">{items}</div>
+            <div className="m-4 block">{items}</div>
             {items.length < (isSchedule ? 20 : 5) && (
               <button
-                className="block mx-auto my-2 px-8 py-1 bg-rose-300 text-white hover:bg-rose-400
-                                dark:bg-rose-600 dark:hover:bg-rose-500 rounded-lg shadow-sm"
+                className="mx-auto my-2 block rounded-lg bg-rose-300 px-8 py-1 text-white
+                                shadow-sm hover:bg-rose-400 dark:bg-rose-600 dark:hover:bg-rose-500"
                 onClick={() => {
                   this.create(isSchedule);
                 }}
@@ -435,8 +435,8 @@ class AccountPlans extends React.Component<
               </button>
             )}
             <button
-              className="block mx-auto my-2 px-8 py-1 bg-gray-200 text-gray-400 hover:bg-gray-300 hover:text-gray-500
-                            dark:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-300 rounded-lg shadow-sm"
+              className="mx-auto my-2 block rounded-lg bg-gray-200 px-8 py-1 text-gray-400 shadow-sm
+                            hover:bg-gray-300 hover:text-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-300"
               onClick={() => {
                 this.logOut();
               }}

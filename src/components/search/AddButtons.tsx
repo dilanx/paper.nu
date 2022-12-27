@@ -11,8 +11,8 @@ interface AddButtonProps {
 function AddButton(props: AddButtonProps) {
   return (
     <button
-      className={`text-center bg-${props.color}-400 text-white font-medium p-2 block
-        mx-auto w-2/3 rounded-md opacity-100 hover:opacity-60 shadow-sm my-2`}
+      className={`text-center bg-${props.color}-400 mx-auto my-2 block w-2/3
+        rounded-md p-2 font-medium text-white opacity-100 shadow-sm hover:opacity-60`}
       onClick={() => {
         props.action();
       }}
@@ -90,7 +90,7 @@ function AddButtonSection(props: AddButtonSectionProps) {
 
   return (
     <div className="py-2">
-      <p className="text-center text-gray-500 font-bold p-2 text-sm">
+      <p className="p-2 text-center text-sm font-bold text-gray-500">
         {props.title}
       </p>
       {props.size === 4 ? withSummer : withoutSummer}

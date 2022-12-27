@@ -14,10 +14,10 @@ function BrowseButton({ symbol, name, action, color }: BrowseButtonProps) {
   const secondary = color || 'green';
   return (
     <button
-      className={`w-full border-4 border-${primary}-200 dark:border-${primary}-500 bg-${primary}-100 dark:bg-gray-800
-                rounded-lg px-4 py-2 text-left hover:border-${secondary}-400 dark:hover:border-${secondary}-300
-                active:bg-green-50 active:border-green-300 dark:active:border-green-200
-                text-gray-600 dark:text-gray-200`}
+      className={`w-full border-4 border-${primary}-200 dark:border-${primary}-500 bg-${primary}-100 rounded-lg
+                px-4 py-2 text-left dark:bg-gray-800 hover:border-${secondary}-400 dark:hover:border-${secondary}-300
+                text-gray-600 active:border-green-300 active:bg-green-50
+                dark:text-gray-200 dark:active:border-green-200`}
       onClick={() => action()}
     >
       <p className="text-xl font-medium">{symbol}</p>

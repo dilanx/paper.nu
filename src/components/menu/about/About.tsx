@@ -47,18 +47,18 @@ function About({ switches, onClose }: AboutProps) {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="inline-block align-bottom bg-white text-black dark:text-gray-300 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full dark:bg-gray-700 p-8 relative">
-                <div className="flex flex-col w-full items-center gap-2 dark:text-white">
+              <Dialog.Panel className="relative inline-block w-full transform overflow-hidden rounded-lg bg-white p-8 text-left align-bottom text-black shadow-xl transition-all dark:bg-gray-700 dark:text-gray-300 sm:my-8 sm:max-w-lg sm:align-middle">
+                <div className="flex w-full flex-col items-center gap-2 dark:text-white">
                   <img
                     src={dark ? paperWhite : paperBlack}
                     alt="paper.nu"
                     className="h-[172px]"
                   />
-                  <p className="font-light text-center">
+                  <p className="text-center font-light">
                     the ultimate Northwestern course planning tool
                   </p>
                 </div>
-                <div className="my-8 flex flex-col sm:flex-row w-full justify-center items-center gap-2 sm:gap-4">
+                <div className="my-8 flex w-full flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4">
                   <AboutButton href="https://www.dilanxd.com/paper">
                     Learn more
                   </AboutButton>
@@ -69,11 +69,11 @@ function About({ switches, onClose }: AboutProps) {
                     Source code
                   </AboutButton>
                 </div>
-                <div className="flex flex-col items-center gap-2 text-center font-light text-sm my-8">
+                <div className="my-8 flex flex-col items-center gap-2 text-center text-sm font-light">
                   <p>designed and developed by</p>
-                  <p className="font-medium text-lg">
+                  <p className="text-lg font-medium">
                     <a
-                      className="text-black dark:text-white hover:opacity-50"
+                      className="text-black hover:opacity-50 dark:text-white"
                       href="https://www.dilanxd.com"
                       target="_blank"
                       rel="noreferrer"
@@ -82,9 +82,9 @@ function About({ switches, onClose }: AboutProps) {
                     </a>
                   </p>
                   <p>in partnership with</p>
-                  <p className="font-medium text-md">
+                  <p className="text-md font-medium">
                     <a
-                      className="text-black dark:text-white hover:opacity-50"
+                      className="text-black hover:opacity-50 dark:text-white"
                       href="https://www.mccormick.northwestern.edu/computer-science/"
                       target="_blank"
                       rel="noreferrer"
@@ -92,9 +92,9 @@ function About({ switches, onClose }: AboutProps) {
                       Northwestern Department of Computer Science
                     </a>
                   </p>
-                  <p className="font-medium text-md">
+                  <p className="text-md font-medium">
                     <a
-                      className="text-black dark:text-white hover:opacity-50"
+                      className="text-black hover:opacity-50 dark:text-white"
                       href="https://www.registrar.northwestern.edu"
                       target="_blank"
                       rel="noreferrer"
@@ -102,9 +102,9 @@ function About({ switches, onClose }: AboutProps) {
                       Northwestern Office of the Registrar
                     </a>
                   </p>
-                  <p className="font-medium text-md">
+                  <p className="text-md font-medium">
                     <a
-                      className="text-black dark:text-white hover:opacity-50"
+                      className="text-black hover:opacity-50 dark:text-white"
                       href="https://www.it.northwestern.edu"
                       target="_blank"
                       rel="noreferrer"
@@ -113,16 +113,16 @@ function About({ switches, onClose }: AboutProps) {
                     </a>
                   </p>
                 </div>
-                <div className="flex flex-col items-center gap-2 font-light text-sm my-8">
+                <div className="my-8 flex flex-col items-center gap-2 text-sm font-light">
                   <p>the future of</p>
-                  <div className="flex gap-2 flex-col sm:flex-row dark:text-black w-full">
-                    <div className="flex-1 p-4 rounded-xl bg-purple-50 dark:bg-purple-300 flex items-center gap-2">
+                  <div className="flex w-full flex-col gap-2 dark:text-black sm:flex-row">
+                    <div className="flex flex-1 items-center gap-2 rounded-xl bg-purple-50 p-4 dark:bg-purple-300">
                       <img
-                        className="w-8 h-8"
+                        className="h-8 w-8"
                         src={planImage}
                         alt="Plan Northwestern logo"
                       />
-                      <div className="text-center flex-grow">
+                      <div className="flex-grow text-center">
                         <p className="font-medium">Plan Northwestern</p>
                         <p>
                           by{' '}
@@ -137,13 +137,13 @@ function About({ switches, onClose }: AboutProps) {
                         </p>
                       </div>
                     </div>
-                    <div className="flex-1 p-4 rounded-lg bg-green-50 dark:bg-green-300 flex items-center gap-2">
+                    <div className="flex flex-1 items-center gap-2 rounded-lg bg-green-50 p-4 dark:bg-green-300">
                       <img
-                        className="w-8 h-8"
+                        className="h-8 w-8"
                         src={saladImage}
                         alt="salad.nu logo"
                       />
-                      <div className="text-center flex-grow">
+                      <div className="flex-grow text-center">
                         <p className="font-medium">salad.nu</p>
                         <p>
                           by{' '}
@@ -170,7 +170,7 @@ function About({ switches, onClose }: AboutProps) {
                   onClick={() => setOpen(false)}
                 >
                   <XMarkIcon
-                    className="w-8 h-8 text-gray-300 hover:text-black active:text-gray-600
+                    className="h-8 w-8 text-gray-300 hover:text-black active:text-gray-600
                     dark:text-gray-500 dark:hover:text-white dark:active:text-gray-300"
                   />
                 </button>

@@ -68,8 +68,8 @@ function getDetails(
         section.instructors?.map((instructor, i) => (
           <button
             className="my-1 underline underline-offset-4
-              hover:text-rose-500 dark:hover:text-rose-300
-              active:text-rose-600 dark:active:text-rose-200"
+              hover:text-rose-500 active:text-rose-600
+              dark:hover:text-rose-300 dark:active:text-rose-200"
             key={`section-info-instructor-${i}`}
             onClick={() => {
               alert?.({
@@ -142,7 +142,7 @@ function getDetails(
             {section.descs.map(([name, value], i) => (
               <div key={`section-info-desc-${i}`}>
                 <p>{name}</p>
-                <p className="text-left font-light text-sm">{value}</p>
+                <p className="text-left text-sm font-light">{value}</p>
               </div>
             ))}
           </div>

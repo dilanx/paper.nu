@@ -80,11 +80,11 @@ class Year extends React.Component<YearProps, YearState> {
     return (
       <motion.div initial="hidden" animate="visible" variants={variants}>
         <div
-          className="relative p-4 border-4 border-gray-200 dark:border-gray-700 rounded-lg m-5 shadow-sm bg-white dark:bg-gray-800
-                    compact:border-0 compact:shadow-none compact:my-0 compact:py-2 transition-all duration-150"
+          className="relative m-5 rounded-lg border-4 border-gray-200 bg-white p-4 shadow-sm transition-all duration-150
+                    compact:my-0 compact:border-0 compact:py-2 compact:shadow-none dark:border-gray-700 dark:bg-gray-800"
         >
           <p
-            className={`text-center text-2xl text-gray-300 font-bold compact:text-sm compact:text-black dark:text-gray-500 ${
+            className={`text-center text-2xl font-bold text-gray-300 compact:text-sm compact:text-black dark:text-gray-500 ${
               this.state.hidden ? '' : 'pb-2'
             }`}
           >
@@ -104,30 +104,30 @@ class Year extends React.Component<YearProps, YearState> {
           <div className="absolute right-1 top-1 text-gray-300 dark:text-gray-500">
             {quarters.length < 4 && (
               <button
-                className="inline-block p-1 bg-transparent hover:text-yellow-300 dark:hover:text-yellow-300 relative group"
+                className="group relative inline-block bg-transparent p-1 hover:text-yellow-300 dark:hover:text-yellow-300"
                 onClick={() => {
                   this.props.f2.addSummerQuarter(this.props.year);
                 }}
               >
-                <PlusIcon className="w-5 h-5" />
+                <PlusIcon className="h-5 w-5" />
                 <Tooltip color="yellow" className="-bottom-10 right-0 w-48">
                   Add summer quarter
                 </Tooltip>
               </button>
             )}
             <button
-              className="inline-block p-1 bg-transparent hover:text-red-400 dark:hover:text-red-400 relative group"
+              className="group relative inline-block bg-transparent p-1 hover:text-red-400 dark:hover:text-red-400"
               onClick={() => {
                 this.props.f2.clearData(this.props.year);
               }}
             >
-              <TrashIcon className="w-5 h-5" />
+              <TrashIcon className="h-5 w-5" />
               <Tooltip color="red" className="-bottom-10 right-0 w-48">
                 Clear year's courses
               </Tooltip>
             </button>
             <button
-              className="inline-block p-1 bg-transparent hover:text-fuchsia-400 dark:hover:text-fuchsia-400 relative group"
+              className="group relative inline-block bg-transparent p-1 hover:text-fuchsia-400 dark:hover:text-fuchsia-400"
               onClick={() => {
                 this.setState({
                   hidden: !this.state.hidden,
@@ -135,9 +135,9 @@ class Year extends React.Component<YearProps, YearState> {
               }}
             >
               {this.state.hidden ? (
-                <ChevronDownIcon className="w-5 h-5" />
+                <ChevronDownIcon className="h-5 w-5" />
               ) : (
-                <ChevronUpIcon className="w-5 h-5" />
+                <ChevronUpIcon className="h-5 w-5" />
               )}
               <Tooltip color="fuchsia" className="-bottom-10 right-0 w-48">
                 {this.state.hidden
