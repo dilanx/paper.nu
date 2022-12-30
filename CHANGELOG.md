@@ -1,10 +1,11 @@
 # Paper Change Log
 
-### 2.2.0
+### 2.1.2
 
-_2023-01-XX_
+_2022-12-30_
 
 - Change log previews now show only the major and minor version numbers.
+- The built-in feedback submission feature has been removed.
 
 ### 2.1.1
 

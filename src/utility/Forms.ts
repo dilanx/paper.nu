@@ -2,7 +2,6 @@ import PlanManager from '../PlanManager';
 import ScheduleManager from '../ScheduleManager';
 import {
   AlertFormFieldMultiSelect,
-  AlertFormFieldSingleSelect,
   AlertFormFieldText,
   AlertFormFieldTime,
   AlertFormSection,
@@ -168,62 +167,6 @@ export function planSearchFilterForm(
       title: 'INCLUDE',
       fullRow: true,
       fields: [sel('include', ['Legacy Courses'], filter.include)],
-    },
-  ];
-}
-
-export function feedbackForm(): AlertFormSection[] {
-  const type: AlertFormFieldSingleSelect = {
-    name: 'type',
-    type: 'single-select',
-    options: ['Bug', 'Feature Request', 'Missing Course Data', 'Other'],
-    required: true,
-    defaultValue: 'Bug',
-  };
-  const message: AlertFormFieldText = {
-    name: 'message',
-    type: 'text',
-    maxLength: 1000,
-    paragraph: true,
-    required: true,
-  };
-  const email: AlertFormFieldText = {
-    name: 'email',
-    type: 'text',
-  };
-  const share: AlertFormFieldSingleSelect = {
-    name: 'share',
-    type: 'single-select',
-    options: ['Yes', 'No'],
-    required: true,
-    defaultValue: 'Yes',
-  };
-
-  return [
-    {
-      title: 'TYPE',
-      fullRow: true,
-      fields: [type],
-    },
-    {
-      title: 'MESSAGE',
-      description:
-        'If applicable, share details like the steps to reproduce the bug.',
-      fullRow: true,
-      fields: [message],
-    },
-    {
-      title: 'EMAIL',
-      description: 'We may follow up with you if necessary! (optional)',
-      fullRow: true,
-      fields: [email],
-    },
-    {
-      title: 'SHARE CURRENT DATA',
-      description:
-        "You can choose whether or not you'd like to have your current plan or schedule automatically shared with us if it's relevant to your issue! This would just be the same as if you shared the URL with someone.",
-      fullRow: true,
-      fields: [share],
     },
   ];
 }
