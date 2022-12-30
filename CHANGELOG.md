@@ -1,5 +1,11 @@
 # Paper Change Log
 
+### 2.2.0
+
+_2023-01-XX_
+
+- Change log previews now show only the major and minor version numbers.
+
 ### 2.1.1
 
 _2022-12-11_

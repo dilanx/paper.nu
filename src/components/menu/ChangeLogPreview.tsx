@@ -8,12 +8,18 @@ import paperBlack from '../../assets/paper-full-black.png';
 import paperWhite from '../../assets/paper-full-white.png';
 
 interface ChangeLogPreviewProps {
+  version: string;
   switches: UserOptions;
   info: ChangeLogPreviewInformation;
   onClose: () => void;
 }
 
-function ChangeLogPreview({ switches, info, onClose }: ChangeLogPreviewProps) {
+function ChangeLogPreview({
+  version,
+  switches,
+  info,
+  onClose,
+}: ChangeLogPreviewProps) {
   const [open, setOpen] = useState(true);
   const dark = switches.get.dark;
 
@@ -59,7 +65,7 @@ function ChangeLogPreview({ switches, info, onClose }: ChangeLogPreviewProps) {
                     ref={initialFocus}
                   />
                   <p className="text-center text-xl font-medium">
-                    What's new in version {process.env.REACT_APP_VERSION}
+                    What's new in version {version}
                   </p>
                   <p className="mb-4 text-center text-sm font-light text-gray-600 dark:text-gray-300">
                     This version brings a combination of things I wanted to add
@@ -98,7 +104,7 @@ function ChangeLogPreview({ switches, info, onClose }: ChangeLogPreviewProps) {
                       );
                     }}
                   >
-                    View all changes in v{process.env.REACT_APP_VERSION}
+                    View all changes in v{version}
                   </button>
                 </div>
               </Dialog.Panel>

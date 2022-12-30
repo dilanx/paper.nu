@@ -478,6 +478,7 @@ class App extends React.Component<{}, AppState> implements AppType {
 
             {this.state.clp && clp.items.length > 0 && (
               <ChangeLogPreview
+                version={VERSION_NO_PATCH}
                 info={clp}
                 switches={switches}
                 onClose={() => {
