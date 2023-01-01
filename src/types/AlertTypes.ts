@@ -147,6 +147,7 @@ export interface AlertData {
     defaultValue?: string;
   };
   confirmButton?: string;
+  disableConfirmButton?: string;
   color: Color;
   cancelButton?: string;
   notice?: string;

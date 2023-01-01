@@ -241,6 +241,11 @@ export default function Alert({
                         />
                       )}
                       {data.notice && getAlertNotice(data.notice)}
+                      {data.disableConfirmButton && (
+                        <p className="text-right text-sm font-bold text-red-500 dark:text-red-400">
+                          {data.disableConfirmButton}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -276,7 +281,9 @@ export default function Alert({
                         opacity-100 hover:bg-${data.color}-600 active:bg-${data.color}-700
                         text-base font-medium
                         text-white outline-none disabled:cursor-not-allowed disabled:opacity-30 sm:ml-3 sm:w-auto sm:text-sm`}
-                      disabled={badInput}
+                      disabled={
+                        badInput || data.disableConfirmButton !== undefined
+                      }
                       onClick={() => {
                         if (data.form) {
                           data.form.onSubmit(formValues);

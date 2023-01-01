@@ -1,5 +1,11 @@
 # Paper Change Log
 
+### 2.1.3
+
+_2022-12-31_
+
+- Fixed a few bugs related to certain schedules exporting incorrectly or not at all.
+
 ### 2.1.2
 
 _2022-12-30_

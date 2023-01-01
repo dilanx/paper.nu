@@ -201,7 +201,7 @@ let Utility = {
     meetingDays: string
   ): ScheduleDate | undefined => {
     const date = new Date(y, m, d);
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 7; i++) {
       const day = date.getDay() - 1;
       if (meetingDays.includes(day.toString())) {
         return {

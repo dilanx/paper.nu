@@ -29,7 +29,9 @@ function getRecurrenceRule(section: ValidScheduleSection) {
   const { y, m, d } = Utility.convertDate(section.end_date);
   return `FREQ=WEEKLY;BYDAY=${Utility.convertAllDaysToArray(
     section.meeting_days
-  ).join(',')};INTERVAL=1;UNTIL=${y}${m + 1}${d}T235959Z`;
+  ).join(',')};INTERVAL=1;UNTIL=${y}${(m + 1).toString().padStart(2, '0')}${d
+    .toString()
+    .padStart(2, '0')}T235959Z`;
 }
 
 export function getSections({ schedule }: ScheduleData) {
@@ -55,17 +57,19 @@ export function getSections({ schedule }: ScheduleData) {
   return { validSections, invalidSections };
 }
 
-export function exportScheduleAsICS(validSections: ValidScheduleDataMap) {
+export async function exportScheduleAsICS(validSections: ValidScheduleDataMap) {
   const events = [];
   for (const sectionId in validSections) {
     const section = validSections[sectionId];
     const times = getTimes(section);
-    if (!times) return false;
+    if (!times) throw new Error('Failed to get times for section');
     const { start, end } = times;
 
     const event: EventAttributes = {
       start,
       end,
+      startOutputType: 'local',
+      endOutputType: 'local',
       title: `${section.subject} ${section.number}${
         section.component !== 'LEC'
           ? ` (${Utility.convertSectionComponent(section.component)})`
@@ -80,7 +84,9 @@ export function exportScheduleAsICS(validSections: ValidScheduleDataMap) {
   }
 
   const { error, value } = createEvents(events);
-  if (error || !value) return false;
+  if (error || !value) {
+    throw error || new Error('Failed to create calendar events');
+  }
 
   const blob = new Blob([value], { type: 'text/calendar' });
   const url = window.URL.createObjectURL(blob);
@@ -89,6 +95,4 @@ export function exportScheduleAsICS(validSections: ValidScheduleDataMap) {
   link.href = url;
   link.click();
   window.URL.revokeObjectURL(url);
-
-  return true;
 }

@@ -83,6 +83,7 @@ function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
         display="Export to calendar"
         action={() => {
           const { validSections, invalidSections } = getSections(schedule);
+          const noValidSections = Object.keys(validSections).length === 0;
 
           const invalidSectionMessage =
             Object.keys(invalidSections).length > 0
@@ -94,7 +95,7 @@ function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
           alert({
             title: 'Export schedule to calendar',
             icon: CalendarIcon,
-            message: `This will export your schedule to an ICS file, which you can then import into your calendar app! Ensure that you set your time zone to central time (Chicago, U.S.A.).${invalidSectionMessage}`,
+            message: `This will export your schedule to an ICS file, which you can then import into your calendar app! Ensure that you set your time zone to central time (Chicago, United States).${invalidSectionMessage}`,
             textHTML: (
               <p className="my-2">
                 Here are some instructions on how to import events into some
@@ -113,11 +114,21 @@ function UtilityBar({ schedule, switches, alert, openMap }: UtilityBarProps) {
               </p>
             ),
             confirmButton: 'Download',
+            disableConfirmButton: noValidSections
+              ? 'Nothing to export'
+              : undefined,
             color: 'red',
             cancelButton: 'Cancel',
-            notice:
-              "I'm aware of an issue some people are experiencing with exporting their schedule to calendar. I've been able to recreate this issue with certain schedules, so I'll fix it soon!",
-            action: () => exportScheduleAsICS(validSections),
+            action: () => {
+              toast.promise(exportScheduleAsICS(validSections), {
+                loading: 'Exporting schedule...',
+                success: 'Exported schedule',
+                error: (res) => {
+                  console.error(res);
+                  return 'Failed to export schedule';
+                },
+              });
+            },
           });
         }}
       />
