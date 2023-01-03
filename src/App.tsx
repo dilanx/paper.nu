@@ -45,7 +45,12 @@ import Schedule from './components/schedule/Schedule';
 import Search from './components/search/Search';
 import SaveDataManager from './SaveDataManager';
 import { AlertData } from './types/AlertTypes';
-import { AppType, AppState, ReadUserOptions } from './types/BaseTypes';
+import {
+  AppType,
+  AppState,
+  ReadUserOptions,
+  ContextMenuData,
+} from './types/BaseTypes';
 import {
   Course,
   PlanData,
@@ -66,6 +71,8 @@ import About from './components/menu/about/About';
 import { getTermName } from './DataManager';
 import ChangeLogPreview from './components/menu/ChangeLogPreview';
 import clp from './app/ChangeLogPreview';
+import Toolbar from './components/menu/toolbar/Toolbar';
+import ContextMenu from './components/menu/context-menu/ContextMenu';
 var d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
@@ -404,6 +411,14 @@ class App extends React.Component<{}, AppState> implements AppType {
     this.setState({ alertData: undefined });
   }
 
+  showContextMenu(contextMenuData: ContextMenuData) {
+    this.setState({ contextMenuData });
+  }
+
+  closeContextMenu() {
+    this.setState({ contextMenuData: undefined });
+  }
+
   interactionUpdate(interaction: keyof ScheduleInteractions, value?: any) {
     this.setState({
       scheduleInteractions: {
@@ -497,15 +512,22 @@ class App extends React.Component<{}, AppState> implements AppType {
                 }}
               />
             )}
-            <AnimatePresence>
-              {this.state.sideCardData && (
-                <SideCard
-                  data={this.state.sideCardData}
-                  switches={switches}
-                  onClose={() => this.closeSideCard()}
-                />
-              )}
-            </AnimatePresence>
+            {this.state.sideCardData && (
+              <SideCard
+                data={this.state.sideCardData}
+                switches={switches}
+                onClose={() => this.closeSideCard()}
+              />
+            )}
+            {this.state.contextMenuData && (
+              <ContextMenu
+                data={this.state.contextMenuData}
+                switches={switches}
+                onClose={() => {
+                  this.closeContextMenu();
+                }}
+              />
+            )}
 
             <div className="grid grid-cols-1 bg-white dark:bg-gray-800 lg:grid-cols-8">
               <div className="col-span-2 flex h-192 flex-col px-4 md:h-screen">
@@ -617,8 +639,22 @@ class App extends React.Component<{}, AppState> implements AppType {
               <div
                 className={`${
                   switches.get.compact ? 'compact-mode ' : ''
-                } no-scrollbar col-span-6 block pt-0 lg:h-screen lg:overflow-y-scroll`}
+                } no-scrollbar col-span-6 flex flex-col pt-0 lg:h-screen lg:overflow-y-scroll`}
               >
+                <Toolbar
+                  alert={(alertData) => {
+                    this.showAlert(alertData);
+                  }}
+                  contextMenuData={this.state.contextMenuData}
+                  contextMenu={(contextMenuData) => {
+                    this.showContextMenu(contextMenuData);
+                  }}
+                  schedule={this.state.schedule}
+                  openMap={() => {
+                    this.setState({ map: true });
+                  }}
+                  switches={switches}
+                />
                 <AnimatePresence mode="wait">
                   {switches.get.mode === Mode.PLAN ? (
                     <Content
@@ -647,9 +683,6 @@ class App extends React.Component<{}, AppState> implements AppType {
                       sf={this.state.sf}
                       ff={this.state.ff}
                       switches={switches}
-                      openMap={() => {
-                        this.setState({ map: true });
-                      }}
                       key="schedule"
                     />
                   )}

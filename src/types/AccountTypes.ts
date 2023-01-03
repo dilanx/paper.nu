@@ -30,3 +30,9 @@ export interface AccountModificationFunctions {
   rename: (id: string, name: string) => void;
   delete: (id: string, name: string) => void;
 }
+
+export interface UserInformation {
+  name: string;
+  email: string;
+  color: string;
+}

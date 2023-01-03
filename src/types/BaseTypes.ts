@@ -33,6 +33,7 @@ export interface AppState {
   clp?: boolean;
   map?: boolean;
   latestTermId?: string;
+  contextMenuData?: ContextMenuData;
 }
 
 export interface ReadUserOptions {
@@ -131,4 +132,21 @@ export interface ChangeLogPreviewInformation {
     title: string;
     description?: string;
   }[];
+}
+
+export interface ContextMenuData {
+  name: string;
+  x: number;
+  y: number;
+  items: ContextMenuItem[];
+}
+
+export interface ContextMenuItem {
+  text: string;
+  icon: IconElement;
+  onClick: () => void;
+}
+
+export interface ContextMenu {
+  (contextMenuData: ContextMenuData): void;
 }

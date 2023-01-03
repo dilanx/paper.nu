@@ -14,7 +14,6 @@ import { SideCard } from '../../types/SideCardTypes';
 import Utility from '../../utility/Utility';
 import Day from './Day';
 import HoursColumn from './HoursColumn';
-import UtilityBar from './UtilityBar';
 
 interface ScheduleProps {
   schedule: ScheduleData;
@@ -25,7 +24,6 @@ interface ScheduleProps {
   ff: SearchModificationFunctions;
   switches: UserOptions;
   imageMode?: boolean;
-  openMap?: () => void;
 }
 
 class Schedule extends React.Component<ScheduleProps> {
@@ -88,8 +86,8 @@ class Schedule extends React.Component<ScheduleProps> {
 
     return (
       <motion.div
-        className={`p-4 ${
-          imageMode ? 'absolute top-full h-imgh w-imgw' : 'relative h-full'
+        className={`p-4 pt-2 ${
+          imageMode ? 'absolute top-full h-imgh w-imgw' : 'relative flex-1'
         }`}
         id={imageMode ? 'schedule' : undefined}
         {...(!imageMode
@@ -110,15 +108,6 @@ class Schedule extends React.Component<ScheduleProps> {
           <HoursColumn start={start} end={end} />
           {days}
         </div>
-
-        {!imageMode && (
-          <UtilityBar
-            schedule={this.props.schedule}
-            switches={this.props.switches}
-            alert={this.props.alert}
-            openMap={this.props.openMap}
-          />
-        )}
 
         {imageMode && (
           <p className="absolute top-6 right-8 text-lg font-bold text-green-400 opacity-50 dark:text-green-200">

@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://www.paper.nu",
   "dependencies": {
+    "@dilanx/avatar": "^1.0.8",
     "@headlessui/react": "^1.7.2",
     "@heroicons/react": "^2.0.11",
     "@testing-library/jest-dom": "^5.16.5",

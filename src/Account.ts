@@ -3,6 +3,7 @@ import {
   AccountDataMap,
   AuthenticationResponseToken,
   ConnectionResponse,
+  UserInformation,
 } from './types/AccountTypes';
 import Utility from './utility/Utility';
 import debug from 'debug';
@@ -13,8 +14,9 @@ var dp = debug('account:op');
 const TOKEN_URL = 'https://auth.dilanxd.com/authenticate/token';
 const ENDPOINT = 'https://auth.dilanxd.com/plan-nu';
 
-var plans: AccountDataMap | undefined = undefined;
-var schedules: AccountDataMap | undefined = undefined;
+let user: UserInformation | undefined = undefined;
+let plans: AccountDataMap | undefined = undefined;
+let schedules: AccountDataMap | undefined = undefined;
 
 async function authLogin(
   authorizationCode?: string,
@@ -96,22 +98,26 @@ async function authLogout(): Promise<ConnectionResponse> {
   return { success: true, data: '' };
 }
 
-async function operation(
+async function operation<T = AccountDataMap>(
   endpoint: string,
   method: string,
   body?: object,
-  autoAuth?: boolean
-): Promise<AccountDataMap | undefined> {
+  autoAuth?: boolean,
+  customEndpoint?: string
+): Promise<T | undefined> {
   dh('%s /%s (body: %o)', method, endpoint, body);
   try {
-    const response = await fetch(ENDPOINT + '/' + endpoint, {
-      method: method,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('t')}`,
-      },
-      body: body ? JSON.stringify(body) : undefined,
-    });
+    const response = await fetch(
+      (customEndpoint ?? ENDPOINT) + '/' + endpoint,
+      {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('t')}`,
+        },
+        body: body ? JSON.stringify(body) : undefined,
+      }
+    );
     if (response.status === 401) {
       dp('access token invalid, refresh required');
       if (autoAuth ?? true) authLogin();
@@ -129,8 +135,11 @@ async function operation(
     if (endpoint.startsWith('schedules')) {
       schedules = res;
     }
+    if (endpoint.startsWith('user')) {
+      user = res;
+    }
 
-    return res as AccountDataMap;
+    return res as T;
   } catch (error) {
     throw new PlanError('Connection Failure');
   }
@@ -150,6 +159,21 @@ let Account = {
       plans: operation('plans', 'GET', undefined, false),
       schedule: operation('schedules', 'GET', undefined, false),
     };
+  },
+  getUser: () => {
+    dp('user: get');
+    if (user) {
+      dp('user: cache hit');
+      return Promise.resolve(user);
+    }
+    dp('user: cache miss');
+    return operation<UserInformation>(
+      'user',
+      'GET',
+      undefined,
+      false,
+      'https://auth.dilanxd.com'
+    );
   },
   getPlans: (reload = false) => {
     dp('plans: get');
