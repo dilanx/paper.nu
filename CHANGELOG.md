@@ -1,5 +1,11 @@
 # Paper Change Log
 
+### 2.2.0
+
+_2023-01-XX_
+
+- You can now press escape or click outside of the side card to close it.
+
 ### 2.1.3
 
 _2022-12-31_

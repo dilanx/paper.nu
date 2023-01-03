@@ -191,7 +191,10 @@ export function openInfo(
     sideCardButtons = [
       {
         text: 'Show all sections',
-        onClick: () => mod.ff.set(name, scheduleCourse?.course_id),
+        onClick: (close) => {
+          mod.ff.set(name, scheduleCourse?.course_id);
+          close();
+        },
       },
       {
         text: 'Remove section',

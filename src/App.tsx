@@ -502,7 +502,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                 <SideCard
                   data={this.state.sideCardData}
                   switches={switches}
-                  close={() => this.closeSideCard()}
+                  onClose={() => this.closeSideCard()}
                 />
               )}
             </AnimatePresence>
