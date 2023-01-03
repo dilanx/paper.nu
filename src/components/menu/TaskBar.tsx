@@ -19,7 +19,7 @@ import { Mode } from '../../utility/Constants';
 import Tooltip from '../generic/Tooltip';
 import feedbackMenu from './Feedback';
 import settingsMenu from './Settings';
-import { TabBar, TabBarButton } from './TabBar';
+import { Tabs, TabButton } from './Tabs';
 
 interface MiniButtonProps {
   icon: IconElement;
@@ -80,7 +80,7 @@ interface TaskBarProps {
   f2: PlanSpecialFunctions;
 }
 
-function TaskBar(props: TaskBarProps) {
+function Taskbar(props: TaskBarProps) {
   const switches = props.switches;
   return (
     <div className="mx-auto mt-2 mb-4 flex gap-2">
@@ -97,12 +97,12 @@ function TaskBar(props: TaskBarProps) {
         display="Settings"
         action={() => props.alert(settingsMenu(props.f2))}
       />
-      <TabBar
+      <Tabs
         switches={props.switches}
         switchName="tab"
         colorMap={TabBarButtonColors}
       >
-        <TabBarButton
+        <TabButton
           name="Search"
           selected={props.switches.get.tab as string}
           switches={props.switches}
@@ -110,8 +110,8 @@ function TaskBar(props: TaskBarProps) {
           color={TabBarButtonColors['Search']}
         >
           <MagnifyingGlassIcon className="h-5 w-5" />
-        </TabBarButton>
-        <TabBarButton
+        </TabButton>
+        <TabButton
           name="My List"
           selected={props.switches.get.tab as string}
           switches={props.switches}
@@ -119,8 +119,8 @@ function TaskBar(props: TaskBarProps) {
           color={TabBarButtonColors['My List']}
         >
           <BookmarkIcon className="h-5 w-5" />
-        </TabBarButton>
-        <TabBarButton
+        </TabButton>
+        <TabButton
           name="Plans"
           display={switches.get.mode === Mode.PLAN ? 'Plans' : 'Schedules'}
           selected={props.switches.get.tab as string}
@@ -134,10 +134,10 @@ function TaskBar(props: TaskBarProps) {
               ? Account.getScheduleName(switches.get.active_schedule_id)
               : Account.getPlanName(switches.get.active_plan_id)}
           </p>
-        </TabBarButton>
-      </TabBar>
+        </TabButton>
+      </Tabs>
     </div>
   );
 }
 
-export default TaskBar;
+export default Taskbar;

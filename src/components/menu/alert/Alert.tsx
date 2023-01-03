@@ -8,7 +8,7 @@ import {
 import { UserOptions } from '../../../types/BaseTypes';
 import { formIsValid } from '../../../utility/AlertFormInputValidation';
 import SelectMenu from '../../generic/SelectMenu';
-import { TabBar, TabBarButton } from '../TabBar';
+import { Tabs, TabButton } from '../Tabs';
 import { getAlertEditButtons } from './AlertEditButtons';
 import { getAlertExtras } from './AlertExtras';
 import { getAlertForm } from './AlertForm';
@@ -81,7 +81,7 @@ export default function Alert({
     let tabs = data.tabs;
     let selected = switches.get[tabs.switchName] as string;
     tabBar = (
-      <TabBar
+      <Tabs
         switches={switches}
         switchName={tabs.switchName}
         tabLoading={false}
@@ -92,7 +92,7 @@ export default function Alert({
             options = tab.options;
           }
           return (
-            <TabBarButton
+            <TabButton
               name={tab.name}
               selected={selected}
               switches={switches}
@@ -103,10 +103,10 @@ export default function Alert({
               key={`alert-tab-${tab.name}`}
             >
               {tab.display}
-            </TabBarButton>
+            </TabButton>
           );
         })}
-      </TabBar>
+      </Tabs>
     );
   }
 

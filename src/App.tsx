@@ -38,7 +38,7 @@ import Alert from './components/menu/alert/Alert';
 import Info from './components/menu/Info';
 import ModeSwitch from './components/menu/ModeSwitch';
 import SideCard from './components/menu/side-card/SideCard';
-import TaskBar from './components/menu/TaskBar';
+import Taskbar from './components/menu/Taskbar';
 import Content from './components/plan/Content';
 import CampusMap from './components/map/CampusMap';
 import Schedule from './components/schedule/Schedule';
@@ -603,7 +603,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                     loading={this.state.loadingLogin}
                   />
                 )}
-                <TaskBar
+                <Taskbar
                   openAboutMenu={() => this.setState({ about: true })}
                   alert={(alertData) => {
                     this.showAlert(alertData);

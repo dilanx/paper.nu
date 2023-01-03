@@ -28,7 +28,7 @@ interface TabBarButtonProps {
   children?: ReactNode;
 }
 
-export function TabBar(props: TabBarProps) {
+export function Tabs(props: TabBarProps) {
   const darkMode = props.switches.get.dark;
   let colorMap = props.colorMap;
   let color = colorMap[props.switches.get[props.switchName] as string];
@@ -38,7 +38,7 @@ export function TabBar(props: TabBarProps) {
         className={`flex border-2 border-${color}-400 dark:border-${color}-500 rounded-lg bg-${color}-400 dark:bg-${color}-500 overflow-hidden`}
       >
         {props.tabLoading ? (
-          <TabBarButton
+          <TabButton
             name="Loading"
             selected="None"
             switches={props.switches}
@@ -57,7 +57,7 @@ export function TabBar(props: TabBarProps) {
             <p className="m-0 w-20 overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:hidden lg:w-12 lg:text-xs xl:block">
               Loading
             </p>
-          </TabBarButton>
+          </TabButton>
         ) : (
           props.children
         )}
@@ -66,7 +66,7 @@ export function TabBar(props: TabBarProps) {
   );
 }
 
-export function TabBarButton(props: TabBarButtonProps) {
+export function TabButton(props: TabBarButtonProps) {
   let color = props.color;
   return (
     <button
