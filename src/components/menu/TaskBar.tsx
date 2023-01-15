@@ -3,8 +3,8 @@ import {
   CalendarIcon,
   Cog6ToothIcon,
   InformationCircleIcon,
+  LifebuoyIcon,
   MagnifyingGlassIcon,
-  PencilSquareIcon,
   RectangleStackIcon,
 } from '@heroicons/react/24/outline';
 import { Alert } from '../../types/AlertTypes';
@@ -17,7 +17,7 @@ import {
 import { PlanSpecialFunctions } from '../../types/PlanTypes';
 import { Mode } from '../../utility/Constants';
 import Tooltip from '../generic/Tooltip';
-import feedbackMenu from './Feedback';
+import helpMenu from './Help';
 import settingsMenu from './Settings';
 import { TabButton, Tabs } from './Tabs';
 
@@ -87,10 +87,10 @@ function Taskbar(props: TaskBarProps) {
     <div className="mx-auto mt-2 mb-4 flex gap-2">
       <AboutMiniButton openAboutMenu={props.openAboutMenu} />
       <MiniButton
-        icon={PencilSquareIcon}
+        icon={LifebuoyIcon}
         color="violet"
-        display="Feedback"
-        action={() => props.alert(feedbackMenu())}
+        display="Help & Feedback"
+        action={() => props.alert(helpMenu())}
       />
       <MiniButton
         icon={Cog6ToothIcon}

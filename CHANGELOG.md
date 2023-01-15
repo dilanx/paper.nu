@@ -11,6 +11,7 @@ _2023-01-XX_
 - The account plans and schedules tab has been redesigned.
 - You can now press escape or click outside of the side card to close it.
 - You can now press enter to submit pop-up menus that contain a single text input.
+- The built-in feedback submission feature has been replaced with access to the knowledge base and external feedback submission system.
 
 ### 2.1.3
 
