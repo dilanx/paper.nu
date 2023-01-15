@@ -4,6 +4,11 @@
 
 _2023-01-XX_
 
+- **Toolbar!**
+  - Account stuff can be accessed from the toolbar (sign in, sign out, account settings, etc.).
+  - Buttons from the old utility bar have been moved to the toolbar.
+  - The active plan's or schedule's name is now displayed in the toolbar instead of the taskbar.
+- The account plans and schedules tab has been redesigned.
 - You can now press escape or click outside of the side card to close it.
 - You can now press enter to submit pop-up menus that contain a single text input.
 
