@@ -1,9 +1,15 @@
 import PlanError from './utility/PlanError';
 import {
-  AccountDataMap,
+  Document,
   AuthenticationResponseToken,
   ConnectionResponse,
   UserInformation,
+  GetResponse,
+  CreateResponse,
+  DocumentCache,
+  DocumentType,
+  UpdateResponse,
+  DeleteResponse,
 } from './types/AccountTypes';
 import Utility from './utility/Utility';
 import debug from 'debug';
@@ -12,11 +18,20 @@ var dh = debug('account:http');
 var dp = debug('account:op');
 
 const TOKEN_URL = 'https://auth.dilanxd.com/authenticate/token';
-const ENDPOINT = 'https://auth.dilanxd.com/plan-nu';
+const SERVER = 'https://auth.dilanxd.com';
 
-let user: UserInformation | undefined = undefined;
-let plans: AccountDataMap | undefined = undefined;
-let schedules: AccountDataMap | undefined = undefined;
+const cache: DocumentCache = {};
+
+function getTypeId(type: DocumentType) {
+  switch (type) {
+    case 'plans':
+      return 1;
+    case 'schedules':
+      return 2;
+    default:
+      return 0;
+  }
+}
 
 async function authLogin(
   authorizationCode?: string,
@@ -98,45 +113,31 @@ async function authLogout(): Promise<ConnectionResponse> {
   return { success: true, data: '' };
 }
 
-async function operation<T = AccountDataMap>(
+async function operation<T>(
   endpoint: string,
   method: string,
   body?: object,
-  autoAuth?: boolean,
-  customEndpoint?: string
+  autoAuth = true
 ): Promise<T | undefined> {
-  dh('%s /%s (body: %o)', method, endpoint, body);
+  dh('%s %s (body: %o)', method, endpoint, body);
   try {
-    const response = await fetch(
-      (customEndpoint ?? ENDPOINT) + '/' + endpoint,
-      {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('t')}`,
-        },
-        body: body ? JSON.stringify(body) : undefined,
-      }
-    );
+    const response = await fetch(SERVER + endpoint, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('t')}`,
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
     if (response.status === 401) {
       dp('access token invalid, refresh required');
-      if (autoAuth ?? true) authLogin();
+      if (autoAuth) authLogin();
       return;
     }
 
     let res = await response.json();
     if (!response.ok) {
       throw new PlanError(res.error as string);
-    }
-
-    if (endpoint.startsWith('plans')) {
-      plans = res;
-    }
-    if (endpoint.startsWith('schedules')) {
-      schedules = res;
-    }
-    if (endpoint.startsWith('user')) {
-      user = res;
     }
 
     return res as T;
@@ -153,93 +154,105 @@ let Account = {
     return authLogin(authorizationCode, state);
   },
   logOut: () => authLogout(),
-  init: () => {
+  init: async () => {
     dp('initialize');
-    return {
-      plans: operation('plans', 'GET', undefined, false),
-      schedule: operation('schedules', 'GET', undefined, false),
-    };
+
+    const plans = await Account.get('plans', true);
+    const schedules = await Account.get('schedules', true);
+
+    return { plans, schedules };
   },
-  getUser: () => {
+  getUser: async () => {
     dp('user: get');
-    if (user) {
+    if (cache.user) {
       dp('user: cache hit');
-      return Promise.resolve(user);
+      return Promise.resolve(cache.user);
     }
     dp('user: cache miss');
-    return operation<UserInformation>(
-      'user',
+    const res = await operation<UserInformation>(
+      '/user',
       'GET',
       undefined,
-      false,
-      'https://auth.dilanxd.com'
+      false
     );
+    if (res) cache.user = res;
+    return res;
   },
-  getPlans: (reload = false) => {
-    dp('plans: get');
-    if (plans && !reload) {
-      dp('plans: cache hit');
-      return Promise.resolve(plans);
+  get: async (type: DocumentType, reload = false, updateCache = true) => {
+    dp(`${type}: get`);
+    if (cache[type] && !reload) {
+      dp(`${type}: cache hit`);
+      return cache[type];
     }
-    dp('plans: cache miss');
-    return operation('plans', 'GET');
+    dp(`${type}: cache miss`);
+    const res = await operation<GetResponse>(
+      `/paper/documents?type=${getTypeId(type)}`,
+      'GET'
+    );
+    if (updateCache && res) cache[type] = res.documents;
+    return res?.documents;
   },
-  createPlan: (name: string) => {
-    dp('plans: create');
-    return operation('plans', 'POST', { name });
+  create: async (type: DocumentType, name: string) => {
+    dp(`${type}: create`);
+    const res = await operation<CreateResponse>('/paper/documents', 'POST', {
+      type: getTypeId(type),
+      name,
+    });
+
+    if (!cache[type]) cache[type] = await Account.get(type, true, false);
+    if (res) {
+      cache[type]?.push(res.document);
+    }
+
+    return cache[type];
   },
-  deletePlan: (planId: string) => {
-    dp('plans: delete');
-    return operation('plans/' + planId, 'DELETE');
+  update: async (type: DocumentType, id: string, body: Partial<Document>) => {
+    dp(`${type}: update`);
+    const res = await operation<UpdateResponse>(
+      `/paper/documents/${id}`,
+      'PATCH',
+      body
+    );
+    if (!cache[type]) cache[type] = await Account.get(type, true, false);
+    if (res) {
+      cache[type] = cache[type]?.map((doc) => {
+        if (doc.id === id) return res.document;
+        return doc;
+      });
+    }
+
+    return cache[type];
   },
-  editPlanInfo: (planId: string, newName: string) => {
-    dp('plans: edit info');
-    return operation('plans/' + planId, 'PATCH', { name: newName });
+  delete: async (type: DocumentType, id: string) => {
+    dp(`${type}: delete`);
+    const res = await operation<DeleteResponse>(
+      `/paper/documents/${id}`,
+      'DELETE'
+    );
+    if (!cache[type]) cache[type] = await Account.get(type, true, false);
+    if (res) {
+      cache[type] = cache[type]?.filter((doc) => doc.id !== id);
+    }
+
+    return cache[type];
   },
-  updatePlan: (planId: string, content: string) => {
-    dp('plans: update');
-    return operation('plans/' + planId, 'PATCH', { content });
-  },
-  getPlanName: (planId?: string) => {
-    if (!planId) return 'Log in';
+  getPlanName: (planId: string) => {
     if (planId === 'None') return 'None';
-    if (!plans || !plans[planId]) {
+    const plan = cache.plans?.find((plan) => plan.id === planId);
+    if (!plan) {
       return '-';
     }
-    return plans[planId].name.toUpperCase();
+    return plan.name.toUpperCase();
   },
-  getSchedules: (reload = false) => {
-    dp('schedules: get');
-    if (schedules && !reload) {
-      dp('schedules: cache hit');
-      return Promise.resolve(schedules);
-    }
-    dp('schedules: cache miss');
-    return operation('schedules', 'GET');
-  },
-  createSchedule: (name: string) => {
-    dp('schedules: create');
-    return operation('schedules', 'POST', { name });
-  },
-  deleteSchedule: (scheduleId: string) => {
-    dp('schedules: delete');
-    return operation('schedules/' + scheduleId, 'DELETE');
-  },
-  editScheduleInfo: (scheduleId: string, newName: string) => {
-    dp('schedules: edit info');
-    return operation('schedules/' + scheduleId, 'PATCH', { name: newName });
-  },
-  updateSchedule: (scheduleId: string, content: string) => {
-    dp('schedules: update');
-    return operation('schedules/' + scheduleId, 'PATCH', { content });
-  },
-  getScheduleName: (scheduleId?: string) => {
-    if (!scheduleId) return 'Log in';
+  getScheduleName: (scheduleId: string) => {
     if (scheduleId === 'None') return 'None';
-    if (!schedules || !schedules[scheduleId]) {
+    const schedule = cache.schedules?.find(
+      (schedule) => schedule.id === scheduleId
+    );
+    if (!schedule) {
       return '-';
     }
-    return schedules[scheduleId].name.toUpperCase();
+    return schedule.name.toUpperCase();
   },
 };
 

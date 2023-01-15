@@ -5,6 +5,7 @@
 _2023-01-XX_
 
 - You can now press escape or click outside of the side card to close it.
+- You can now press enter to submit pop-up menus that contain a single text input.
 
 ### 2.1.3
 

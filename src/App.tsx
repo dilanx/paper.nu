@@ -335,8 +335,8 @@ class App extends React.Component<{}, AppState> implements AppType {
               toast.success(
                 `Loaded ${modeStr}: ` +
                   (mode === Mode.PLAN
-                    ? Account.getPlanName(activeId)
-                    : Account.getScheduleName(activeId))
+                    ? Account.getPlanName(activeId || 'None')
+                    : Account.getScheduleName(activeId || 'None'))
               );
               break;
             case 'Storage':
@@ -654,6 +654,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                     this.setState({ map: true });
                   }}
                   switches={switches}
+                  loading={this.state.loadingLogin}
                 />
                 <AnimatePresence mode="wait">
                   {switches.get.mode === Mode.PLAN ? (

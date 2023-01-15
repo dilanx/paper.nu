@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import Account from '../Account';
 import PlanManager from '../PlanManager';
 import ScheduleManager from '../ScheduleManager';
-import { AccountData, AccountDataMap } from '../types/AccountTypes';
+import { Document } from '../types/AccountTypes';
 import { AppType } from '../types/BaseTypes';
 import { PlanData } from '../types/PlanTypes';
 import { ScheduleData } from '../types/ScheduleTypes';
@@ -14,26 +14,32 @@ var d = debug('app:account-mod');
 
 function activate(
   app: AppType,
-  req: Promise<AccountDataMap | undefined>,
+  req: Promise<Document[] | undefined>,
   id: string,
   isSchedule: boolean,
-  callback: (item: AccountData, data: PlanData | ScheduleData | 'empty') => void
+  callback: (item: Document, data: PlanData | ScheduleData | 'empty') => void
 ) {
   app.closeSideCard();
   const errText = isSchedule ? 'schedule' : 'plan';
   req
-    .then((map) => {
-      if (!map) {
+    .then((docs) => {
+      if (!docs) {
         app.showAlert(
-          Utility.errorAlert(`account_activate_${errText}`, 'Undefined Map')
+          Utility.errorAlert(
+            `account_activate_${errText}`,
+            'Undefined Document List'
+          )
         );
         return;
       }
 
-      const item = map[id];
+      const item = docs.find((doc) => doc.id === id);
       if (!item) {
         app.showAlert(
-          Utility.errorAlert(`account_activate_${errText}`, 'Undefined Item')
+          Utility.errorAlert(
+            `account_activate_${errText}`,
+            'Undefined Document'
+          )
         );
         return;
       }
@@ -80,7 +86,7 @@ function activate(
 
 export function activateAccountPlan(app: AppType, planId: string) {
   d('plan activating: %s', planId);
-  activate(app, Account.getPlans(), planId, false, (item, data) => {
+  activate(app, Account.get('plans'), planId, false, (item, data) => {
     if (data === 'empty') {
       app.state.switches.set('active_plan_id', planId, true);
       app.setState({
@@ -110,7 +116,7 @@ export function activateAccountPlan(app: AppType, planId: string) {
 
 export function activateAccountSchedule(app: AppType, scheduleId: string) {
   d('schedule activating: %s', scheduleId);
-  activate(app, Account.getSchedules(), scheduleId, true, (item, data) => {
+  activate(app, Account.get('schedules'), scheduleId, true, (item, data) => {
     if (data === 'empty') {
       app.state.switches.set('active_schedule_id', scheduleId, true);
       app.setState({
@@ -172,10 +178,9 @@ export function update(app: AppType, isSchedule: boolean) {
   app.setState({ unsavedChanges: false });
 
   toast.promise(
-    (isSchedule ? Account.updateSchedule : Account.updatePlan)(
-      activeId as string,
-      dataStr
-    ),
+    Account.update(isSchedule ? 'schedules' : 'plans', activeId as string, {
+      content: dataStr,
+    }),
     {
       loading: 'Saving...',
       success: () => {

@@ -13,16 +13,42 @@ export interface AuthenticationResponseToken {
   error?: string;
 }
 
-export interface AccountDataMap {
-  [key: string]: AccountData;
+export interface GetResponse {
+  success: boolean;
+  documents: Document[];
 }
 
-export interface AccountData {
+export interface CreateResponse {
+  success: boolean;
+  document: Document;
+}
+
+export interface UpdateResponse {
+  success: boolean;
+  document: Document;
+}
+
+export interface DeleteResponse {
+  success: boolean;
+  id: string;
+}
+
+export interface Document {
+  id: string;
   name: string;
   createdAt: number;
   content: string;
   lastUpdated?: number;
+  notes?: string;
 }
+
+export interface DocumentCache {
+  user?: UserInformation;
+  plans?: Document[];
+  schedules?: Document[];
+}
+
+export type DocumentType = 'plans' | 'schedules';
 
 export interface AccountModificationFunctions {
   activate: (id: string) => void;
@@ -32,7 +58,8 @@ export interface AccountModificationFunctions {
 }
 
 export interface UserInformation {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   color: string;
 }

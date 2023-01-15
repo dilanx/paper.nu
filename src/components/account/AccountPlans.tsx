@@ -1,9 +1,8 @@
 import {
   CloudIcon,
-  ArrowRightOnRectangleIcon,
+  PencilIcon,
   PlusIcon,
   TrashIcon,
-  PencilIcon,
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import React from 'react';
@@ -11,8 +10,8 @@ import toast from 'react-hot-toast';
 import { SpinnerCircularFixed } from 'spinners-react';
 import Account from '../../Account';
 import {
-  AccountDataMap,
   AccountModificationFunctions,
+  Document,
 } from '../../types/AccountTypes';
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
@@ -33,8 +32,8 @@ interface AccountPlansProps {
 }
 
 interface AccountPlansState {
-  plans?: AccountDataMap;
-  schedules?: AccountDataMap;
+  plans?: Document[];
+  schedules?: Document[];
   loading: boolean;
   loggedIn: boolean;
   fa: AccountModificationFunctions;
@@ -78,13 +77,13 @@ class AccountPlans extends React.Component<
   componentDidMount() {
     if (Account.isLoggedIn()) {
       this.setState({ loggedIn: true });
-      Account.getPlans()
+      Account.get('plans')
         .then((plans) => {
           // should only be undefined if a new access token is needed
           // a redirect should happen in that case
           if (!plans) return;
 
-          Account.getSchedules()
+          Account.get('schedules')
             .then((schedules) => {
               if (!schedules) return;
 
@@ -135,7 +134,7 @@ class AccountPlans extends React.Component<
         }
         self.setState({ loading: true });
         toast.promise(
-          isSchedule ? Account.createSchedule(name) : Account.createPlan(name),
+          Account.create(isSchedule ? 'schedules' : 'plans', name),
           {
             loading: `Creating ${t}...`,
             success: (res) => {
@@ -189,9 +188,9 @@ class AccountPlans extends React.Component<
         }
         self.setState({ loading: true });
         toast.promise(
-          isSchedule
-            ? Account.editScheduleInfo(id, newName)
-            : Account.editPlanInfo(id, newName),
+          Account.update(isSchedule ? 'schedules' : 'plans', id, {
+            name: newName,
+          }),
           {
             loading: `Updating ${t}...`,
             success: (res) => {
@@ -235,7 +234,7 @@ class AccountPlans extends React.Component<
       action: () => {
         self.setState({ loading: true });
         toast.promise(
-          (isSchedule ? Account.deleteSchedule : Account.deletePlan)(id),
+          Account.delete(isSchedule ? 'schedules' : 'plans', id),
           {
             loading: `Deleting ${t}...`,
             success: (res) => {
@@ -281,20 +280,6 @@ class AccountPlans extends React.Component<
     });
   }
 
-  logOut() {
-    this.props.alert({
-      title: 'Logging out...',
-      message: `Are you sure you want to log out? Make sure your changes are saved!`,
-      cancelButton: 'Cancel',
-      confirmButton: 'Log out',
-      color: 'rose',
-      icon: ArrowRightOnRectangleIcon,
-      action: () => {
-        Account.logOut();
-      },
-    });
-  }
-
   render() {
     let items: JSX.Element[] = [];
     const isSchedule = this.props.switches.get.mode === Mode.SCHEDULE;
@@ -304,27 +289,22 @@ class AccountPlans extends React.Component<
     if (isSchedule) {
       if (this.state.schedules) {
         let self = this;
-        items = Object.keys(this.state.schedules)
+        items = this.state.schedules
           .sort((a, b) => {
-            let sa = this.state.schedules![a];
-            let sb = this.state.schedules![b];
-
             const diff =
-              (sa.lastUpdated || sa.createdAt) -
-              (sb.lastUpdated || sb.createdAt);
+              (a.lastUpdated || a.createdAt) - (b.lastUpdated || b.createdAt);
 
             if (diff > 0) return -1;
             if (diff < 0) return 1;
             return 0;
           })
-          .map((scheduleId, i) => {
-            let schedule = this.state.schedules![scheduleId];
+          .map((schedule, i) => {
             return (
               <AccountPlan
-                id={scheduleId}
+                id={schedule.id}
                 plan={schedule}
                 fa={self.state.fa}
-                active={scheduleId === self.props.activeId}
+                active={schedule.id === self.props.activeId}
                 key={`account-schedule-${i}`}
               />
             );
@@ -333,27 +313,22 @@ class AccountPlans extends React.Component<
     } else {
       if (this.state.plans) {
         let self = this;
-        items = Object.keys(this.state.plans)
+        items = this.state.plans
           .sort((a, b) => {
-            let pa = this.state.plans![a];
-            let pb = this.state.plans![b];
-
             const diff =
-              (pa.lastUpdated || pa.createdAt) -
-              (pb.lastUpdated || pb.createdAt);
+              (a.lastUpdated || a.createdAt) - (b.lastUpdated || b.createdAt);
 
             if (diff > 0) return -1;
             if (diff < 0) return 1;
             return 0;
           })
-          .map((planId, i) => {
-            let plan = this.state.plans![planId];
+          .map((plan, i) => {
             return (
               <AccountPlan
-                id={planId}
+                id={plan.id}
                 plan={plan}
                 fa={self.state.fa}
-                active={planId === self.props.activeId}
+                active={plan.id === self.props.activeId}
                 key={`account-plan-${i}`}
               />
             );
@@ -397,52 +372,25 @@ class AccountPlans extends React.Component<
               />
             }
           />
-        ) : items.length === 0 ? (
-          <AccountPlanMessage
-            icon={<PlusIcon className="h-12 w-12" />}
-            title={`Create your first ${t}`}
-            description={`Your account is all set up! Now, you can create your first ${t}.
-              Any current ${t} data you have loaded right now will stay, and you'll have the option to save it to your new ${t}.`}
-            primaryButton={{
-              text: `Create a ${t}`,
-              action: () => {
-                this.create(isSchedule);
-              },
-            }}
-            secondaryButton={{
-              text: 'Log out',
-              action: () => {
-                this.logOut();
-              },
-            }}
-          />
         ) : (
           <>
             <p className="mx-8 text-center text-sm text-gray-500">
-              Select a {t} to activate it, and again to deactivate it.
-              Activating empty {t}s won't overwrite current {t} data.
+              {items.length === 0
+                ? `It looks like you don't have any ${t}s yet. When you create one, it'll appear here.`
+                : `Select a ${t} to activate it, and again to deactivate it. Activating empty ${t}s won't overwrite current ${t} data.`}
             </p>
             <div className="m-4 block">{items}</div>
             {items.length < (isSchedule ? 20 : 5) && (
               <button
-                className="mx-auto my-2 block rounded-lg bg-rose-300 px-8 py-1 text-white
+                className="mx-auto my-4 block rounded-lg bg-rose-300 px-4 py-1 text-sm text-white
                                 shadow-sm hover:bg-rose-400 dark:bg-rose-600 dark:hover:bg-rose-500"
                 onClick={() => {
                   this.create(isSchedule);
                 }}
               >
-                Create another {t}
+                Create {t}
               </button>
             )}
-            <button
-              className="mx-auto my-2 block rounded-lg bg-gray-200 px-8 py-1 text-gray-400 shadow-sm
-                            hover:bg-gray-300 hover:text-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-300"
-              onClick={() => {
-                this.logOut();
-              }}
-            >
-              Log out
-            </button>
           </>
         )}
       </motion.div>

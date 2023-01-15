@@ -2,14 +2,14 @@ import { motion } from 'framer-motion';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import {
   AccountModificationFunctions,
-  AccountData,
+  Document,
 } from '../../types/AccountTypes';
 import ScheduleManager from '../../ScheduleManager';
 import { getTermName } from '../../DataManager';
 
 interface AccountPlanProps {
   id: string;
-  plan: AccountData;
+  plan: Document;
   fa: AccountModificationFunctions;
   active: boolean;
 }
@@ -33,7 +33,7 @@ function AccountPlan(props: AccountPlanProps) {
           props.active
             ? 'border-emerald-400 bg-emerald-50'
             : 'border-rose-400 bg-rose-50'
-        }  group my-4 w-full transform cursor-pointer rounded-lg px-4 py-8
+        }  group my-4 w-full transform cursor-pointer rounded-lg px-4 py-2
             text-left text-black transition duration-300 ease-in-out hover:-translate-y-1
             hover:shadow-md active:opacity-50 dark:bg-gray-800`}
         onClick={() => {
@@ -79,12 +79,12 @@ function AccountPlan(props: AccountPlanProps) {
           </button>
         </div>
         {props.active ? (
-          <p className="absolute bottom-1 right-2 font-bold text-green-400">
+          <p className="absolute -bottom-3 right-2 rounded-lg border-2 border-emerald-400 bg-emerald-50 px-1 text-xs font-bold text-emerald-400 dark:-bottom-2 dark:border-none dark:bg-gray-800">
             ACTIVE
           </p>
         ) : (
           !plan.content && (
-            <p className="absolute bottom-1 right-2 font-bold text-rose-300">
+            <p className="absolute -bottom-3 right-2 rounded-lg border-2 border-rose-400 bg-rose-50 px-1 text-xs font-bold text-rose-400 dark:-bottom-2 dark:border-none dark:bg-gray-800">
               EMPTY
             </p>
           )

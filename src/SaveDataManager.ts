@@ -3,7 +3,7 @@ import Account from './Account';
 import { getDataMapInformation } from './DataManager';
 import PlanManager from './PlanManager';
 import ScheduleManager from './ScheduleManager';
-import { AccountDataMap } from './types/AccountTypes';
+import { Document } from './types/AccountTypes';
 import {
   LoadMethods,
   LoadResponse,
@@ -23,10 +23,10 @@ const DEFAULT_SWITCHES: ReadUserOptions = {
   minimap: true,
 };
 
-function matchAccountId(accountData: AccountDataMap, content: string) {
-  for (let id in accountData) {
-    if (accountData[id].content === content) {
-      return id;
+function matchAccountId(accountData: Document[], content: string) {
+  for (let doc of accountData) {
+    if (doc.content === content) {
+      return doc.id;
     }
   }
 }
@@ -38,15 +38,15 @@ let SaveDataManager = {
   ): Promise<LoadResponse<PlanData | ScheduleData>> => {
     let activeId: string | undefined = undefined;
     let originalDataString: string = '';
-    let accountPlans: AccountDataMap | undefined = undefined;
-    let accountSchedules: AccountDataMap | undefined = undefined;
+    let accountPlans: Document[] | undefined = undefined;
+    let accountSchedules: Document[] | undefined = undefined;
     let method: LoadMethods = 'None';
     const latestTermId = (await getDataMapInformation()).latest;
 
     if (Account.isLoggedIn()) {
-      const accountInit = Account.init();
-      accountPlans = await accountInit.plans;
-      accountSchedules = await accountInit.schedule;
+      const accountInit = await Account.init();
+      accountPlans = accountInit.plans;
+      accountSchedules = accountInit.schedules;
       activeId = 'None';
     }
 
@@ -123,8 +123,9 @@ let SaveDataManager = {
       d('trying to load plan data from account');
       let storedPlanId = switches.get.active_plan_id;
       if (accountPlans && storedPlanId) {
-        if (storedPlanId in accountPlans) {
-          let content = accountPlans[storedPlanId].content;
+        const doc = accountPlans.find((doc) => doc.id === storedPlanId);
+        if (doc) {
+          let content = doc.content;
           let data = await PlanManager.loadFromString(content);
           if (data !== 'empty') {
             if (data !== 'malformed') {
@@ -177,10 +178,12 @@ let SaveDataManager = {
         return response;
       }
     } else if (mode === Mode.SCHEDULE) {
+      d('trying to load schedule data from account');
       let storedScheduleId = switches.get.active_schedule_id;
       if (accountSchedules && storedScheduleId) {
-        if (storedScheduleId in accountSchedules) {
-          let content = accountSchedules[storedScheduleId].content;
+        const doc = accountSchedules.find((doc) => doc.id === storedScheduleId);
+        if (doc) {
+          let content = doc.content;
           let data = await ScheduleManager.loadFromString(content);
           if (data !== 'empty') {
             if (data !== 'malformed') {

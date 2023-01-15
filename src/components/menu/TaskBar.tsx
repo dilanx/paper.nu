@@ -1,12 +1,12 @@
 import {
   BookmarkIcon,
-  CloudIcon,
+  CalendarIcon,
   Cog6ToothIcon,
   InformationCircleIcon,
   MagnifyingGlassIcon,
   PencilSquareIcon,
+  RectangleStackIcon,
 } from '@heroicons/react/24/outline';
-import Account from '../../Account';
 import { Alert } from '../../types/AlertTypes';
 import {
   Color,
@@ -19,7 +19,7 @@ import { Mode } from '../../utility/Constants';
 import Tooltip from '../generic/Tooltip';
 import feedbackMenu from './Feedback';
 import settingsMenu from './Settings';
-import { Tabs, TabButton } from './Tabs';
+import { TabButton, Tabs } from './Tabs';
 
 interface MiniButtonProps {
   icon: IconElement;
@@ -82,6 +82,7 @@ interface TaskBarProps {
 
 function Taskbar(props: TaskBarProps) {
   const switches = props.switches;
+  const isSchedule = switches.get.mode === Mode.SCHEDULE;
   return (
     <div className="mx-auto mt-2 mb-4 flex gap-2">
       <AboutMiniButton openAboutMenu={props.openAboutMenu} />
@@ -122,18 +123,17 @@ function Taskbar(props: TaskBarProps) {
         </TabButton>
         <TabButton
           name="Plans"
-          display={switches.get.mode === Mode.PLAN ? 'Plans' : 'Schedules'}
+          display={isSchedule ? 'Schedules' : 'Plans'}
           selected={props.switches.get.tab as string}
           switches={props.switches}
           switchName="tab"
           color={TabBarButtonColors['Plans']}
         >
-          <CloudIcon className="h-5 w-5" />
-          <p className="m-0 w-20 overflow-hidden text-ellipsis whitespace-nowrap text-sm lg:hidden lg:w-12 lg:text-xs xl:block">
-            {switches.get.mode === Mode.SCHEDULE
-              ? Account.getScheduleName(switches.get.active_schedule_id)
-              : Account.getPlanName(switches.get.active_plan_id)}
-          </p>
+          {isSchedule ? (
+            <CalendarIcon className="h-5 w-5" />
+          ) : (
+            <RectangleStackIcon className="h-5 w-5" />
+          )}
         </TabButton>
       </Tabs>
     </div>

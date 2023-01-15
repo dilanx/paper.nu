@@ -8,7 +8,7 @@ import {
 import { UserOptions } from '../../../types/BaseTypes';
 import { formIsValid } from '../../../utility/AlertFormInputValidation';
 import SelectMenu from '../../generic/SelectMenu';
-import { Tabs, TabButton } from '../Tabs';
+import { TabButton, Tabs } from '../Tabs';
 import { getAlertEditButtons } from './AlertEditButtons';
 import { getAlertExtras } from './AlertExtras';
 import { getAlertForm } from './AlertForm';
@@ -162,7 +162,7 @@ export default function Alert({
                         aria-hidden="true"
                       />
                     </div>
-                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <div className="mt-3 flex-1 text-center sm:mt-0 sm:ml-4 sm:text-left">
                       <Dialog.Title
                         as="h3"
                         className="text-lg font-medium leading-6 text-black dark:text-white"
@@ -202,15 +202,26 @@ export default function Alert({
                                                   !textValue ||
                                                   textValue.length === 0 ||
                                                   !data.textInput.match
-                                                    ? 'focus:border-gray-500'
+                                                    ? 'focus:border-gray-500 dark:focus:border-gray-500'
                                                     : badInput
-                                                    ? 'focus:border-red-500'
-                                                    : 'focus:border-green-500'
+                                                    ? 'focus:border-red-500 dark:focus:border-red-500'
+                                                    : 'focus:border-green-500 dark:focus:border-green-500'
                                                 }`}
                             placeholder={data.textInput.placeholder}
                             defaultValue={data.textInput.defaultValue}
                             onChange={(event) => {
                               setTextValue(event.target.value);
+                            }}
+                            onKeyUp={(event) => {
+                              if (event.key === 'Enter') {
+                                if (
+                                  badInput ||
+                                  data.disableConfirmButton !== undefined
+                                ) {
+                                  return;
+                                }
+                                confirm();
+                              }
                             }}
                           />
                           <p className="mx-2 my-1 text-sm text-red-500">

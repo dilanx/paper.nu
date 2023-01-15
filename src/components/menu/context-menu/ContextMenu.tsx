@@ -38,6 +38,7 @@ function ContextMenu({ data, switches, onClose }: ContextMenuProps) {
               <ContextMenuButton
                 data={item}
                 close={() => setIsOpen(false)}
+                theme={data.theme}
                 key={`context-menu-item-${i}`}
               />
             ))}
