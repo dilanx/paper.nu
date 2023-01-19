@@ -157,8 +157,8 @@ let Account = {
   init: async () => {
     dp('initialize');
 
-    const plans = await Account.get('plans', true);
-    const schedules = await Account.get('schedules', true);
+    const plans = await Account.get('plans', true, true, false);
+    const schedules = await Account.get('schedules', true, true, false);
 
     return { plans, schedules };
   },
@@ -178,7 +178,12 @@ let Account = {
     if (res) cache.user = res;
     return res;
   },
-  get: async (type: DocumentType, reload = false, updateCache = true) => {
+  get: async (
+    type: DocumentType,
+    reload = false,
+    updateCache = true,
+    autoAuth = true
+  ) => {
     dp(`${type}: get`);
     if (cache[type] && !reload) {
       dp(`${type}: cache hit`);
@@ -187,7 +192,9 @@ let Account = {
     dp(`${type}: cache miss`);
     const res = await operation<GetResponse>(
       `/paper/documents?type=${getTypeId(type)}`,
-      'GET'
+      'GET',
+      undefined,
+      autoAuth
     );
     if (updateCache && res) cache[type] = res.documents;
     return res?.documents;

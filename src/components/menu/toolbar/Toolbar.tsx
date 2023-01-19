@@ -68,7 +68,7 @@ function Toolbar({
   }, [takeImage, switches]);
 
   return (
-    <div className="sticky top-0 z-30 flex w-full flex-col items-center justify-center gap-1 bg-white px-4 pt-4 pb-2 dark:bg-gray-800 md:flex-row">
+    <div className="sticky top-0 z-30 flex w-full flex-col items-center justify-center gap-1 bg-white px-4 pt-4 pb-2 dark:bg-gray-800 md:flex-row lg:justify-end">
       {activeItem && activeItem !== 'None' && (
         <div className="flex flex-1 items-center gap-2 font-semibold text-gray-400">
           {isSchedule ? (
