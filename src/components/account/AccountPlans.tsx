@@ -287,10 +287,10 @@ class AccountPlans extends React.Component<
     const darkMode = this.props.switches.get.dark as boolean;
 
     if (isSchedule) {
-      if (this.state.schedules) {
-        let self = this;
-        items = this.state.schedules
-          .sort((a, b) => {
+      let self = this;
+      items =
+        this.state.schedules
+          ?.sort((a, b) => {
             const diff =
               (a.lastUpdated || a.createdAt) - (b.lastUpdated || b.createdAt);
 
@@ -308,13 +308,12 @@ class AccountPlans extends React.Component<
                 key={`account-schedule-${i}`}
               />
             );
-          });
-      }
+          }) || [];
     } else {
-      if (this.state.plans) {
-        let self = this;
-        items = this.state.plans
-          .sort((a, b) => {
+      let self = this;
+      items =
+        this.state.plans
+          ?.sort((a, b) => {
             const diff =
               (a.lastUpdated || a.createdAt) - (b.lastUpdated || b.createdAt);
 
@@ -332,8 +331,7 @@ class AccountPlans extends React.Component<
                 key={`account-plan-${i}`}
               />
             );
-          });
-      }
+          }) || [];
     }
 
     return (
