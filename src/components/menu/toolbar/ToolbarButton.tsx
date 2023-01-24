@@ -27,8 +27,8 @@ function ToolbarButton({
       className={`z-30 flex items-center gap-1 whitespace-nowrap rounded-lg px-3 py-1
       font-medium ${
         active
-          ? `bg-${theme}-100 text-gray-800 dark:bg-${theme}-600 dark:text-gray-100`
-          : `text-gray-600 hover:bg-gray-100 hover:text-gray-800 active:bg-${theme}-100 active:text-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-50 dark:active:bg-${theme}-600 dark:active:text-gray-50`
+          ? 'bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-gray-100'
+          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800 active:bg-gray-200 active:text-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-50 dark:active:bg-gray-600 dark:active:text-gray-50'
       }`}
     >
       <p className="hidden md:block">{children}</p>

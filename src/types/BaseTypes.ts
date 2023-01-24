@@ -34,6 +34,7 @@ export interface AppState {
   map?: boolean;
   latestTermId?: string;
   contextMenuData?: ContextMenuData;
+  notes?: boolean;
 }
 
 export interface ReadUserOptions {

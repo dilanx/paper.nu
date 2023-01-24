@@ -4,6 +4,7 @@ import {
   ArrowTopRightOnSquareIcon,
   CameraIcon,
   MapIcon,
+  PencilSquareIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { CalendarIcon, RectangleStackIcon } from '@heroicons/react/24/solid';
@@ -93,6 +94,9 @@ function Toolbar({
             Campus map
           </ToolbarButton>
         )}
+        <ToolbarButton theme={theme} icon={PencilSquareIcon} onClick={() => {}}>
+          Notes
+        </ToolbarButton>
         {isSchedule && (
           <ToolbarButton
             theme={theme}
