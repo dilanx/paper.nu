@@ -94,7 +94,14 @@ function Toolbar({
             Campus map
           </ToolbarButton>
         )}
-        <ToolbarButton theme={theme} icon={PencilSquareIcon} onClick={() => {}}>
+        <ToolbarButton
+          theme={theme}
+          selected={switches.get.notes}
+          icon={PencilSquareIcon}
+          onClick={() => {
+            switches.set('notes', !switches.get.notes);
+          }}
+        >
           Notes
         </ToolbarButton>
         {isSchedule && (
@@ -166,7 +173,7 @@ function Toolbar({
                         disableConfirmButton: noValidSections
                           ? 'Nothing to export'
                           : undefined,
-                        color: 'red',
+                        color: 'sky',
                         cancelButton: 'Cancel',
                         action: () => {
                           toast.promise(exportScheduleAsICS(validSections), {

@@ -34,7 +34,6 @@ export interface AppState {
   map?: boolean;
   latestTermId?: string;
   contextMenuData?: ContextMenuData;
-  notes?: boolean;
 }
 
 export interface ReadUserOptions {
@@ -56,6 +55,7 @@ export interface ReadUserOptions {
   course_info_details?: string;
   section_info_details?: string;
   minimap?: boolean;
+  notes?: boolean;
 }
 
 export interface UserOptions {
@@ -108,11 +108,10 @@ export type IconElement = (props: ComponentProps<'svg'>) => JSX.Element;
 
 export type StringMap = { [key: string]: string };
 
-//export type AppType = React.Component<{}, AppState>;
-
 export interface AppType extends Component<{}, AppState> {
   closeSideCard(): void;
   showAlert(alertData: AlertData): void;
+  appRef: React.RefObject<HTMLDivElement>;
 }
 
 export type TextValidator = (value: string) => boolean;

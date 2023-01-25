@@ -6,6 +6,7 @@ interface ToolbarButtonProps {
   onClick?: (x: number, y: number) => void;
   active?: boolean;
   theme: Color;
+  selected?: boolean;
 }
 
 function ToolbarButton({
@@ -14,6 +15,7 @@ function ToolbarButton({
   onClick,
   active,
   theme,
+  selected,
 }: ToolbarButtonProps) {
   return (
     <button
@@ -28,7 +30,14 @@ function ToolbarButton({
       font-medium ${
         active
           ? 'bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-gray-100'
-          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800 active:bg-gray-200 active:text-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-50 dark:active:bg-gray-600 dark:active:text-gray-50'
+          : `hover:bg-gray-100 active:bg-gray-200 
+             dark:hover:bg-gray-700  dark:active:bg-gray-600 
+            ${
+              selected
+                ? 'text-red-500'
+                : 'text-gray-600 hover:text-gray-800 active:text-gray-800 dark:text-gray-300 dark:hover:text-gray-50 dark:active:text-gray-50'
+            }
+            `
       }`}
     >
       <p className="hidden md:block">{children}</p>

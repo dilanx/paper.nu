@@ -73,12 +73,15 @@ import ChangeLogPreview from './components/menu/ChangeLogPreview';
 import clp from './app/ChangeLogPreview';
 import Toolbar from './components/menu/toolbar/Toolbar';
 import ContextMenu from './components/menu/context-menu/ContextMenu';
+import Notes from './components/menu/Notes';
 var d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
 const VERSION_NO_PATCH = VERSION.split('.').slice(0, 2).join('.');
 
 class App extends React.Component<{}, AppState> implements AppType {
+  appRef;
+
   constructor(props: {}) {
     super(props);
 
@@ -167,6 +170,7 @@ class App extends React.Component<{}, AppState> implements AppType {
 
     const lastVersion = localStorage.getItem('v');
 
+    this.appRef = React.createRef<HTMLDivElement>();
     this.state = {
       data: data,
       schedule: {
@@ -467,7 +471,10 @@ class App extends React.Component<{}, AppState> implements AppType {
         <MotionConfig
           reducedMotion={switches.get.reduced_motion ? 'always' : 'never'}
         >
-          <div className={`${darkMode ? 'dark' : ''} relative`}>
+          <div
+            className={`${darkMode ? 'dark' : ''} relative`}
+            ref={this.appRef}
+          >
             {this.state.alertData && (
               <Alert
                 data={this.state.alertData}
@@ -528,6 +535,16 @@ class App extends React.Component<{}, AppState> implements AppType {
                 }}
               />
             )}
+
+            <AnimatePresence>
+              {switches.get.notes && (
+                <Notes
+                  constraintsRef={this.appRef}
+                  isSchedule={isSchedule}
+                  onClose={() => switches.set('notes', false)}
+                />
+              )}
+            </AnimatePresence>
 
             <div className="grid grid-cols-1 bg-white dark:bg-gray-800 lg:grid-cols-8">
               <div className="col-span-2 flex h-192 flex-col px-4 md:h-screen">
