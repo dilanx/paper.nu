@@ -83,7 +83,6 @@ function Toolbar({
       <div className="flex gap-1">
         {isSchedule && (
           <ToolbarButton
-            theme={theme}
             icon={MapIcon}
             onClick={() => {
               if (openMap) {
@@ -95,7 +94,6 @@ function Toolbar({
           </ToolbarButton>
         )}
         <ToolbarButton
-          theme={theme}
           selected={switches.get.notes}
           icon={PencilSquareIcon}
           onClick={() => {
@@ -106,7 +104,6 @@ function Toolbar({
         </ToolbarButton>
         {isSchedule && (
           <ToolbarButton
-            theme={theme}
             icon={ArrowDownOnSquareIcon}
             active={contextMenuData?.name === 'export'}
             onClick={(x, y) => {
@@ -196,7 +193,6 @@ function Toolbar({
           </ToolbarButton>
         )}
         <ToolbarButton
-          theme={theme}
           icon={ArrowTopRightOnSquareIcon}
           onClick={() => {
             alert({
@@ -219,7 +215,6 @@ function Toolbar({
         </ToolbarButton>
         <ToolbarAccount
           loading={loading}
-          theme={theme}
           active={contextMenuData?.name === 'account'}
           onClick={(x, y, signedIn) => {
             if (!signedIn) {

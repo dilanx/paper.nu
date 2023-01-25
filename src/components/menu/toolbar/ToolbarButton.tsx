@@ -5,7 +5,6 @@ interface ToolbarButtonProps {
   icon: IconElement;
   onClick?: (x: number, y: number) => void;
   active?: boolean;
-  theme: Color;
   selected?: boolean;
 }
 
@@ -14,7 +13,6 @@ function ToolbarButton({
   icon: Icon,
   onClick,
   active,
-  theme,
   selected,
 }: ToolbarButtonProps) {
   return (

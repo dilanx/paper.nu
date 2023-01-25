@@ -8,15 +8,9 @@ interface ToolbarAccountProps {
   loading: boolean;
   onClick?: (x: number, y: number, signedIn: boolean) => void;
   active?: boolean;
-  theme: Color;
 }
 
-function ToolbarAccount({
-  loading,
-  onClick,
-  active,
-  theme,
-}: ToolbarAccountProps) {
+function ToolbarAccount({ loading, onClick, active }: ToolbarAccountProps) {
   const [info, setInfo] = useState<UserInformation>();
 
   useEffect(() => {
