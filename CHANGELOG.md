@@ -4,6 +4,10 @@
 
 _2023-01-XX_
 
+- **Notes!**
+  - Add notes to plans or schedules saved to your account.
+  - Notes sync across your devices but are not visible by others when sharing a link.
+  - Drag the little notes window anywhere on the site.
 - **Toolbar!**
   - Account stuff can be accessed from the toolbar (sign in, sign out, account settings, etc.).
   - Buttons from the old utility bar have been moved to the toolbar.
