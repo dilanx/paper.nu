@@ -5,7 +5,8 @@ import Account from '../Account';
 import PlanManager from '../PlanManager';
 import ScheduleManager from '../ScheduleManager';
 import { Document } from '../types/AccountTypes';
-import { AppType } from '../types/BaseTypes';
+import { Alert } from '../types/AlertTypes';
+import { AppType, UserOptions } from '../types/BaseTypes';
 import { PlanData } from '../types/PlanTypes';
 import { ScheduleData } from '../types/ScheduleTypes';
 import PlanError from '../utility/PlanError';
@@ -57,22 +58,30 @@ function activate(
       discardChanges(
         app,
         () => {
-          app.setState({ loadingLogin: true });
-          (isSchedule ? ScheduleManager : PlanManager)
-            .loadFromString(item.content)
-            .then((data) => {
-              if (data === 'malformed') {
-                app.showAlert(
-                  Utility.errorAlert(
-                    `account_activate_${errText}`,
-                    'Malformed Data'
-                  )
-                );
-                return;
-              }
+          discardNotesChanges(
+            app.state.switches,
+            (alertData) => app.showAlert(alertData),
+            () => {
+              app.state.switches.set('notes', false);
+              app.state.switches.set('unsaved_notes', false);
+              app.setState({ loadingLogin: true });
+              (isSchedule ? ScheduleManager : PlanManager)
+                .loadFromString(item.content)
+                .then((data) => {
+                  if (data === 'malformed') {
+                    app.showAlert(
+                      Utility.errorAlert(
+                        `account_activate_${errText}`,
+                        'Malformed Data'
+                      )
+                    );
+                    return;
+                  }
 
-              callback(item, data);
-            });
+                  callback(item, data);
+                });
+            }
+          );
         },
         confirmNonAccountOverwrite
       );
@@ -89,6 +98,8 @@ export function activateAccountPlan(app: AppType, planId: string) {
   activate(app, Account.get('plans'), planId, false, (item, data) => {
     if (data === 'empty') {
       app.state.switches.set('active_plan_id', planId, true);
+      app.state.switches.set('notes', false);
+      app.state.switches.set('unsaved_notes', false);
       app.setState({
         originalDataString: item.content,
         unsavedChanges: window.location.search.length > 0,
@@ -152,15 +163,23 @@ export function activateAccountSchedule(app: AppType, scheduleId: string) {
 export function deactivate(app: AppType, isSchedule: boolean) {
   const t = isSchedule ? 'schedule' : 'plan';
   discardChanges(app, () => {
-    let id = app.state.switches.get[`active_${t}_id`];
-    app.state.switches.set(`active_${t}_id`, 'None', true);
-    toast.success(`Deactivated ${t}`, {
-      iconTheme: {
-        primary: 'red',
-        secondary: 'white',
-      },
-    });
-    d('%s deactivated: %s', t, id);
+    discardNotesChanges(
+      app.state.switches,
+      (alertData) => app.showAlert(alertData),
+      () => {
+        app.state.switches.set('notes', false);
+        app.state.switches.set('unsaved_notes', false);
+        let id = app.state.switches.get[`active_${t}_id`];
+        app.state.switches.set(`active_${t}_id`, 'None', true);
+        toast.success(`Deactivated ${t}`, {
+          iconTheme: {
+            primary: 'red',
+            secondary: 'white',
+          },
+        });
+        d('%s deactivated: %s', t, id);
+      }
+    );
   });
 }
 
@@ -231,4 +250,27 @@ export function discardChanges(
   }
 
   action();
+}
+
+export function discardNotesChanges(
+  switches: UserOptions,
+  alert: Alert,
+  onClose: () => void
+) {
+  if (switches.get.unsaved_notes) {
+    alert({
+      title: 'Hold on...',
+      message:
+        'It looks like you have some unsaved changes to your notes. Navigating away will discard them. Are you sure?',
+      confirmButton: 'Yes, continue',
+      cancelButton: 'Go back',
+      color: 'red',
+      icon: ExclamationTriangleIcon,
+      action: () => {
+        onClose();
+      },
+    });
+    return;
+  }
+  onClose();
 }

@@ -14,6 +14,7 @@ import {
   activateAccountSchedule,
   deactivate,
   discardChanges,
+  discardNotesChanges,
   update,
 } from './app/AccountModification';
 import {
@@ -540,7 +541,10 @@ class App extends React.Component<{}, AppState> implements AppType {
               {switches.get.notes && (
                 <Notes
                   constraintsRef={this.appRef}
-                  isSchedule={isSchedule}
+                  switches={switches}
+                  alert={(alertData) => {
+                    this.showAlert(alertData);
+                  }}
                   onClose={() => switches.set('notes', false)}
                 />
               )}
@@ -554,11 +558,21 @@ class App extends React.Component<{}, AppState> implements AppType {
                   changeMode={(mode) => {
                     this.closeSideCard();
                     discardChanges(this, () => {
-                      this.setSwitch('mode', mode, true);
-                      this.setState({ loadingLogin: true });
-                      this.initialize(undefined, () => {
-                        this.setState({ loadingLogin: false });
-                      });
+                      discardNotesChanges(
+                        switches,
+                        (alertData) => {
+                          this.showAlert(alertData);
+                        },
+                        () => {
+                          this.setSwitch('mode', mode, true);
+                          this.setSwitch('notes', false);
+                          this.setSwitch('unsaved_notes', false);
+                          this.setState({ loadingLogin: true });
+                          this.initialize(undefined, () => {
+                            this.setState({ loadingLogin: false });
+                          });
+                        }
+                      );
                     });
                   }}
                 />

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Account from '../../../Account';
 import { UserInformation } from '../../../types/AccountTypes';
 import { Avatar } from '@dilanx/avatar';
-import { Color } from '../../../types/BaseTypes';
 
 interface ToolbarAccountProps {
   loading: boolean;

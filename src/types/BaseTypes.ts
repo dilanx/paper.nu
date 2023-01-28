@@ -56,6 +56,7 @@ export interface ReadUserOptions {
   section_info_details?: string;
   minimap?: boolean;
   notes?: boolean;
+  unsaved_notes?: boolean;
 }
 
 export interface UserOptions {

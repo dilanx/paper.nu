@@ -1,4 +1,4 @@
-import { Color, IconElement } from '../../../types/BaseTypes';
+import { IconElement } from '../../../types/BaseTypes';
 
 interface ToolbarButtonProps {
   children: string;

@@ -11,6 +11,7 @@ import { CalendarIcon, RectangleStackIcon } from '@heroicons/react/24/solid';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import Account from '../../../Account';
+import { discardNotesChanges } from '../../../app/AccountModification';
 import { Alert } from '../../../types/AlertTypes';
 import {
   ContextMenu,
@@ -71,13 +72,15 @@ function Toolbar({
   return (
     <div className="sticky top-0 z-30 flex w-full flex-col items-center justify-center gap-1 bg-white px-4 pt-4 pb-2 dark:bg-gray-800 md:flex-row lg:justify-end">
       {activeItem && activeItem !== 'None' && (
-        <div className="flex flex-1 items-center gap-2 font-semibold text-gray-400">
+        <div className="flex flex-1 items-center gap-2 overflow-hidden font-semibold text-gray-400">
           {isSchedule ? (
             <CalendarIcon className="h-5 w-5" />
           ) : (
             <RectangleStackIcon className="h-5 w-5" />
           )}
-          <p>{activeItem}</p>
+          <p className="overflow-hidden text-ellipsis whitespace-nowrap">
+            {activeItem}
+          </p>
         </div>
       )}
       <div className="flex gap-1">
@@ -97,7 +100,14 @@ function Toolbar({
           selected={switches.get.notes}
           icon={PencilSquareIcon}
           onClick={() => {
-            switches.set('notes', !switches.get.notes);
+            if (switches.get.notes) {
+              discardNotesChanges(switches, alert, () => {
+                switches.set('notes', false);
+                switches.set('unsaved_notes', false);
+              });
+            } else {
+              switches.set('notes', true);
+            }
           }}
         >
           Notes
