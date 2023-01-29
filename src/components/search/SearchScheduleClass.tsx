@@ -75,8 +75,8 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
                 ? `bg-white border-${props.color}-400 -translate-y-2 shadow-lg`
                 : `bg-${props.color}-100 border-${props.color}-300 border-opacity-60 hover:-translate-y-1 hover:shadow-md`
             }
-            group m-4 cursor-pointer transition duration-300 ease-in-out ${
-              isDragging ? 'cursor-grab ' : 'cursor-pointer'
+            group m-4 transition duration-300 ease-in-out ${
+              isDragging ? 'cursor-grab ' : 'cursor-default'
             }`}
       onClick={() => {
         if (props.select) props.select();

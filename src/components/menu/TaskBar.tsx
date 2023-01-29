@@ -1,12 +1,10 @@
 import {
   BookmarkIcon,
   CalendarIcon,
-  Cog6ToothIcon,
   InformationCircleIcon,
-  LifebuoyIcon,
   MagnifyingGlassIcon,
   RectangleStackIcon,
-} from '@heroicons/react/24/outline';
+} from '@heroicons/react/24/solid';
 import { Alert } from '../../types/AlertTypes';
 import {
   Color,
@@ -14,11 +12,9 @@ import {
   IconElement,
   UserOptions,
 } from '../../types/BaseTypes';
-import { PlanSpecialFunctions } from '../../types/PlanTypes';
 import { Mode } from '../../utility/Constants';
 import Tooltip from '../generic/Tooltip';
 import helpMenu from './Help';
-import settingsMenu from './Settings';
 import { TabButton, Tabs } from './Tabs';
 
 interface MiniButtonProps {
@@ -68,7 +64,7 @@ function MiniButton(props: MiniButtonProps) {
 
 const TabBarButtonColors: ColorMap = {
   Search: 'gray',
-  'My List': 'indigo',
+  Bookmarks: 'indigo',
   Plans: 'rose',
 };
 
@@ -77,27 +73,14 @@ interface TaskBarProps {
   alert: Alert;
   version: string;
   switches: UserOptions;
-  f2: PlanSpecialFunctions;
 }
 
 function Taskbar(props: TaskBarProps) {
   const switches = props.switches;
   const isSchedule = switches.get.mode === Mode.SCHEDULE;
   return (
-    <div className="mx-auto mt-2 mb-4 flex gap-2">
-      <AboutMiniButton openAboutMenu={props.openAboutMenu} />
-      <MiniButton
-        icon={LifebuoyIcon}
-        color="violet"
-        display="Help & Feedback"
-        action={() => props.alert(helpMenu())}
-      />
-      <MiniButton
-        icon={Cog6ToothIcon}
-        color="orange"
-        display="Settings"
-        action={() => props.alert(settingsMenu(props.f2))}
-      />
+    <div className="mx-auto mt-2 mb-4 w-full gap-2">
+      {/* <AboutMiniButton openAboutMenu={props.openAboutMenu} /> */}
       <Tabs
         switches={props.switches}
         switchName="tab"
@@ -105,24 +88,27 @@ function Taskbar(props: TaskBarProps) {
       >
         <TabButton
           name="Search"
+          alwaysShowDisplay
           selected={props.switches.get.tab as string}
           switches={props.switches}
           switchName="tab"
           color={TabBarButtonColors['Search']}
         >
-          <MagnifyingGlassIcon className="h-5 w-5" />
+          <MagnifyingGlassIcon className="h-4 w-4" />
         </TabButton>
         <TabButton
-          name="My List"
+          name="Bookmarks"
+          alwaysShowDisplay
           selected={props.switches.get.tab as string}
           switches={props.switches}
           switchName="tab"
-          color={TabBarButtonColors['My List']}
+          color={TabBarButtonColors['Bookmarks']}
         >
-          <BookmarkIcon className="h-5 w-5" />
+          <BookmarkIcon className="h-4 w-4" />
         </TabButton>
         <TabButton
           name="Plans"
+          alwaysShowDisplay
           display={isSchedule ? 'Schedules' : 'Plans'}
           selected={props.switches.get.tab as string}
           switches={props.switches}
@@ -130,9 +116,9 @@ function Taskbar(props: TaskBarProps) {
           color={TabBarButtonColors['Plans']}
         >
           {isSchedule ? (
-            <CalendarIcon className="h-5 w-5" />
+            <CalendarIcon className="h-4 w-4" />
           ) : (
-            <RectangleStackIcon className="h-5 w-5" />
+            <RectangleStackIcon className="h-4 w-4" />
           )}
         </TabButton>
       </Tabs>

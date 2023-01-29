@@ -37,7 +37,7 @@ function Bookmarks(props: BookmarksProps) {
             border-indigo-300 shadow-lg"
     >
       <p className="my-4 text-center text-2xl font-bold text-indigo-300">
-        MY LIST
+        BOOKMARKS
       </p>
       {props.loading ? (
         <AccountPlanMessage

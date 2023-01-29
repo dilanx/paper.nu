@@ -5,10 +5,10 @@ import {
   EllipsisHorizontalIcon,
 } from '@heroicons/react/24/outline';
 import debugModule from 'debug';
-import { clearCache } from '../../DataManager';
-import { AlertData } from '../../types/AlertTypes';
-import { PlanSpecialFunctions } from '../../types/PlanTypes';
-import Utility from '../../utility/Utility';
+import { clearCache } from '../../../DataManager';
+import { AlertData } from '../../../types/AlertTypes';
+import { PlanSpecialFunctions } from '../../../types/PlanTypes';
+import Utility from '../../../utility/Utility';
 
 const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
   title: 'Settings',
@@ -90,7 +90,7 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
           },
           {
             title: 'Clear plan',
-            description: `Clear all of your current plan data, which includes everything for each year and everything in My List. Make sure to save the current URL somewhere if you don't want to lose it.`,
+            description: `Clear all of your current plan data, which includes everything for each year and everything in your bookmarks. Make sure to save the current URL somewhere if you don't want to lose it.`,
             buttonTextOn: 'Clear',
             confirmation: 'clear_plan',
             singleAction: () => {

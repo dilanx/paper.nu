@@ -213,13 +213,13 @@ export function openInfo(
         key: scheduleCourse,
         indexProperty: 'course_id',
         enabled: {
-          text: 'Remove from My List',
+          text: 'Remove from bookmarks',
           onClick: () => {
             mod.sf.removeScheduleBookmark(scheduleCourse);
           },
         },
         disabled: {
-          text: 'Add to My List',
+          text: 'Add to bookmarks',
           onClick: () => {
             mod.sf.addScheduleBookmark(scheduleCourse);
           },

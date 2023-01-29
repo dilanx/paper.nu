@@ -99,13 +99,13 @@ function openInfo(props: ClassProps) {
         data: bookmarks.noCredit,
         key: course,
         enabled: {
-          text: 'Remove from My List',
+          text: 'Remove from bookmarks',
           onClick: () => {
             removeBookmark(course, false);
           },
         },
         disabled: {
-          text: 'Add to My List',
+          text: 'Add to bookmarks',
           onClick: () => {
             addBookmark(course, false);
           },
@@ -163,7 +163,7 @@ function Class(props: ClassProps) {
         className={`rounded-lg bg-opacity-60 p-2 bg-${color}-100 border-2
             dark:bg-gray-800 border-${color}-300 compact:py-05 group w-full transform overflow-visible border-opacity-60
             text-left transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md compact:px-2 ${
-              isDragging ? 'cursor-grab' : 'cursor-pointer'
+              isDragging ? 'cursor-grab' : 'cursor-default'
             }`}
         onClick={() => openInfo(props)}
       >

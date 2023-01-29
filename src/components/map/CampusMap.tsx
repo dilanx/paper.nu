@@ -138,7 +138,7 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
                         ? 'bg-emerald-400 hover:bg-emerald-500 active:bg-emerald-600'
                         : 'bg-gray-600 hover:bg-gray-500 active:bg-gray-400'
                     }
-                      group relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
+                      group relative inline-flex h-7 w-12 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
                   >
                     <span
                       aria-hidden="true"
@@ -169,7 +169,7 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
                       <Fragment key={`map-list-${i}`}>
                         {sections.map((section, j) => (
                           <div
-                            className="flex w-full cursor-pointer gap-2 text-right text-sm font-medium text-gray-500 hover:text-black dark:text-gray-300 dark:hover:text-white"
+                            className="flex w-full cursor-default gap-2 text-right text-sm font-medium text-gray-500 hover:text-black dark:text-gray-300 dark:hover:text-white"
                             key={`map-list-${i}-${j}`}
                             onMouseEnter={() => setFlyPosition(location)}
                             onMouseLeave={() => setFlyPosition(undefined)}

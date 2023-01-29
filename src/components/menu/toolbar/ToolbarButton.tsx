@@ -32,7 +32,7 @@ function ToolbarButton({
              dark:hover:bg-gray-700  dark:active:bg-gray-600 
             ${
               selected
-                ? 'text-red-500'
+                ? 'text-pink-500'
                 : 'text-gray-600 hover:text-gray-800 active:text-gray-800 dark:text-gray-300 dark:hover:text-gray-50 dark:active:text-gray-50'
             }
             `

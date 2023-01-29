@@ -53,8 +53,8 @@ function SearchClass(props: SearchClassProps) {
       ref={drag}
       className={`rounded-lg bg-opacity-60 p-2 bg-${props.color}-100 rounded-lg
             border-2 dark:bg-gray-800 border-${props.color}-300 group m-4
-            transform cursor-pointer border-opacity-60 transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md ${
-              isDragging ? 'cursor-grab ' : 'cursor-pointer'
+            transform border-opacity-60 transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md ${
+              isDragging ? 'cursor-grab ' : 'cursor-default'
             }`}
       onClick={() => {
         if (props.select) props.select(course);

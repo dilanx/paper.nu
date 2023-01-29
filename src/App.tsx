@@ -616,7 +616,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                   }}
                   latestTermId={this.state.latestTermId}
                 />
-                {tab === 'My List' && (
+                {tab === 'Bookmarks' && (
                   <Bookmarks
                     bookmarks={this.state.data.bookmarks}
                     schedule={this.state.schedule}
@@ -663,7 +663,6 @@ class App extends React.Component<{}, AppState> implements AppType {
                   }}
                   version={VERSION}
                   switches={switches}
-                  f2={this.state.f2}
                 />
               </div>
 
@@ -686,6 +685,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                   }}
                   switches={switches}
                   loading={this.state.loadingLogin}
+                  f2={this.state.f2}
                 />
                 <AnimatePresence mode="wait">
                   {switches.get.mode === Mode.PLAN ? (

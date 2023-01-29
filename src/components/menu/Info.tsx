@@ -7,15 +7,16 @@ interface InfoProps {
 
 function Info({ dark }: InfoProps) {
   return (
-    <div
-      className={`mt-4 mb-2 flex items-center justify-center gap-2 whitespace-nowrap px-4 text-center text-black transition-all duration-300 dark:bg-gray-800 dark:text-white`}
+    <button
+      className="mt-4 mb-2 flex flex-col items-center justify-center whitespace-nowrap px-4
+        text-center text-black transition-all duration-300 dark:bg-gray-800 dark:text-white"
     >
       <img
         src={dark ? paperWhite : paperBlack}
         alt="paper.nu"
         className="h-[52px]"
       />
-    </div>
+    </button>
   );
 }
 

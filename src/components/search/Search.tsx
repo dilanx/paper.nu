@@ -609,7 +609,7 @@ class Search extends React.Component<SearchProps, SearchState> {
             />
             <div className="py-2">
               <p className="p-2 text-center text-sm font-bold text-gray-500">
-                MY LIST
+                BOOKMARKS
               </p>
               <button
                 className="mx-auto my-2 block w-4/5 rounded-md bg-indigo-500 p-0.5 font-medium text-white opacity-100 shadow-sm hover:opacity-60"

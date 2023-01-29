@@ -26,6 +26,7 @@ interface TabBarButtonProps {
   disableClick?: boolean;
   tooltipBelow?: boolean;
   children?: ReactNode;
+  alwaysShowDisplay?: boolean;
 }
 
 export function Tabs(props: TabBarProps) {
@@ -70,13 +71,13 @@ export function TabButton(props: TabBarButtonProps) {
   let color = props.color;
   return (
     <button
-      className={`px-2 py-1 ${
+      className={`flex-1 px-2 py-1 text-sm ${
         props.name === props.selected
           ? `bg-${color}-400 dark:bg-${color}-500 text-white`
           : `bg-white text-gray-500 dark:bg-gray-800 dark:text-gray-300
                     hover:bg-${color}-100 hover:text-${color}-600 dark:hover:text-${color}-400
                     ${props.name === 'Loading' ? 'cursor-not-allowed' : ''}`
-      } group flex items-center gap-1`}
+      } group flex flex-col items-center justify-center`}
       onClick={() => {
         if (props.disableClick) return;
         if (props.switchName) {
@@ -85,14 +86,19 @@ export function TabButton(props: TabBarButtonProps) {
       }}
     >
       {props.children}
-      <Tooltip
-        color={color}
-        className={`left-1/2 -translate-x-1/2 ${
-          props.tooltipBelow ? '-bottom-10' : '-top-10'
-        }`}
-      >
-        {props.display ?? props.name}
-      </Tooltip>
+      {props.alwaysShowDisplay && (
+        <p className="text-xs font-light">{props.display ?? props.name}</p>
+      )}
+      {!props.alwaysShowDisplay && (
+        <Tooltip
+          color={color}
+          className={`text-md left-1/2 -translate-x-1/2 ${
+            props.tooltipBelow ? '-bottom-10' : '-top-10'
+          }`}
+        >
+          {props.display ?? props.name}
+        </Tooltip>
+      )}
     </button>
   );
 }
