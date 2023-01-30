@@ -62,8 +62,8 @@ export const getAlertOptions = (
                 option.confirmation && confirmation[option.confirmation]
                   ? 'bg-red-500 dark:bg-red-500'
                   : 'bg-gray-600 dark:bg-gray-500'
-              } duration-150' m-1 w-full rounded-md p-2 text-sm
-                font-medium text-white opacity-100 shadow-md transition-all hover:opacity-75 active:opacity-60`}
+              } m-1 w-full rounded-md p-2 text-sm font-medium
+                text-white opacity-100 shadow-md transition-all duration-150 hover:opacity-75 active:opacity-60`}
               onClick={() => {
                 if (option.confirmation) {
                   if (!confirmation[option.confirmation]) {
