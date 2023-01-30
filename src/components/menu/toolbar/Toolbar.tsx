@@ -1,9 +1,8 @@
 import {
   ArrowRightOnRectangleIcon,
   ArrowTopRightOnSquareIcon,
-  CameraIcon,
   Cog6ToothIcon,
-  LinkIcon,
+  InformationCircleIcon,
   MapIcon,
   PencilSquareIcon,
   UserCircleIcon,
@@ -21,10 +20,9 @@ import {
 } from '../../../types/BaseTypes';
 import { PlanSpecialFunctions } from '../../../types/PlanTypes';
 import { ScheduleData } from '../../../types/ScheduleTypes';
-import { exportScheduleAsICS, getSections } from '../../../utility/Calendar';
+import { exportScheduleAsICS } from '../../../utility/Calendar';
 import { Mode } from '../../../utility/Constants';
 import { exportScheduleAsImage } from '../../../utility/Image';
-import Utility from '../../../utility/Utility';
 import Schedule from '../../schedule/Schedule';
 import exportMenu from './Export';
 import settingsMenu from './Settings';
@@ -40,6 +38,7 @@ interface ToolbarProps {
   switches: UserOptions;
   loading: boolean;
   f2: PlanSpecialFunctions;
+  openAboutMenu: () => void;
 }
 
 function Toolbar({
@@ -51,6 +50,7 @@ function Toolbar({
   switches,
   loading,
   f2,
+  openAboutMenu,
 }: ToolbarProps) {
   const [takeImage, setTakeImage] = useState(false);
 
@@ -176,6 +176,11 @@ function Toolbar({
               y,
               theme,
               items: [
+                {
+                  text: 'About Paper',
+                  icon: InformationCircleIcon,
+                  onClick: () => openAboutMenu(),
+                },
                 {
                   text: isSchedule ? 'Schedules' : 'Plans',
                   icon: isSchedule ? CalendarIcon : RectangleStackIcon,

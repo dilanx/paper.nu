@@ -3,13 +3,15 @@ import paperWhite from '../../assets/paper-full-white.png';
 
 interface InfoProps {
   dark?: boolean;
+  openAboutMenu: () => void;
 }
 
-function Info({ dark }: InfoProps) {
+function Info({ dark, openAboutMenu }: InfoProps) {
   return (
     <button
-      className="mt-4 mb-2 flex flex-col items-center justify-center whitespace-nowrap px-4
-        text-center text-black transition-all duration-300 dark:bg-gray-800 dark:text-white"
+      className="mt-4 mb-2 flex flex-col items-center justify-center rounded-lg px-4
+      transition-all duration-150 hover:bg-gray-100 active:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-600"
+      onClick={() => openAboutMenu()}
     >
       <img
         src={dark ? paperWhite : paperBlack}

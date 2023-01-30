@@ -48,7 +48,7 @@ function About({ switches, onClose }: AboutProps) {
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="relative inline-block w-full transform overflow-hidden rounded-lg bg-white p-8 text-left align-bottom text-black shadow-xl transition-all dark:bg-gray-700 dark:text-gray-300 sm:my-8 sm:max-w-lg sm:align-middle">
-                <div className="flex w-full flex-col items-center gap-2 dark:text-white">
+                <div className="flex w-full flex-col items-center gap-1 dark:text-white">
                   <img
                     src={dark ? paperWhite : paperBlack}
                     alt="paper.nu"
@@ -57,23 +57,29 @@ function About({ switches, onClose }: AboutProps) {
                   <p className="text-center font-light">
                     the ultimate Northwestern course planning tool
                   </p>
+                  <p className="text-center text-sm font-bold text-gray-600 dark:text-gray-400">
+                    VERSION {process.env.REACT_APP_VERSION}
+                  </p>
                 </div>
                 <div className="my-8 flex w-full flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4">
                   <AboutButton href="https://www.dilanxd.com/paper">
-                    Learn more
+                    Learn More
+                  </AboutButton>
+                  <AboutButton href="https://www.dilanxd.com/kb/?f=paper">
+                    Help Center
                   </AboutButton>
                   <AboutButton href="https://www.dilanxd.com/paper/changelog">
-                    Change log
+                    Change Log
                   </AboutButton>
                   <AboutButton href="https://github.com/dilanx/paper.nu">
-                    Source code
+                    Source Code
                   </AboutButton>
                 </div>
                 <div className="my-8 flex flex-col items-center gap-2 text-center text-sm font-light">
                   <p>designed and developed by</p>
                   <p className="text-lg font-medium">
                     <a
-                      className="text-black hover:opacity-50 dark:text-white"
+                      className="text-black underline-offset-2 hover:underline dark:text-white"
                       href="https://www.dilanxd.com"
                       target="_blank"
                       rel="noreferrer"
@@ -84,7 +90,7 @@ function About({ switches, onClose }: AboutProps) {
                   <p>in partnership with</p>
                   <p className="text-md font-medium">
                     <a
-                      className="text-black hover:opacity-50 dark:text-white"
+                      className="text-black underline-offset-2 hover:underline dark:text-white"
                       href="https://www.mccormick.northwestern.edu/computer-science/"
                       target="_blank"
                       rel="noreferrer"
@@ -94,7 +100,7 @@ function About({ switches, onClose }: AboutProps) {
                   </p>
                   <p className="text-md font-medium">
                     <a
-                      className="text-black hover:opacity-50 dark:text-white"
+                      className="text-black underline-offset-2 hover:underline dark:text-white"
                       href="https://www.registrar.northwestern.edu"
                       target="_blank"
                       rel="noreferrer"
@@ -104,7 +110,7 @@ function About({ switches, onClose }: AboutProps) {
                   </p>
                   <p className="text-md font-medium">
                     <a
-                      className="text-black hover:opacity-50 dark:text-white"
+                      className="text-black underline-offset-2 hover:underline dark:text-white"
                       href="https://www.it.northwestern.edu"
                       target="_blank"
                       rel="noreferrer"
@@ -127,7 +133,7 @@ function About({ switches, onClose }: AboutProps) {
                         <p>
                           by{' '}
                           <a
-                            className="underline underline-offset-4 hover:opacity-50"
+                            className="underline underline-offset-4 hover:opacity-75"
                             href="https://www.dilanxd.com"
                             target="_blank"
                             rel="noreferrer"
@@ -148,7 +154,7 @@ function About({ switches, onClose }: AboutProps) {
                         <p>
                           by{' '}
                           <a
-                            className="underline underline-offset-4 hover:opacity-50"
+                            className="underline underline-offset-4 hover:opacity-75"
                             href="https://github.com/Everthings"
                             target="_blank"
                             rel="noreferrer"
@@ -161,8 +167,29 @@ function About({ switches, onClose }: AboutProps) {
                   </div>
                 </div>
                 <div>
-                  <p className="text-center text-xs font-bold text-gray-600 dark:text-gray-400">
-                    PAPER.NU VERSION {process.env.REACT_APP_VERSION}
+                  <p className="text-center text-xs font-light">
+                    Because all user data connected to Paper is managed by a
+                    student and not the university itself, privacy rights
+                    afforded to students through{' '}
+                    <a
+                      className="underline underline-offset-2 hover:opacity-75"
+                      href="https://www.registrar.northwestern.edu/records/student-information-privacy/privacy-policy-ferpa.html"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      FERPA
+                    </a>{' '}
+                    do not apply here. Your Paper data is not affiliated in any
+                    way with your official student records. See the{' '}
+                    <a
+                      className="underline underline-offset-2 hover:opacity-75"
+                      href="https://www.dilanxd.com/privacy/"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      privacy policy
+                    </a>{' '}
+                    to learn how your data is used.
                   </p>
                 </div>
                 <button

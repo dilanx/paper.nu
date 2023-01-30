@@ -552,7 +552,10 @@ class App extends React.Component<{}, AppState> implements AppType {
 
             <div className="grid grid-cols-1 bg-white dark:bg-gray-800 lg:grid-cols-8">
               <div className="col-span-2 flex h-192 flex-col px-4 md:h-screen">
-                <Info dark={darkMode} />
+                <Info
+                  dark={darkMode}
+                  openAboutMenu={() => this.setState({ about: true })}
+                />
                 <ModeSwitch
                   switches={switches}
                   changeMode={(mode) => {
@@ -657,7 +660,6 @@ class App extends React.Component<{}, AppState> implements AppType {
                   />
                 )}
                 <Taskbar
-                  openAboutMenu={() => this.setState({ about: true })}
                   alert={(alertData) => {
                     this.showAlert(alertData);
                   }}
@@ -686,6 +688,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                   switches={switches}
                   loading={this.state.loadingLogin}
                   f2={this.state.f2}
+                  openAboutMenu={() => this.setState({ about: true })}
                 />
                 <AnimatePresence mode="wait">
                   {switches.get.mode === Mode.PLAN ? (
