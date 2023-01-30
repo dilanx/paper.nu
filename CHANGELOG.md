@@ -13,13 +13,20 @@ _2023-01-XX_
   - Buttons from the old utility bar have been moved to the toolbar.
   - Some buttons from the taskbar have been moved to the toolbar.
   - The active plan's or schedule's name is now displayed in the toolbar instead of the taskbar.
+- **Improved sharing!**
+  - You can now shorten a link to a plan or schedule by pressing `Export -> Share link -> SHORTEN LINK`.
+  - No need to share super long links to your plans or schedules anymore (especially plans because those links can get really long).
+  - These shortened links only link to the current version of the plan or schedule just like the long links.
+- The about menu is now accessible by clicking on the logo in the top left corner.
 - The account plans and schedules tab has been redesigned.
 - You can now press escape or click outside of the side card to close it.
 - You can now press enter to submit pop-up menus that contain a single text input.
-- The built-in feedback submission feature has been replaced with access to the knowledge base and external feedback submission system.
+- The built-in feedback submission feature has been replaced with access to the knowledge base and external feedback submission system. Access the help center by pressing `Paper -> Help Center`.
 - "My List" has been renamed to "Bookmarks".
 - The taskbar now has less buttons and is more visible.
 - Clickable elements now use the main cursor by default.
+- Added a FERPA notice to the about menu as instructed by NUIT and the CS department. A link to Paper's relevant [privacy policy](https://www.dilanxd.com/privacy/) has also been added to the about menu.
+- Various UI changes and bug fixes.
 
 ### 2.1.3
 
