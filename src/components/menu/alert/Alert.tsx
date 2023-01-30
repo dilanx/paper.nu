@@ -1,5 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useRef, useState } from 'react';
+import { SpinnerCircularFixed } from 'spinners-react';
 import {
   AlertActionData,
   AlertConfirmationState,
@@ -31,6 +32,7 @@ export default function Alert({
   onConfirm,
   onClose,
 }: AlertProps) {
+  const darkMode = switches.get.dark;
   const [isOpen, setIsOpen] = useState(true);
   const [confirmation, setConfirmation] = useState<AlertConfirmationState>({});
   const [textValue, setTextValue] = useState<string | undefined>(
@@ -130,7 +132,7 @@ export default function Alert({
       <Dialog
         as="div"
         initialFocus={initialFocus}
-        className={`${switches.get.dark ? 'dark' : ''} relative z-40`}
+        className={`${darkMode ? 'dark' : ''} relative z-40`}
         onClose={() => close()}
       >
         <Transition.Child
@@ -254,7 +256,7 @@ export default function Alert({
                                   data.textView.update.disabled ||
                                   textViewStatus !== 'none'
                                 }
-                                className="rounded-md border border-gray-300 bg-white px-4 py-0.5 text-sm
+                                className="relative rounded-md border border-gray-300 bg-white px-4 py-0.5 text-sm
                                 font-bold text-gray-700 shadow-sm hover:bg-gray-100 active:bg-gray-200
                                 active:outline-none disabled:bg-gray-50 disabled:text-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-600 dark:active:bg-gray-500
                                 dark:disabled:bg-gray-800 dark:disabled:text-gray-600"
@@ -291,6 +293,24 @@ export default function Alert({
                                     ? 'ERROR'
                                     : data.textView.update.text}
                                 </p>
+                                {textViewStatus === 'loading' && (
+                                  <SpinnerCircularFixed
+                                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                                    size={20}
+                                    thickness={160}
+                                    speed={200}
+                                    color={
+                                      darkMode
+                                        ? 'rgb(212, 212, 212)'
+                                        : 'rgb(115, 115, 115)'
+                                    }
+                                    secondaryColor={
+                                      darkMode
+                                        ? 'rgb(64, 64, 64)'
+                                        : 'rgba(245, 245, 245)'
+                                    }
+                                  />
+                                )}
                               </button>
                             </div>
                           )}
