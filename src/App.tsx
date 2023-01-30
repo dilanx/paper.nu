@@ -39,7 +39,7 @@ import Alert from './components/menu/alert/Alert';
 import Info from './components/menu/Info';
 import ModeSwitch from './components/menu/ModeSwitch';
 import SideCard from './components/menu/side-card/SideCard';
-import Taskbar from './components/menu/Taskbar';
+import Taskbar from './components/menu/Taskbara';
 import Content from './components/plan/Content';
 import CampusMap from './components/map/CampusMap';
 import Schedule from './components/schedule/Schedule';
