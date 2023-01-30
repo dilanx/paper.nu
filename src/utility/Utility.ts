@@ -245,7 +245,9 @@ let Utility = {
       cancelButton: 'Close',
       color: 'red',
       icon: ExclamationTriangleIcon,
-      textView: error + ' - ' + from,
+      textView: {
+        text: error + ' - ' + from,
+      },
       action: () => {
         window.open('https://dilan.statuspage.io', '_blank');
       },

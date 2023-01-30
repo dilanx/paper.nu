@@ -16,7 +16,7 @@ import {
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import { Mode } from '../../utility/Constants';
-import PlanError from '../../utility/PlanError';
+import PaperError from '../../utility/PaperError';
 import Utility from '../../utility/Utility';
 import AccountPlan from './AccountPlan';
 import AccountPlanMessage from './AccountPlanMessage';
@@ -94,13 +94,13 @@ class AccountPlans extends React.Component<
                 loggedIn: true,
               });
             })
-            .catch((error: PlanError) => {
+            .catch((error: PaperError) => {
               this.props.alert(
                 Utility.errorAlert('account_get_plans', error.message)
               );
             });
         })
-        .catch((error: PlanError) => {
+        .catch((error: PaperError) => {
           this.props.alert(
             Utility.errorAlert('account_get_plans', error.message)
           );
@@ -125,7 +125,7 @@ class AccountPlans extends React.Component<
         matchError: 'Alphanumeric, hyphens and spaces, 1-24 chars',
         focusByDefault: true,
       },
-      action: (name) => {
+      action: ({ inputText: name }) => {
         if (!name) {
           self.props.alert(
             Utility.errorAlert(`account_create_${t}`, 'No Name')
@@ -151,7 +151,7 @@ class AccountPlans extends React.Component<
               }
               return `Created ${t}: ` + name.toUpperCase();
             },
-            error: (error: PlanError) => {
+            error: (error: PaperError) => {
               self.props.alert(
                 Utility.errorAlert(`account_create_${t}`, error.message)
               );
@@ -181,7 +181,7 @@ class AccountPlans extends React.Component<
         focusByDefault: true,
         defaultValue: name,
       },
-      action: (newName) => {
+      action: ({ inputText: newName }) => {
         if (!newName) {
           self.props.alert(Utility.errorAlert(`account_edit_${t}`, 'No Name'));
           return;
@@ -207,7 +207,7 @@ class AccountPlans extends React.Component<
               }
               return `Renamed ${name.toUpperCase()} to ${newName.toUpperCase()}`;
             },
-            error: (error: PlanError) => {
+            error: (error: PaperError) => {
               self.props.alert(
                 Utility.errorAlert(`account_edit_${t}`, error.message)
               );
@@ -260,7 +260,7 @@ class AccountPlans extends React.Component<
                 return 'Deleted plan: ' + name;
               }
             },
-            error: (error: PlanError) => {
+            error: (error: PaperError) => {
               self.props.alert(
                 Utility.errorAlert(`account_delete_${t}`, error.message)
               );

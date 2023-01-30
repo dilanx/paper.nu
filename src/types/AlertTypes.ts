@@ -115,6 +115,11 @@ export interface SelectMenuOption {
   label?: string;
 }
 
+export interface AlertActionData {
+  inputText?: string;
+  textViewValue?: string;
+}
+
 export interface AlertData {
   icon: IconElement;
   title: string;
@@ -129,7 +134,15 @@ export interface AlertData {
     tabs: AlertDataTab[];
   };
   editButtons?: AlertDataEditButton[];
-  textView?: string;
+  textView?: {
+    text: string;
+    update?: {
+      text: string;
+      disabled: boolean;
+      fn: () => Promise<string>;
+      afterUpdate?: string;
+    };
+  };
   textInput?: {
     placeholder?: string;
     match?: RegExp;
@@ -151,7 +164,7 @@ export interface AlertData {
   color: Color;
   cancelButton?: string;
   notice?: string;
-  action?: (value?: string) => void;
+  action?: (data: AlertActionData) => void;
 }
 
 export interface Alert {

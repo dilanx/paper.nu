@@ -9,7 +9,7 @@ import { Alert } from '../types/AlertTypes';
 import { AppType, UserOptions } from '../types/BaseTypes';
 import { PlanData } from '../types/PlanTypes';
 import { ScheduleData } from '../types/ScheduleTypes';
-import PlanError from '../utility/PlanError';
+import PaperError from '../utility/PaperError';
 import Utility from '../utility/Utility';
 var d = debug('app:account-mod');
 
@@ -86,7 +86,7 @@ function activate(
         confirmNonAccountOverwrite
       );
     })
-    .catch((error: PlanError) => {
+    .catch((error: PaperError) => {
       app.showAlert(
         Utility.errorAlert(`account_activate_${errText}`, error.message)
       );

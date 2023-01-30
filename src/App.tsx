@@ -66,7 +66,7 @@ import {
 import { SearchModificationFunctions } from './types/SearchTypes';
 import { SideCardData } from './types/SideCardTypes';
 import { Mode } from './utility/Constants';
-import PlanError from './utility/PlanError';
+import PaperError from './utility/PaperError';
 import Utility from './utility/Utility';
 import About from './components/menu/about/About';
 import { getTermName } from './DataManager';
@@ -360,7 +360,7 @@ class App extends React.Component<{}, AppState> implements AppType {
           }
         }
       )
-      .catch((error: PlanError) => {
+      .catch((error: PaperError) => {
         this.showAlert(Utility.errorAlert('initialization', error.message));
       })
       .finally(() => {
@@ -480,10 +480,10 @@ class App extends React.Component<{}, AppState> implements AppType {
               <Alert
                 data={this.state.alertData}
                 switches={switches}
-                onConfirm={(inputText?: string) => {
+                onConfirm={(data) => {
                   let alertData = this.state.alertData;
                   if (alertData?.action) {
-                    alertData.action(inputText);
+                    alertData.action(data);
                   }
                 }}
                 onClose={() => {

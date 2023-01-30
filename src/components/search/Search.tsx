@@ -539,7 +539,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                           },
                           confirmButton: 'Change',
                           cancelButton: 'Cancel',
-                          action: (termId) => {
+                          action: ({ inputText: termId }) => {
                             if (termId) {
                               this.props.switchTerm(termId);
                             }

@@ -118,44 +118,47 @@ function Toolbar({
         >
           Notes
         </ToolbarButton>
-        {isSchedule && (
-          <ToolbarButton
-            icon={ArrowTopRightOnSquareIcon}
-            active={contextMenuData?.name === 'export'}
-            onClick={(x, y) => {
-              contextMenu(
-                exportMenu({
-                  x,
-                  y,
-                  theme,
-                  schedule,
-                  alert,
-                  actions: {
-                    link() {
-                      navigator.clipboard.writeText(window.location.href);
-                      toast.success('URL copied to clipboard');
-                    },
-                    image() {
-                      setTakeImage(true);
-                    },
-                    calendar(validSections) {
-                      toast.promise(exportScheduleAsICS(validSections), {
-                        loading: 'Exporting schedule...',
-                        success: 'Exported schedule',
-                        error: (res) => {
-                          console.error(res);
-                          return 'Failed to export schedule';
-                        },
-                      });
-                    },
+
+        <ToolbarButton
+          icon={ArrowTopRightOnSquareIcon}
+          active={contextMenuData?.name === 'export'}
+          onClick={(x, y) => {
+            contextMenu(
+              exportMenu({
+                x,
+                y,
+                theme,
+                schedule: isSchedule ? schedule : undefined,
+                alert,
+                actions: {
+                  link(text) {
+                    if (!text) {
+                      toast.error('Unable to copy URL');
+                      return;
+                    }
+                    navigator.clipboard.writeText(text);
+                    toast.success('URL copied to clipboard');
                   },
-                })
-              );
-            }}
-          >
-            Export
-          </ToolbarButton>
-        )}
+                  image() {
+                    setTakeImage(true);
+                  },
+                  calendar(validSections) {
+                    toast.promise(exportScheduleAsICS(validSections), {
+                      loading: 'Exporting schedule...',
+                      success: 'Exported schedule',
+                      error: (res) => {
+                        console.error(res);
+                        return 'Failed to export schedule';
+                      },
+                    });
+                  },
+                },
+              })
+            );
+          }}
+        >
+          Export
+        </ToolbarButton>
         <ToolbarButton
           icon={Cog6ToothIcon}
           onClick={() => alert(settingsMenu(f2))}

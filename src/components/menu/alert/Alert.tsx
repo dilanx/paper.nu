@@ -1,6 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import {
+  AlertActionData,
   AlertConfirmationState,
   AlertData,
   AlertFormResponse,
@@ -18,9 +19,11 @@ import { getAlertOptions } from './AlertOptions';
 interface AlertProps {
   data: AlertData;
   switches: UserOptions;
-  onConfirm: (inputText?: string) => void;
+  onConfirm: (data: AlertActionData) => void;
   onClose: () => void;
 }
+
+type TextViewStatus = 'none' | 'loading' | 'updated' | 'error';
 
 export default function Alert({
   data,
@@ -33,6 +36,9 @@ export default function Alert({
   const [textValue, setTextValue] = useState<string | undefined>(
     data.selectMenu?.defaultValue || data.textInput?.defaultValue
   );
+  const [[textViewData, textViewStatus], setTextViewData] = useState<
+    [string | undefined, TextViewStatus]
+  >([data.textView?.text, 'none']);
   const [badInput, setBadInput] = useState(false);
 
   useEffect(() => {
@@ -68,7 +74,7 @@ export default function Alert({
 
   function confirm() {
     setIsOpen(false);
-    onConfirm(textValue);
+    onConfirm({ inputText: textValue, textViewValue: textViewData });
   }
 
   const extraList = getAlertExtras(data.extras);
@@ -239,8 +245,55 @@ export default function Alert({
                                             whitespace-nowrap rounded-md bg-gray-200 p-1 px-4 font-mono text-sm text-black dark:bg-gray-800
                                             dark:text-white md:w-96"
                           >
-                            {data.textView}
+                            {textViewData}
                           </p>
+                          {data.textView.update && (
+                            <div className="mt-2 flex justify-end md:w-96">
+                              <button
+                                disabled={
+                                  data.textView.update.disabled ||
+                                  textViewStatus !== 'none'
+                                }
+                                className="rounded-md border border-gray-300 bg-white px-4 py-0.5 text-sm
+                                font-bold text-gray-700 shadow-sm hover:bg-gray-100 active:bg-gray-200
+                                active:outline-none disabled:bg-gray-50 disabled:text-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-600 dark:active:bg-gray-500
+                                dark:disabled:bg-gray-800 dark:disabled:text-gray-600"
+                                onClick={() => {
+                                  if (
+                                    !data.textView?.update ||
+                                    textViewStatus !== 'none'
+                                  ) {
+                                    return;
+                                  }
+                                  setTextViewData([textViewData, 'loading']);
+                                  data.textView.update
+                                    .fn()
+                                    .then((val) => {
+                                      setTextViewData([
+                                        val,
+                                        data.textView?.update?.afterUpdate
+                                          ? 'updated'
+                                          : 'none',
+                                      ]);
+                                    })
+                                    .catch((err) => {
+                                      setTextViewData([
+                                        `Something went wrong: ${err.message}`,
+                                        'error',
+                                      ]);
+                                    });
+                                }}
+                              >
+                                <p className="tracking-wide">
+                                  {textViewStatus === 'updated'
+                                    ? data.textView.update.afterUpdate || 'Done'
+                                    : textViewStatus === 'error'
+                                    ? 'ERROR'
+                                    : data.textView.update.text}
+                                </p>
+                              </button>
+                            </div>
+                          )}
                         </div>
                       )}
                       {data.selectMenu && (

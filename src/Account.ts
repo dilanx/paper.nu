@@ -1,4 +1,4 @@
-import PlanError from './utility/PlanError';
+import PaperError from './utility/PaperError';
 import {
   Document,
   AuthenticationResponseToken,
@@ -137,16 +137,17 @@ async function operation<T>(
 
     let res = await response.json();
     if (!response.ok) {
-      throw new PlanError(res.error as string);
+      throw new PaperError(res.error as string);
     }
 
     return res as T;
   } catch (error) {
-    throw new PlanError('Connection Failure');
+    throw new PaperError('Connection Failure');
   }
 }
 
 let Account = {
+  SERVER,
   isLoggedIn: () => {
     return !!localStorage.getItem('t');
   },
