@@ -26,6 +26,7 @@ _2023-01-XX_
 - The taskbar now has less buttons and is more visible.
 - Clickable elements now use the main cursor by default.
 - Added a FERPA notice to the about menu as instructed by NUIT and the CS department. A link to Paper's relevant [privacy policy](https://www.dilanxd.com/privacy/) has also been added to the about menu.
+- Updated the change log preview UI.
 - Various UI changes and bug fixes.
 
 ### 2.1.3

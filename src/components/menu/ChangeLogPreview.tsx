@@ -57,20 +57,18 @@ function ChangeLogPreview({
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all dark:bg-gray-700 sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
-                <div className="flex w-full flex-col items-center gap-2 p-8 dark:text-white">
+                <div className="flex w-full flex-col items-center p-8 dark:text-white">
                   <img
                     src={dark ? paperWhite : paperBlack}
                     alt="paper.nu"
-                    className="h-[40px]"
+                    className="h-[64px]"
                     ref={initialFocus}
                   />
-                  <p className="text-center text-xl font-medium">
-                    What's new in version {version}
+                  <p className="my-4 text-center text-lg font-light text-gray-600 dark:text-gray-300">
+                    the ultimate Northwestern course planning tool
                   </p>
-                  <p className="mb-4 text-center text-sm font-light text-gray-600 dark:text-gray-300">
-                    This version brings a combination of things I wanted to add
-                    and features that you all requested. Here are some of the
-                    big ones. Check it out!
+                  <p className="text-center text-sm font-bold tracking-wide">
+                    WHAT'S NEW IN VERSION {version}
                   </p>
                   <ul className="w-full list-disc">
                     {info.items.map(({ title, description }, i) => (
