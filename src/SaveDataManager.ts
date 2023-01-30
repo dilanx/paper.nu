@@ -34,7 +34,8 @@ function matchAccountId(accountData: Document[], content: string) {
 let SaveDataManager = {
   load: async (
     params: URLSearchParams | undefined,
-    switches: UserOptions
+    switches: UserOptions,
+    hash?: string
   ): Promise<LoadResponse<PlanData | ScheduleData>> => {
     let activeId: string | undefined = undefined;
     let originalDataString: string = '';
@@ -48,6 +49,37 @@ let SaveDataManager = {
       accountPlans = accountInit.plans;
       accountSchedules = accountInit.schedules;
       activeId = 'None';
+    }
+
+    if (hash) {
+      d('hash short code %s detected, trying to load', hash);
+      if (hash.length !== 13) {
+        d('hash is not 13 chars (# + 12), not a short code');
+        return {
+          mode: Mode.PLAN,
+          data: 'malformed',
+          originalDataString,
+          method: 'URL',
+          latestTermId,
+        };
+      }
+      d('fetching content for short code from server');
+      const scContentResponse = await fetch(
+        `${Account.SERVER}/paper/shorten/${hash.slice(1)}`
+      );
+      if (!scContentResponse.ok) {
+        d('failed to fetch short code with error %s', scContentResponse.status);
+        return {
+          mode: Mode.PLAN,
+          data: 'malformed',
+          originalDataString,
+          method: 'URL',
+          latestTermId,
+        };
+      }
+      const scContent = await scContentResponse.json();
+      params = new URLSearchParams(scContent.content);
+      d('fetched content for short code and loaded it into params');
     }
 
     if (params) {
@@ -273,6 +305,13 @@ let SaveDataManager = {
         switches[switchId] = val;
       }
     }
+
+    if (switches.debug) {
+      debug.enable('*');
+    } else {
+      debug.disable();
+    }
+
     return {
       set: setSwitchFunction,
       get: switches,

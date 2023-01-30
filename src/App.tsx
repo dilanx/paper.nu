@@ -208,6 +208,7 @@ class App extends React.Component<{}, AppState> implements AppType {
   componentDidMount() {
     this.setState({ loadingLogin: true });
     let params = new URLSearchParams(window.location.search);
+    let hash = window.location.hash;
 
     let code = params.get('code');
     params.delete('code');
@@ -258,20 +259,32 @@ class App extends React.Component<{}, AppState> implements AppType {
           this.setSwitch('tab', 'Plans');
           this.setSwitch('active_plan_id', 'None', true);
         }
-        this.initialize(params, () => {
-          this.setState({ loadingLogin: false });
-        });
+        this.initialize(
+          params,
+          () => {
+            this.setState({ loadingLogin: false });
+          },
+          hash
+        );
       });
     } else {
-      this.initialize(params, () => {
-        this.setState({ loadingLogin: false });
-      });
+      this.initialize(
+        params,
+        () => {
+          this.setState({ loadingLogin: false });
+        },
+        hash
+      );
     }
   }
 
-  initialize(params: URLSearchParams | undefined, callback: () => void) {
+  initialize(
+    params: URLSearchParams | undefined,
+    callback: () => void,
+    hash?: string
+  ) {
     d('initializing');
-    SaveDataManager.load(params, this.state.switches)
+    SaveDataManager.load(params, this.state.switches, hash)
       .then(
         ({
           mode,
