@@ -2,12 +2,13 @@
 
 ### 2.2.0
 
-_2023-01-XX_
+_2023-01-30_
 
 - **Notes!**
   - Add notes to plans or schedules saved to your account.
   - Notes sync across your devices but are not visible by others when sharing a link.
   - Drag the little notes window anywhere on the site.
+  - Notes are limited to 2000 characters per plan or schedule.
 - **Toolbar!**
   - Account stuff can be accessed from the toolbar (sign in, sign out, account settings, etc.).
   - Buttons from the old utility bar have been moved to the toolbar.

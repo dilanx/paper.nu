@@ -3,24 +3,19 @@ import { ChangeLogPreviewInformation } from '../types/BaseTypes';
 const clp: ChangeLogPreviewInformation = {
   items: [
     {
-      title: 'Filter schedule search results by distro.',
+      title: 'Add notes to plans and schedules.',
       description:
-        'A distribution area filter has been added as an option when searching for courses in schedule view. Click on the filter button (the funnel) below the search bar to select distros to filter by.',
+        "You can now add notes to plans and schedules that are saved to your account to keep track of any extra information you want. Notes will sync across your devices but won't be visible by others when sharing a link. You can even drag the little notes window to wherever you want on the page!",
     },
     {
-      title: 'More course section info is now available.',
+      title: 'Enhanced user interface.',
       description:
-        'View information that instructors have added for a specific course section right from within Paper. This includes topics, overviews, class materials, and more. You can also view section info from within search results rather than having to add the course to your schedule first.',
+        'Many buttons and features are now more visible and easier to access. Find access to the campus map, notes, sharing and exporting options, settings, and account stuff on the toolbar at the top, and easily switch between tabs on the sidebar. Access the about menu by clicking on the Paper logo in the top left corner.',
     },
     {
-      title: 'The minimap is now enabled by default.',
+      title: 'Improved link sharing.',
       description:
-        'I guess the vertical bar of buttons on the left side of the schedule was too easy to miss because a lot of people thought the map was removed even though it has still been available (the minimap is disabled by default). The minimap is now enabled by default (but it can still be disabled if you prefer more space for search results). The button bar is also now more opaque when not hovered over so you can see it more easily.',
-    },
-    {
-      title: 'Rename account plans and schedules',
-      description:
-        'Use the pencil button next to the delete button on any of your saved plans or schedules to rename them.',
+        'You can now shorten a link to a plan or schedule (Export -> Share link -> SHORTEN LINK). No need to share super long links anymore. Just like the long links, the short links only link to the current version of the plan or schedule and will not update if you make changes.',
     },
   ],
 };
