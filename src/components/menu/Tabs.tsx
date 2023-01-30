@@ -87,7 +87,7 @@ export function TabButton(props: TabBarButtonProps) {
     >
       {props.children}
       {props.alwaysShowDisplay && (
-        <p className="text-xs font-light">{props.display ?? props.name}</p>
+        <p className="text-xs">{props.display ?? props.name}</p>
       )}
       {!props.alwaysShowDisplay && (
         <Tooltip
