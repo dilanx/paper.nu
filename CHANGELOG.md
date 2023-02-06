@@ -1,5 +1,11 @@
 # Paper Change Log
 
+### 2.2.1
+
+_2023-02-06_
+
+- If a schedule term newer than the currently active one is available, a clickable message will appear in the top left corner.
+
 ### 2.2.0
 
 _2023-01-30_

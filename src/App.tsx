@@ -458,11 +458,29 @@ class App extends React.Component<{}, AppState> implements AppType {
     this.setState({ scheduleInteractions });
   }
 
+  switchTerm(termId: string) {
+    this.closeSideCard();
+    this.setState({ loadingLogin: true });
+    this.initialize(
+      new URLSearchParams({
+        t: termId,
+      }),
+      () => {
+        this.setState({ loadingLogin: false });
+      }
+    );
+  }
+
   render() {
     const switches = this.state.switches;
     const tab = switches.get.tab;
     const darkMode = switches.get.dark;
     const isSchedule = switches.get.mode === Mode.SCHEDULE;
+
+    const newerTermAvailable =
+      isSchedule &&
+      this.state.latestTermId !== undefined &&
+      this.state.latestTermId !== this.state.schedule.termId;
 
     return (
       <DndProvider backend={HTML5Backend}>
@@ -568,6 +586,10 @@ class App extends React.Component<{}, AppState> implements AppType {
                 <Info
                   dark={darkMode}
                   openAboutMenu={() => this.setState({ about: true })}
+                  newerTermAvailable={newerTermAvailable}
+                  alert={(alertData) => this.showAlert(alertData)}
+                  currentTermId={this.state.schedule.termId}
+                  switchTerm={(termId) => this.switchTerm(termId)}
                 />
                 <ModeSwitch
                   switches={switches}
@@ -618,18 +640,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                         }
                       : undefined
                   }
-                  switchTerm={(termId) => {
-                    this.closeSideCard();
-                    this.setState({ loadingLogin: true });
-                    this.initialize(
-                      new URLSearchParams({
-                        t: termId,
-                      }),
-                      () => {
-                        this.setState({ loadingLogin: false });
-                      }
-                    );
-                  }}
+                  switchTerm={(termId) => this.switchTerm(termId)}
                   latestTermId={this.state.latestTermId}
                 />
                 {tab === 'Bookmarks' && (

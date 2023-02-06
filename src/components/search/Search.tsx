@@ -16,7 +16,7 @@ import { SpinnerCircularFixed } from 'spinners-react';
 import { getTerms } from '../../DataManager';
 import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
-import { Alert } from '../../types/AlertTypes';
+import { Alert, AlertData } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {
   Course,
@@ -79,6 +79,31 @@ interface SearchState {
   shortcut?: SearchShortcut;
   forceDisplay: boolean;
   browseSchool?: string;
+}
+
+export function switchTermAlert(
+  switchTerm: (termId: string) => void,
+  currentTermId?: string
+): AlertData {
+  return {
+    title: 'Change term',
+    icon: CalendarDaysIcon,
+    message:
+      'Switching terms will allow you to create a schedule for a different quarter. This will clear everything on your current schedule.',
+    color: 'sky',
+    selectMenu: {
+      options:
+        getTerms()?.sort((a, b) => parseInt(b.value) - parseInt(a.value)) || [],
+      defaultValue: currentTermId,
+    },
+    confirmButton: 'Change',
+    cancelButton: 'Cancel',
+    action: ({ inputText: termId }) => {
+      if (termId) {
+        switchTerm(termId);
+      }
+    },
+  };
 }
 
 class Search extends React.Component<SearchProps, SearchState> {
@@ -524,27 +549,12 @@ class Search extends React.Component<SearchProps, SearchState> {
                   {appMode === Mode.SCHEDULE && (
                     <SearchButton
                       action={() => {
-                        this.props.alert({
-                          title: 'Change term',
-                          icon: CalendarDaysIcon,
-                          message:
-                            'Switching terms will allow you to create a schedule for a different quarter. This will clear everything on your current schedule.',
-                          color: 'sky',
-                          selectMenu: {
-                            options:
-                              getTerms()?.sort(
-                                (a, b) => parseInt(b.value) - parseInt(a.value)
-                              ) || [],
-                            defaultValue: this.props.term?.id,
-                          },
-                          confirmButton: 'Change',
-                          cancelButton: 'Cancel',
-                          action: ({ inputText: termId }) => {
-                            if (termId) {
-                              this.props.switchTerm(termId);
-                            }
-                          },
-                        });
+                        this.props.alert(
+                          switchTermAlert(
+                            this.props.switchTerm,
+                            this.props.term?.id
+                          )
+                        );
                       }}
                       tooltip="Change term"
                       ring={newerTermAvailable}
