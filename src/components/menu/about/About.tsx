@@ -5,8 +5,61 @@ import planImage from '../../../assets/plan.svg';
 import saladImage from '../../../assets/salad.png';
 import paperBlack from '../../../assets/paper-full-vertical-black.png';
 import paperWhite from '../../../assets/paper-full-vertical-white.png';
-import { UserOptions } from '../../../types/BaseTypes';
+import { InfoSetData, UserOptions } from '../../../types/BaseTypes';
 import AboutButton from './AboutButton';
+import InfoSet from './InfoSet';
+import Account from '../../../Account';
+import localforage from 'localforage';
+import { PlanDataCache } from '../../../types/PlanTypes';
+import Utility from '../../../utility/Utility';
+import { ScheduleDataCache } from '../../../types/ScheduleTypes';
+
+function getLocalTime<T>(location: string, key: keyof T) {
+  return async () => {
+    const data = await localforage.getItem<T>(location);
+    if (!data) {
+      return 'unused';
+    }
+    return Utility.getDateAsVersion(data[key] as string | number);
+  };
+}
+
+const versions: InfoSetData = [
+  ['App Version', process.env.REACT_APP_VERSION || 'unknown'],
+  [
+    'API Version',
+    async () => {
+      const response = await fetch(Account.SERVER + '/info');
+      const data = await response.json();
+      return data.version;
+    },
+  ],
+  ['Plan Cache Data Version', getLocalTime<PlanDataCache>('plan', 'updated')],
+  [
+    'Schedule Cache 0 Storage Version',
+    getLocalTime<ScheduleDataCache>('schedule0', 'cacheUpdated'),
+  ],
+  [
+    'Schedule Cache 0 Data Version',
+    getLocalTime<ScheduleDataCache>('schedule0', 'dataUpdated'),
+  ],
+  [
+    'Schedule Cache 1 Storage Version',
+    getLocalTime<ScheduleDataCache>('schedule1', 'cacheUpdated'),
+  ],
+  [
+    'Schedule Cache 1 Data Version',
+    getLocalTime<ScheduleDataCache>('schedule1', 'dataUpdated'),
+  ],
+  [
+    'Schedule Cache 2 Storage Version',
+    getLocalTime<ScheduleDataCache>('schedule2', 'cacheUpdated'),
+  ],
+  [
+    'Schedule Cache 2 Data Version',
+    getLocalTime<ScheduleDataCache>('schedule2', 'dataUpdated'),
+  ],
+];
 
 interface AboutProps {
   switches: UserOptions;
@@ -166,7 +219,7 @@ function About({ switches, onClose }: AboutProps) {
                     </div>
                   </div>
                 </div>
-                <div>
+                <div className="my-4">
                   <p className="text-center text-xs font-light">
                     Because all user data connected to Paper is managed by a
                     student and not the university itself, privacy rights
@@ -192,6 +245,7 @@ function About({ switches, onClose }: AboutProps) {
                     to learn how your data is used.
                   </p>
                 </div>
+                <InfoSet title="more information" data={versions} />
                 <button
                   className="absolute top-2 right-2"
                   onClick={() => setOpen(false)}

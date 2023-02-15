@@ -152,3 +152,7 @@ export interface ContextMenuItem {
 export interface ContextMenu {
   (contextMenuData: ContextMenuData): void;
 }
+
+export type InfoSetValFn = () => Promise<string>;
+export type InfoSetItem<T> = [string, T];
+export type InfoSetData<T = string | InfoSetValFn> = InfoSetItem<T>[];

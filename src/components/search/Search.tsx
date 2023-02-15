@@ -90,7 +90,7 @@ export function switchTermAlert(
     icon: CalendarDaysIcon,
     message:
       'Switching terms will allow you to create a schedule for a different quarter. This will clear everything on your current schedule.',
-    color: 'sky',
+    color: 'violet',
     selectMenu: {
       options:
         getTerms()?.sort((a, b) => parseInt(b.value) - parseInt(a.value)) || [],

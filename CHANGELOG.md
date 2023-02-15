@@ -1,5 +1,12 @@
 # Paper Change Log
 
+### 2.2.2
+
+_2023-02-14_
+
+- Internal information can now be viewed in the about menu.
+- Various UI changes, bug fixes, and enhancements.
+
 ### 2.2.1
 
 _2023-02-06_

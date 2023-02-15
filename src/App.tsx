@@ -147,6 +147,7 @@ class App extends React.Component<{}, AppState> implements AppType {
 
     const ff: SearchModificationFunctions = {
       set: (query, current) => {
+        this.setSwitch('tab', 'Search');
         this.setState({
           searchDefaults: {
             query,

@@ -1,7 +1,7 @@
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import { AlertData } from '../types/AlertTypes';
-import { Color } from '../types/BaseTypes';
+import { Color, InfoSetData } from '../types/BaseTypes';
 import { PlanErrorLocation } from '../types/ErrorTypes';
 import { ScheduleDataMap, ScheduleDate, Time } from '../types/ScheduleTypes';
 import { FilterBadgeName, FilterOptions } from '../types/SearchTypes';
@@ -402,6 +402,44 @@ let Utility = {
       const sp = value.split(',');
       if (sp.length > 0) return sp;
     }
+  },
+
+  getPlaceholderInfoSet: (data: InfoSetData): InfoSetData<string> => {
+    const newData: InfoSetData<string> = [];
+    for (const [k, v] of data) {
+      newData.push([k, typeof v === 'string' ? v : '-']);
+    }
+    return newData;
+  },
+  initializeInfoSet: async (
+    data: InfoSetData
+  ): Promise<InfoSetData<string>> => {
+    const newData: InfoSetData<string> = [];
+    for (const [k, v] of data) {
+      if (typeof v === 'string') {
+        newData.push([k, v]);
+        continue;
+      }
+
+      let res: string;
+      try {
+        res = await v();
+      } catch (e) {
+        res = 'error';
+      }
+      newData.push([k, res]);
+    }
+    return newData;
+  },
+  getDateAsVersion: (time: number | string) => {
+    let t = new Date(typeof time === 'string' ? parseInt(time) : time);
+    const d = t.getDate();
+    const m = t.getMonth() + 1;
+    const y = t.getFullYear();
+    const h = t.getHours();
+    const min = t.getMinutes();
+    const s = t.getSeconds();
+    return `${y}.${m}.${d}-${h}${min}${s}`;
   },
 };
 
