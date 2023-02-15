@@ -431,7 +431,8 @@ let Utility = {
     }
     return newData;
   },
-  getDateAsVersion: (time: number | string) => {
+
+  formatCacheVersion: (time: number | string, termId?: string) => {
     let t = new Date(typeof time === 'string' ? parseInt(time) : time);
     const d = t.getDate();
     const m = t.getMonth() + 1;
@@ -439,7 +440,7 @@ let Utility = {
     const h = t.getHours();
     const min = t.getMinutes();
     const s = t.getSeconds();
-    return `${y}.${m}.${d}-${h}${min}${s}`;
+    return `${termId ? `${termId}-` : ''}${y}.${m}.${d}-${h}${min}${s}`;
   },
 };
 

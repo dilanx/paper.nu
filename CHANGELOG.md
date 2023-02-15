@@ -1,5 +1,11 @@
 # Paper Change Log
 
+### 2.2.3
+
+_2023-02-14_
+
+- Updated cache version number formats.
+
 ### 2.2.2
 
 _2023-02-14_

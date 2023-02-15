@@ -16,11 +16,14 @@ import { ScheduleDataCache } from '../../../types/ScheduleTypes';
 
 function getLocalTime<T>(location: string, key: keyof T) {
   return async () => {
-    const data = await localforage.getItem<T>(location);
+    const data: any = await localforage.getItem<T>(location);
     if (!data) {
       return 'unused';
     }
-    return Utility.getDateAsVersion(data[key] as string | number);
+    return Utility.formatCacheVersion(
+      data[key] as string | number,
+      'termId' in data ? (data['termId'] as string) : undefined
+    );
   };
 }
 
