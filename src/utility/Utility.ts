@@ -440,7 +440,12 @@ let Utility = {
     const h = t.getHours();
     const min = t.getMinutes();
     const s = t.getSeconds();
-    return `${termId ? `${termId}-` : ''}${y}.${m}.${d}-${h}${min}${s}`;
+
+    const p = (n: number) => (n < 10 ? `0${n}` : `${n}`);
+
+    return `${termId ? `${termId}-` : ''}${y}.${p(m)}.${p(d)}-${p(h)}${p(
+      min
+    )}${p(s)}`;
   },
 };
 
