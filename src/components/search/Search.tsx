@@ -542,9 +542,8 @@ class Search extends React.Component<SearchProps, SearchState> {
                         cancelButton: 'Cancel',
                       });
                     }}
-                    tooltip="Edit filter"
                   >
-                    <FunnelIcon className="h-5 w-5" />
+                    Filter
                   </SearchButton>
                   {appMode === Mode.SCHEDULE && (
                     <SearchButton
