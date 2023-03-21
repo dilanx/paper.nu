@@ -29,7 +29,7 @@ interface ScheduleClassProps {
 function ScheduleClass(props: ScheduleClassProps) {
   const { swmp, interactions, sf, ff, switches, imageMode, split } = props;
   const { section, start_time, end_time } = swmp;
-  const { subject, number, title, instructors } = section;
+  const { subject, number, title, topic, instructors } = section;
   const color = ScheduleManager.getCourseColor(subject);
 
   const startDif = start_time.m / 60;
@@ -113,17 +113,13 @@ function ScheduleClass(props: ScheduleClassProps) {
               <>
                 {' '}
                 <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                  (
-                  {Utility.convertSectionComponent(
-                    section.component
-                  ).toUpperCase()}
-                  )
+                  ({section.component})
                 </span>
               </>
             )}
           </p>
-          <p className={`text-light m-0 text-xs text-black dark:text-white`}>
-            {title}
+          <p className="m-0 text-xs text-black dark:text-white">
+            {title + (topic ? `: ${topic}` : '')}
           </p>
           <p className="m-0 text-xs font-light text-gray-500 opacity-75 dark:text-gray-300">
             {instructorLastNames}

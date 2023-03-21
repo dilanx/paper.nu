@@ -2,7 +2,7 @@
 
 ### 2.3.0
 
-_2023-03-20_
+_2023-03-21_
 
 **General**
 
@@ -11,6 +11,7 @@ _2023-03-20_
 
 **Schedule**
 
+- Seminar courses and other courses with a topic now have that topic displayed.
 - Courses with multiple meeting patterns now have their other meeting patterns available on Paper.
 - The minimap is no longer visible when the window height is too low.
 

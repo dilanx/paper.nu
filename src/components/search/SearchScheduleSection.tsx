@@ -52,12 +52,12 @@ function SearchScheduleSection({
     const room = section.room[i];
     meetingPatterns.push(
       <div key={`sss-${section.section_id}-${i}`}>
-        <p className="text-sm font-medium">
+        <p className="text-sm font-normal">
           {meetingDays
             ? Utility.convertAllDaysToString(meetingDays)
             : 'no days'}
         </p>
-        <p className="text-md font-medium">
+        <p className="text-md font-normal">
           {startTime && endTime
             ? Utility.convertTime(startTime, true) +
               ' - ' +
@@ -105,6 +105,9 @@ function SearchScheduleSection({
         </p>
         <hr className="mx-2 border border-gray-400 opacity-50" />
         <div className="flex flex-col gap-4 py-4 text-center">
+          <p className="px-1 text-center text-sm font-medium">
+            {section.topic}
+          </p>
           {meetingPatterns}
           <p className="text-sm font-normal">
             {section.instructors?.map((i) => i.name).join(', ')}

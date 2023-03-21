@@ -53,7 +53,6 @@ export interface ReadUserOptions {
   debug?: boolean;
   schedule_warnings?: boolean;
   course_info_details?: string;
-  section_info_details?: string;
   minimap?: boolean;
   notes?: boolean;
   unsaved_notes?: boolean;

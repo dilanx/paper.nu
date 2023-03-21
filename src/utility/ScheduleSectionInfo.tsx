@@ -9,6 +9,7 @@ import {
   ListBulletIcon,
   MapPinIcon,
   PuzzlePieceIcon,
+  TagIcon,
   UserIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
@@ -39,6 +40,8 @@ function getDetails(
   alert?: Alert
 ): [IconElement, ReactNode] | undefined {
   switch (detail) {
+    case 'TOPIC':
+      return [TagIcon, section.topic];
     case 'SECTION NUMBER':
       return [HashtagIcon, section.section];
     case 'COMPONENT':
@@ -174,7 +177,8 @@ export function openInfo(
     section.section_id.split('-')[0]
   );
 
-  const items = switches.get.section_info_details?.split(',') ?? [
+  const items = [
+    'TOPIC',
     'SECTION NUMBER',
     'COMPONENT',
     'TIME SLOT',
