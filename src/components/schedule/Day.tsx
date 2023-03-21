@@ -4,7 +4,7 @@ import {
   ScheduleBookmarks,
   ScheduleInteractions,
   ScheduleModificationFunctions,
-  ValidScheduleSection,
+  SectionWithValidMeetingPattern,
 } from '../../types/ScheduleTypes';
 import { SearchModificationFunctions } from '../../types/SearchTypes';
 import { SideCard } from '../../types/SideCardTypes';
@@ -29,7 +29,7 @@ interface DayProps {
   index: number;
   start: number;
   end: number;
-  sections?: ValidScheduleSection[];
+  sections?: SectionWithValidMeetingPattern[];
   bookmarks: ScheduleBookmarks;
   alert?: Alert;
   sideCard?: SideCard;
@@ -48,9 +48,9 @@ function Day(props: DayProps) {
   const { hourAssignments, layoutMap } = getLayout(props.sections);
 
   for (let i = props.start + 1; i <= props.end; i++) {
-    const children = hourAssignments[i - 1]?.map((section) => (
+    const children = hourAssignments[i - 1]?.map((swmp) => (
       <ScheduleClass
-        section={section}
+        swmp={swmp}
         bookmarks={props.bookmarks}
         alert={props.alert}
         sideCard={props.sideCard}
@@ -59,8 +59,8 @@ function Day(props: DayProps) {
         ff={props.ff}
         switches={props.switches}
         imageMode={props.imageMode}
-        split={layoutMap[section.section_id]}
-        key={`day-${props.index}-${section.section_id}`}
+        split={layoutMap[swmp.section.section_id][swmp.index]}
+        key={`day-${props.index}-${swmp.section.section_id}-${swmp.index}`}
       />
     ));
 

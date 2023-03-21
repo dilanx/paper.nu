@@ -39,7 +39,7 @@ export function schedule(data: any): ScheduleCourse[] {
     subject: u,
     number: n,
     sections: s?.map(
-      ({ i, r, t, u, n, s, m, x, y, l, d, e, c, a, q, p, o }: any) => ({
+      ({ i, r, t, k, u, n, s, m, x, y, l, d, e, c, a, q, p, o }: any) => ({
         section_id: i,
         instructors: r?.map(({ n, p, a, o, b, u }: any) => ({
           name: n,
@@ -50,6 +50,7 @@ export function schedule(data: any): ScheduleCourse[] {
           url: u,
         })),
         title: t,
+        topic: k,
         subject: u,
         number: n,
         section: s,

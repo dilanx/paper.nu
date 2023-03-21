@@ -1,4 +1,5 @@
 import { ArrowsPointingOutIcon } from '@heroicons/react/24/outline';
+import { Fragment } from 'react';
 import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
 import ScheduleManager from '../../ScheduleManager';
 import { ScheduleSection } from '../../types/ScheduleTypes';
@@ -17,11 +18,14 @@ interface CampusMinimapProps {
 }
 
 function CampusMinimap({ expand, section }: CampusMinimapProps) {
-  const location = ScheduleManager.getLocation(section?.room);
-  const position: [number, number] = location
-    ? [location.lat, location.lon]
-    : DEFAULT_POSITION;
+  const positions: ([number, number] | null)[] | undefined = section?.room?.map(
+    (room) => {
+      const loc = ScheduleManager.getLocation(room);
+      return loc ? [loc.lat, loc.lon] : null;
+    }
+  );
 
+  const firstPosition = positions?.[0] || DEFAULT_POSITION;
   return (
     <div className="relative h-full w-full">
       <MapContainer
@@ -35,25 +39,32 @@ function CampusMinimap({ expand, section }: CampusMinimapProps) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <MapFlyTo position={position} />
-        {section && (
-          <Marker
-            position={position}
-            icon={
-              location
-                ? getMapMarkerIcon(
+        <MapFlyTo position={firstPosition} />
+        {section &&
+          (positions ? (
+            positions.map((loc, i) =>
+              loc ? (
+                <Marker
+                  position={loc}
+                  key={`map-marker-${i}`}
+                  icon={getMapMarkerIcon(
                     ScheduleManager.getCourseColor(section.subject)
-                  )
-                : getUnknownMapMarkerIcon('gray')
-            }
-          >
-            {!location && (
+                  )}
+                />
+              ) : (
+                <Fragment key={`map-marker-${i}`} />
+              )
+            )
+          ) : (
+            <Marker
+              position={DEFAULT_POSITION}
+              icon={getUnknownMapMarkerIcon('gray')}
+            >
               <Tooltip permanent direction="bottom">
                 Unknown location
               </Tooltip>
-            )}
-          </Marker>
-        )}
+            </Marker>
+          ))}
       </MapContainer>
       <button
         className="absolute top-2 right-2 z-20 text-gray-500 hover:text-emerald-500 active:text-emerald-600"

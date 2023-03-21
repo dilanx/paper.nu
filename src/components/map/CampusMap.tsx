@@ -38,24 +38,29 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
 
   const locations: ClassMarker[] = [];
 
-  sections: for (const sectionId in schedule) {
-    const { lat, lon } =
-      ScheduleManager.getLocation(schedule[sectionId].room) ?? {};
-    if (!lat || !lon) continue;
+  for (const sectionId in schedule) {
+    rooms: for (const room of schedule[sectionId].room || []) {
+      const { lat, lon } = ScheduleManager.getLocation(room) ?? {};
+      if (!lat || !lon) continue;
 
-    for (const loc of locations) {
-      const [latt, lont] = loc.location;
-      if (latt === lat && lont === lon) {
-        loc.sections.push(schedule[sectionId]);
-        continue sections;
+      for (const loc of locations) {
+        const [latt, lont] = loc.location;
+        if (
+          latt === lat &&
+          lont === lon &&
+          !loc.sections.includes(schedule[sectionId])
+        ) {
+          loc.sections.push(schedule[sectionId]);
+          continue rooms;
+        }
       }
-    }
 
-    locations.push({
-      location: [lat, lon],
-      sections: [schedule[sectionId]],
-      color: ScheduleManager.getCourseColor(schedule[sectionId].subject),
-    });
+      locations.push({
+        location: [lat, lon],
+        sections: [schedule[sectionId]],
+        color: ScheduleManager.getCourseColor(schedule[sectionId].subject),
+      });
+    }
   }
 
   return (

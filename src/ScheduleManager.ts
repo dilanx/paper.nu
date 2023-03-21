@@ -213,7 +213,9 @@ const ScheduleManager = {
     return course?.sections.find((section) => section.section_id === id);
   },
 
-  getLocation: (building_name?: string): ScheduleLocation | undefined => {
+  getLocation: (
+    building_name?: string | null
+  ): ScheduleLocation | undefined => {
     if (!building_name) return;
     return school.locations[building_name] ?? undefined;
   },
@@ -261,17 +263,31 @@ const ScheduleManager = {
     if (filter.subject && filter.subject !== section.subject) return false;
 
     const t = (
-      start: Time | undefined,
+      start: (Time | null)[] | undefined,
       after: Time | undefined,
       before: Time | undefined
     ) => {
-      if (after && (!start || Utility.timeCompare(start, after) < 0)) {
-        return false;
-      }
-      if (before && (!start || Utility.timeCompare(start, before) > 0)) {
-        return false;
-      }
-      return true;
+      const check = (against: Time | undefined) => {
+        if (against) {
+          if (!start) {
+            return false;
+          }
+
+          for (let i = 0; i < start.length; i++) {
+            const time = start[i];
+            if (!time) {
+              return false;
+            }
+            if (Utility.timeCompare(time, against) < 0) {
+              return false;
+            }
+          }
+        }
+
+        return true;
+      };
+
+      return check(after) && check(before);
     };
 
     if (!t(section.start_time, filter.startAfter, filter.startBefore)) {
@@ -284,8 +300,8 @@ const ScheduleManager = {
     if (filter.meetingDays) {
       if (
         !section.meeting_days ||
-        !Array.from(section.meeting_days).every((d) =>
-          filter.meetingDays?.includes(Days[parseInt(d)])
+        !Array.from(section.meeting_days).every(
+          (d) => d && filter.meetingDays?.includes(Days[parseInt(d)])
         )
       ) {
         return false;
@@ -322,7 +338,9 @@ const ScheduleManager = {
     if (filter.location) {
       if (
         !section.room ||
-        !section.room.toLowerCase().includes(filter.location)
+        !section.room.every((room) =>
+          room?.toLowerCase().includes(filter.location!)
+        )
       ) {
         return false;
       }
@@ -331,29 +349,56 @@ const ScheduleManager = {
     return true;
   },
 
-  sectionsOverlap: (section: ScheduleSection, data: ScheduleDataMap) => {
+  sectionsOverlap: (
+    section: ScheduleSection,
+    data: ScheduleDataMap
+  ): ScheduleSection | undefined => {
     if (!section.meeting_days || !section.start_time || !section.end_time) {
       return;
     }
 
-    for (const s of Object.values(data)) {
-      if (
-        Array.from(section.meeting_days!).some(
-          (d) => s.meeting_days?.includes(d) ?? false
-        )
-      ) {
-        if (!s.start_time || !s.end_time) {
+    for (let pattern = 0; pattern < section.meeting_days.length; pattern++) {
+      const meetingDays = section.meeting_days[pattern];
+      const startTime = section.start_time[pattern];
+      const endTime = section.end_time[pattern];
+
+      if (!meetingDays || !startTime || !endTime) {
+        continue;
+      }
+
+      for (const other of Object.values(data)) {
+        if (!other.meeting_days || !other.start_time || !other.end_time) {
           continue;
         }
-        if (
-          Utility.timesOverlap(
-            section.start_time!,
-            section.end_time!,
-            s.start_time,
-            s.end_time
-          )
+        for (
+          let sPattern = 0;
+          sPattern < other.meeting_days.length;
+          sPattern++
         ) {
-          return s;
+          const otherMeetingDays = other.meeting_days[sPattern];
+          const otherStartTime = other.start_time[sPattern];
+          const otherEndTime = other.end_time[sPattern];
+
+          if (!otherMeetingDays || !otherStartTime || !otherEndTime) {
+            continue;
+          }
+
+          if (
+            Array.from(meetingDays).some(
+              (d) => otherMeetingDays.includes(d) ?? false
+            )
+          ) {
+            if (
+              Utility.timesOverlap(
+                startTime,
+                endTime,
+                otherStartTime,
+                otherEndTime
+              )
+            ) {
+              return other;
+            }
+          }
         }
       }
     }

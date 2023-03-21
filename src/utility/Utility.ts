@@ -3,7 +3,12 @@ import React from 'react';
 import { AlertData } from '../types/AlertTypes';
 import { Color, InfoSetData } from '../types/BaseTypes';
 import { PlanErrorLocation } from '../types/ErrorTypes';
-import { ScheduleDataMap, ScheduleDate, Time } from '../types/ScheduleTypes';
+import {
+  ScheduleDataMap,
+  ScheduleDate,
+  SectionWithMeetingPattern,
+  Time,
+} from '../types/ScheduleTypes';
 import { FilterBadgeName, FilterOptions } from '../types/SearchTypes';
 import { Mode } from './Constants';
 
@@ -446,6 +451,11 @@ let Utility = {
     return `${termId ? `${termId}-` : ''}${y}.${p(m)}.${p(d)}-${p(h)}${p(
       min
     )}${p(s)}`;
+  },
+
+  sectionMeetingPatternIsValid: (swmp: SectionWithMeetingPattern) => {
+    const { start_time, end_time, meeting_days } = swmp;
+    return start_time && end_time && meeting_days;
   },
 };
 

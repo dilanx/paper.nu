@@ -51,16 +51,15 @@ function getDetails(
     case 'TIME SLOT':
       return [
         ClockIcon,
-        `${
-          section.meeting_days && section.start_time && section.end_time
-            ? `${Utility.convertAllDaysToString(
-                section.meeting_days
-              )} ${Utility.convertTime(
-                section.start_time,
-                true
-              )} - ${Utility.convertTime(section.end_time, true)}`
-            : undefined
-        }`,
+        section.meeting_days.map((day, i) =>
+          day && section.start_time[i] && section.end_time[i] ? (
+            <p key={`section-info-time-${i}`}>
+              {Utility.convertAllDaysToString(day)}{' '}
+              {Utility.convertTime(section.start_time[i]!, true)} -{' '}
+              {Utility.convertTime(section.end_time[i]!, true)}
+            </p>
+          ) : undefined
+        ),
       ];
     case 'INSTRUCTOR':
       return [
@@ -108,7 +107,12 @@ function getDetails(
         )),
       ];
     case 'LOCATION':
-      return [MapPinIcon, section.room];
+      return [
+        MapPinIcon,
+        section.room.map((room, i) => (
+          <p key={`section-info-location-${i}`}>{room}</p>
+        )),
+      ];
     case 'START/END DATES':
       return [
         CalendarDaysIcon,

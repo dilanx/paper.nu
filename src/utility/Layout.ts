@@ -1,28 +1,30 @@
 import {
   ScheduleHourMap,
   ScheduleLayoutMap,
+  SectionWithValidMeetingPattern,
   Time,
-  ValidScheduleSection,
 } from '../types/ScheduleTypes';
 import Utility from './Utility';
 
 /*
     Adapted from salad.nu by Andy Xu
     https://github.com/Everthings/salad.nu/blob/master/src/utils/layoutUtils.js
+
+    Redesigned to support multiple meeting patterns per section
 */
 
 function overlaps(end1: Time, start2: Time) {
   return Utility.timeInMinutes(end1) > Utility.timeInMinutes(start2);
 }
 
-function getCollisionGroups(sections: ValidScheduleSection[]) {
-  const collisionGroups: ValidScheduleSection[][] = [];
-  let group: ValidScheduleSection[] = [];
-  for (const section of sections) {
+function getCollisionGroups(sections: SectionWithValidMeetingPattern[]) {
+  const collisionGroups: SectionWithValidMeetingPattern[][] = [];
+  let group: SectionWithValidMeetingPattern[] = [];
+  for (const swmp of sections) {
     if (group.length !== 0) {
       let assigned = false;
       for (const member of group) {
-        if (overlaps(member.end_time, section.start_time)) {
+        if (overlaps(member.end_time, swmp.start_time)) {
           assigned = true;
           break;
         }
@@ -30,12 +32,12 @@ function getCollisionGroups(sections: ValidScheduleSection[]) {
 
       if (!assigned) {
         collisionGroups.push(group);
-        group = [section];
+        group = [swmp];
         continue;
       }
     }
 
-    group.push(section);
+    group.push(swmp);
   }
 
   if (group.length !== 0) collisionGroups.push(group);
@@ -43,23 +45,24 @@ function getCollisionGroups(sections: ValidScheduleSection[]) {
   return collisionGroups;
 }
 
-function getCollisionColumns(collisionGroups: ValidScheduleSection[][]) {
-  const collisionColumns: ValidScheduleSection[][][] = [];
+function getCollisionColumns(
+  collisionGroups: SectionWithValidMeetingPattern[][]
+) {
+  const collisionColumns: SectionWithValidMeetingPattern[][][] = [];
   for (const group of collisionGroups) {
-    const columns: ValidScheduleSection[][] = [];
-    throughGroup: for (const section of group) {
+    const columns: SectionWithValidMeetingPattern[][] = [];
+    throughGroup: for (const swmp of group) {
       if (columns.length !== 0) {
         for (const column of columns) {
-          if (
-            !overlaps(column[column.length - 1].end_time, section.start_time)
-          ) {
-            column.push(section);
+          const last = column[column.length - 1];
+          if (!overlaps(last.end_time, swmp.start_time)) {
+            column.push(swmp);
             continue throughGroup;
           }
         }
       }
 
-      columns.push([section]);
+      columns.push([swmp]);
     }
 
     collisionColumns.push(columns);
@@ -68,19 +71,19 @@ function getCollisionColumns(collisionGroups: ValidScheduleSection[][]) {
   return collisionColumns;
 }
 
-export function getLayout(daySections?: ValidScheduleSection[]) {
+export function getLayout(daySections?: SectionWithValidMeetingPattern[]) {
   const hourAssignments: ScheduleHourMap = {};
   const layoutMap: ScheduleLayoutMap = {};
 
   if (daySections) {
-    const sections = daySections.sort(
-      ({ start_time: { h: ha, m: ma } }, { start_time: { h: hb, m: mb } }) => {
-        if (ha < hb) return -1;
-        if (ha === hb && ma < mb) return -1;
-        if (ha === hb && ma === mb) return 0;
-        return 1;
-      }
-    );
+    const sections = daySections.sort((sa, sb) => {
+      const { h: ha, m: ma } = sa.start_time;
+      const { h: hb, m: mb } = sb.start_time;
+      if (ha < hb) return -1;
+      if (ha === hb && ma < mb) return -1;
+      if (ha === hb && ma === mb) return 0;
+      return 1;
+    });
     const groups = getCollisionGroups(sections);
     const collisionColumns = getCollisionColumns(groups);
 
@@ -88,15 +91,19 @@ export function getLayout(daySections?: ValidScheduleSection[]) {
       const l = columns.length;
       for (let i = 0; i < columns.length; i++) {
         const column = columns[i];
-        for (const section of column) {
-          const h = section.start_time.h;
+        for (const swmp of column) {
+          const h = swmp.start_time.h;
           if (h in hourAssignments) {
-            hourAssignments[h].push(section);
+            hourAssignments[h].push(swmp);
           } else {
-            hourAssignments[h] = [section];
+            hourAssignments[h] = [swmp];
           }
 
-          layoutMap[section.section_id] = { i, l };
+          if (!(swmp.section.section_id in layoutMap)) {
+            layoutMap[swmp.section.section_id] = {};
+          }
+
+          layoutMap[swmp.section.section_id][swmp.index] = { i, l };
         }
       }
     }

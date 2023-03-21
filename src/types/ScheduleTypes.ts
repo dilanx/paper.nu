@@ -44,13 +44,14 @@ export interface ScheduleSection {
   section_id: string;
   instructors?: ScheduleSectionInstructor[];
   title: string;
+  topic?: string;
   subject: string;
   number: string;
   section: string;
-  meeting_days?: string;
-  start_time?: Time;
-  end_time?: Time;
-  room?: string;
+  meeting_days: (string | null)[];
+  start_time: (Time | null)[];
+  end_time: (Time | null)[];
+  room: (string | null)[];
   start_date?: string;
   end_date?: string;
   component: string;
@@ -64,6 +65,18 @@ export interface ScheduleSection {
 export interface ValidScheduleSection extends ScheduleSection {
   start_date: string;
   end_date: string;
+}
+
+export interface SectionWithMeetingPattern {
+  section: ValidScheduleSection;
+  start_time: Time | null;
+  end_time: Time | null;
+  meeting_days: string | null;
+  index: number;
+}
+
+export interface SectionWithValidMeetingPattern
+  extends SectionWithMeetingPattern {
   start_time: Time;
   end_time: Time;
   meeting_days: string;
@@ -72,14 +85,13 @@ export interface ValidScheduleSection extends ScheduleSection {
 export function isValidScheduleSection(
   section: ScheduleSection | undefined
 ): section is ValidScheduleSection {
-  return (
-    !!section &&
-    !!section.start_date &&
-    !!section.end_date &&
-    !!section.start_time &&
-    !!section.end_time &&
-    !!section.meeting_days
-  );
+  return !!section && !!section.start_date && !!section.end_date;
+}
+
+export function isSectionWithValidMeetingPattern(
+  swmp: SectionWithMeetingPattern | undefined
+): swmp is SectionWithValidMeetingPattern {
+  return !!swmp && !!swmp.start_time && !!swmp.end_time && !!swmp.meeting_days;
 }
 
 export interface RawSchoolData {
@@ -117,11 +129,16 @@ export interface ScheduleDate {
 }
 
 export interface ScheduleHourMap {
-  [hour: number]: ValidScheduleSection[];
+  [hour: number]: SectionWithValidMeetingPattern[];
 }
 
 export interface ScheduleLayoutMap {
-  [sectionId: string]: { i: number; l: number };
+  [sectionId: string]: {
+    [meetingPattern: number]: {
+      i: number;
+      l: number;
+    };
+  };
 }
 
 export interface ScheduleInteraction<T> {

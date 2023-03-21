@@ -42,6 +42,33 @@ function SearchScheduleSection({
     !section.meeting_days ||
     !section.start_time ||
     !section.end_time;
+
+  const meetingPatterns = [];
+
+  for (let i = 0; i < section.meeting_days.length; i++) {
+    const meetingDays = section.meeting_days[i];
+    const startTime = section.start_time[i];
+    const endTime = section.end_time[i];
+    const room = section.room[i];
+    meetingPatterns.push(
+      <div key={`sss-${section.section_id}-${i}`}>
+        <p className="text-sm font-medium">
+          {meetingDays
+            ? Utility.convertAllDaysToString(meetingDays)
+            : 'no days'}
+        </p>
+        <p className="text-md font-medium">
+          {startTime && endTime
+            ? Utility.convertTime(startTime, true) +
+              ' - ' +
+              Utility.convertTime(endTime, true)
+            : 'no times'}
+        </p>
+        <p className="text-xs font-light">{room ?? 'no location'}</p>
+      </div>
+    );
+  }
+
   return (
     <motion.div variants={variants} className={`my-4 w-full`}>
       <div
@@ -77,23 +104,11 @@ function SearchScheduleSection({
           )}
         </p>
         <hr className="mx-2 border border-gray-400 opacity-50" />
-        <div className="py-4 text-center">
+        <div className="flex flex-col gap-4 py-4 text-center">
+          {meetingPatterns}
           <p className="text-sm font-normal">
-            {section.meeting_days
-              ? Utility.convertAllDaysToString(section.meeting_days)
-              : 'no days'}
-          </p>
-          <p className="text-md font-medium">
-            {section.start_time !== undefined && section.end_time !== undefined
-              ? Utility.convertTime(section.start_time, true) +
-                ' - ' +
-                Utility.convertTime(section.end_time, true)
-              : 'no times'}
-          </p>
-          <p className="text-sm font-light">
             {section.instructors?.map((i) => i.name).join(', ')}
           </p>
-          <p className="text-sm font-light">{section.room ?? 'no location'}</p>
         </div>
         <button
           className="absolute bottom-1 right-1"

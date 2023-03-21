@@ -1,5 +1,13 @@
 # Paper Change Log
 
+### 2.3.0
+
+_2023-03-20_
+
+**Schedule**
+
+- Courses with multiple meeting patterns now have their other meeting patterns available on Paper.
+
 ### 2.2.4
 
 _2023-02-15_

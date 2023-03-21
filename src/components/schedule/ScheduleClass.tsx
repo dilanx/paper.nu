@@ -6,7 +6,7 @@ import {
   ScheduleBookmarks,
   ScheduleInteractions,
   ScheduleModificationFunctions,
-  ScheduleSection,
+  SectionWithValidMeetingPattern,
 } from '../../types/ScheduleTypes';
 import { SearchModificationFunctions } from '../../types/SearchTypes';
 import { SideCard } from '../../types/SideCardTypes';
@@ -14,7 +14,7 @@ import { openInfo } from '../../utility/ScheduleSectionInfo';
 import Utility from '../../utility/Utility';
 
 interface ScheduleClassProps {
-  section: ScheduleSection;
+  swmp: SectionWithValidMeetingPattern;
   bookmarks: ScheduleBookmarks;
   alert?: Alert;
   sideCard?: SideCard;
@@ -27,13 +27,14 @@ interface ScheduleClassProps {
 }
 
 function ScheduleClass(props: ScheduleClassProps) {
-  const { section, interactions, sf, ff, switches, imageMode, split } = props;
-  const { start_time, end_time, subject, number, title, instructors } = section;
+  const { swmp, interactions, sf, ff, switches, imageMode, split } = props;
+  const { section, start_time, end_time } = swmp;
+  const { subject, number, title, instructors } = section;
   const color = ScheduleManager.getCourseColor(subject);
 
-  const startDif = start_time!.m / 60;
+  const startDif = start_time.m / 60;
   const length =
-    end_time!.h * 60 + end_time!.m - (start_time!.h * 60 + start_time!.m);
+    end_time.h * 60 + end_time.m - (start_time.h * 60 + start_time.m);
   const endDif = length / 60;
 
   const instructorLastNames = instructors

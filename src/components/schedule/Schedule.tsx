@@ -3,17 +3,22 @@ import React from 'react';
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {
+  isSectionWithValidMeetingPattern,
   isValidScheduleSection,
   ScheduleData,
   ScheduleInteractions,
   ScheduleModificationFunctions,
-  ValidScheduleSection,
+  SectionWithValidMeetingPattern,
 } from '../../types/ScheduleTypes';
 import { SearchModificationFunctions } from '../../types/SearchTypes';
 import { SideCard } from '../../types/SideCardTypes';
 import Utility from '../../utility/Utility';
 import Day from './Day';
 import HoursColumn from './HoursColumn';
+
+interface DayMeetingPatterns {
+  [day: number]: SectionWithValidMeetingPattern[];
+}
 
 interface ScheduleProps {
   schedule: ScheduleData;
@@ -29,9 +34,7 @@ interface ScheduleProps {
 class Schedule extends React.Component<ScheduleProps> {
   render() {
     let days: JSX.Element[] = [];
-    let sectionDays: {
-      [day: number]: ValidScheduleSection[];
-    } = { 0: [], 1: [], 2: [], 3: [], 4: [] };
+    let sectionDays: DayMeetingPatterns = { 0: [], 1: [], 2: [], 3: [], 4: [] };
 
     let start = 9;
     let end = 18;
@@ -43,11 +46,27 @@ class Schedule extends React.Component<ScheduleProps> {
       let section = schedule[section_id];
       if (isValidScheduleSection(section)) {
         for (let i = 0; i < section.meeting_days.length; i++) {
-          sectionDays[parseInt(section.meeting_days[i])].push(section);
-        }
+          const swmp = {
+            section,
+            start_time: section.start_time[i],
+            end_time: section.end_time[i],
+            meeting_days: section.meeting_days[i],
+            index: i,
+          };
+          if (!isSectionWithValidMeetingPattern(swmp)) {
+            continue;
+          }
+          //if (!Utility.sectionMeetingPatternIsValid())
+          const dayPattern = swmp.meeting_days;
+          for (let j = 0; j < dayPattern.length; j++) {
+            sectionDays[parseInt(dayPattern[j])].push(swmp);
+          }
 
-        start = Utility.fitHours(section.start_time, start, false);
-        end = Utility.fitHours(section.end_time, end, true);
+          // invariant: Paper data management system ensures
+          // meeting_days, start_time, and end_time are all the same length
+          start = Utility.fitHours(swmp.start_time, start, false);
+          end = Utility.fitHours(swmp.end_time, end, true);
+        }
       }
     }
 
@@ -55,15 +74,34 @@ class Schedule extends React.Component<ScheduleProps> {
     if (isValidScheduleSection(previewSection)) {
       previewSection.preview = true;
       for (let i = 0; i < previewSection.meeting_days.length; i++) {
-        sectionDays[parseInt(previewSection.meeting_days[i])].push(
-          previewSection
-        );
+        const swmp = {
+          section: previewSection,
+          start_time: previewSection.start_time[i],
+          end_time: previewSection.end_time[i],
+          meeting_days: previewSection.meeting_days[i],
+          index: i,
+        };
+        if (!isSectionWithValidMeetingPattern(swmp)) {
+          continue;
+        }
+
+        const dayPattern = swmp.meeting_days;
+        for (let j = 0; j < dayPattern.length; j++) {
+          sectionDays[parseInt(dayPattern[j])].push(swmp);
+        }
+        start = Utility.fitHours(swmp.start_time, start, false);
+        end = Utility.fitHours(swmp.end_time, end, true);
       }
-      start = Utility.fitHours(previewSection.start_time, start, false);
-      end = Utility.fitHours(previewSection.end_time, end, true);
     }
     for (let i = 0; i < 5; i++) {
-      let sections = sectionDays[i];
+      let sections = [];
+
+      for (let j = 0; j < sectionDays[i].length; j++) {
+        const section = sectionDays[i][j];
+        if (Utility.sectionMeetingPatternIsValid(section)) {
+          sections.push(section);
+        }
+      }
 
       days.push(
         <Day

@@ -1,18 +1,20 @@
 import { createEvents, DateArray, EventAttributes } from 'ics';
 import ScheduleManager from '../ScheduleManager';
 import {
+  isSectionWithValidMeetingPattern,
   ScheduleData,
   ScheduleDataMap,
+  SectionWithValidMeetingPattern,
   ValidScheduleDataMap,
   ValidScheduleSection,
 } from '../types/ScheduleTypes';
 import Utility from './Utility';
 
 function getTimes(
-  section: ValidScheduleSection
+  section: SectionWithValidMeetingPattern
 ): { start: DateArray; end: DateArray } | undefined {
   const date = Utility.getClosestMeetingDate(
-    Utility.convertDate(section.start_date),
+    Utility.convertDate(section.section.start_date),
     section.meeting_days
   );
   if (!date) return;
@@ -25,8 +27,8 @@ function getTimes(
   };
 }
 
-function getRecurrenceRule(section: ValidScheduleSection) {
-  const { y, m, d } = Utility.convertDate(section.end_date);
+function getRecurrenceRule(section: SectionWithValidMeetingPattern) {
+  const { y, m, d } = Utility.convertDate(section.section.end_date);
   return `FREQ=WEEKLY;BYDAY=${Utility.convertAllDaysToArray(
     section.meeting_days
   ).join(',')};INTERVAL=1;UNTIL=${y}${(m + 1).toString().padStart(2, '0')}${d
@@ -61,26 +63,39 @@ export async function exportScheduleAsICS(validSections: ValidScheduleDataMap) {
   const events = [];
   for (const sectionId in validSections) {
     const section = validSections[sectionId];
-    const times = getTimes(section);
-    if (!times) throw new Error('Failed to get times for section');
-    const { start, end } = times;
+    for (let pattern = 0; pattern < section.meeting_days.length; pattern++) {
+      const swmp = {
+        section,
+        start_time: section.start_time[pattern],
+        end_time: section.end_time[pattern],
+        meeting_days: section.meeting_days[pattern],
+        index: pattern,
+      };
 
-    const event: EventAttributes = {
-      start,
-      end,
-      startOutputType: 'local',
-      endOutputType: 'local',
-      title: `${section.subject} ${section.number}${
-        section.component !== 'LEC'
-          ? ` (${Utility.convertSectionComponent(section.component)})`
-          : ''
-      }`,
-      description: section.title,
-      location: section.room,
-      geo: ScheduleManager.getLocation(section.room),
-      recurrenceRule: getRecurrenceRule(section),
-    };
-    events.push(event);
+      if (!isSectionWithValidMeetingPattern(swmp)) {
+        continue;
+      }
+      const times = getTimes(swmp);
+      if (!times) throw new Error('Failed to get times for section');
+      const { start, end } = times;
+
+      const event: EventAttributes = {
+        start,
+        end,
+        startOutputType: 'local',
+        endOutputType: 'local',
+        title: `${section.subject} ${section.number}${
+          section.component !== 'LEC'
+            ? ` (${Utility.convertSectionComponent(section.component)})`
+            : ''
+        }`,
+        description: section.title,
+        location: section.room?.[pattern] || 'Unknown',
+        geo: ScheduleManager.getLocation(section.room?.[pattern]),
+        recurrenceRule: getRecurrenceRule(swmp),
+      };
+      events.push(event);
+    }
   }
 
   const { error, value } = createEvents(events);
