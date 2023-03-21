@@ -218,11 +218,15 @@ class App extends React.Component<{}, AppState> implements AppType {
     let action = params.get('action');
     params.delete('action');
 
-    window.history.replaceState(
-      {},
-      '',
-      `${window.location.pathname}?${params.toString()}`
-    );
+    if (this.state.switches.get.use_url) {
+      window.history.replaceState(
+        {},
+        '',
+        `${window.location.pathname}?${params.toString()}`
+      );
+    } else {
+      window.history.replaceState({}, '', window.location.pathname);
+    }
 
     if (action) {
       switch (action) {
@@ -706,6 +710,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                   contextMenu={(contextMenuData) => {
                     this.showContextMenu(contextMenuData);
                   }}
+                  plan={this.state.data}
                   schedule={this.state.schedule}
                   openMap={() => {
                     this.setState({ map: true });

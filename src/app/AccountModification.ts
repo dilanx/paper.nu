@@ -117,7 +117,7 @@ export function activateAccountPlan(app: AppType, planId: string) {
         loadingLogin: false,
       },
       () => {
-        PlanManager.save(data as PlanData);
+        PlanManager.save(data as PlanData, app.state.switches);
         toast.success('Activated plan: ' + Account.getPlanName(planId));
         d('plan activated: %s', planId);
       }
@@ -150,7 +150,7 @@ export function activateAccountSchedule(app: AppType, scheduleId: string) {
         loadingLogin: false,
       },
       () => {
-        ScheduleManager.save(data as ScheduleData);
+        ScheduleManager.save(data as ScheduleData, app.state.switches);
         toast.success(
           'Activated schedule: ' + Account.getScheduleName(scheduleId)
         );

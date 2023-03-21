@@ -406,17 +406,19 @@ const PlanManager = {
 
   save: (
     data: PlanData,
-    switches?: UserOptions,
+    switches: UserOptions,
     compareAgainstDataString?: string
   ) => {
     let params = saveData(data);
     let paramsStr = params.toString();
 
-    window.history.replaceState(
-      {},
-      '',
-      `${window.location.pathname}?${paramsStr}`
-    );
+    if (switches.get.use_url) {
+      window.history.replaceState(
+        {},
+        '',
+        `${window.location.pathname}?${paramsStr}`
+      );
+    }
 
     localStorage.setItem('data', paramsStr);
 

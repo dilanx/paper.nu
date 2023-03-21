@@ -56,6 +56,7 @@ export interface ReadUserOptions {
   minimap?: boolean;
   notes?: boolean;
   unsaved_notes?: boolean;
+  use_url?: boolean;
 }
 
 export interface UserOptions {

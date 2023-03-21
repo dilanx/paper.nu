@@ -21,6 +21,7 @@ const DEFAULT_SWITCHES: ReadUserOptions = {
   mode: Mode.PLAN,
   schedule_warnings: true,
   minimap: true,
+  use_url: true,
 };
 
 function matchAccountId(accountData: Document[], content: string) {
@@ -102,7 +103,7 @@ let SaveDataManager = {
               method = 'Account';
             }
           }
-          ScheduleManager.save(scheduleData);
+          ScheduleManager.save(scheduleData, switches);
           d('schedule data loaded');
         }
         const response: LoadResponse<ScheduleData> = {
@@ -132,7 +133,7 @@ let SaveDataManager = {
               method = 'Account';
             }
           }
-          PlanManager.save(planData);
+          PlanManager.save(planData, switches);
           d('plan data loaded');
         }
         const response: LoadResponse<PlanData> = {
@@ -164,7 +165,7 @@ let SaveDataManager = {
               d('account plan load successful: %s', storedPlanId);
               activeId = storedPlanId;
               originalDataString = content;
-              PlanManager.save(data);
+              PlanManager.save(data, switches);
               d('plan data loaded');
             }
             const response: LoadResponse<PlanData> = {
@@ -196,7 +197,7 @@ let SaveDataManager = {
               method = 'Account';
             }
           }
-          PlanManager.save(data);
+          PlanManager.save(data, switches);
           d('plan data loaded');
         }
         const response: LoadResponse<PlanData> = {
@@ -222,7 +223,7 @@ let SaveDataManager = {
               d('account schedule load successful: %s', storedScheduleId);
               activeId = storedScheduleId;
               originalDataString = content;
-              ScheduleManager.save(data);
+              ScheduleManager.save(data, switches);
               d('schedule data loaded');
             }
             const response: LoadResponse<ScheduleData> = {
@@ -254,7 +255,7 @@ let SaveDataManager = {
               method = 'Account';
             }
           }
-          ScheduleManager.save(data);
+          ScheduleManager.save(data, switches);
           d('schedule data loaded');
         }
         const response: LoadResponse<ScheduleData> = {

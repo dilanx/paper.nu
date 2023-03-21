@@ -18,7 +18,7 @@ import {
   ContextMenuData,
   UserOptions,
 } from '../../../types/BaseTypes';
-import { PlanSpecialFunctions } from '../../../types/PlanTypes';
+import { PlanData, PlanSpecialFunctions } from '../../../types/PlanTypes';
 import { ScheduleData } from '../../../types/ScheduleTypes';
 import { exportScheduleAsICS } from '../../../utility/Calendar';
 import { Mode } from '../../../utility/Constants';
@@ -33,6 +33,7 @@ interface ToolbarProps {
   alert: Alert;
   contextMenuData?: ContextMenuData;
   contextMenu: ContextMenu;
+  plan: PlanData;
   schedule: ScheduleData;
   openMap?: () => void;
   switches: UserOptions;
@@ -45,6 +46,7 @@ function Toolbar({
   alert,
   contextMenuData,
   contextMenu,
+  plan,
   schedule,
   openMap,
   switches,
@@ -134,6 +136,7 @@ function Toolbar({
                 x,
                 y,
                 theme,
+                plan: isSchedule ? undefined : plan,
                 schedule: isSchedule ? schedule : undefined,
                 alert,
                 actions: {
@@ -159,6 +162,7 @@ function Toolbar({
                     });
                   },
                 },
+                useUrl: switches.get.use_url,
               })
             );
           }}

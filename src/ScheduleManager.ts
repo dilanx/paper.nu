@@ -432,17 +432,19 @@ const ScheduleManager = {
 
   save: (
     data: ScheduleData,
-    switches?: UserOptions,
+    switches: UserOptions,
     compareAgainstDataString?: string
   ) => {
     let params = saveData(data);
     let paramsStr = params.toString();
 
-    window.history.replaceState(
-      {},
-      '',
-      `${window.location.pathname}?${paramsStr}`
-    );
+    if (switches.get.use_url) {
+      window.history.replaceState(
+        {},
+        '',
+        `${window.location.pathname}?${paramsStr}`
+      );
+    }
 
     localStorage.setItem('schedule', paramsStr);
 

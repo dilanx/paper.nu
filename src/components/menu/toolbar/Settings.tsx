@@ -45,11 +45,10 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
             },
           },
           {
-            switch: 'save_location_top',
-            title: 'Save button location',
-            description: `When editing a plan or schedule linked to your account that has unsaved changes, a save button appears at the bottom right of the window by default. You can move it to the top right if you'd prefer.`,
-            buttonTextOn: 'Top right',
-            buttonTextOff: 'Bottom right',
+            switch: 'use_url',
+            title: 'Save data to URL',
+            description:
+              "By default, your plan and schedule data is saved to the URL. However, that can get a bit annoying if your browser keeps routing to an old link. If you just use your account or browser storage to save your plans and schedules, you can disable URL saving. You won't be able to open Paper links while this setting is disabled unless they're shortened.",
             saveToStorage: true,
           },
           {

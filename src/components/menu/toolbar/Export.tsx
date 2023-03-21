@@ -4,8 +4,11 @@ import {
   LinkIcon,
 } from '@heroicons/react/24/outline';
 import Account from '../../../Account';
+import PlanManager from '../../../PlanManager';
+import ScheduleManager from '../../../ScheduleManager';
 import { Alert } from '../../../types/AlertTypes';
 import { Color, ContextMenuData } from '../../../types/BaseTypes';
+import { PlanData } from '../../../types/PlanTypes';
 import {
   ScheduleData,
   ValidScheduleDataMap,
@@ -20,6 +23,7 @@ interface ExportMenuData {
   x: number;
   y: number;
   theme: Color;
+  plan?: PlanData;
   schedule?: ScheduleData;
   alert: Alert;
   actions: {
@@ -27,16 +31,25 @@ interface ExportMenuData {
     image: ActionFunction;
     calendar: ActionFunction<ValidScheduleDataMap>;
   };
+  useUrl?: boolean;
 }
 
 const exportMenu = ({
   x,
   y,
   theme,
+  plan,
   schedule,
   alert,
   actions,
+  useUrl,
 }: ExportMenuData): ContextMenuData => {
+  const dataString = plan
+    ? PlanManager.getDataString(plan)
+    : schedule
+    ? ScheduleManager.getDataString(schedule)
+    : undefined;
+
   const data = {
     name: 'export',
     x,
@@ -55,12 +68,26 @@ const exportMenu = ({
             cancelButton: 'Close',
             color: 'sky',
             icon: LinkIcon,
+            textHTML: !useUrl ? (
+              <p className="my-4">
+                <span className="font-bold text-red-500 dark:text-red-400">
+                  NOTE!
+                </span>{' '}
+                You have the URL save data functionality disabled. You can share
+                and shorten the link below, but you'll only be able to open it
+                yourself if it's shortened.
+              </p>
+            ) : undefined,
             textView: {
-              text: window.location.href,
+              text: `${window.location.origin}/?${dataString}`,
               update: {
                 text: 'SHORTEN LINK',
-                disabled: window.location.search.length < 2,
+                disabled: !dataString || dataString.length === 0,
                 fn: async () => {
+                  if (!dataString) {
+                    throw new PaperError('No data to shorten');
+                  }
+
                   const response = await fetch(
                     `${Account.SERVER}/paper/shorten`,
                     {
@@ -69,7 +96,7 @@ const exportMenu = ({
                         'Content-Type': 'application/json',
                       },
                       body: JSON.stringify({
-                        content: window.location.search.slice(1),
+                        content: dataString,
                       }),
                     }
                   );

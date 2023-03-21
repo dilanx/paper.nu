@@ -7,7 +7,7 @@ _2023-03-21_
 **General**
 
 - The about button has been removed from the account context menu to the toolbar (clicking on the logo still works).
-- Various UI changes and bug fixes.
+- Various UI updates, bug fixes, and other small changes.
 
 **Schedule**
 
