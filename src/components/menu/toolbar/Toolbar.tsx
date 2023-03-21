@@ -90,6 +90,12 @@ function Toolbar({
         </div>
       )}
       <div className="flex gap-1">
+        <ToolbarButton
+          icon={InformationCircleIcon}
+          onClick={() => openAboutMenu()}
+        >
+          About
+        </ToolbarButton>
         {isSchedule && (
           <ToolbarButton
             icon={MapIcon}
@@ -165,61 +171,56 @@ function Toolbar({
         >
           Settings
         </ToolbarButton>
-        <ToolbarAccount
-          loading={loading}
-          active={contextMenuData?.name === 'account'}
-          onClick={(x, y, signedIn) => {
-            if (!signedIn) {
-              Account.logIn();
-              return;
-            }
-            contextMenu({
-              name: 'account',
-              x,
-              y,
-              theme,
-              items: [
-                {
-                  text: 'About Paper',
-                  icon: InformationCircleIcon,
-                  onClick: () => openAboutMenu(),
-                },
-                {
-                  text: isSchedule ? 'Schedules' : 'Plans',
-                  icon: isSchedule ? CalendarIcon : RectangleStackIcon,
-                  onClick: () => {
-                    switches.set('tab', 'Plans');
-                  },
-                },
-                {
-                  text: 'Manage account',
-                  icon: UserCircleIcon,
-                  onClick: () => {
-                    window.open('https://auth.dilanxd.com/account', '_blank');
-                  },
-                },
-                {
-                  text: 'Sign out',
-                  icon: ArrowRightOnRectangleIcon,
-                  onClick: () => {
-                    alert({
-                      title: 'Logging out...',
-                      message: `Are you sure you want to log out? Make sure your changes are saved!`,
-                      cancelButton: 'Cancel',
-                      confirmButton: 'Log out',
-                      color: 'rose',
-                      icon: ArrowRightOnRectangleIcon,
-                      action: () => {
-                        Account.logOut();
-                      },
-                    });
-                  },
-                },
-              ],
-            });
-          }}
-        />
       </div>
+      <ToolbarAccount
+        loading={loading}
+        active={contextMenuData?.name === 'account'}
+        onClick={(x, y, signedIn) => {
+          if (!signedIn) {
+            Account.logIn();
+            return;
+          }
+          contextMenu({
+            name: 'account',
+            x,
+            y,
+            theme,
+            items: [
+              {
+                text: isSchedule ? 'Schedules' : 'Plans',
+                icon: isSchedule ? CalendarIcon : RectangleStackIcon,
+                onClick: () => {
+                  switches.set('tab', 'Plans');
+                },
+              },
+              {
+                text: 'Manage account',
+                icon: UserCircleIcon,
+                onClick: () => {
+                  window.open('https://auth.dilanxd.com/account', '_blank');
+                },
+              },
+              {
+                text: 'Sign out',
+                icon: ArrowRightOnRectangleIcon,
+                onClick: () => {
+                  alert({
+                    title: 'Logging out...',
+                    message: `Are you sure you want to log out? Make sure your changes are saved!`,
+                    cancelButton: 'Cancel',
+                    confirmButton: 'Log out',
+                    color: 'rose',
+                    icon: ArrowRightOnRectangleIcon,
+                    action: () => {
+                      Account.logOut();
+                    },
+                  });
+                },
+              },
+            ],
+          });
+        }}
+      />
       {takeImage && (
         <div className="relative">
           <Schedule

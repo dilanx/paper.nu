@@ -4,6 +4,10 @@
 
 _2023-03-20_
 
+**General**
+
+- The about button has been removed from the account context menu to the toolbar (clicking on the logo still works).
+
 **Schedule**
 
 - Courses with multiple meeting patterns now have their other meeting patterns available on Paper.
