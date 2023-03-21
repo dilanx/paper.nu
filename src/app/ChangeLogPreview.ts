@@ -12,6 +12,11 @@ const clp: ChangeLogPreviewInformation = {
       description:
         'Classes that have multiple meeting patterns (different meeting times on different days) are now supported on the schedule. Previously, only the first one was displayed, oops.',
     },
+    {
+      title: 'Option to disable URL-based save data.',
+      description:
+        "By default, all of your plan and schedule data is stored in the URL. However, this can get annoying if your browser keeps routing you to an old plan or schedule link. If you don't really use the plan and schedule links, you can now disable this feature in the settings. Save data is still accessible from your account or your browser storage.",
+    },
   ],
 };
 

@@ -6,6 +6,7 @@ _2023-03-21_
 
 **General**
 
+- The URL save data functionality can now be disabled in the settings.
 - The about button has been removed from the account context menu to the toolbar (clicking on the logo still works).
 - Various UI updates, bug fixes, and other small changes.
 
