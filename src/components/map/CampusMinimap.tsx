@@ -1,6 +1,6 @@
 import { ArrowsPointingOutIcon } from '@heroicons/react/24/outline';
 import { Fragment } from 'react';
-import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
+import { MapContainer, Marker, TileLayer, Tooltip } from 'react-leaflet';
 import ScheduleManager from '../../ScheduleManager';
 import { ScheduleSection } from '../../types/ScheduleTypes';
 import {

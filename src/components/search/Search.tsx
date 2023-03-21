@@ -427,7 +427,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                 )}
               </div>
               {shortcut && (
-                <p className="m-1 p-0 text-center text-sm text-gray-500 dark:text-gray-400">
+                <p className="m-1 p-0 text-center text-xs text-gray-500 dark:text-gray-400">
                   replacing{' '}
                   <span className="font-medium text-black dark:text-white">
                     {shortcut.replacing}
@@ -586,7 +586,7 @@ class Search extends React.Component<SearchProps, SearchState> {
               {results}
             </div>
             {appMode === Mode.SCHEDULE && this.props.switches.get.minimap && (
-              <div className="mt-2 h-[25vh] rounded-lg bg-white dark:bg-gray-800">
+              <div className="mt-2 hidden h-[25vh] rounded-lg bg-white dark:bg-gray-800 hsm:block">
                 <CampusMinimap
                   expand={this.props.expandMap}
                   section={

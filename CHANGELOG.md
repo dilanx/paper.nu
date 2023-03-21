@@ -7,10 +7,12 @@ _2023-03-20_
 **General**
 
 - The about button has been removed from the account context menu to the toolbar (clicking on the logo still works).
+- Various UI changes and bug fixes.
 
 **Schedule**
 
 - Courses with multiple meeting patterns now have their other meeting patterns available on Paper.
+- The minimap is no longer visible when the window height is too low.
 
 ### 2.2.4
 

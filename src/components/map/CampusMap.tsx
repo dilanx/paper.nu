@@ -134,36 +134,46 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
                   ))}
                   <MapFlyTo position={flyPosition || DEFAULT_POSITION} />
                 </MapContainer>
-                <div className="absolute top-0 right-0 z-[500] flex items-center gap-2 rounded-lg bg-white p-2 dark:bg-gray-700">
-                  <Switch
-                    checked={minimap}
-                    onChange={() => switches.set('minimap', !minimap, true)}
-                    className={`${
-                      minimap
-                        ? 'bg-emerald-400 hover:bg-emerald-500 active:bg-emerald-600'
-                        : 'bg-gray-600 hover:bg-gray-500 active:bg-gray-400'
-                    }
-                      group relative inline-flex h-7 w-12 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className={`${minimap ? 'translate-x-5' : 'translate-x-0'}
+                <div className="absolute top-0 right-0 z-[500] flex flex-col items-center gap-1 rounded-lg bg-white p-2 dark:bg-gray-700">
+                  <div className="flex items-center gap-8">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold tracking-wider text-gray-600 dark:text-gray-300">
+                        MINIMAP
+                      </p>
+                      <Switch
+                        checked={minimap}
+                        onChange={() => switches.set('minimap', !minimap, true)}
+                        className={`${
+                          minimap
+                            ? 'bg-emerald-400 hover:bg-emerald-500 active:bg-emerald-600'
+                            : 'bg-gray-600 hover:bg-gray-500 active:bg-gray-400'
+                        }
+                      relative inline-flex h-7 w-12 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
+                      >
+                        <span
+                          aria-hidden="true"
+                          className={`${
+                            minimap ? 'translate-x-5' : 'translate-x-0'
+                          }
                         pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
-                    />
-                    <Tooltip color="emerald" className="-bottom-10 right-0">
-                      Minimap
-                    </Tooltip>
-                  </Switch>
-                  <button className="group relative">
-                    <XMarkIcon
-                      className="h-8 w-8 text-gray-600 hover:text-red-400
+                        />
+                      </Switch>
+                    </div>
+
+                    <button className="group relative">
+                      <XMarkIcon
+                        className="h-8 w-8 text-gray-600 hover:text-red-400
                       active:text-red-500 dark:text-gray-500 dark:hover:text-red-400 dark:active:text-red-300"
-                      onClick={() => setOpen(false)}
-                    />
-                    <Tooltip color="red" className="-bottom-10 right-0">
-                      Close map
-                    </Tooltip>
-                  </button>
+                        onClick={() => setOpen(false)}
+                      />
+                      <Tooltip color="red" className="-bottom-9 right-0">
+                        Close map
+                      </Tooltip>
+                    </button>
+                  </div>
+                  <p className="block w-40 text-xs text-gray-500 hsm:hidden">
+                    Your window height is too small for the minimap.
+                  </p>
                 </div>
                 {locations.length > 0 && (
                   <div className="absolute right-2 bottom-8 z-[500] flex flex-col rounded-l-lg bg-white bg-opacity-50 p-2 dark:bg-gray-700 dark:bg-opacity-50 md:bottom-1/2 md:translate-y-1/2">

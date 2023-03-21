@@ -30,6 +30,9 @@ module.exports = {
         current: 'currentColor',
         gray: colors.neutral,
       },
+      screens: {
+        hsm: { raw: '(min-height: 698px)' },
+      },
       spacing: {
         128: '32rem',
         192: '48rem',
