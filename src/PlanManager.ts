@@ -205,6 +205,13 @@ const PlanManager = {
         with: shortcuts.join(', '),
       };
     }
+
+    console.log(query);
+    // TODO remove this eventually lol
+    if (query === 'elena') {
+      terms = ['comp sci 446'];
+    }
+
     return {
       terms,
       shortcut,
