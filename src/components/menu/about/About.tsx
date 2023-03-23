@@ -28,7 +28,12 @@ function getLocalTime<T>(location: string, key: keyof T) {
 }
 
 const versions: InfoSetData = [
-  ['App Version', process.env.REACT_APP_VERSION || 'unknown'],
+  [
+    'App Version',
+    `${process.env.REACT_APP_VERSION || 'unknown'}-${
+      process.env.REACT_APP_COMMIT || 'unknown'
+    }`,
+  ],
   [
     'API Version',
     async () => {
