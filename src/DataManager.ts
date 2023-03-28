@@ -41,7 +41,7 @@ export async function getDataMapInformation() {
   }
 
   d('data map information: cache miss, fetching data');
-  const res = await fetch('https://auth.dilanxd.com/plan-nu/data');
+  const res = await fetch('https://auth.dilanxd.com/paper/data');
   const json = await res.json();
 
   info = json as DataMapInformation;
