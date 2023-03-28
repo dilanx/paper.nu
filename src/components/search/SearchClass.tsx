@@ -9,15 +9,19 @@ import {
   PlanModificationFunctions,
 } from '../../types/PlanTypes';
 import { Color } from '../../types/BaseTypes';
+import { motion } from 'framer-motion';
+import AddButtons from './AddButtons';
 
 const PLACEHOLDER_MESSAGE = `Don't know which specific class to take from a certain requirement category? Use a placeholder! Search for 'placeholder' to view all.`;
 
 interface SearchClassProps {
+  courses: Course[][][];
   course: Course;
   color: Color;
-  select?: (course: Course) => void;
-  bookmarks?: BookmarksData;
-  f?: PlanModificationFunctions;
+  select: (course: string) => void;
+  bookmarks: BookmarksData;
+  f: PlanModificationFunctions;
+  selected: boolean;
 }
 
 function SearchClass(props: SearchClassProps) {
@@ -25,11 +29,15 @@ function SearchClass(props: SearchClassProps) {
 
   let item: CourseDragItem = { course };
 
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: 'Class',
-    item,
-    collect: (monitor) => ({ isDragging: monitor.isDragging() }),
-  }));
+  const [{ isDragging }, drag] = useDrag(
+    () => ({
+      type: 'Class',
+      item,
+      canDrag: !props.selected,
+      collect: (monitor) => ({ isDragging: monitor.isDragging() }),
+    }),
+    [props.selected]
+  );
 
   let distros = [];
   let distroStrings = Utility.convertDistros(course.distros);
@@ -51,13 +59,16 @@ function SearchClass(props: SearchClassProps) {
   return (
     <div
       ref={drag}
-      className={`rounded-lg bg-opacity-60 p-2 bg-${props.color}-100 rounded-lg
-            border-2 dark:bg-gray-800 border-${props.color}-300 group m-4
-            transform border-opacity-60 transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md ${
+      className={`rounded-lg border-2 bg-opacity-60 p-2 dark:bg-gray-800 ${
+        props.selected
+          ? `bg-white border-${props.color}-400 -translate-y-2 shadow-lg`
+          : `bg-${props.color}-100 border-${props.color}-300 border-opacity-60 hover:-translate-y-1 hover:shadow-md`
+      }
+            group m-4 transition duration-300 ease-in-out ${
               isDragging ? 'cursor-grab ' : 'cursor-default'
             }`}
       onClick={() => {
-        if (props.select) props.select(course);
+        if (props.select) props.select(course.id);
       }}
     >
       <p className="text-lg font-bold text-black dark:text-gray-50">
@@ -93,7 +104,61 @@ function SearchClass(props: SearchClassProps) {
           {units === 1 ? 'unit' : 'units'}
         </p>
       </div>
-      {props.select && (
+
+      {props.selected && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.25, duration: 0.2 }}
+        >
+          <AddButtons
+            action={(year, quarter) => {
+              props.f.addCourse(course, {
+                year,
+                quarter,
+              });
+            }}
+            courses={props.courses}
+          />
+          <div className="py-2">
+            <p className="p-2 text-center text-sm font-bold text-gray-500">
+              BOOKMARKS
+            </p>
+            <button
+              className="mx-auto my-2 block w-4/5 rounded-md bg-indigo-500 p-0.5 font-medium text-white opacity-100 shadow-sm hover:opacity-75 active:opacity-50"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (props.bookmarks.noCredit.has(course)) {
+                  props.f.removeBookmark(course, false);
+                } else {
+                  props.f.addBookmark(course, false);
+                }
+              }}
+            >
+              {props.bookmarks.noCredit.has(course)
+                ? 'Remove from bookmarks'
+                : 'Add to bookmarks'}
+            </button>
+            <button
+              className="mx-auto my-2 block w-4/5 rounded-md bg-indigo-800 p-0.5 font-medium text-white opacity-100 shadow-sm hover:opacity-75 active:opacity-50 dark:bg-indigo-400"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (props.bookmarks.forCredit.has(course)) {
+                  props.f.removeBookmark(course, true);
+                } else {
+                  props.f.addBookmark(course, true);
+                }
+              }}
+            >
+              {props.bookmarks.forCredit.has(course)
+                ? 'Remove for credit'
+                : 'Add for credit'}
+            </button>
+          </div>
+        </motion.div>
+      )}
+
+      {!props.selected && (
         <button
           className="absolute -top-2 -right-2 z-20 hidden rounded-full bg-gray-200 p-1
                     text-xs text-gray-500 opacity-80 transition-all duration-150 hover:bg-indigo-100 hover:text-indigo-400

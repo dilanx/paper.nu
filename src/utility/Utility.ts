@@ -416,6 +416,7 @@ let Utility = {
     }
     return newData;
   },
+
   initializeInfoSet: async (
     data: InfoSetData
   ): Promise<InfoSetData<string>> => {

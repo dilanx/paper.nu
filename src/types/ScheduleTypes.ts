@@ -1,3 +1,5 @@
+import { Color } from './BaseTypes';
+
 export interface Time {
   h: number;
   m: number;
@@ -149,6 +151,7 @@ export interface ScheduleInteraction<T> {
 export interface ScheduleInteractions {
   hoverSection: ScheduleInteraction<string>;
   hoverDelete: ScheduleInteraction<boolean>;
+  hoverLocation: ScheduleInteraction<[string | null, Color]>;
   previewSection: ScheduleInteraction<ScheduleSection>;
   multiClear: (interactions: (keyof ScheduleInteractions)[]) => void;
 }

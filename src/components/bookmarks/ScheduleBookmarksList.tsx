@@ -13,7 +13,6 @@ import SearchScheduleClass from '../search/SearchScheduleClass';
 
 interface ScheduleBookmarksListProps {
   schedule: ScheduleData;
-  switches: UserOptions;
   sf: ScheduleModificationFunctions;
   interactions: ScheduleInteractions;
   sideCard: SideCard;
@@ -56,7 +55,6 @@ function ScheduleBookmarksList(props: ScheduleBookmarksListProps) {
           fromBookmarks={true}
           sideCard={props.sideCard}
           alert={props.alert}
-          switches={props.switches}
           key={`bookmark-${course.course_id}`}
         />
       );

@@ -220,6 +220,46 @@ const ScheduleManager = {
     return school.locations[building_name] ?? undefined;
   },
 
+  getTechRoomFinderLink: (room: string) => {
+    const names: { [key: string]: string } = {
+      aud: 'L165',
+      'lecture room 2': 'L171',
+      'lecture room 3': 'L151',
+      'lecture room 4': 'M113',
+      'lecture room 5': 'M193',
+    };
+
+    let roomNumber: string | null = null;
+
+    for (const name in names) {
+      if (room.toLowerCase().includes(name)) {
+        roomNumber = names[name];
+      }
+    }
+
+    if (!roomNumber) {
+      const sp = room.split(' ');
+      roomNumber = sp[sp.length - 1];
+    }
+
+    if (!roomNumber || roomNumber.length !== 4) return null;
+
+    let floor = roomNumber[1];
+    if (floor === 'G') floor = '0';
+
+    const link = `https://www.mccormick.northwestern.edu/contact/tech-room-finder-map.php?id=${roomNumber}&room-floor=${floor}`;
+
+    return link;
+  },
+
+  getRoomFinderLink: (room: string) => {
+    if (room.toLowerCase().includes('tech')) {
+      return ScheduleManager.getTechRoomFinderLink(room);
+    }
+
+    return null;
+  },
+
   getCourseColor: (subject: string) => {
     return PlanManager.getCourseColor(subject);
   },

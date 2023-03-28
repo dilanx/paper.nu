@@ -11,6 +11,7 @@ import {
   FunnelIcon,
   XCircleIcon,
 } from '@heroicons/react/24/solid';
+import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';
 import { getTerms } from '../../DataManager';
@@ -28,6 +29,7 @@ import {
   ScheduleData,
   ScheduleInteractions,
   ScheduleModificationFunctions,
+  ScheduleSection,
   TermInfo,
 } from '../../types/ScheduleTypes';
 import {
@@ -74,7 +76,7 @@ interface SearchState {
   search: string;
   mode: SearchMode;
   filter: SearchFilter;
-  current?: Course;
+  planCurrent?: string;
   scheduleCurrent?: string;
   shortcut?: SearchShortcut;
   forceDisplay: boolean;
@@ -278,11 +280,16 @@ class Search extends React.Component<SearchProps, SearchState> {
       for (let course of results.results as Course[]) {
         courseList.push(
           <SearchClass
+            courses={this.props.data.courses}
             course={course}
             color={PlanManager.getCourseColor(course.id)}
-            select={(course) => {
-              this.setState({ current: course });
+            select={(courseId) => {
+              this.setState({
+                planCurrent:
+                  this.state.planCurrent === courseId ? undefined : courseId,
+              });
             }}
+            selected={this.state.planCurrent === course.id}
             bookmarks={this.props.data.bookmarks}
             f={this.props.f}
             key={course.id}
@@ -310,7 +317,6 @@ class Search extends React.Component<SearchProps, SearchState> {
             filter={filter}
             sideCard={this.props.sideCard}
             alert={this.props.alert}
-            switches={this.props.switches}
             key={`search-${course.course_id}-${course.subject}-${course.number}`}
           />
         );
@@ -359,7 +365,6 @@ class Search extends React.Component<SearchProps, SearchState> {
       searchMode
     );
 
-    let current = this.state.current;
     let bookmarks = this.props.data.bookmarks;
 
     const queryEmpty = search.length === 0;
@@ -369,16 +374,22 @@ class Search extends React.Component<SearchProps, SearchState> {
       this.props.latestTermId !== undefined &&
       this.props.latestTermId !== this.props.term?.id;
 
+    const mapSection: ScheduleSection =
+      this.props.scheduleInteractions.previewSection.get ||
+      this.props.schedule.schedule[
+        this.props.scheduleInteractions.hoverSection.get || ''
+      ];
+
+    const roomFinderAvailable = mapSection?.room?.some((r) =>
+      r?.toLowerCase().includes('tech')
+    );
+
     return (
       <div
         className={`${
           this.props.switches.get.tab === 'Search' ? '' : 'hidden '
         }border-4 my-2 flex flex-1 flex-col overflow-hidden rounded-2xl border-gray-400 shadow-lg dark:border-gray-500 ${
-          loading
-            ? 'items-center justify-center'
-            : current
-            ? 'no-scrollbar overflow-y-scroll'
-            : ''
+          loading ? 'items-center justify-center' : ''
         }`}
       >
         {loading ? (
@@ -391,7 +402,7 @@ class Search extends React.Component<SearchProps, SearchState> {
               darkMode ? 'rgb(64, 64, 64)' : 'rgba(245, 245, 245)'
             }
           />
-        ) : !current ? (
+        ) : (
           <>
             <div className="mb-2 rounded-lg bg-white p-2 dark:bg-gray-800">
               <div className="relative mx-auto mt-4 mb-2 block w-11/12">
@@ -585,81 +596,30 @@ class Search extends React.Component<SearchProps, SearchState> {
               {results}
             </div>
             {appMode === Mode.SCHEDULE && this.props.switches.get.minimap && (
-              <div className="mt-2 hidden h-[25vh] rounded-lg bg-white dark:bg-gray-800 hsm:block">
+              <div className="relative mt-2 hidden h-[25vh] rounded-lg bg-white dark:bg-gray-800 hsm:block">
                 <CampusMinimap
                   expand={this.props.expandMap}
-                  section={
-                    this.props.scheduleInteractions.previewSection.get ||
-                    this.props.schedule.schedule[
-                      this.props.scheduleInteractions.hoverSection.get || ''
-                    ]
-                  }
+                  location={this.props.scheduleInteractions.hoverLocation.get}
+                  section={mapSection}
                 />
+
+                <AnimatePresence>
+                  {roomFinderAvailable && (
+                    <motion.div
+                      initial={{ x: '-50%', y: 100 }}
+                      animate={{ y: 0 }}
+                      exit={{ y: 100 }}
+                      transition={{ delay: 0.25, duration: 0.2 }}
+                      className="absolute bottom-1 left-1/2 z-20 w-full -translate-x-1/2 px-2"
+                    >
+                      <p className="rounded-lg bg-gray-400 px-1 py-0.5 text-center text-xs font-medium text-white dark:bg-gray-500">
+                        ROOM FINDER AVAILABLE FROM COURSE INFO MENU
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             )}
-          </>
-        ) : (
-          <>
-            <SearchClass
-              course={current}
-              color={PlanManager.getCourseColor(current.id)}
-            />
-            <AddButtons
-              action={(year, quarter) => {
-                if (current) {
-                  this.props.f.addCourse(current, {
-                    year,
-                    quarter,
-                  });
-                  this.setState({ current: undefined });
-                }
-              }}
-              courses={this.props.data.courses}
-            />
-            <div className="py-2">
-              <p className="p-2 text-center text-sm font-bold text-gray-500">
-                BOOKMARKS
-              </p>
-              <button
-                className="mx-auto my-2 block w-4/5 rounded-md bg-indigo-500 p-0.5 font-medium text-white opacity-100 shadow-sm hover:opacity-60"
-                onClick={() => {
-                  if (!current) return;
-                  if (bookmarks.noCredit.has(current)) {
-                    this.props.f.removeBookmark(current, false);
-                  } else {
-                    this.props.f.addBookmark(current, false);
-                  }
-                }}
-              >
-                {bookmarks.noCredit.has(current)
-                  ? 'Remove from bookmarks'
-                  : 'Add to bookmarks'}
-              </button>
-              <button
-                className="mx-auto my-2 block w-4/5 rounded-md bg-indigo-800 p-0.5 font-medium text-white opacity-100 shadow-sm hover:opacity-60 dark:bg-indigo-400"
-                onClick={() => {
-                  if (!current) return;
-                  if (bookmarks.forCredit.has(current)) {
-                    this.props.f.removeBookmark(current, true);
-                  } else {
-                    this.props.f.addBookmark(current, true);
-                  }
-                }}
-              >
-                {bookmarks.forCredit.has(current)
-                  ? 'Remove for credit'
-                  : 'Add for credit'}
-              </button>
-            </div>
-            <button
-              className="mx-auto my-8 block w-4/5 rounded-md bg-gray-500
-                        p-2 font-medium text-white opacity-100 shadow-sm hover:opacity-60"
-              onClick={() => {
-                this.setState({ current: undefined });
-              }}
-            >
-              Back
-            </button>
           </>
         )}
       </div>

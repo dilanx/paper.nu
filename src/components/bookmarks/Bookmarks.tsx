@@ -73,7 +73,6 @@ function Bookmarks(props: BookmarksProps) {
       ) : (
         <ScheduleBookmarksList
           schedule={props.schedule}
-          switches={props.switches}
           sf={props.sf}
           interactions={props.scheduleInteractions}
           sideCard={props.sideCard}

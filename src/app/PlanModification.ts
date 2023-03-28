@@ -216,10 +216,10 @@ export function removeBookmark(
 
 export function addSummerQuarter(app: AppType, year: number) {
   app.showAlert({
-    title: 'Add summer quarter to app year?',
-    message: `app will add a summer quarter to your ${Utility.convertYear(
+    title: 'Add summer quarter to this year?',
+    message: `This will add a summer quarter to your ${Utility.convertYear(
       year
-    ).toLowerCase()}. You can remove it by removing all classes from that quarter and refreshing the page.`,
+    ).toLowerCase()}.`,
     confirmButton: 'Add quarter',
     cancelButton: 'Close',
     color: 'yellow',
@@ -229,6 +229,32 @@ export function addSummerQuarter(app: AppType, year: number) {
       data.courses[year].push([]);
       app.setState({ data: data });
       d('summer quarter added: y%d', year);
+    },
+  });
+}
+
+export function removeSummerQuarter(app: AppType, year: number) {
+  app.showAlert({
+    title: 'Remove summer quarter from this year?',
+    message: `This will remove the summer quarter from your ${Utility.convertYear(
+      year
+    ).toLowerCase()} and all classes within it.`,
+    confirmButton: 'Remove quarter',
+    cancelButton: 'Close',
+    color: 'yellow',
+    icon: PlusIcon,
+    action: () => {
+      const data = app.state.data;
+      data.courses[year].pop();
+      app.setState({
+        data: data,
+        unsavedChanges: PlanManager.save(
+          data,
+          app.state.switches,
+          app.state.originalDataString
+        ),
+      });
+      d('summer quarter removed: y%d', year);
     },
   });
 }

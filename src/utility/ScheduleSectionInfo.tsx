@@ -13,6 +13,7 @@ import {
   UserIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
+import { MapIcon } from '@heroicons/react/24/solid';
 import { ReactNode } from 'react';
 import PlanManager from '../PlanManager';
 import ScheduleManager from '../ScheduleManager';
@@ -21,6 +22,7 @@ import { IconElement, UserOptions } from '../types/BaseTypes';
 import { Course } from '../types/PlanTypes';
 import {
   ScheduleBookmarks,
+  ScheduleInteractions,
   ScheduleModificationFunctions,
   ScheduleSection,
 } from '../types/ScheduleTypes';
@@ -37,7 +39,8 @@ function getDetails(
   detail: string,
   section: ScheduleSection,
   course?: Course,
-  alert?: Alert
+  alert?: Alert,
+  interactions?: ScheduleInteractions
 ): [IconElement, ReactNode] | undefined {
   switch (detail) {
     case 'TOPIC':
@@ -110,11 +113,60 @@ function getDetails(
         )),
       ];
     case 'LOCATION':
+      let roomFinderLinkExists = false;
       return [
         MapPinIcon,
-        section.room.map((room, i) => (
-          <p key={`section-info-location-${i}`}>{room}</p>
-        )),
+        <>
+          {section.room.map((room, i) => {
+            let roomFinderLink: string | null = null;
+            if (room) {
+              roomFinderLink = ScheduleManager.getRoomFinderLink(room);
+              if (roomFinderLink) roomFinderLinkExists = true;
+            }
+
+            return (
+              <button
+                className={`my-1 inline-flex items-center justify-center gap-1 underline underline-offset-4 ${
+                  roomFinderLink
+                    ? 'hover:text-emerald-500 active:text-emerald-600 dark:hover:text-emerald-300 dark:active:text-emerald-200'
+                    : 'decoration-dotted hover:text-emerald-800 dark:hover:text-emerald-100'
+                }`}
+                onMouseEnter={() => {
+                  if (interactions)
+                    interactions.hoverLocation.set([
+                      room,
+                      ScheduleManager.getCourseColor(section.subject),
+                    ]);
+                }}
+                onMouseLeave={() => {
+                  if (interactions) interactions.hoverLocation.clear();
+                }}
+                onClick={() => {
+                  if (roomFinderLink) {
+                    if (interactions) interactions.hoverLocation.clear();
+                    window.open(roomFinderLink, '_blank');
+                  }
+                }}
+                key={`section-info-location-${i}`}
+              >
+                <p
+                  className={`underline underline-offset-4 ${
+                    roomFinderLink ? '' : 'decoration-dotted'
+                  }`}
+                >
+                  {room}
+                </p>
+                {roomFinderLink && <MapIcon className="h-4 w-4" />}
+              </button>
+            );
+          })}
+          {roomFinderLinkExists && (
+            <div className="flex items-center justify-center gap-1 text-xs font-bold text-gray-400 dark:text-gray-600">
+              <MapIcon className="h-3 w-3" />
+              <p>ROOM FINDER LINK</p>
+            </div>
+          )}
+        </>,
       ];
     case 'START/END DATES':
       return [
@@ -167,8 +219,8 @@ interface SectionModificationWithinInfo {
 export function openInfo(
   sideCard: SideCard,
   alert: Alert,
-  switches: UserOptions,
   section: ScheduleSection,
+  interactions?: ScheduleInteractions,
   mod?: SectionModificationWithinInfo
 ) {
   const name = section.subject + ' ' + section.number;
@@ -243,7 +295,8 @@ export function openInfo(
     subtitle: section.title,
     message: course?.description ?? 'No course description available',
     items: items.reduce<SideCardItemData[]>((filtered, item) => {
-      const [icon, value] = getDetails(item, section, course, alert) ?? [];
+      const [icon, value] =
+        getDetails(item, section, course, alert, interactions) ?? [];
       if (value) {
         filtered.push({
           key: item,

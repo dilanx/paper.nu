@@ -1,5 +1,19 @@
 # Paper Change Log
 
+### 2.4.0
+
+_2023-03-26_
+
+**Plan**
+
+- The search UI in the plan view has been updated and is now more similar to the schedule view.
+- You can now remove the summer quarter from a year without having to remove all of the courses and refreshing the page.
+
+**Schedule**
+
+- You can now get a direct link to a room on Tech Room Finder from within a course section's information card. Just click on the room name if it has a solid underline.
+- While a course section's information card is open, you can hover over a room name (both solid and dotted underlines) to see the location on the minimap.
+
 ### 2.3.0
 
 _2023-03-21_

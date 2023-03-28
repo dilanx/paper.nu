@@ -1,6 +1,7 @@
 import {
   ChevronDownIcon,
   ChevronUpIcon,
+  MinusIcon,
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
@@ -102,19 +103,33 @@ class Year extends React.Component<YearProps, YearState> {
             </div>
           )}
           <div className="absolute right-1 top-1 text-gray-300 dark:text-gray-500">
-            {quarters.length < 4 && (
-              <button
-                className="group relative inline-block bg-transparent p-1 hover:text-yellow-300 dark:hover:text-yellow-300"
-                onClick={() => {
+            <button
+              className="group relative inline-block bg-transparent p-1 hover:text-yellow-300 dark:hover:text-yellow-300"
+              onClick={() => {
+                if (quarters.length < 4) {
                   this.props.f2.addSummerQuarter(this.props.year);
-                }}
-              >
-                <PlusIcon className="h-5 w-5" />
-                <Tooltip color="yellow" className="-bottom-10 right-0 w-48">
-                  Add summer quarter
-                </Tooltip>
-              </button>
-            )}
+                } else {
+                  this.props.f2.removeSummerQuarter(this.props.year);
+                }
+              }}
+            >
+              {quarters.length < 4 ? (
+                <>
+                  <PlusIcon className="h-5 w-5" />
+                  <Tooltip color="yellow" className="-bottom-10 right-0 w-48">
+                    Add summer quarter
+                  </Tooltip>
+                </>
+              ) : (
+                <>
+                  <MinusIcon className="h-5 w-5" />
+                  <Tooltip color="yellow" className="-bottom-10 right-0 w-48">
+                    Remove summer quarter
+                  </Tooltip>
+                </>
+              )}
+            </button>
+
             <button
               className="group relative inline-block bg-transparent p-1 hover:text-red-400 dark:hover:text-red-400"
               onClick={() => {

@@ -11,9 +11,10 @@ interface AddButtonProps {
 function AddButton(props: AddButtonProps) {
   return (
     <button
-      className={`text-center bg-${props.color}-400 mx-auto my-2 block w-2/3
-        rounded-md p-2 font-medium text-white opacity-100 shadow-sm hover:opacity-60`}
-      onClick={() => {
+      className={`text-center bg-${props.color}-400 block flex-1 rounded-md
+        px-1 py-2 text-sm font-medium text-white opacity-100 shadow-sm hover:opacity-75 active:opacity-50`}
+      onClick={(e) => {
+        e.stopPropagation();
         props.action();
       }}
     >
@@ -29,71 +30,43 @@ interface AddButtonSectionProps {
 }
 
 function AddButtonSection(props: AddButtonSectionProps) {
-  let withSummer = (
-    <div className="grid grid-cols-4 gap-0">
-      <AddButton
-        text="Fa"
-        color="orange"
-        action={() => {
-          props.action(0);
-        }}
-      />
-      <AddButton
-        text="Wi"
-        color="sky"
-        action={() => {
-          props.action(1);
-        }}
-      />
-      <AddButton
-        text="Sp"
-        color="lime"
-        action={() => {
-          props.action(2);
-        }}
-      />
-      <AddButton
-        text="Su"
-        color="yellow"
-        action={() => {
-          props.action(3);
-        }}
-      />
-    </div>
-  );
-
-  let withoutSummer = (
-    <div className="grid grid-cols-3 gap-0">
-      <AddButton
-        text="Fall"
-        color="orange"
-        action={() => {
-          props.action(0);
-        }}
-      />
-      <AddButton
-        text="Winter"
-        color="sky"
-        action={() => {
-          props.action(1);
-        }}
-      />
-      <AddButton
-        text="Spring"
-        color="lime"
-        action={() => {
-          props.action(2);
-        }}
-      />
-    </div>
-  );
-
   return (
-    <div className="py-2">
+    <div className="py-2 px-1">
       <p className="p-2 text-center text-sm font-bold text-gray-500">
         {props.title}
       </p>
-      {props.size === 4 ? withSummer : withoutSummer}
+      <div className="flex gap-2">
+        <AddButton
+          text="Fall"
+          color="orange"
+          action={() => {
+            props.action(0);
+          }}
+        />
+        <AddButton
+          text="Winter"
+          color="sky"
+          action={() => {
+            props.action(1);
+          }}
+        />
+        <AddButton
+          text="Spring"
+          color="lime"
+          action={() => {
+            props.action(2);
+          }}
+        />
+        {props.size === 4 && (
+          <AddButton
+            text="Summer"
+            color="yellow"
+            action={() => {
+              props.action(3);
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 }

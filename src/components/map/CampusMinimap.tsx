@@ -2,6 +2,7 @@ import { ArrowsPointingOutIcon } from '@heroicons/react/24/outline';
 import { Fragment } from 'react';
 import { MapContainer, Marker, TileLayer, Tooltip } from 'react-leaflet';
 import ScheduleManager from '../../ScheduleManager';
+import { Color } from '../../types/BaseTypes';
 import { ScheduleSection } from '../../types/ScheduleTypes';
 import {
   getMapMarkerIcon,
@@ -14,11 +15,14 @@ const DEFAULT_ZOOM = 14.2;
 
 interface CampusMinimapProps {
   expand: () => void;
+  location?: [string | null, Color];
   section?: ScheduleSection;
 }
 
-function CampusMinimap({ expand, section }: CampusMinimapProps) {
-  const positions: ([number, number] | null)[] | undefined = section?.room?.map(
+function CampusMinimap({ expand, location, section }: CampusMinimapProps) {
+  const rooms = location ? [location[0]] : section?.room || [];
+
+  const positions: ([number, number] | null)[] | undefined = rooms.map(
     (room) => {
       const loc = ScheduleManager.getLocation(room);
       return loc ? [loc.lat, loc.lon] : null;
@@ -40,16 +44,20 @@ function CampusMinimap({ expand, section }: CampusMinimapProps) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <MapFlyTo position={firstPosition} />
-        {section &&
+        {(section || location) &&
           (positions ? (
             positions.map((loc, i) =>
               loc ? (
                 <Marker
                   position={loc}
                   key={`map-marker-${i}`}
-                  icon={getMapMarkerIcon(
-                    ScheduleManager.getCourseColor(section.subject)
-                  )}
+                  icon={
+                    section
+                      ? getMapMarkerIcon(
+                          ScheduleManager.getCourseColor(section.subject)
+                        )
+                      : getMapMarkerIcon(location![1])
+                  }
                 />
               ) : (
                 <Fragment key={`map-marker-${i}`} />

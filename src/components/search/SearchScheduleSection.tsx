@@ -19,7 +19,6 @@ interface SearchScheduleSectionProps {
   alreadyAdded: boolean;
   sideCard: SideCard;
   alert: Alert;
-  switches: UserOptions;
 }
 
 const variants = {
@@ -35,7 +34,6 @@ function SearchScheduleSection({
   alreadyAdded,
   sideCard,
   alert,
-  switches,
 }: SearchScheduleSectionProps) {
   const disabled =
     alreadyAdded ||
@@ -117,7 +115,7 @@ function SearchScheduleSection({
           className="absolute bottom-1 right-1"
           onClick={(e) => {
             e.stopPropagation();
-            openInfo(sideCard, alert, switches, section);
+            openInfo(sideCard, alert, section, interactions);
           }}
         >
           <InformationCircleIcon className="h-5 w-5 text-gray-600 opacity-60 hover:opacity-100 active:opacity-75 dark:text-gray-300" />

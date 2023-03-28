@@ -26,6 +26,7 @@ import {
   moveCourse,
   removeBookmark,
   removeCourse,
+  removeSummerQuarter,
 } from './app/PlanModification';
 import {
   addScheduleBookmark,
@@ -130,6 +131,9 @@ class App extends React.Component<{}, AppState> implements AppType {
       addSummerQuarter: (year) => {
         addSummerQuarter(app, year);
       },
+      removeSummerQuarter: (year) => {
+        removeSummerQuarter(app, year);
+      },
       addYear: () => {
         addYear(app);
       },
@@ -196,6 +200,10 @@ class App extends React.Component<{}, AppState> implements AppType {
         hoverDelete: {
           set: (id) => this.interactionUpdate('hoverDelete', id),
           clear: () => this.interactionUpdate('hoverDelete'),
+        },
+        hoverLocation: {
+          set: (location) => this.interactionUpdate('hoverLocation', location),
+          clear: () => this.interactionUpdate('hoverLocation'),
         },
         previewSection: {
           set: (id) => this.interactionUpdate('previewSection', id),

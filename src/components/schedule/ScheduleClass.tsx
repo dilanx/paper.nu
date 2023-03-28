@@ -90,7 +90,7 @@ function ScheduleClass(props: ScheduleClassProps) {
       }}
       onClick={() => {
         if (!props.sideCard || !props.alert) return;
-        openInfo(props.sideCard, props.alert, props.switches, section, {
+        openInfo(props.sideCard, props.alert, section, interactions, {
           bookmarks: props.bookmarks,
           sf,
           ff,

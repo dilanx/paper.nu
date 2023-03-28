@@ -26,7 +26,6 @@ interface SearchScheduleClassProps {
   filter?: FilterOptions;
   sideCard: SideCard;
   alert: Alert;
-  switches: UserOptions;
 }
 
 const variants = {
@@ -110,7 +109,6 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
                 alreadyAdded={section.section_id in props.schedule.schedule}
                 sideCard={props.sideCard}
                 alert={props.alert}
-                switches={props.switches}
                 key={`search-${section.section_id}`}
               />
             );
