@@ -1,7 +1,7 @@
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import { Alert } from '../../types/AlertTypes';
-import { Color, UserOptions } from '../../types/BaseTypes';
+import { Color } from '../../types/BaseTypes';
 import {
   ScheduleInteractions,
   ScheduleModificationFunctions,

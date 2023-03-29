@@ -47,7 +47,6 @@ import {
 } from '../../utility/Forms';
 import Utility from '../../utility/Utility';
 import CampusMinimap from '../map/CampusMinimap';
-import AddButtons from './AddButtons';
 import MiniContentBlock from './MiniContentBlock';
 import SearchBrowse from './SearchBrowse';
 import SearchButton from './SearchButton';
@@ -364,8 +363,6 @@ class Search extends React.Component<SearchProps, SearchState> {
       appMode,
       searchMode
     );
-
-    let bookmarks = this.props.data.bookmarks;
 
     const queryEmpty = search.length === 0;
 

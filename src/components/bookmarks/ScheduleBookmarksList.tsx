@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import ScheduleManager from '../../ScheduleManager';
 import { Alert } from '../../types/AlertTypes';
-import { UserOptions } from '../../types/BaseTypes';
 import {
   ScheduleData,
   ScheduleInteractions,

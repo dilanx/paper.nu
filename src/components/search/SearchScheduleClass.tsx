@@ -3,7 +3,7 @@ import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import { motion } from 'framer-motion';
 import { useDrag } from 'react-dnd';
 import { Alert } from '../../types/AlertTypes';
-import { Color, UserOptions } from '../../types/BaseTypes';
+import { Color } from '../../types/BaseTypes';
 import {
   ScheduleCourse,
   ScheduleData,

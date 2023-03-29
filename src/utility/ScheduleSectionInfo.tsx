@@ -18,7 +18,7 @@ import { ReactNode } from 'react';
 import PlanManager from '../PlanManager';
 import ScheduleManager from '../ScheduleManager';
 import { Alert } from '../types/AlertTypes';
-import { IconElement, UserOptions } from '../types/BaseTypes';
+import { IconElement } from '../types/BaseTypes';
 import { Course } from '../types/PlanTypes';
 import {
   ScheduleBookmarks,
