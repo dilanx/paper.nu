@@ -7,9 +7,11 @@ import {
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline';
 import {
+  Bars3Icon,
   CalendarDaysIcon,
   FunnelIcon,
   XCircleIcon,
+  XMarkIcon,
 } from '@heroicons/react/24/solid';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
@@ -367,9 +369,6 @@ class Search extends React.Component<SearchProps, SearchState> {
     const queryEmpty = search.length === 0;
 
     const loading = this.props.loading || !this.props.term;
-    const newerTermAvailable =
-      this.props.latestTermId !== undefined &&
-      this.props.latestTermId !== this.props.term?.id;
 
     const mapSection: ScheduleSection =
       this.props.scheduleInteractions.previewSection.get ||
@@ -380,6 +379,16 @@ class Search extends React.Component<SearchProps, SearchState> {
     const roomFinderAvailable = mapSection?.room?.some((r) =>
       r?.toLowerCase().includes('tech')
     );
+
+    const isBrowsing = searchMode === SearchMode.BROWSE || filter.get.subject;
+
+    const isBrowsingDeep =
+      (searchMode === SearchMode.BROWSE && this.state.browseSchool) ||
+      filter.get.subject;
+
+    const termName = this.props.term?.name ?? '-';
+
+    const isSchedule = appMode === Mode.SCHEDULE;
 
     return (
       <div
@@ -452,11 +461,11 @@ class Search extends React.Component<SearchProps, SearchState> {
               {queryEmpty && (
                 <div className="m-4 flex justify-center gap-2">
                   <SearchButton
-                    active={
-                      searchMode === SearchMode.BROWSE || filter.get.subject
-                        ? 'green'
-                        : undefined
+                    fullWidth={!isSchedule}
+                    tooltip={
+                      isBrowsingDeep ? 'Back' : isBrowsing ? 'Close' : 'Browse'
                     }
+                    color={isBrowsing ? 'green' : undefined}
                     action={() => {
                       if (filter.get.subject) {
                         const subj = filter.get.subject;
@@ -487,17 +496,17 @@ class Search extends React.Component<SearchProps, SearchState> {
                       });
                     }}
                   >
-                    {(searchMode === SearchMode.BROWSE &&
-                      this.state.browseSchool) ||
-                    filter.get.subject ? (
-                      <div className="flex w-full items-center justify-center gap-1">
-                        <ArrowSmallLeftIcon className="h-5 w-5" /> Back
-                      </div>
+                    {isBrowsingDeep ? (
+                      <ArrowSmallLeftIcon className="h-5 w-5" />
+                    ) : isBrowsing ? (
+                      <XMarkIcon className="h-5 w-5" />
                     ) : (
-                      'Browse'
+                      <Bars3Icon className="h-5 w-5" />
                     )}
                   </SearchButton>
                   <SearchButton
+                    fullWidth={!isSchedule}
+                    tooltip="Filter"
                     action={() => {
                       this.props.alert({
                         title: 'Edit search filters',
@@ -551,10 +560,12 @@ class Search extends React.Component<SearchProps, SearchState> {
                       });
                     }}
                   >
-                    Filter
+                    <FunnelIcon className="h-5 w-5" />
                   </SearchButton>
-                  {appMode === Mode.SCHEDULE && (
+                  {isSchedule && (
                     <SearchButton
+                      fullWidth
+                      tooltip="Change term"
                       action={() => {
                         this.props.alert(
                           switchTermAlert(
@@ -563,21 +574,13 @@ class Search extends React.Component<SearchProps, SearchState> {
                           )
                         );
                       }}
-                      tooltip="Change term"
-                      ring={newerTermAvailable}
+                      color={Utility.getTermColor(termName)}
                     >
-                      <CalendarDaysIcon className="h-5 w-5" />
+                      {termName}
                     </SearchButton>
                   )}
                 </div>
               )}
-              {newerTermAvailable &&
-                appMode === Mode.SCHEDULE &&
-                queryEmpty && (
-                  <p className="text-center text-xs font-medium text-violet-600 dark:text-violet-400">
-                    COURSES FOR A NEWER TERM ARE AVAILABLE
-                  </p>
-                )}
             </div>
             <div className="no-scrollbar flex-1 overflow-hidden overflow-y-scroll">
               {queryEmpty && !results && searchMode === SearchMode.BROWSE && (
@@ -592,7 +595,7 @@ class Search extends React.Component<SearchProps, SearchState> {
               {placeholder}
               {results}
             </div>
-            {appMode === Mode.SCHEDULE && this.props.switches.get.minimap && (
+            {isSchedule && this.props.switches.get.minimap && (
               <div className="relative mt-2 hidden h-[25vh] rounded-lg bg-white dark:bg-gray-800 hsm:block">
                 <CampusMinimap
                   expand={this.props.expandMap}

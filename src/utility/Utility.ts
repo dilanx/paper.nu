@@ -104,6 +104,23 @@ let Utility = {
     }
   },
 
+  getTermColor: (name: string): Color => {
+    name = name.toLowerCase();
+    if (name.includes('fall')) {
+      return 'orange';
+    }
+    if (name.includes('winter')) {
+      return 'sky';
+    }
+    if (name.includes('spring')) {
+      return 'lime';
+    }
+    if (name.includes('summer')) {
+      return 'yellow';
+    }
+    return 'gray';
+  },
+
   convertAllDaysToString: (nums: string) => {
     let days = '';
     for (let i = 0; i < nums.length; i++) {

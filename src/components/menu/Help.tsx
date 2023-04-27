@@ -10,7 +10,7 @@ const helpMenu = (): AlertData => ({
   cancelButton: 'Close',
   confirmButton: 'Go to the help center',
   action: () => {
-    window.open('https://www.dilanxd.com/kb?f=paper', '_blank');
+    window.open('https://kb.dilanxd.com/paper', '_blank');
   },
 });
 
