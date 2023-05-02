@@ -1,10 +1,14 @@
 # Paper Change Log
 
+### 2.4.2
+
+_2023-05-02_
+
+- Various UI updates, bug fixes, and other small changes.
+
 ### 2.4.1
 
 _2023-04-26_
-
-**General**
 
 - Updated the buttons below the search bar.
 - Various UI updates, bug fixes, and other small changes.
