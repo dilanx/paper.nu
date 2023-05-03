@@ -17,7 +17,7 @@ var da = debug('account:auth');
 var dh = debug('account:http');
 var dp = debug('account:op');
 
-const TOKEN_URL = 'https://api.dilanxd.com/authenticate/token';
+const TOKEN_URL = 'https://api.dilanxd.com/auth/token';
 const SERVER = 'https://api.dilanxd.com';
 
 const cache: DocumentCache = {};
@@ -46,7 +46,7 @@ async function authLogin(
     localStorage.setItem('t_s', state);
     da('no auth code in query, new access token required, redirecting');
     window.open(
-      'https://api.dilanxd.com/authenticate?client_id=' +
+      'https://api.dilanxd.com/auth?client_id=' +
         process.env.REACT_APP_PUBLIC_CLIENT_ID +
         '&redirect_uri=' +
         encodeURIComponent(url.toString()) +
@@ -105,7 +105,7 @@ async function authLogout(): Promise<ConnectionResponse> {
   let url = new URL(window.location.href);
   url.searchParams.set('action', 'logout');
   window.open(
-    `https://api.dilanxd.com/authenticate/logout?redirect_uri=${encodeURIComponent(
+    `https://api.dilanxd.com/auth/logout?redirect_uri=${encodeURIComponent(
       url.toString()
     )}&action=logout`,
     '_self'
