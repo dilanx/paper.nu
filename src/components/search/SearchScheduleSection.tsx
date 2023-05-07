@@ -37,9 +37,9 @@ function SearchScheduleSection({
 }: SearchScheduleSectionProps) {
   const disabled =
     alreadyAdded ||
-    !section.meeting_days ||
-    !section.start_time ||
-    !section.end_time;
+    !section.meeting_days?.length ||
+    !section.start_time?.length ||
+    !section.end_time?.length;
 
   const meetingPatterns = [];
 

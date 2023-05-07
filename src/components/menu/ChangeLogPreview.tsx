@@ -73,8 +73,8 @@ function ChangeLogPreview({
                   <ul className="w-full list-disc">
                     {info.items.map(({ title, description }, i) => (
                       <li className="my-4" key={`clp-item-${i}`}>
-                        <p className="font-medium">{title}</p>
-                        <p className="text-sm font-light">{description}</p>
+                        <p className="font-bold">{title}</p>
+                        <p className="text-sm font-normal">{description}</p>
                       </li>
                     ))}
                   </ul>
@@ -96,13 +96,19 @@ function ChangeLogPreview({
                                 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-100 active:bg-gray-200 active:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600
                                 dark:active:bg-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                     onClick={() => {
+                      if (info.link) {
+                        window.open(info.link.url, '_blank');
+                        return;
+                      }
                       window.open(
                         'https://www.dilanxd.com/paper/changelog',
                         '_blank'
                       );
                     }}
                   >
-                    View all changes in v{version}
+                    {info.link
+                      ? info.link.text
+                      : `View all changes in v${version}`}
                   </button>
                 </div>
               </Dialog.Panel>

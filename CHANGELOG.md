@@ -1,5 +1,11 @@
 # Paper Change Log
 
+### 2.5.0
+
+_2023-05-07_
+
+- Various UI updates, bug fixes, and other small changes.
+
 ### 2.4.2
 
 _2023-05-02_

@@ -5,6 +5,7 @@ import {
   InformationCircleIcon,
   MapIcon,
   PencilSquareIcon,
+  QuestionMarkCircleIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { CalendarIcon, RectangleStackIcon } from '@heroicons/react/24/solid';
@@ -90,7 +91,7 @@ function Toolbar({
           ) : (
             <RectangleStackIcon className="h-5 w-5" />
           )}
-          <p className="overflow-hidden text-ellipsis whitespace-nowrap">
+          <p className="overflow-hidden text-ellipsis whitespace-nowrap text-sm">
             {activeItem}
           </p>
         </div>
@@ -98,7 +99,29 @@ function Toolbar({
       <div className="flex gap-1">
         <ToolbarButton
           icon={InformationCircleIcon}
-          onClick={() => openAboutMenu()}
+          active={contextMenuData?.name === 'about'}
+          onClick={(x, y) => {
+            contextMenu({
+              name: 'about',
+              x,
+              y,
+              theme,
+              items: [
+                {
+                  text: 'About',
+                  icon: InformationCircleIcon,
+                  onClick: () => openAboutMenu(),
+                },
+                {
+                  text: 'Help',
+                  icon: QuestionMarkCircleIcon,
+                  onClick: () => {
+                    window.open('https://kb.dilanxd.com/paper', '_blank');
+                  },
+                },
+              ],
+            });
+          }}
         >
           About
         </ToolbarButton>
@@ -130,7 +153,6 @@ function Toolbar({
         >
           Notes
         </ToolbarButton>
-
         <ToolbarButton
           icon={ArrowTopRightOnSquareIcon}
           active={contextMenuData?.name === 'export'}

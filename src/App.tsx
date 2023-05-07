@@ -219,12 +219,14 @@ class App extends React.Component<{}, AppState> implements AppType {
     let params = new URLSearchParams(window.location.search);
     let hash = window.location.hash;
 
-    let code = params.get('code');
+    const code = params.get('code');
     params.delete('code');
-    let state = params.get('state');
+    const state = params.get('state');
     params.delete('state');
-    let action = params.get('action');
+    const action = params.get('action');
     params.delete('action');
+    const search = params.get('fs');
+    params.delete('fs');
 
     if (this.state.switches.get.use_url) {
       window.history.replaceState(
@@ -256,6 +258,10 @@ class App extends React.Component<{}, AppState> implements AppType {
           this.setSwitch('mode', Mode.SCHEDULE);
           break;
       }
+    }
+
+    if (search) {
+      this.state.ff.set(search);
     }
 
     if (code && state) {

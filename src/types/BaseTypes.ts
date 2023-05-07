@@ -133,6 +133,10 @@ export interface ChangeLogPreviewInformation {
     title: string;
     description?: string;
   }[];
+  link?: {
+    text: string;
+    url: string;
+  };
 }
 
 export interface ContextMenuData {

@@ -66,7 +66,7 @@ export interface SearchResultsElements {
 }
 
 export interface SearchModificationFunctions {
-  set: (query: string, current: string | undefined) => void;
+  set: (query: string, current?: string) => void;
 }
 
 export interface SearchDefaults {

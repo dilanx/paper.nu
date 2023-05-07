@@ -37,7 +37,7 @@ const versions: InfoSetData = [
   [
     'API Version',
     async () => {
-      const response = await fetch(Account.SERVER + '/info');
+      const response = await fetch(Account.SERVER);
       const data = await response.json();
       return data.version;
     },

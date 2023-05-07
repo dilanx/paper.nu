@@ -39,7 +39,7 @@ function ToolbarButton({
       }`}
     >
       <p className="hidden md:block">{children}</p>
-      <Icon className="h-6 w-6 stroke-2 md:h-5 md:w-5" />
+      <Icon className="h-5 w-5 stroke-2 md:h-5 md:w-5" />
     </button>
   );
 }

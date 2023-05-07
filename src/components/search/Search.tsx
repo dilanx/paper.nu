@@ -193,8 +193,11 @@ class Search extends React.Component<SearchProps, SearchState> {
             ? [
                 <div key="no-query">
                   <MiniContentBlock icon={MagnifyingGlassIcon} title="Search">
-                    Use the search bar to search across every course at
-                    Northwestern and view detailed information for each one.
+                    Search across every course at Northwestern and view detailed
+                    information for each one using the{' '}
+                    <span className="font-medium">search bar</span>, along with
+                    the <span className="font-medium">browse</span> and{' '}
+                    <span className="font-medium">filter</span> buttons above.
                   </MiniContentBlock>
                   <MiniContentBlock icon={ArrowRightIcon} title="Drag">
                     Drag courses from this search area into the quarter you
@@ -203,25 +206,31 @@ class Search extends React.Component<SearchProps, SearchState> {
                   </MiniContentBlock>
                   <MiniContentBlock icon={CloudIcon} title="Save">
                     Easily create an account to save multiple plans and access
-                    them from anywhere.
+                    them from anywhere, right from the{' '}
+                    <span className="font-medium">Schedules</span> tab at the
+                    bottom.
                   </MiniContentBlock>
                   <MiniContentBlock
                     icon={ArrowTopRightOnSquareIcon}
                     title="Share"
                   >
-                    The URL updates as you modify your plan. Share it with
-                    others and they'll have a copy that they can view and edit.
+                    Plans are built to be sharable. Just use the{' '}
+                    <span className="font-medium">Export</span> button to share
+                    a link to a copy of your plan.
                   </MiniContentBlock>
                 </div>,
               ]
             : [
                 <div key="no-query">
                   <MiniContentBlock icon={MagnifyingGlassIcon} title="Search">
-                    Use the search bar to search across every course offered{' '}
+                    Search across every course offered{' '}
                     <span className="font-bold">{this.props.term?.name}</span>{' '}
                     at Northwestern and view detailed information for each one.
                     Search courses by subject and number, title, time slot,
-                    instructor, or location.
+                    instructor, or location using the{' '}
+                    <span className="font-medium">search bar</span>, along with
+                    the <span className="font-medium">browse</span> and{' '}
+                    <span className="font-medium">filter</span> buttons above.
                   </MiniContentBlock>
                   <MiniContentBlock icon={ArrowRightIcon} title="Add">
                     Add any of the sections for a course to your schedule and
@@ -229,17 +238,18 @@ class Search extends React.Component<SearchProps, SearchState> {
                   </MiniContentBlock>
                   <MiniContentBlock icon={CloudIcon} title="Save">
                     Easily create an account to save multiple schedules and
-                    access them from anywhere. You can even add custom blocks to
-                    your account schedules.
+                    access them from anywhere, right from the{' '}
+                    <span className="font-medium">Schedules</span> tab at the
+                    bottom.
                   </MiniContentBlock>
                   <MiniContentBlock
                     icon={ArrowTopRightOnSquareIcon}
                     title="Share"
                   >
-                    The URL updates as you modify your schedule. Share it with
-                    others and they'll have a copy that they can view and edit.
-                    You can also export your schedule as an image or to your
-                    calendar app.
+                    Schedules are built to be sharable. Just use the{' '}
+                    <span className="font-medium">Export</span> button to share
+                    your schedule as an image or a link, or export it to your
+                    calendar.
                   </MiniContentBlock>
                 </div>,
               ],
@@ -367,28 +377,22 @@ class Search extends React.Component<SearchProps, SearchState> {
     );
 
     const queryEmpty = search.length === 0;
-
     const loading = this.props.loading || !this.props.term;
-
     const mapSection: ScheduleSection =
       this.props.scheduleInteractions.previewSection.get ||
       this.props.schedule.schedule[
         this.props.scheduleInteractions.hoverSection.get || ''
       ];
-
     const roomFinderAvailable = mapSection?.room?.some((r) =>
       r?.toLowerCase().includes('tech')
     );
-
     const isBrowsing = searchMode === SearchMode.BROWSE || filter.get.subject;
-
     const isBrowsingDeep =
       (searchMode === SearchMode.BROWSE && this.state.browseSchool) ||
       filter.get.subject;
-
     const termName = this.props.term?.name ?? '-';
-
     const isSchedule = appMode === Mode.SCHEDULE;
+    const usingFilters = Object.keys(filter.get).length > 0;
 
     return (
       <div
@@ -455,7 +459,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                   </span>
                 </p>
               )}
-              {Object.keys(filter.get).length > 0 && (
+              {usingFilters && (
                 <SearchFilterDisplay filter={filter} appMode={appMode} />
               )}
               {queryEmpty && (
@@ -507,6 +511,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                   <SearchButton
                     fullWidth={!isSchedule}
                     tooltip="Filter"
+                    color={usingFilters ? 'orange' : undefined}
                     action={() => {
                       this.props.alert({
                         title: 'Edit search filters',
