@@ -15,6 +15,8 @@ import { SideCard } from '../../types/SideCardTypes';
 import Utility from '../../utility/Utility';
 import Day from './Day';
 import HoursColumn from './HoursColumn';
+import paperBlack from '../../assets/paper-full-black.png';
+import paperWhite from '../../assets/paper-full-white.png';
 
 interface DayMeetingPatterns {
   [day: number]: SectionWithValidMeetingPattern[];
@@ -41,6 +43,7 @@ class Schedule extends React.Component<ScheduleProps> {
 
     const schedule = this.props.schedule.schedule;
     const imageMode = this.props.imageMode;
+    const dark = this.props.switches.get.dark;
 
     for (let section_id in schedule) {
       let section = schedule[section_id];
@@ -124,8 +127,8 @@ class Schedule extends React.Component<ScheduleProps> {
 
     return (
       <motion.div
-        className={`p-4 pt-2 ${
-          imageMode ? 'absolute top-full h-imgh w-imgw' : 'relative flex-1'
+        className={`p-4 ${
+          imageMode ? 'absolute top-full h-imgh w-imgw' : 'relative flex-1 pt-2'
         }`}
         id={imageMode ? 'schedule' : undefined}
         {...(!imageMode
@@ -138,9 +141,11 @@ class Schedule extends React.Component<ScheduleProps> {
           : {})}
       >
         <div
-          className={`schedule-grid-cols grid rounded-lg border-4 border-green-200 border-opacity-75 bg-green-50 bg-opacity-50 p-4 shadow-md
+          className={`schedule-grid-cols grid rounded-lg border-4 border-opacity-75 bg-opacity-50 p-4 shadow-md
                         dark:bg-gray-800 ${
-                          imageMode ? 'h-full' : 'h-192 lg:h-full'
+                          imageMode
+                            ? 'h-full border-black bg-white dark:border-white'
+                            : 'h-192 border-green-200 bg-green-50 lg:h-full'
                         }`}
         >
           <HoursColumn start={start} end={end} />
@@ -148,9 +153,14 @@ class Schedule extends React.Component<ScheduleProps> {
         </div>
 
         {imageMode && (
-          <p className="absolute top-6 right-8 text-lg font-bold text-green-400 opacity-50 dark:text-green-200">
-            PAPER.NU
-          </p>
+          // <p className="absolute top-6 right-8 text-lg font-bold text-green-400 opacity-50 dark:text-green-200">
+          //   PAPER.NU
+          // </p>
+          <img
+            src={dark ? paperWhite : paperBlack}
+            alt="paper.nu"
+            className="absolute top-6 right-8 h-[40px]"
+          />
         )}
       </motion.div>
     );

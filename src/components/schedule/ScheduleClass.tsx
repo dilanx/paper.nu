@@ -105,7 +105,7 @@ function ScheduleClass(props: ScheduleClassProps) {
         >
           <p
             className={`${
-              imageMode ? 'text-md font-normal' : 'text-sm font-semibold'
+              imageMode ? 'text-md font-semibold' : 'text-sm font-semibold'
             } m-0 p-0 text-black dark:text-white`}
           >
             {subject} {number}

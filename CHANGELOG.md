@@ -1,5 +1,11 @@
 # Paper Change Log
 
+### 2.5.1
+
+_2023-05-08_
+
+- Updated the exported schedule image.
+
 ### 2.5.0
 
 _2023-05-07_
