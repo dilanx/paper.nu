@@ -258,20 +258,22 @@ let Utility = {
       .join(', '),
 
   errorAlert: (from: PlanErrorLocation, error: string): AlertData => {
+    const errorText = error + ' - ' + from;
     return {
       title: "Well, this isn't good...",
-      message: `Oh nooo this wasn't supposed to happen. An unexpected error occurred.
-                      Check out the site status to see if what you're experiencing is a known issue.
-                      If it's not, please let me know. Make sure to note the error message below.`,
-      confirmButton: 'View status',
+      message: `Oh nooo this wasn't supposed to happen. An unexpected error occurred. You can troubleshoot this error or try again later.`,
+      confirmButton: 'Troubleshoot this error',
       cancelButton: 'Close',
       color: 'red',
       icon: ExclamationTriangleIcon,
       textView: {
-        text: error + ' - ' + from,
+        text: errorText,
       },
       action: () => {
-        window.open('https://dilan.statuspage.io', '_blank');
+        window.open(
+          `https://kb.dilanxd.com/pa101?e=${encodeURIComponent(errorText)}`,
+          '_blank'
+        );
       },
     };
   },
