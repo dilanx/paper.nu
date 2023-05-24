@@ -477,6 +477,14 @@ let Utility = {
     const { start_time, end_time, meeting_days } = swmp;
     return start_time && end_time && meeting_days;
   },
+
+  friendlyEasterEgg: (text: string) => {
+    if (text === 'naomi') {
+      return ['Hmm?', "Wait what's going on?"];
+    }
+
+    return null;
+  },
 };
 
 export default Utility;
