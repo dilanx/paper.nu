@@ -76,7 +76,7 @@ import clp from './app/ChangeLogPreview';
 import Toolbar from './components/menu/toolbar/Toolbar';
 import ContextMenu from './components/menu/context-menu/ContextMenu';
 import Notes from './components/menu/Notes';
-var d = debug('app');
+const d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
 const VERSION_NO_PATCH = VERSION.split('.').slice(0, 2).join('.');

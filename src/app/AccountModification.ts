@@ -11,7 +11,7 @@ import { PlanData } from '../types/PlanTypes';
 import { ScheduleData } from '../types/ScheduleTypes';
 import PaperError from '../utility/PaperError';
 import Utility from '../utility/Utility';
-var d = debug('app:account-mod');
+const d = debug('app:account-mod');
 
 function activate(
   app: AppType,

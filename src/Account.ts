@@ -13,9 +13,9 @@ import {
 } from './types/AccountTypes';
 import Utility from './utility/Utility';
 import debug from 'debug';
-var da = debug('account:auth');
-var dh = debug('account:http');
-var dp = debug('account:op');
+const da = debug('account:auth');
+const dh = debug('account:http');
+const dp = debug('account:op');
 
 const TOKEN_URL = 'https://api.dilanxd.com/auth/token';
 const SERVER = 'https://api.dilanxd.com';

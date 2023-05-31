@@ -3,7 +3,7 @@ import debug from 'debug';
 import ScheduleManager from '../ScheduleManager';
 import { AppType } from '../types/BaseTypes';
 import { ScheduleCourse, ScheduleSection } from '../types/ScheduleTypes';
-var d = debug('app:schedule-mod');
+const d = debug('app:schedule-mod');
 
 function courseConfirmationPrompts(
   app: AppType,

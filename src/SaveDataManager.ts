@@ -13,7 +13,7 @@ import {
 import { PlanData } from './types/PlanTypes';
 import { ScheduleData } from './types/ScheduleTypes';
 import { Mode } from './utility/Constants';
-var d = debug('save-data-manager');
+const d = debug('save-data-manager');
 
 const DEFAULT_SWITCHES: ReadUserOptions = {
   notifications: true,

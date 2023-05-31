@@ -10,7 +10,7 @@ import {
 } from './types/SearchTypes';
 import { DistroMap, Mode } from './utility/Constants';
 import Utility from './utility/Utility';
-var ds = debug('plan-manager:ser');
+const ds = debug('plan-manager:ser');
 
 let courseData: RawCourseData | undefined = undefined;
 const SEARCH_RESULT_LIMIT = 100;

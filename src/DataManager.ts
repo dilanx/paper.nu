@@ -4,7 +4,7 @@ import debug from 'debug';
 import { PlanDataCache, RawCourseData } from './types/PlanTypes';
 import { ScheduleCourse, ScheduleDataCache } from './types/ScheduleTypes';
 import { plan, schedule } from './utility/DataMap';
-var d = debug('data-manager');
+const d = debug('data-manager');
 
 let info: DataMapInformation | undefined = undefined;
 

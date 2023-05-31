@@ -15,7 +15,7 @@ import {
 import { FilterOptions, SearchError, SearchResults } from './types/SearchTypes';
 import { Days, DistroMap, Mode } from './utility/Constants';
 import Utility from './utility/Utility';
-var ds = debug('schedule-manager:ser');
+const ds = debug('schedule-manager:ser');
 
 let scheduleData: ScheduleCourse[] | undefined = undefined;
 const school = JSONSchoolData as RawSchoolData;

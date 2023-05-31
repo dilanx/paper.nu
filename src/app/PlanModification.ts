@@ -9,7 +9,7 @@ import { Course, CourseLocation } from '../types/PlanTypes';
 import Utility from '../utility/Utility';
 import debug from 'debug';
 import toast from 'react-hot-toast';
-var d = debug('app:plan-mod');
+const d = debug('app:plan-mod');
 
 function courseConfirmationPrompts(
   app: AppType,
