@@ -3,7 +3,6 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';
 import {
   AlertActionData,
-  AlertConfirmationState,
   AlertData,
   AlertFormResponse,
 } from '../../../types/AlertTypes';
@@ -21,6 +20,7 @@ interface AlertProps {
   data: AlertData;
   switches: UserOptions;
   onConfirm: (data: AlertActionData) => void;
+  onSwitch: (next: AlertData) => void;
   onClose: () => void;
 }
 
@@ -30,11 +30,11 @@ export default function Alert({
   data,
   switches,
   onConfirm,
+  onSwitch,
   onClose,
 }: AlertProps) {
   const darkMode = switches.get.dark;
   const [isOpen, setIsOpen] = useState(true);
-  const [confirmation, setConfirmation] = useState<AlertConfirmationState>({});
   const [textValue, setTextValue] = useState<string | undefined>(
     data.selectMenu?.defaultValue || data.textInput?.defaultValue
   );
@@ -118,12 +118,7 @@ export default function Alert({
     );
   }
 
-  let optionList = getAlertOptions(
-    options,
-    switches,
-    confirmation,
-    setConfirmation
-  );
+  let optionList = getAlertOptions(options, switches, onSwitch);
 
   let editButtonList = getAlertEditButtons(data.editButtons, close);
 

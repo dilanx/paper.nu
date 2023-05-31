@@ -536,6 +536,9 @@ class App extends React.Component<{}, AppState> implements AppType {
                     alertData.action(data);
                   }
                 }}
+                onSwitch={(next) => {
+                  this.showAlert(next);
+                }}
                 onClose={() => {
                   this.postShowAlert();
                 }}

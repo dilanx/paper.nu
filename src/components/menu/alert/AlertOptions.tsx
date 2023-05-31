@@ -1,94 +1,54 @@
-import {
-  AlertConfirmationState,
-  AlertDataOption,
-} from '../../../types/AlertTypes';
+import { Switch } from '@headlessui/react';
+import { AlertData, AlertDataOption } from '../../../types/AlertTypes';
 import { UserOptions } from '../../../types/BaseTypes';
+import { Fragment } from 'react';
 
 export const getAlertOptions = (
   options: AlertDataOption[] | undefined,
   switches: UserOptions,
-  confirmation: AlertConfirmationState,
-  setConfirmation: React.Dispatch<React.SetStateAction<AlertConfirmationState>>
+  next: (nextAlert: AlertData) => void
 ) =>
   options?.map((option, i) => {
-    const singleAction = option.singleAction || !option.switch;
-    let enabled =
-      option.singleAction || !option.switch
-        ? false
-        : (switches.get[option.switch] as boolean);
+    const single = !option.switch;
+    const enabled = option.switch && (switches.get[option.switch] as boolean);
     return (
-      <div
-        className="m-2 grid grid-cols-1 p-2 sm:grid-cols-5"
-        key={`alert-option-${i}`}
-      >
-        <div className="col-span-1 sm:col-span-3">
-          <p className="text-sm font-bold text-black dark:text-white">
-            {option.title}
-          </p>
+      <Fragment key={`alert-option-${option.switch}`}>
+        <div className="m-2 flex flex-col p-2">
+          <div className="flex items-center">
+            <p className="flex-1 text-sm font-bold text-black dark:text-white">
+              {option.title}
+            </p>
+            <div className="mx-2">
+              <Switch
+                checked={enabled}
+                onChange={() => {
+                  switches.set(option.switch!, !enabled, option.saveToStorage);
+                  if (option.action) {
+                    option.action(false, next);
+                  }
+                }}
+                className={`${
+                  enabled
+                    ? 'bg-emerald-400 hover:bg-emerald-500 active:bg-emerald-600'
+                    : 'bg-gray-600 hover:bg-gray-500 active:bg-gray-400'
+                }
+                relative inline-flex h-7 w-12 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`${enabled ? 'translate-x-5' : 'translate-x-0'}
+          pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
+                />
+              </Switch>
+            </div>
+          </div>
           <p className="mr-2 text-xs text-gray-600 dark:text-gray-300">
             {option.description}
           </p>
         </div>
-        <div className="col-span-1 sm:col-span-2">
-          {!singleAction &&
-            (enabled ? (
-              <button
-                className="m-1 mx-auto block w-full rounded-md bg-emerald-400 p-2 text-sm font-medium text-white opacity-100 shadow-sm transition-all duration-150 hover:opacity-75 active:opacity-60"
-                onClick={() => {
-                  switches.set(option.switch!, false, option.saveToStorage);
-                  if (option.bonusAction) {
-                    option.bonusAction(false);
-                  }
-                }}
-              >
-                {option.buttonTextOn ?? 'Enabled'}
-              </button>
-            ) : (
-              <button
-                className="m-1 mx-auto block w-full rounded-md bg-red-400 p-2 text-sm font-medium text-white opacity-100 shadow-sm transition-all duration-150 hover:opacity-75 active:opacity-60"
-                onClick={() => {
-                  switches.set(option.switch!, true, option.saveToStorage);
-                  if (option.bonusAction) {
-                    option.bonusAction(true);
-                  }
-                }}
-              >
-                {option.buttonTextOff ?? 'Disabled'}
-              </button>
-            ))}
-          {option.singleAction && (
-            <button
-              className={`mx-auto block ${
-                option.confirmation && confirmation[option.confirmation]
-                  ? 'bg-red-500 dark:bg-red-500'
-                  : 'bg-gray-600 dark:bg-gray-500'
-              } m-1 w-full rounded-md p-2 text-sm font-medium
-                text-white opacity-100 shadow-md transition-all duration-150 hover:opacity-75 active:opacity-60`}
-              onClick={() => {
-                if (option.confirmation) {
-                  if (!confirmation[option.confirmation]) {
-                    setConfirmation({
-                      ...confirmation,
-                      [option.confirmation]: true,
-                    });
-                    return;
-                  }
-                }
-                if (option.singleAction) option.singleAction();
-                if (option.confirmation) {
-                  setConfirmation({
-                    ...confirmation,
-                    [option.confirmation]: false,
-                  });
-                }
-              }}
-            >
-              {option.confirmation && confirmation[option.confirmation]
-                ? 'Confirm'
-                : option.buttonTextOn ?? 'Go'}
-            </button>
-          )}
-        </div>
-      </div>
+        {i !== options.length - 1 && (
+          <hr className="mx-4 my-1 dark:border-gray-600" />
+        )}
+      </Fragment>
     );
   }) ?? [];

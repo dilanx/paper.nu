@@ -9,12 +9,8 @@ export interface AlertDataOption {
   switch?: keyof ReadUserOptions;
   title: string;
   description: string;
-  singleAction?: () => void;
   saveToStorage?: boolean;
-  buttonTextOn?: string;
-  buttonTextOff?: string;
-  bonusAction?: (newSwitch: boolean) => void;
-  confirmation?: string;
+  action?: (newSwitch: boolean, next: (nextAlert: AlertData) => void) => void;
 }
 
 export interface AlertConfirmationState {

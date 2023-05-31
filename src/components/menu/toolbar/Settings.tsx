@@ -34,7 +34,7 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
             title: 'Dark mode',
             description: `Become one with the night.`,
             saveToStorage: true,
-            bonusAction: (newSwitch) => {
+            action: (newSwitch) => {
               let color = newSwitch
                 ? Utility.BACKGROUND_DARK
                 : Utility.BACKGROUND_LIGHT;
@@ -51,18 +51,16 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
               "By default, your plan and schedule data is saved to the URL. However, that can get a bit annoying if your browser keeps routing to an old link. If you just use your account or browser storage to save your plans and schedules, you can disable URL saving. You won't be able to open Paper links while this setting is disabled unless they're shortened.",
             saveToStorage: true,
           },
-          {
-            title: 'Clear local course data cache',
-            description:
-              'This clears all of the course data stored in your browser. Clearing the data cache will not delete any plans or schedules, including ones saved in your browser. THE SITE WILL RELOAD!',
-            buttonTextOn: 'Clear',
-            confirmation: 'clear_local_cache',
-            singleAction: () => {
-              clearCache().finally(() => {
-                window.location.reload();
-              });
-            },
-          },
+          // {
+          //   title: 'Clear local course data cache',
+          //   description:
+          //     'This clears all of the course data stored in your browser. Clearing the data cache will not delete any plans or schedules, including ones saved in your browser. THE SITE WILL RELOAD!',
+          //   singleAction: () => {
+          //     clearCache().finally(() => {
+          //       window.location.reload();
+          //     });
+          //   },
+          // },
         ],
       },
       {
@@ -87,15 +85,15 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
             description: `See prerequisites and distribution areas on the class items without having to click on their info button. The info won't display if compact mode is enabled.`,
             saveToStorage: true,
           },
-          {
-            title: 'Clear plan',
-            description: `Clear all of your current plan data, which includes everything for each year and everything in your bookmarks. Make sure to save the current URL somewhere if you don't want to lose it.`,
-            buttonTextOn: 'Clear',
-            confirmation: 'clear_plan',
-            singleAction: () => {
-              f2.clearData();
-            },
-          },
+          // {
+          //   title: 'Clear plan',
+          //   description: `Clear all of your current plan data, which includes everything for each year and everything in your bookmarks. Make sure to save the current URL somewhere if you don't want to lose it.`,
+          //   buttonTextOn: 'Clear',
+          //   confirmation: 'clear_plan',
+          //   singleAction: () => {
+          //     f2.clearData();
+          //   },
+          // },
         ],
       },
       {
@@ -131,7 +129,7 @@ const settingsMenu = (f2: PlanSpecialFunctions): AlertData => ({
             title: 'Debug mode',
             description: `Log messages will print into your browser's console (verbose log level is required).`,
             saveToStorage: true,
-            bonusAction: (newSwitch) => {
+            action: (newSwitch) => {
               if (newSwitch) {
                 debugModule.enable('*');
               } else {
