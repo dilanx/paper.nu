@@ -16,6 +16,7 @@ import {
 import { getSections } from '../../../utility/Calendar';
 import PaperError from '../../../utility/PaperError';
 import Utility from '../../../utility/Utility';
+import { toast } from 'react-hot-toast';
 
 type ActionFunction<T = null> = (data: T) => void;
 
@@ -58,47 +59,50 @@ const exportMenu = ({
         text: 'Share link',
         icon: LinkIcon,
         onClick: () => {
-          alert({
-            title: 'Ready to share!',
-            message:
-              'All of your data is stored in the URL. When you make changes, the URL is updated to reflect them. Save it somewhere, or share with a friend!',
-            confirmButton: 'Copy to clipboard',
-            cancelButton: 'Close',
-            color: 'sky',
-            icon: LinkIcon,
-            textView: {
-              text: `${window.location.origin}/?${dataString}`,
-              update: {
-                text: 'SHORTEN LINK',
-                disabled: !dataString || dataString.length === 0,
-                fn: async () => {
-                  if (!dataString) {
-                    throw new PaperError('No data to shorten');
-                  }
+          const id = toast.loading('Generating link...');
 
-                  const response = await fetch(
-                    `${Account.SERVER}/paper/shorten`,
-                    {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({
-                        content: dataString,
-                      }),
-                    }
-                  );
-                  if (!response.ok) {
-                    throw new PaperError('Failed to shorten link');
-                  }
-                  const data = await response.json();
-                  return `${window.location.origin}/#${data.shortCode}`;
-                },
-                afterUpdate: 'LINK SHORTENED',
+          async function generateShortLink() {
+            if (!dataString) {
+              throw new PaperError('No data to shorten');
+            }
+
+            const response = await fetch(`${Account.SERVER}/paper/shorten`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
               },
-            },
-            action: ({ textViewValue }) => actions.link(textViewValue),
-          });
+              body: JSON.stringify({
+                content: dataString,
+              }),
+            });
+            if (!response.ok) {
+              throw new PaperError('Failed to generate shortened link');
+            }
+            const data = await response.json();
+            return `${window.location.origin}/#${data.shortCode}`;
+          }
+
+          generateShortLink()
+            .then((link) => {
+              toast.success('Link generated!', { id });
+              alert({
+                title: 'Ready to share!',
+                message:
+                  'All of your data is stored in the URL. When you make changes, the URL is updated to reflect them. Save it somewhere, or share with a friend!',
+                confirmButton: 'Copy to clipboard',
+                cancelButton: 'Close',
+                color: 'sky',
+                icon: LinkIcon,
+                textView: {
+                  text: link,
+                },
+                action: ({ textViewValue }) => actions.link(textViewValue),
+              });
+            })
+            .catch((err) => {
+              console.error(err);
+              toast.error('Failed to generate link', { id });
+            });
         },
       },
     ],
