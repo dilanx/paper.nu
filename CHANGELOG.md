@@ -10,7 +10,9 @@ _2023-06-02_
   - Shortened links will still work and will be the only way to share a link to a copy of your plan or schedule with others.
   - Pressing "Export" then "Share link" will automatically generate a shortened link.
   - URLs can be loaded using the new "Load legacy URL" option in the general settings.
+- Plans and schedules saved to an account can now be duplicated.
 - The settings menu has been redesigned.
+- Plan and schedule names are no longer automatically displayed in uppercase.
 - Various UI updates, bug fixes, and other small changes.
 
 ### 2.5.1

@@ -200,11 +200,16 @@ let Account = {
     if (updateCache && res) cache[type] = res.documents;
     return res?.documents;
   },
-  create: async (type: DocumentType, name: string) => {
-    dp(`${type}: create`);
+  create: async (
+    type: DocumentType,
+    name: string,
+    body?: Partial<Document>
+  ) => {
+    dp(`${type}: ${body ? 'duplicate' : 'create'}`);
     const res = await operation<CreateResponse>('/paper/documents', 'POST', {
       type: getTypeId(type),
       name,
+      ...(body || {}),
     });
 
     if (!cache[type]) cache[type] = await Account.get(type, true, false);
@@ -250,7 +255,7 @@ let Account = {
     if (!plan) {
       return '-';
     }
-    return plan.name.toUpperCase();
+    return plan.name;
   },
   getScheduleName: (scheduleId: string) => {
     if (scheduleId === 'None') return 'None';
@@ -260,7 +265,7 @@ let Account = {
     if (!schedule) {
       return '-';
     }
-    return schedule.name.toUpperCase();
+    return schedule.name;
   },
 };
 

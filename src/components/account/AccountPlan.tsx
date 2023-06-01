@@ -1,5 +1,9 @@
 import { motion } from 'framer-motion';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import {
+  DocumentDuplicateIcon,
+  PencilIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 import {
   AccountModificationFunctions,
   Document,
@@ -43,7 +47,7 @@ function AccountPlan(props: AccountPlanProps) {
         }}
       >
         <p className="text-lg font-semibold text-black dark:text-white">
-          {plan.name.toUpperCase()}
+          {plan.name}
         </p>
         <p className="text-xs font-medium text-gray-600 dark:text-gray-300">
           {termId ? (termName ? termName : 'unknown term') + ' • ' : ''}last
@@ -54,6 +58,7 @@ function AccountPlan(props: AccountPlanProps) {
         </p>
         <div className="absolute -top-2 -right-2 flex overflow-hidden rounded-lg">
           <button
+            title="Rename"
             className="z-20 hidden bg-gray-200 px-1 py-0.5
                         text-xs text-gray-500 opacity-80 transition-all duration-150 hover:bg-sky-100 hover:text-sky-400
                         hover:opacity-100 group-hover:block dark:bg-gray-700 dark:text-white dark:hover:text-sky-400"
@@ -65,6 +70,19 @@ function AccountPlan(props: AccountPlanProps) {
             <PencilIcon className="h-5 w-5" />
           </button>
           <button
+            title="Duplicate"
+            className="z-20 hidden bg-gray-200 px-1 py-0.5
+                        text-xs text-gray-500 opacity-80 transition-all duration-150 hover:bg-teal-100 hover:text-teal-400
+                        hover:opacity-100 group-hover:block dark:bg-gray-700 dark:text-white dark:hover:text-teal-400"
+            onClick={(e) => {
+              e.stopPropagation();
+              props.fa.duplicate(plan);
+            }}
+          >
+            <DocumentDuplicateIcon className="h-5 w-5" />
+          </button>
+          <button
+            title="Delete"
             className="z-20 hidden bg-gray-200 px-1 py-0.5
                         text-xs text-gray-500 opacity-80 transition-all duration-150 hover:bg-red-100 hover:text-red-400
                         hover:opacity-100 group-hover:block dark:bg-gray-700 dark:text-white dark:hover:text-red-400"

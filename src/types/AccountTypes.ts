@@ -54,6 +54,7 @@ export interface AccountModificationFunctions {
   activate: (id: string) => void;
   deactivate: () => void;
   rename: (id: string, name: string) => void;
+  duplicate: (document: Document) => void;
   delete: (id: string, name: string) => void;
 }
 

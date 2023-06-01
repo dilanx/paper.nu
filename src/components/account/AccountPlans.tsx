@@ -1,5 +1,6 @@
 import {
   CloudIcon,
+  DocumentDuplicateIcon,
   PencilIcon,
   PlusIcon,
   TrashIcon,
@@ -20,6 +21,9 @@ import PaperError from '../../utility/PaperError';
 import Utility from '../../utility/Utility';
 import AccountPlan from './AccountPlan';
 import AccountPlanMessage from './AccountPlanMessage';
+
+const PLAN_LIMIT = 5;
+const SCHEDULE_LIMIT = 20;
 
 interface AccountPlansProps {
   switches: UserOptions;
@@ -61,6 +65,9 @@ class AccountPlans extends React.Component<
       },
       rename: (id, name) => {
         self.edit(id, name);
+      },
+      duplicate: (doc) => {
+        self.duplicate(doc);
       },
       delete: (id, name) => {
         self.delete(id, name);
@@ -149,7 +156,7 @@ class AccountPlans extends React.Component<
                   loading: false,
                 });
               }
-              return `Created ${t}: ` + name.toUpperCase();
+              return `Created ${t}: ` + name;
             },
             error: (error: PaperError) => {
               self.props.alert(
@@ -205,11 +212,85 @@ class AccountPlans extends React.Component<
                   loading: false,
                 });
               }
-              return `Renamed ${name.toUpperCase()} to ${newName.toUpperCase()}`;
+              return `Renamed ${name} to ${newName}`;
             },
             error: (error: PaperError) => {
               self.props.alert(
                 Utility.errorAlert(`account_edit_${t}`, error.message)
+              );
+              return 'Something went wrong';
+            },
+          }
+        );
+      },
+    });
+  }
+
+  duplicate(doc: Document) {
+    const self = this;
+    const isSchedule = this.props.switches.get.mode === Mode.SCHEDULE;
+    const t = isSchedule ? 'schedule' : 'plan';
+
+    if (
+      (isSchedule && (this.state.schedules?.length || 0) >= SCHEDULE_LIMIT) ||
+      (!isSchedule && (this.state.plans?.length || 0) >= PLAN_LIMIT)
+    ) {
+      this.props.alert({
+        title: `Maximum ${t} limit reached`,
+        message: `You've reached the maximum number of ${t}s you can have in your account. You'll need to delete one before you can create a new one.`,
+        color: 'sky',
+        icon: DocumentDuplicateIcon,
+        cancelButton: 'Close',
+      });
+      return;
+    }
+
+    this.props.alert({
+      title: `Duplicating ${doc.name}`,
+      message: `Enter a name for this duplicate ${t}.`,
+      cancelButton: 'Cancel',
+      confirmButton: 'Save',
+      color: 'sky',
+      icon: DocumentDuplicateIcon,
+      textInput: {
+        placeholder: 'Name',
+        match: /^[\w\-\s]{1,24}$/,
+        matchError: 'Alphanumeric, hyphens and spaces, 1-24 chars',
+        focusByDefault: true,
+        defaultValue: doc.name,
+      },
+      action: ({ inputText: name }) => {
+        if (!name) {
+          self.props.alert(
+            Utility.errorAlert(`account_duplicate_${t}`, 'No Name')
+          );
+          return;
+        }
+        self.setState({ loading: true });
+        toast.promise(
+          Account.create(isSchedule ? 'schedules' : 'plans', name, {
+            content: doc.content,
+            notes: doc.notes,
+          }),
+          {
+            loading: `Duplicating ${doc.name}...`,
+            success: (res) => {
+              if (isSchedule) {
+                self.setState({
+                  schedules: res,
+                  loading: false,
+                });
+              } else {
+                self.setState({
+                  plans: res,
+                  loading: false,
+                });
+              }
+              return `Created ${t}: ${name}`;
+            },
+            error: (error: PaperError) => {
+              self.props.alert(
+                Utility.errorAlert(`account_duplicate_${t}`, error.message)
               );
               return 'Something went wrong';
             },
@@ -378,7 +459,7 @@ class AccountPlans extends React.Component<
                 : `Select a ${t} to activate it, and again to deactivate it. Activating empty ${t}s won't overwrite current ${t} data.`}
             </p>
             <div className="m-4 block">{items}</div>
-            {items.length < (isSchedule ? 20 : 5) && (
+            {items.length < (isSchedule ? SCHEDULE_LIMIT : PLAN_LIMIT) && (
               <button
                 className="mx-auto my-4 block rounded-lg bg-rose-300 px-4 py-1 text-sm text-white
                                 shadow-sm hover:bg-rose-400 dark:bg-rose-600 dark:hover:bg-rose-500"
