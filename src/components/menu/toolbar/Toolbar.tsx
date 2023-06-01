@@ -17,9 +17,10 @@ import { Alert } from '../../../types/AlertTypes';
 import {
   ContextMenu,
   ContextMenuData,
+  LoadLegacyUrlFunction,
   UserOptions,
 } from '../../../types/BaseTypes';
-import { PlanData, PlanSpecialFunctions } from '../../../types/PlanTypes';
+import { PlanData } from '../../../types/PlanTypes';
 import { ScheduleData } from '../../../types/ScheduleTypes';
 import { exportScheduleAsICS } from '../../../utility/Calendar';
 import { Mode } from '../../../utility/Constants';
@@ -39,8 +40,8 @@ interface ToolbarProps {
   openMap?: () => void;
   switches: UserOptions;
   loading: boolean;
-  f2: PlanSpecialFunctions;
   openAboutMenu: () => void;
+  loadLegacyUrl: LoadLegacyUrlFunction;
 }
 
 function Toolbar({
@@ -52,8 +53,8 @@ function Toolbar({
   openMap,
   switches,
   loading,
-  f2,
   openAboutMenu,
+  loadLegacyUrl,
 }: ToolbarProps) {
   const [takeImage, setTakeImage] = useState(false);
 
@@ -188,7 +189,6 @@ function Toolbar({
                     });
                   },
                 },
-                useUrl: switches.get.use_url,
               })
             );
           }}
@@ -197,7 +197,7 @@ function Toolbar({
         </ToolbarButton>
         <ToolbarButton
           icon={Cog6ToothIcon}
-          onClick={() => alert(settingsMenu(f2))}
+          onClick={() => alert(settingsMenu(loadLegacyUrl))}
         >
           Settings
         </ToolbarButton>

@@ -2,10 +2,13 @@
 
 ### 2.6.0
 
-_2023-05-31_
+_2023-06-02_
 
 - The URL save data system has been discontinued.
   - Read more about this change on my blog: https://dilan.blog/discontinuing-the-paper-url-save-data-system
+  - Loading a legacy URL in your browser will not load any plan or schedule. Your most recently edited plan or schedule will be loaded.
+  - Shortened links will still work and will be the only way to share a link to a copy of your plan or schedule with others.
+  - Pressing "Export" then "Share link" will automatically generate a shortened link.
   - URLs can be loaded using the new "Load legacy URL" option in the general settings.
 - The settings menu has been redesigned.
 - Various UI updates, bug fixes, and other small changes.

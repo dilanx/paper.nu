@@ -216,8 +216,8 @@ class App extends React.Component<{}, AppState> implements AppType {
 
   componentDidMount() {
     this.setState({ loadingLogin: true });
-    let params = new URLSearchParams(window.location.search);
-    let hash = window.location.hash;
+    const params = new URLSearchParams(window.location.search);
+    const hash = window.location.hash;
 
     const code = params.get('code');
     params.delete('code');
@@ -228,15 +228,7 @@ class App extends React.Component<{}, AppState> implements AppType {
     const search = params.get('fs');
     params.delete('fs');
 
-    if (this.state.switches.get.use_url) {
-      window.history.replaceState(
-        {},
-        '',
-        `${window.location.pathname}?${params.toString()}`
-      );
-    } else {
-      window.history.replaceState({}, '', window.location.pathname);
-    }
+    window.history.replaceState({}, '', window.location.pathname);
 
     if (action) {
       switch (action) {
@@ -278,32 +270,20 @@ class App extends React.Component<{}, AppState> implements AppType {
           this.setSwitch('tab', 'Plans');
           this.setSwitch('active_plan_id', 'None', true);
         }
-        this.initialize(
-          params,
-          () => {
-            this.setState({ loadingLogin: false });
-          },
-          hash
-        );
+        this.initialize(() => {
+          this.setState({ loadingLogin: false });
+        }, hash);
       });
     } else {
-      this.initialize(
-        params,
-        () => {
-          this.setState({ loadingLogin: false });
-        },
-        hash
-      );
+      this.initialize(() => {
+        this.setState({ loadingLogin: false });
+      }, hash);
     }
   }
 
-  initialize(
-    params: URLSearchParams | undefined,
-    callback: () => void,
-    hash?: string
-  ) {
+  initialize(callback: () => void, hash?: string, params?: URLSearchParams) {
     d('initializing');
-    SaveDataManager.load(params, this.state.switches, hash)
+    SaveDataManager.load(this.state.switches, hash, params)
       .then(
         ({
           mode,
@@ -478,15 +458,24 @@ class App extends React.Component<{}, AppState> implements AppType {
   }
 
   switchTerm(termId: string) {
-    this.closeSideCard();
     this.setState({ loadingLogin: true });
     this.initialize(
-      new URLSearchParams({
-        t: termId,
-      }),
       () => {
         this.setState({ loadingLogin: false });
-      }
+      },
+      undefined,
+      new URLSearchParams({ t: termId })
+    );
+  }
+
+  loadLegacyUrl(url: URL) {
+    this.setState({ loadingLogin: true });
+    this.initialize(
+      () => {
+        this.setState({ loadingLogin: false });
+      },
+      undefined,
+      new URLSearchParams(url.search)
     );
   }
 
@@ -616,7 +605,6 @@ class App extends React.Component<{}, AppState> implements AppType {
                 <ModeSwitch
                   switches={switches}
                   changeMode={(mode) => {
-                    this.closeSideCard();
                     discardChanges(this, () => {
                       discardNotesChanges(
                         switches,
@@ -628,7 +616,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                           this.setSwitch('notes', false);
                           this.setSwitch('unsaved_notes', false);
                           this.setState({ loadingLogin: true });
-                          this.initialize(undefined, () => {
+                          this.initialize(() => {
                             this.setState({ loadingLogin: false });
                           });
                         }
@@ -734,8 +722,8 @@ class App extends React.Component<{}, AppState> implements AppType {
                   }}
                   switches={switches}
                   loading={this.state.loadingLogin}
-                  f2={this.state.f2}
                   openAboutMenu={() => this.setState({ about: true })}
+                  loadLegacyUrl={(url) => this.loadLegacyUrl(url)}
                 />
                 <AnimatePresence mode="wait">
                   {switches.get.mode === Mode.PLAN ? (

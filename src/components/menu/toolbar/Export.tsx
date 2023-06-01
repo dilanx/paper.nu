@@ -31,7 +31,6 @@ interface ExportMenuData {
     image: ActionFunction;
     calendar: ActionFunction<ValidScheduleDataMap>;
   };
-  useUrl?: boolean;
 }
 
 const exportMenu = ({
@@ -42,7 +41,6 @@ const exportMenu = ({
   schedule,
   alert,
   actions,
-  useUrl,
 }: ExportMenuData): ContextMenuData => {
   const dataString = plan
     ? PlanManager.getDataString(plan)
@@ -68,16 +66,6 @@ const exportMenu = ({
             cancelButton: 'Close',
             color: 'sky',
             icon: LinkIcon,
-            textHTML: !useUrl ? (
-              <p className="my-4">
-                <span className="font-bold text-red-500 dark:text-red-400">
-                  NOTE!
-                </span>{' '}
-                You have the URL save data functionality disabled. You can share
-                and shorten the link below, but you'll only be able to open it
-                yourself if it's shortened.
-              </p>
-            ) : undefined,
             textView: {
               text: `${window.location.origin}/?${dataString}`,
               update: {

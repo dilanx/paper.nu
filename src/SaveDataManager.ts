@@ -21,7 +21,6 @@ const DEFAULT_SWITCHES: ReadUserOptions = {
   mode: Mode.PLAN,
   schedule_warnings: true,
   minimap: true,
-  use_url: true,
 };
 
 function matchAccountId(accountData: Document[], content: string) {
@@ -34,9 +33,9 @@ function matchAccountId(accountData: Document[], content: string) {
 
 let SaveDataManager = {
   load: async (
-    params: URLSearchParams | undefined,
     switches: UserOptions,
-    hash?: string
+    hash?: string,
+    params?: URLSearchParams
   ): Promise<LoadResponse<PlanData | ScheduleData>> => {
     let activeId: string | undefined = undefined;
     let originalDataString: string = '';

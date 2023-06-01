@@ -24,7 +24,7 @@ async function loadCourseData() {
 async function loadData(
   params: URLSearchParams
 ): Promise<PlanData | 'malformed' | 'empty'> {
-  loadCourseData();
+  await loadCourseData();
 
   if (!courseData) {
     return 'malformed';
@@ -417,14 +417,6 @@ const PlanManager = {
   ) => {
     let params = saveData(data);
     let paramsStr = params.toString();
-
-    if (switches.get.use_url) {
-      window.history.replaceState(
-        {},
-        '',
-        `${window.location.pathname}?${paramsStr}`
-      );
-    }
 
     localStorage.setItem('data', paramsStr);
 

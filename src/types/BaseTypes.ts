@@ -56,7 +56,6 @@ export interface ReadUserOptions {
   minimap?: boolean;
   notes?: boolean;
   unsaved_notes?: boolean;
-  use_url?: boolean;
 }
 
 export interface UserOptions {
@@ -160,3 +159,5 @@ export interface ContextMenu {
 export type InfoSetValFn = () => Promise<string>;
 export type InfoSetItem<T> = [string, T];
 export type InfoSetData<T = string | InfoSetValFn> = InfoSetItem<T>[];
+
+export type LoadLegacyUrlFunction = (url: URL) => void;
