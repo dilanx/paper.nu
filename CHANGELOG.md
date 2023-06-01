@@ -1,5 +1,15 @@
 # Paper Change Log
 
+### 2.6.0
+
+_2023-05-31_
+
+- The URL save data system has been discontinued.
+  - Read more about this change on my blog: https://dilan.blog/discontinuing-the-paper-url-save-data-system
+  - URLs can be loaded using the new "Load legacy URL" option in the general settings.
+- The settings menu has been redesigned.
+- Various UI updates, bug fixes, and other small changes.
+
 ### 2.5.1
 
 _2023-05-08_
