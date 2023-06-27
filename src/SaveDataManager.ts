@@ -270,9 +270,13 @@ let SaveDataManager = {
     }
 
     d('no data to load');
+
     return {
       mode,
-      data: 'empty',
+      data: await (mode === Mode.PLAN
+        ? PlanManager
+        : ScheduleManager
+      ).loadFromString(),
       activeId,
       originalDataString,
       method,

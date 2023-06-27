@@ -128,6 +128,15 @@ const ScheduleManager = {
       Object.keys(filter).filter((f) =>
         Utility.filterBelongsTo(f as keyof FilterOptions, Mode.SCHEDULE)
       ).length > 0;
+
+    if (!scheduleData) {
+      if (query.length === 0) {
+        return 'no_query';
+      }
+
+      return 'not_loaded';
+    }
+
     if (!filterExists) {
       for (let term of terms) {
         if (term.length === 0) {
@@ -456,14 +465,12 @@ const ScheduleManager = {
 
   loadFromStorage: async () => {
     let dataStr = localStorage.getItem('schedule');
-    if (!dataStr) return 'empty';
-    let params = new URLSearchParams(dataStr);
+    let params = new URLSearchParams(dataStr || undefined);
     return await loadData(params);
   },
 
   loadFromString: async (dataStr?: string) => {
-    if (!dataStr) return 'empty';
-    return await loadData(new URLSearchParams(dataStr));
+    return await loadData(new URLSearchParams(dataStr || undefined));
   },
 
   getDataString: (data: ScheduleData) => {

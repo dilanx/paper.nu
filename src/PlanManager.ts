@@ -231,19 +231,24 @@ const PlanManager = {
           Utility.filterBelongsTo(f as keyof FilterOptions, Mode.PLAN)
       ).length > 0;
 
+    if (!courseData) {
+      if (query.length === 0) {
+        return 'no_query';
+      }
+
+      return 'not_loaded';
+    }
+
     if (!filterExists) {
       for (let term of terms) {
         if (term.length === 0) {
           return 'no_query';
         }
+
         if (term.length < 3) {
           return 'too_short';
         }
       }
-    }
-
-    if (!courseData) {
-      return 'not_loaded';
     }
 
     let courseIdResults: Course[] = [];
@@ -396,14 +401,12 @@ const PlanManager = {
 
   loadFromStorage: async () => {
     let dataStr = localStorage.getItem('data');
-    if (!dataStr) return 'empty';
-    let params = new URLSearchParams(dataStr);
+    let params = new URLSearchParams(dataStr || undefined);
     return await loadData(params);
   },
 
   loadFromString: async (dataStr?: string) => {
-    if (!dataStr) return 'empty';
-    return await loadData(new URLSearchParams(dataStr));
+    return await loadData(new URLSearchParams(dataStr || 'undefined'));
   },
 
   getDataString: (data: PlanData) => {
