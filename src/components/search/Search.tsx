@@ -55,6 +55,7 @@ import SearchButton from './SearchButton';
 import SearchClass from './SearchClass';
 import SearchFilterDisplay from './SearchFilterDisplay';
 import SearchScheduleClass from './SearchScheduleClass';
+import SearchBoxNotice from './SearchBoxNotice';
 
 interface SearchProps {
   data: PlanData;
@@ -199,6 +200,37 @@ class Search extends React.Component<SearchProps, SearchState> {
           appMode === Mode.PLAN
             ? [
                 <div key="no-query">
+                  <SearchBoxNotice
+                    id="plan-updates-1"
+                    alert={this.props.alert}
+                    switches={this.props.switches}
+                  >
+                    Paper plan data will be getting some updates through fall
+                    2023. Until all updates are complete, you may notice the
+                    following:
+                    <ul className="my-2 list-disc pl-4">
+                      <li>
+                        Some courses in plan view, particularly newer ones, may
+                        be missing. This will cause certain new courses in the
+                        schedule view to be missing descriptions.
+                      </li>
+                      <li>
+                        Students in Weinberg starting after Spring 2023 (like
+                        the freshmen class of 2027) follow the new{' '}
+                        <a
+                          href="https://weinberg.northwestern.edu/undergraduate/degree/post-spring-2023-degree/foundational-disciplines/index.html"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="font-medium text-purple-500 hover:underline dark:text-purple-300"
+                        >
+                          Foundational Disciplines requirement
+                        </a>{' '}
+                        instead of the Distribution requirement. Foundational
+                        discipline information may not appear on all applicable
+                        courses until the updates are complete.
+                      </li>
+                    </ul>
+                  </SearchBoxNotice>
                   <MiniContentBlock icon={MagnifyingGlassIcon} title="Search">
                     Search across every course at Northwestern and view detailed
                     information for each one using the{' '}

@@ -2,6 +2,7 @@ import {
   ArrowRightOnRectangleIcon,
   ArrowTopRightOnSquareIcon,
   Cog6ToothIcon,
+  InboxArrowDownIcon,
   InformationCircleIcon,
   MapIcon,
   PencilSquareIcon,
@@ -118,6 +119,16 @@ function Toolbar({
                   icon: QuestionMarkCircleIcon,
                   onClick: () => {
                     window.open('https://kb.dilanxd.com/paper', '_blank');
+                  },
+                },
+                {
+                  text: 'Feedback',
+                  icon: InboxArrowDownIcon,
+                  onClick: () => {
+                    window.open(
+                      'https://kb.dilanxd.com/paper/feedback',
+                      '_blank'
+                    );
                   },
                 },
               ],
