@@ -480,6 +480,10 @@ let Utility = {
     return start_time && end_time && meeting_days;
   },
 
+  isStringEntirelyANumber: (str: string) => {
+    return /^\d+$/.test(str);
+  },
+
   friendlyEasterEgg: (text: string) => {
     if (text === 'naomi') {
       return ['Hmm?', "Wait what's going on?"];

@@ -4,6 +4,7 @@
 
 _2023-07-10_
 
+- Fixed a bug where account plans and schedules may not load and activate first even if they are the most recently edited.
 - Various UI updates, bug fixes, and other small changes.
 
 ### 2.6.0

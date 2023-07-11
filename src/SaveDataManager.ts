@@ -13,6 +13,7 @@ import {
 import { PlanData } from './types/PlanTypes';
 import { ScheduleData } from './types/ScheduleTypes';
 import { Mode } from './utility/Constants';
+import Utility from './utility/Utility';
 const d = debug('save-data-manager');
 
 const DEFAULT_SWITCHES: ReadUserOptions = {
@@ -302,7 +303,8 @@ let SaveDataManager = {
         if (store != null) {
           if (store === 'true') val = true;
           else if (store === 'false') val = false;
-          else if (!isNaN(parseInt(store))) val = parseInt(store);
+          else if (Utility.isStringEntirelyANumber(store))
+            val = parseInt(store);
           else val = store;
         }
         let switchId = keys[i].substring(7) as keyof ReadUserOptions;
