@@ -41,7 +41,8 @@
   },
   "scripts": {
     "dev": "GENERATE_SOURCEMAP=false REACT_APP_COMMIT=\"$(git rev-parse --short HEAD)\" react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false REACT_APP_COMMIT=\"$(git rev-parse --short HEAD)\" react-scripts build"
+    "build": "GENERATE_SOURCEMAP=false REACT_APP_COMMIT=\"$(git rev-parse --short HEAD)\" react-scripts build",
+    "lint:prettier": "prettier --list-different ."
   },
   "eslintConfig": {
     "extends": [
