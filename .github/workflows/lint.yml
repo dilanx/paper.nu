@@ -21,4 +21,4 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Check formatting with Prettier
-        run: prettier --list-different .
+        run: npm run lint:prettier
