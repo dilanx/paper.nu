@@ -1,4 +1,4 @@
-name: Paper Pull Request
+name: Paper Lint
 
 on:
   push:
