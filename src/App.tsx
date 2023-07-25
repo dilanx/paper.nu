@@ -67,7 +67,7 @@ import {
 import { SearchModificationFunctions } from './types/SearchTypes';
 import { SideCardData } from './types/SideCardTypes';
 import { Mode } from './utility/Constants';
-import PaperError from './utility/PaperError';
+import { PaperError } from './utility/PaperError';
 import Utility from './utility/Utility';
 import About from './components/menu/about/About';
 import { getTermName } from './DataManager';
@@ -263,7 +263,7 @@ class App extends React.Component<{}, AppState> implements AppType {
           this.showAlert(
             Utility.errorAlert(
               'account_initial_login_code',
-              response.data as string
+              new PaperError(response.data as string)
             )
           );
         } else {
@@ -373,7 +373,7 @@ class App extends React.Component<{}, AppState> implements AppType {
         }
       )
       .catch((error: PaperError) => {
-        this.showAlert(Utility.errorAlert('initialization', error.message));
+        this.showAlert(Utility.errorAlert('initialization', error));
       })
       .finally(() => {
         callback();

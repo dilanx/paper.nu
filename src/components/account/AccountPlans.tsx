@@ -17,7 +17,7 @@ import {
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import { Mode } from '../../utility/Constants';
-import PaperError from '../../utility/PaperError';
+import { PaperError } from '../../utility/PaperError';
 import Utility from '../../utility/Utility';
 import AccountPlan from './AccountPlan';
 import AccountPlanMessage from './AccountPlanMessage';
@@ -102,15 +102,11 @@ class AccountPlans extends React.Component<
               });
             })
             .catch((error: PaperError) => {
-              this.props.alert(
-                Utility.errorAlert('account_get_plans', error.message)
-              );
+              this.props.alert(Utility.errorAlert('account_get_plans', error));
             });
         })
         .catch((error: PaperError) => {
-          this.props.alert(
-            Utility.errorAlert('account_get_plans', error.message)
-          );
+          this.props.alert(Utility.errorAlert('account_get_plans', error));
         });
     }
   }
@@ -135,7 +131,7 @@ class AccountPlans extends React.Component<
       action: ({ inputText: name }) => {
         if (!name) {
           self.props.alert(
-            Utility.errorAlert(`account_create_${t}`, 'No Name')
+            Utility.errorAlert(`account_create_${t}`, new PaperError('No Name'))
           );
           return;
         }
@@ -160,7 +156,7 @@ class AccountPlans extends React.Component<
             },
             error: (error: PaperError) => {
               self.props.alert(
-                Utility.errorAlert(`account_create_${t}`, error.message)
+                Utility.errorAlert(`account_create_${t}`, error)
               );
               return 'Something went wrong';
             },
@@ -190,7 +186,9 @@ class AccountPlans extends React.Component<
       },
       action: ({ inputText: newName }) => {
         if (!newName) {
-          self.props.alert(Utility.errorAlert(`account_edit_${t}`, 'No Name'));
+          self.props.alert(
+            Utility.errorAlert(`account_edit_${t}`, new PaperError('No Name'))
+          );
           return;
         }
         self.setState({ loading: true });
@@ -215,9 +213,7 @@ class AccountPlans extends React.Component<
               return `Renamed ${name} to ${newName}`;
             },
             error: (error: PaperError) => {
-              self.props.alert(
-                Utility.errorAlert(`account_edit_${t}`, error.message)
-              );
+              self.props.alert(Utility.errorAlert(`account_edit_${t}`, error));
               return 'Something went wrong';
             },
           }
@@ -262,7 +258,10 @@ class AccountPlans extends React.Component<
       action: ({ inputText: name }) => {
         if (!name) {
           self.props.alert(
-            Utility.errorAlert(`account_duplicate_${t}`, 'No Name')
+            Utility.errorAlert(
+              `account_duplicate_${t}`,
+              new PaperError('No Name')
+            )
           );
           return;
         }
@@ -290,7 +289,7 @@ class AccountPlans extends React.Component<
             },
             error: (error: PaperError) => {
               self.props.alert(
-                Utility.errorAlert(`account_duplicate_${t}`, error.message)
+                Utility.errorAlert(`account_duplicate_${t}`, error)
               );
               return 'Something went wrong';
             },
@@ -343,7 +342,7 @@ class AccountPlans extends React.Component<
             },
             error: (error: PaperError) => {
               self.props.alert(
-                Utility.errorAlert(`account_delete_${t}`, error.message)
+                Utility.errorAlert(`account_delete_${t}`, error)
               );
               return 'Something went wrong';
             },

@@ -14,7 +14,7 @@ import {
   ValidScheduleDataMap,
 } from '../../../types/ScheduleTypes';
 import { getSections } from '../../../utility/Calendar';
-import PaperError from '../../../utility/PaperError';
+import { PaperError } from '../../../utility/PaperError';
 import Utility from '../../../utility/Utility';
 import { toast } from 'react-hot-toast';
 

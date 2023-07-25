@@ -11,6 +11,8 @@ import {
 } from '../types/ScheduleTypes';
 import { FilterBadgeName, FilterOptions } from '../types/SearchTypes';
 import { Mode } from './Constants';
+import { PaperError, PaperExpectedAuthError } from './PaperError';
+import Account from '../Account';
 
 let Utility = {
   BACKGROUND_LIGHT: '#FFFFFF',
@@ -257,8 +259,28 @@ let Utility = {
       .map((section) => `${section.subject} ${section.number}`)
       .join(', '),
 
-  errorAlert: (from: PlanErrorLocation, error: string): AlertData => {
-    const errorText = error + ' - ' + from;
+  errorAlert: (from: PlanErrorLocation, error: PaperError): AlertData => {
+    if (error instanceof PaperExpectedAuthError) {
+      const errorText = error.name + ': ' + error.message + ' - ' + from;
+      return {
+        title: 'Action Forbidden',
+        subtitle: 'Try logging out and logging back in.',
+        message:
+          'Paper was forbidden from performing the action you requested. This can happen if the required permissions on the server have changed. This is nothing to worry about though. Log out using the button below, then log in again. Things should hopefully work.',
+        confirmButton: 'Log out',
+        cancelButton: 'Close',
+        color: 'red',
+        textView: {
+          text: errorText,
+        },
+        icon: ExclamationTriangleIcon,
+        action: () => {
+          Account.logOut();
+        },
+      };
+    }
+
+    const errorText = error.name + ': ' + error.message + ' - ' + from;
     return {
       title: "Well, this isn't good...",
       message: `Oh nooo this wasn't supposed to happen. An unexpected error occurred. You can troubleshoot this error or try again later.`,

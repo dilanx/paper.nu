@@ -1,4 +1,4 @@
-import PaperError from './utility/PaperError';
+import { PaperError, PaperExpectedAuthError } from './utility/PaperError';
 import {
   Document,
   AuthenticationResponseToken,
@@ -129,10 +129,16 @@ async function operation<T>(
       },
       body: body ? JSON.stringify(body) : undefined,
     });
+
     if (response.status === 401) {
       dp('access token invalid, refresh required');
       if (autoAuth) authLogin();
       return;
+    }
+
+    if (response.status === 403) {
+      dp('forbidden, notifying to logout');
+      throw new PaperExpectedAuthError('Forbidden');
     }
 
     let res = await response.json();
@@ -142,6 +148,10 @@ async function operation<T>(
 
     return res as T;
   } catch (error) {
+    if (error instanceof PaperError) {
+      throw error;
+    }
+
     throw new PaperError('Connection Failure');
   }
 }

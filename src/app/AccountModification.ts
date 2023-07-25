@@ -9,7 +9,7 @@ import { Alert } from '../types/AlertTypes';
 import { AppType, UserOptions } from '../types/BaseTypes';
 import { PlanData } from '../types/PlanTypes';
 import { ScheduleData } from '../types/ScheduleTypes';
-import PaperError from '../utility/PaperError';
+import { PaperError } from '../utility/PaperError';
 import Utility from '../utility/Utility';
 const d = debug('app:account-mod');
 
@@ -28,7 +28,7 @@ function activate(
         app.showAlert(
           Utility.errorAlert(
             `account_activate_${errText}`,
-            'Undefined Document List'
+            new PaperError('Undefined Document List')
           )
         );
         return;
@@ -39,7 +39,7 @@ function activate(
         app.showAlert(
           Utility.errorAlert(
             `account_activate_${errText}`,
-            'Undefined Document'
+            new PaperError('Undefined Document')
           )
         );
         return;
@@ -72,7 +72,7 @@ function activate(
                     app.showAlert(
                       Utility.errorAlert(
                         `account_activate_${errText}`,
-                        'Malformed Data'
+                        new PaperError('Malformed Data')
                       )
                     );
                     return;
@@ -87,9 +87,7 @@ function activate(
       );
     })
     .catch((error: PaperError) => {
-      app.showAlert(
-        Utility.errorAlert(`account_activate_${errText}`, error.message)
-      );
+      app.showAlert(Utility.errorAlert(`account_activate_${errText}`, error));
     });
 }
 
@@ -187,7 +185,12 @@ export function update(app: AppType, isSchedule: boolean) {
   const t = isSchedule ? 'schedule' : 'plan';
   let activeId = app.state.switches.get[`active_${t}_id`];
   if (!activeId || activeId === 'None') {
-    app.showAlert(Utility.errorAlert(`account_update_${t}`, 'Nothing Active'));
+    app.showAlert(
+      Utility.errorAlert(
+        `account_update_${t}`,
+        new PaperError('Nothing Active')
+      )
+    );
     return;
   }
 
@@ -213,11 +216,11 @@ export function update(app: AppType, isSchedule: boolean) {
           )
         );
       },
-      error: (err) => {
+      error: (err: PaperError) => {
         app.setState({
           unsavedChanges: true,
         });
-        app.showAlert(Utility.errorAlert(`account_update_${t}`, err.message));
+        app.showAlert(Utility.errorAlert(`account_update_${t}`, err));
         return 'Something went wrong';
       },
     }
