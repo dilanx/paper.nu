@@ -49,8 +49,8 @@ function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
             }
             setLoading(false);
           })
-          .catch((e) => {
-            alert(Utility.errorAlert('notes_get_documents', e.message));
+          .catch((err) => {
+            alert(Utility.errorAlert('notes_get_documents', err));
           });
         return;
       }
@@ -126,9 +126,7 @@ function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
                     },
                     error: (err) => {
                       setSaveLoading(false);
-                      alert(
-                        Utility.errorAlert('notes_update_document', err.message)
-                      );
+                      alert(Utility.errorAlert('notes_update_document', err));
                       return 'Something went wrong';
                     },
                   });

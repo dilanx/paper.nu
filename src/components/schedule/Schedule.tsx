@@ -141,11 +141,11 @@ class Schedule extends React.Component<ScheduleProps> {
           : {})}
       >
         <div
-          className={`schedule-grid-cols grid rounded-lg border-4 border-opacity-75 bg-opacity-50 p-4 shadow-md
-                        dark:bg-gray-800 ${
+          className={`schedule-grid-cols grid rounded-lg border-4 border-opacity-75 bg-white bg-opacity-50 p-4
+                        shadow-md dark:bg-gray-800 ${
                           imageMode
-                            ? 'h-full border-black bg-white dark:border-white'
-                            : 'h-192 border-green-200 bg-green-50 lg:h-full'
+                            ? 'h-full border-black dark:border-white'
+                            : 'h-192 border-gray-300 dark:border-gray-700 lg:h-full'
                         }`}
         >
           <HoursColumn start={start} end={end} />
