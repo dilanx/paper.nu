@@ -1,13 +1,17 @@
 import {
+  Bars3Icon,
   ChevronDownIcon,
   ChevronUpIcon,
-  MinusIcon,
-  PlusIcon,
+  SunIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import React from 'react';
-import { UserOptions } from '../../types/BaseTypes';
+import {
+  ContextMenu,
+  ContextMenuData,
+  UserOptions,
+} from '../../types/BaseTypes';
 import {
   BookmarksData,
   Course,
@@ -26,6 +30,8 @@ interface YearProps {
   f: PlanModificationFunctions;
   f2: PlanSpecialFunctions;
   sideCard: SideCard;
+  contextMenuData?: ContextMenuData;
+  contextMenu: ContextMenu;
   switches: UserOptions;
   title: string;
 }
@@ -104,44 +110,6 @@ class Year extends React.Component<YearProps, YearState> {
           )}
           <div className="absolute right-1 top-1 text-gray-300 dark:text-gray-500">
             <button
-              className="group relative inline-block bg-transparent p-1 hover:text-yellow-300 dark:hover:text-yellow-300"
-              onClick={() => {
-                if (quarters.length < 4) {
-                  this.props.f2.addSummerQuarter(this.props.year);
-                } else {
-                  this.props.f2.removeSummerQuarter(this.props.year);
-                }
-              }}
-            >
-              {quarters.length < 4 ? (
-                <>
-                  <PlusIcon className="h-5 w-5" />
-                  <Tooltip color="yellow" className="-bottom-10 right-0 w-48">
-                    Add summer quarter
-                  </Tooltip>
-                </>
-              ) : (
-                <>
-                  <MinusIcon className="h-5 w-5" />
-                  <Tooltip color="yellow" className="-bottom-10 right-0 w-48">
-                    Remove summer quarter
-                  </Tooltip>
-                </>
-              )}
-            </button>
-
-            <button
-              className="group relative inline-block bg-transparent p-1 hover:text-red-400 dark:hover:text-red-400"
-              onClick={() => {
-                this.props.f2.clearData(this.props.year);
-              }}
-            >
-              <TrashIcon className="h-5 w-5" />
-              <Tooltip color="red" className="-bottom-10 right-0 w-48">
-                Clear year's courses
-              </Tooltip>
-            </button>
-            <button
               className="group relative inline-block bg-transparent p-1 hover:text-fuchsia-400 dark:hover:text-fuchsia-400"
               onClick={() => {
                 this.setState({
@@ -154,10 +122,54 @@ class Year extends React.Component<YearProps, YearState> {
               ) : (
                 <ChevronUpIcon className="h-5 w-5" />
               )}
-              <Tooltip color="fuchsia" className="-bottom-10 right-0 w-48">
+              <Tooltip color="fuchsia" className="-bottom-10 right-0 w-40">
                 {this.state.hidden
                   ? "Show year's courses"
                   : "Hide year's courses"}
+              </Tooltip>
+            </button>
+            <button
+              className={`group relative inline-block bg-transparent p-1 hover:text-purple-400 dark:hover:text-purple-400 ${
+                this.props.contextMenuData?.name ===
+                `year-actions-${this.props.year}`
+                  ? 'text-purple-400'
+                  : ''
+              }`}
+              onClick={(e) => {
+                const { x, y, width, height } =
+                  e.currentTarget.getBoundingClientRect();
+
+                this.props.contextMenu({
+                  x: x + width,
+                  y: y + height + 10,
+                  name: `year-actions-${this.props.year}`,
+                  items: [
+                    {
+                      text:
+                        quarters.length < 4 ? 'Add summer' : 'Remove summer',
+                      icon: SunIcon,
+                      onClick: () => {
+                        if (quarters.length < 4) {
+                          this.props.f2.addSummerQuarter(this.props.year);
+                        } else {
+                          this.props.f2.removeSummerQuarter(this.props.year);
+                        }
+                      },
+                    },
+                    {
+                      text: 'Clear courses',
+                      icon: TrashIcon,
+                      onClick: () => {
+                        this.props.f2.clearData(this.props.year);
+                      },
+                    },
+                  ],
+                });
+              }}
+            >
+              <Bars3Icon className="h-5 w-5" />
+              <Tooltip color="purple" className="-bottom-10 right-0">
+                Year actions
               </Tooltip>
             </button>
           </div>

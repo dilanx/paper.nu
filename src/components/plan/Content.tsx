@@ -2,7 +2,11 @@ import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import PlanManager from '../../PlanManager';
 import { Alert } from '../../types/AlertTypes';
-import { UserOptions } from '../../types/BaseTypes';
+import {
+  ContextMenu,
+  ContextMenuData,
+  UserOptions,
+} from '../../types/BaseTypes';
 import {
   PlanData,
   PlanModificationFunctions,
@@ -20,6 +24,8 @@ interface ContentProps {
   f2: PlanSpecialFunctions;
   alert: Alert;
   sideCard: SideCard;
+  contextMenuData?: ContextMenuData;
+  contextMenu: ContextMenu;
   switches: UserOptions;
 }
 class Content extends React.Component<ContentProps> {
@@ -36,6 +42,8 @@ class Content extends React.Component<ContentProps> {
             f={this.props.f}
             f2={this.props.f2}
             sideCard={this.props.sideCard}
+            contextMenuData={this.props.contextMenuData}
+            contextMenu={this.props.contextMenu}
             switches={this.props.switches}
             title={Utility.convertYear(index)}
             key={index}

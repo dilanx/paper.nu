@@ -61,8 +61,6 @@ function Toolbar({
 
   const isSchedule = switches.get.mode === Mode.SCHEDULE;
 
-  const theme = isSchedule ? 'green' : 'purple';
-
   const activeItem = isSchedule
     ? switches.get.active_schedule_id
       ? Account.getScheduleName(switches.get.active_schedule_id)
@@ -107,7 +105,6 @@ function Toolbar({
               name: 'about',
               x,
               y,
-              theme,
               items: [
                 {
                   text: 'About',
@@ -173,7 +170,6 @@ function Toolbar({
               exportMenu({
                 x,
                 y,
-                theme,
                 plan: isSchedule ? undefined : plan,
                 schedule: isSchedule ? schedule : undefined,
                 alert,
@@ -225,7 +221,6 @@ function Toolbar({
             name: 'account',
             x,
             y,
-            theme,
             items: [
               {
                 text: isSchedule ? 'Schedules' : 'Plans',

@@ -3,11 +3,12 @@ import {
   CameraIcon,
   LinkIcon,
 } from '@heroicons/react/24/outline';
+import { toast } from 'react-hot-toast';
 import Account from '../../../Account';
 import PlanManager from '../../../PlanManager';
 import ScheduleManager from '../../../ScheduleManager';
 import { Alert } from '../../../types/AlertTypes';
-import { Color, ContextMenuData } from '../../../types/BaseTypes';
+import { ContextMenuData } from '../../../types/BaseTypes';
 import { PlanData } from '../../../types/PlanTypes';
 import {
   ScheduleData,
@@ -16,14 +17,12 @@ import {
 import { getSections } from '../../../utility/Calendar';
 import { PaperError } from '../../../utility/PaperError';
 import Utility from '../../../utility/Utility';
-import { toast } from 'react-hot-toast';
 
 type ActionFunction<T = null> = (data: T) => void;
 
 interface ExportMenuData {
   x: number;
   y: number;
-  theme: Color;
   plan?: PlanData;
   schedule?: ScheduleData;
   alert: Alert;
@@ -37,7 +36,6 @@ interface ExportMenuData {
 const exportMenu = ({
   x,
   y,
-  theme,
   plan,
   schedule,
   alert,
@@ -53,7 +51,6 @@ const exportMenu = ({
     name: 'export',
     x,
     y,
-    theme,
     items: [
       {
         text: 'Share link',

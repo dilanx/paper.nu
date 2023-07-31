@@ -143,7 +143,6 @@ export interface ContextMenuData {
   name: string;
   x: number;
   y: number;
-  theme: Color;
   items: ContextMenuItem[];
 }
 
