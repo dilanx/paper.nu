@@ -29,8 +29,10 @@ import {
   removeSummerQuarter,
 } from './app/PlanModification';
 import {
+  addCustomSection,
   addScheduleBookmark,
   addSection,
+  clearSchedule,
   removeScheduleBookmark,
   removeSection,
 } from './app/ScheduleModification';
@@ -147,6 +149,8 @@ class App extends React.Component<{}, AppState> implements AppType {
       removeSection: (section) => removeSection(app, section),
       addScheduleBookmark: (course) => addScheduleBookmark(app, course),
       removeScheduleBookmark: (course) => removeScheduleBookmark(app, course),
+      addCustomSection: () => addCustomSection(app),
+      clear: () => clearSchedule(app),
     };
 
     const ff: SearchModificationFunctions = {

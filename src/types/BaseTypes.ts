@@ -161,3 +161,8 @@ export type InfoSetItem<T> = [string, T];
 export type InfoSetData<T = string | InfoSetValFn> = InfoSetItem<T>[];
 
 export type LoadLegacyUrlFunction = (url: URL) => void;
+
+export interface SaveDataOptions {
+  hash?: string;
+  legacyParams?: URLSearchParams;
+}

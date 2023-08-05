@@ -1,5 +1,11 @@
 # Paper Change Log
 
+### 2.7.0
+
+_2023-XX-XX_
+
+- Various UI updates, bug fixes, and other small changes.
+
 ### 2.6.1
 
 _2023-07-10_

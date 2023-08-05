@@ -41,6 +41,7 @@ const exportMenu = ({
   alert,
   actions,
 }: ExportMenuData): ContextMenuData => {
+  const isPlan = plan !== undefined;
   const dataString = plan
     ? PlanManager.getDataString(plan)
     : schedule
@@ -84,8 +85,9 @@ const exportMenu = ({
               toast.success('Link generated!', { id });
               alert({
                 title: 'Ready to share!',
-                message:
-                  'All of your data is stored in the URL. When you make changes, the URL is updated to reflect them. Save it somewhere, or share with a friend!',
+                message: `Share your ${
+                  isPlan ? 'plan' : 'schedule'
+                } with others using the link below. TODO dilan update this message don't forget pls!`,
                 confirmButton: 'Copy to clipboard',
                 cancelButton: 'Close',
                 color: 'sky',

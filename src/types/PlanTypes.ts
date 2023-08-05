@@ -21,9 +21,27 @@ export interface PlanData {
   bookmarks: BookmarksData;
 }
 
+export interface SerializedPlanData {
+  courses: SerializedPlanCourse[][][];
+  bookmarks: SerializedBookmarksData;
+}
+
+export interface SerializedCustomPlanCourse {
+  title: string;
+  subtitle: string;
+  units: string;
+}
+
+export type SerializedPlanCourse = string | SerializedCustomPlanCourse;
+
 export interface BookmarksData {
   noCredit: Set<Course>;
   forCredit: Set<Course>;
+}
+
+export interface SerializedBookmarksData {
+  noCredit: string[];
+  forCredit: string[];
 }
 
 export interface Course {

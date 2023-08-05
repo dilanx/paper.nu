@@ -23,7 +23,7 @@ function SingleSelectInput({
       {options.map((option) => (
         <label
           className="group flex items-center gap-1 font-medium text-gray-500 dark:text-gray-300"
-          key={`msi-${title}-${option}`}
+          key={`ssi-${title}-${option}`}
         >
           <input
             type="checkbox"

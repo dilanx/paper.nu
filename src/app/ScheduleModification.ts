@@ -1,8 +1,14 @@
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import {
+  ExclamationTriangleIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 import debug from 'debug';
 import ScheduleManager from '../ScheduleManager';
 import { AppType } from '../types/BaseTypes';
 import { ScheduleCourse, ScheduleSection } from '../types/ScheduleTypes';
+import { toast } from 'react-hot-toast';
+import { customSectionForm } from '../utility/Forms';
 const d = debug('app:schedule-mod');
 
 function courseConfirmationPrompts(
@@ -99,5 +105,51 @@ export function removeScheduleBookmark(app: AppType, course: ScheduleCourse) {
   app.setState({
     schedule,
     unsavedChanges: ScheduleManager.save(schedule, app.state.switches),
+  });
+}
+
+export function addCustomSection(app: AppType) {
+  app.showAlert({
+    title: 'Add custom section',
+    message:
+      'Keep your entire school schedule, including things other than classes, in one place by adding custom sections to your schedule!',
+    color: 'green',
+    icon: PlusIcon,
+    form: {
+      sections: customSectionForm(),
+      onSubmit: (res) => {
+        console.log(res);
+      },
+    },
+    cancelButton: 'Cancel',
+    confirmButton: 'Add',
+  });
+}
+
+export function clearSchedule(app: AppType) {
+  app.showAlert({
+    title: 'Clear schedule?',
+    message: `All of the sections and bookmarks on your current schedule will be removed.`,
+    cancelButton: 'Cancel',
+    confirmButton: 'Clear',
+    color: 'red',
+    icon: TrashIcon,
+    action: () => {
+      const schedule = {
+        schedule: {},
+        bookmarks: [],
+        termId: app.state.schedule.termId,
+      };
+      toast.success(`Schedule cleared`, {
+        iconTheme: {
+          primary: 'red',
+          secondary: 'white',
+        },
+      });
+      app.setState({
+        schedule,
+        unsavedChanges: ScheduleManager.save(schedule, app.state.switches),
+      });
+    },
   });
 }

@@ -1,6 +1,7 @@
 import PlanManager from '../PlanManager';
 import ScheduleManager from '../ScheduleManager';
 import {
+  AlertFormFieldColorSelect,
   AlertFormFieldMultiSelect,
   AlertFormFieldText,
   AlertFormFieldTime,
@@ -172,10 +173,11 @@ export function planSearchFilterForm(
 }
 
 export function customSectionForm(): AlertFormSection[] {
-  const text = (name: string): AlertFormFieldText => ({
+  const text = (name: string, required = false): AlertFormFieldText => ({
     name,
     type: 'text',
     maxLength: 100,
+    required,
   });
   const time = (name: string): AlertFormFieldTime => ({
     name,
@@ -189,17 +191,22 @@ export function customSectionForm(): AlertFormSection[] {
     options: ['Mo', 'Tu', 'We', 'Th', 'Fr'],
     required: true,
   };
+  const col: AlertFormFieldColorSelect = {
+    name: 'color',
+    type: 'color-select',
+    defaultValue: 'gray',
+  };
 
   return [
     {
-      title: 'SUBJECT AND NUMBER',
-      fullRow: true,
-      fields: [text('subject')],
-    },
-    {
       title: 'TITLE',
       fullRow: true,
-      fields: [text('title')],
+      fields: [text('title', true)],
+    },
+    {
+      title: 'SUBTITLE',
+      fullRow: true,
+      fields: [text('subtitle')],
     },
     {
       title: 'INSTRUCTOR',
@@ -223,6 +230,11 @@ export function customSectionForm(): AlertFormSection[] {
       title: 'MEETING DAYS',
       fullRow: true,
       fields: [sel],
+    },
+    {
+      title: 'COLOR',
+      fullRow: true,
+      fields: [col],
     },
   ];
 }

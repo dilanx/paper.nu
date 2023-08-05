@@ -63,7 +63,12 @@ export interface AlertFormSection {
   fields: AlertFormField[];
 }
 
-type AlertFormFieldType = 'text' | 'time' | 'single-select' | 'multi-select';
+type AlertFormFieldType =
+  | 'text'
+  | 'time'
+  | 'single-select'
+  | 'multi-select'
+  | 'color-select';
 
 export interface AlertFormField {
   name: string;
@@ -93,6 +98,11 @@ export interface AlertFormFieldSingleSelect extends AlertFormField {
 export interface AlertFormFieldMultiSelect extends AlertFormField {
   type: 'multi-select';
   options: string[];
+}
+
+export interface AlertFormFieldColorSelect extends AlertFormField {
+  type: 'color-select';
+  defaultValue?: Color;
 }
 
 export function formFieldIs<T extends AlertFormField>(

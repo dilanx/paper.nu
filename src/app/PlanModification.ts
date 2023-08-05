@@ -293,7 +293,7 @@ export function clearData(app: AppType, year?: number) {
   } else {
     const yearText = Utility.convertYear(year).toLowerCase();
     app.showAlert({
-      title: 'Clear app year?',
+      title: `Clear ${yearText}?`,
       message: `All of the courses in your ${yearText} will be removed.`,
       cancelButton: 'Cancel',
       confirmButton: 'Clear',

@@ -11,6 +11,32 @@ export interface ScheduleData {
   bookmarks: ScheduleBookmarks;
 }
 
+export interface SerializedScheduleData {
+  termId?: string;
+  schedule: SerializedScheduleSection[];
+  bookmarks: string[];
+}
+
+export type SerializedScheduleSection =
+  | string
+  | SerializedCustomScheduleSection;
+
+export interface SerializedCustomScheduleSection {
+  title: string;
+  subtitle: string;
+  meeting_days: string;
+  start_time: Time;
+  end_time: Time;
+  location: SerializedCustomLocation;
+  instructor: string;
+}
+
+export interface SerializedCustomLocation {
+  name: string;
+  lat: number;
+  lon: number;
+}
+
 export interface ScheduleDataMap {
   [section_id: string]: ScheduleSection;
 }
@@ -161,6 +187,8 @@ export interface ScheduleModificationFunctions {
   removeSection: (section: ScheduleSection) => void;
   addScheduleBookmark: (course: ScheduleCourse) => void;
   removeScheduleBookmark: (course: ScheduleCourse) => void;
+  addCustomSection: () => void;
+  clear: () => void;
 }
 
 export interface ScheduleDataCache {

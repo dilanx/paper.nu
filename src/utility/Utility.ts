@@ -373,7 +373,7 @@ let Utility = {
   parseTime: (text?: string): Time | undefined => {
     if (!text) return;
     let timeString = text.toLowerCase();
-    const timeRegex = /^\d{1,2}:\d{1,2} ?(a|am|p|pm)?$/i;
+    const timeRegex = /^\d{1,2}(:\d{1,2})? ?(a|am|p|pm)?$/i;
 
     if (!timeRegex.test(timeString)) {
       return undefined;
@@ -384,6 +384,9 @@ let Utility = {
       .replace(/[ apm]/gi, '')
       .split(':')
       .map((p) => parseInt(p));
+    if (!m) {
+      m = 0;
+    }
     if (isNaN(h) || isNaN(m)) {
       return undefined;
     }

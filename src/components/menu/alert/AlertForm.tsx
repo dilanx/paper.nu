@@ -1,4 +1,5 @@
 import {
+  AlertFormFieldColorSelect,
   AlertFormFieldMultiSelect,
   AlertFormFieldSingleSelect,
   AlertFormFieldText,
@@ -7,6 +8,8 @@ import {
   AlertFormSection,
   formFieldIs,
 } from '../../../types/AlertTypes';
+import { Color } from '../../../types/BaseTypes';
+import ColorSelectInput from '../../generic/ColorSelectInput';
 import MultiSelectInput from '../../generic/MultiSelectInput';
 import Section from '../../generic/Section';
 import SingleSelectInput from '../../generic/SingleSelectInput';
@@ -70,6 +73,17 @@ export const getAlertForm = (
               options={field.options}
               value={values[field.name] ? values[field.name].split(',') : []}
               setValue={(selected) => setValue(field.name, selected.join(','))}
+              required={field.required}
+              key={`alert-form-field-${field.name}`}
+            />
+          );
+        }
+        if (formFieldIs<AlertFormFieldColorSelect>(field, 'color-select')) {
+          return (
+            <ColorSelectInput
+              title={field.name}
+              value={values[field.name] as Color}
+              setValue={(value) => setValue(field.name, value)}
               required={field.required}
               key={`alert-form-field-${field.name}`}
             />
