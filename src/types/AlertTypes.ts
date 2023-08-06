@@ -8,9 +8,10 @@ export interface AlertDataExtra {
 export interface AlertDataOption {
   switch?: keyof ReadUserOptions;
   title: string;
-  description: string;
+  description?: string;
   saveToStorage?: boolean;
   action?: (newSwitch: boolean, next: (nextAlert: AlertData) => void) => void;
+  appearanceToggle?: boolean;
 }
 
 export interface AlertConfirmationState {

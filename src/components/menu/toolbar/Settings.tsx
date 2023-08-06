@@ -34,9 +34,9 @@ const settingsMenu = (loadLegacyUrl: LoadLegacyUrlFunction): AlertData => ({
         options: [
           {
             switch: 'dark',
-            title: 'Dark mode',
-            description: `Become one with the night.`,
+            title: 'Appearance',
             saveToStorage: true,
+            appearanceToggle: true,
             action: (newSwitch) => {
               let color = newSwitch
                 ? Utility.BACKGROUND_DARK
