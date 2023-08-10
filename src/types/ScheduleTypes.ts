@@ -13,8 +13,8 @@ export interface ScheduleData {
 
 export interface SerializedScheduleData {
   termId?: string;
-  schedule: SerializedScheduleSection[];
-  bookmarks: string[];
+  schedule?: SerializedScheduleSection[];
+  bookmarks?: string[];
 }
 
 export type SerializedScheduleSection =
@@ -23,12 +23,12 @@ export type SerializedScheduleSection =
 
 export interface SerializedCustomScheduleSection {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   meeting_days: string;
   start_time: Time;
   end_time: Time;
-  location: SerializedCustomLocation;
-  instructor: string;
+  location?: SerializedCustomLocation;
+  instructor?: string;
 }
 
 export interface SerializedCustomLocation {

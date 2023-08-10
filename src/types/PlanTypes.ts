@@ -22,14 +22,14 @@ export interface PlanData {
 }
 
 export interface SerializedPlanData {
-  courses: SerializedPlanCourse[][][];
-  bookmarks: SerializedBookmarksData;
+  courses?: SerializedPlanCourse[][][];
+  bookmarks?: SerializedBookmarksData;
 }
 
 export interface SerializedCustomPlanCourse {
   title: string;
-  subtitle: string;
-  units: string;
+  subtitle?: string;
+  units?: string;
 }
 
 export type SerializedPlanCourse = string | SerializedCustomPlanCourse;
