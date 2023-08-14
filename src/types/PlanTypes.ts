@@ -29,7 +29,11 @@ export function isSerializedPlanData(data: any): data is SerializedPlanData {
     return false;
   }
 
-  return data.courses || (data.bookmarks && typeof data.bookmarks === 'object');
+  return (
+    Object.keys(data).length === 0 ||
+    data.courses ||
+    (data.bookmarks && typeof data.bookmarks === 'object')
+  );
 }
 
 export interface SerializedCustomPlanCourse {

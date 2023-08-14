@@ -27,9 +27,12 @@ export function getTerms() {
 
 export function getTermInfo(termId: string) {
   if (!info) return;
+  const termInfo = info.terms[termId];
   return {
     value: termId,
-    label: info.terms[termId].name,
+    label: termInfo.name,
+    start: termInfo.start,
+    end: termInfo.end,
   };
 }
 

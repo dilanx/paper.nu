@@ -1,6 +1,6 @@
 # Paper Change Log
 
-### 2.7.0
+### 3.0.0
 
 _2023-XX-XX_
 

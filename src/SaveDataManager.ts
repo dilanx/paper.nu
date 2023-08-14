@@ -23,6 +23,7 @@ import {
 } from './types/ScheduleTypes';
 import { Mode } from './utility/Constants';
 import Utility from './utility/Utility';
+import { isEqual } from 'lodash';
 const d = debug('save-data-manager');
 
 const DEFAULT_SWITCHES: ReadUserOptions = {
@@ -33,9 +34,12 @@ const DEFAULT_SWITCHES: ReadUserOptions = {
   minimap: true,
 };
 
-function matchAccountId(accountData: Document[], content: string) {
+function matchAccountId(
+  accountData: Document[],
+  data: SerializedPlanData | SerializedScheduleData
+) {
   for (let doc of accountData) {
-    if (doc.content === content) {
+    if (isEqual(doc.data, data)) {
       return doc.id;
     }
   }
@@ -44,7 +48,7 @@ function matchAccountId(accountData: Document[], content: string) {
 let SaveDataManager = {
   load: async (
     switches: UserOptions,
-    { hash, changeTerm }: SaveDataOptions
+    { hash, changeTerm }: SaveDataOptions = {}
   ): Promise<LoadResponse<PlanData | ScheduleData>> => {
     let activeId: string | undefined = undefined;
     let accountPlans: Document[] | undefined = undefined;
@@ -60,6 +64,17 @@ let SaveDataManager = {
       accountPlans = accountInit.plans;
       accountSchedules = accountInit.schedules;
       activeId = 'None';
+    }
+
+    if (changeTerm) {
+      d('changing term to %s', changeTerm);
+      const data = await ScheduleManager.load({ termId: changeTerm });
+      return {
+        mode: Mode.SCHEDULE,
+        data,
+        method: 'TermChange',
+        latestTermId,
+      };
     }
 
     if (hash) {
@@ -94,6 +109,7 @@ let SaveDataManager = {
           data: 'malformed',
           method: 'URL',
           latestTermId,
+          error: 'legacy',
         };
       }
       serializedData = JSON.parse(scContent.data) as SerializedPlanData;
@@ -107,212 +123,121 @@ let SaveDataManager = {
             if (planData !== 'malformed') {
               d('plan URL load successful');
               method = 'URL';
+              PlanManager.save(planData, switches);
             }
+            return {
+              mode: Mode.PLAN,
+              data: planData,
+              activeId,
+              method,
+              latestTermId,
+            };
           }
         } else if (isSerializedScheduleData(serializedData)) {
           d('URL data is schedule data');
-          // TODO continue here
+          const scheduleData = await ScheduleManager.load(serializedData);
+          if (scheduleData !== 'empty') {
+            if (scheduleData !== 'malformed') {
+              method = 'URL';
+              d('schedule URL load successful');
+              ScheduleManager.save(scheduleData, switches);
+            }
+            return {
+              mode: Mode.SCHEDULE,
+              data: scheduleData,
+              activeId,
+              method,
+              latestTermId,
+            };
+          }
+        } else {
+          d('URL data does not match plan or schedule format');
+          return {
+            mode: Mode.SCHEDULE,
+            data: 'malformed',
+            activeId,
+            method,
+            latestTermId,
+          };
         }
       }
     }
 
-    if (serializedData) {
-      d('trying to load schedule URL data');
-      let scheduleData = await ScheduleManager.loadFromURL(params);
-      if (scheduleData !== 'empty') {
-        if (scheduleData !== 'malformed') {
-          d('schedule URL load successful');
-          method = 'URL';
-          if (!params.has('s') && !params.has('sf')) {
-            d('no content, just term change');
-            method = 'TermChange';
-          } else if (accountSchedules) {
-            let dataStr = params.toString();
-            let id = matchAccountId(accountSchedules, dataStr);
-            if (id) {
-              d('matched content to account schedule: %s', id);
-              activeId = id;
-              originalDataString = dataStr;
-              method = 'Account';
-            }
-          }
-          ScheduleManager.save(scheduleData, switches);
-          d('schedule data loaded');
-        }
-        const response: LoadResponse<ScheduleData> = {
-          mode: Mode.SCHEDULE,
-          data: scheduleData,
-          activeId,
-          originalDataString,
-          method,
-          latestTermId,
-        };
-        return response;
-      }
+    d('nothing to load from URL');
 
-      d('no schedule URL data to load, trying plan URL data instead');
-      let planData = await PlanManager.loadFromURL(params);
-      if (planData !== 'empty') {
-        if (planData !== 'malformed') {
-          d('plan URL load successful');
-          method = 'URL';
-          if (accountPlans) {
-            let dataStr = params.toString();
-            let id = matchAccountId(accountPlans, dataStr);
-            if (id) {
-              d('matched content to account plan: %s', id);
-              activeId = id;
-              originalDataString = dataStr;
-              method = 'Account';
-            }
-          }
-          PlanManager.save(planData, switches);
-          d('plan data loaded');
-        }
-        const response: LoadResponse<PlanData> = {
-          mode: Mode.PLAN,
-          data: planData,
-          activeId,
-          originalDataString,
-          method,
-          latestTermId,
-        };
-        return response;
-      }
-
-      d('nothing to load from URL');
-    }
     const mode = switches.get.mode as Mode;
     d('last mode used is %d', mode);
 
-    if (mode === Mode.PLAN) {
-      d('trying to load plan data from account');
-      let storedPlanId = switches.get.active_plan_id;
-      if (accountPlans && storedPlanId) {
-        const doc = accountPlans.find((doc) => doc.id === storedPlanId);
-        if (doc) {
-          let content = doc.content;
-          let data = await PlanManager.loadFromString(content);
-          if (data !== 'empty') {
-            if (data !== 'malformed') {
-              d('account plan load successful: %s', storedPlanId);
-              activeId = storedPlanId;
-              originalDataString = content;
-              PlanManager.save(data, switches);
-              d('plan data loaded');
-            }
-            const response: LoadResponse<PlanData> = {
-              mode: Mode.PLAN,
-              data,
-              activeId,
-              originalDataString,
-              method: 'Account',
-              latestTermId,
-            };
-            return response;
+    const isPlan = mode === Mode.PLAN;
+    const modeStr = isPlan ? 'plan' : 'schedule';
+    const manager = isPlan ? PlanManager : ScheduleManager;
+    const storedId = isPlan
+      ? switches.get.active_plan_id
+      : switches.get.active_schedule_id;
+    const accountDocs = isPlan ? accountPlans : accountSchedules;
+    const checkSerialization = isPlan
+      ? isSerializedPlanData
+      : isSerializedScheduleData;
+
+    d('trying to load %s data from account', modeStr);
+    if (accountDocs && storedId) {
+      const doc = accountDocs.find((doc) => doc.id === storedId);
+      const sData = doc?.data;
+      if (checkSerialization(sData)) {
+        const data = await manager.load(sData as any);
+        if (data !== 'empty') {
+          if (data !== 'malformed') {
+            d('account %s load successful: %s', modeStr, storedId);
+            activeId = storedId;
+            manager.save(data as any, switches);
+            d('%s data loaded', modeStr);
+          }
+
+          return {
+            mode,
+            data,
+            activeId,
+            method: 'Account',
+            latestTermId,
+          };
+        }
+      }
+    }
+
+    d('nothing to load from account, trying storage instead');
+    const data = await manager.loadFromStorage();
+    if (data !== 'empty') {
+      if (data !== 'malformed') {
+        d('%s storage load successful', modeStr);
+        method = 'Storage';
+        if (accountDocs) {
+          const sData = manager.serialize(data as any);
+          const id = matchAccountId(accountDocs, sData);
+          if (id) {
+            d('matched data to account %s: %s', modeStr, id);
+            activeId = id;
+            method = 'Account';
           }
         }
+        manager.save(data as any, switches);
+        d('%s data loaded', modeStr);
       }
 
-      d('nothing to load from account, trying storage instead');
-      let data = await PlanManager.loadFromStorage();
-      if (data !== 'empty') {
-        if (data !== 'malformed') {
-          d('plan storage load successful');
-          method = 'Storage';
-          if (accountPlans) {
-            let dataStr = PlanManager.getDataString(data);
-            let id = matchAccountId(accountPlans, dataStr);
-            if (id) {
-              d('matched content to account plan: %s', id);
-              activeId = id;
-              originalDataString = dataStr;
-              method = 'Account';
-            }
-          }
-          PlanManager.save(data, switches);
-          d('plan data loaded');
-        }
-        const response: LoadResponse<PlanData> = {
-          mode: Mode.PLAN,
-          data,
-          activeId,
-          originalDataString,
-          method,
-          latestTermId,
-        };
-        return response;
-      }
-    } else if (mode === Mode.SCHEDULE) {
-      d('trying to load schedule data from account');
-      let storedScheduleId = switches.get.active_schedule_id;
-      if (accountSchedules && storedScheduleId) {
-        const doc = accountSchedules.find((doc) => doc.id === storedScheduleId);
-        if (doc) {
-          let content = doc.content;
-          let data = await ScheduleManager.loadFromString(content);
-          if (data !== 'empty') {
-            if (data !== 'malformed') {
-              d('account schedule load successful: %s', storedScheduleId);
-              activeId = storedScheduleId;
-              originalDataString = content;
-              ScheduleManager.save(data, switches);
-              d('schedule data loaded');
-            }
-            const response: LoadResponse<ScheduleData> = {
-              mode: Mode.SCHEDULE,
-              data,
-              activeId,
-              originalDataString,
-              method: 'Account',
-              latestTermId,
-            };
-            return response;
-          }
-        }
-      }
-
-      d('nothing to load from account, trying storage instead');
-      let data = await ScheduleManager.loadFromStorage();
-      if (data !== 'empty') {
-        if (data !== 'malformed') {
-          d('schedule storage load successful');
-          method = 'Storage';
-          if (accountPlans) {
-            let dataStr = ScheduleManager.getDataString(data);
-            let id = matchAccountId(accountPlans, dataStr);
-            if (id) {
-              d('matched content to account schedule: %s', id);
-              activeId = id;
-              originalDataString = dataStr;
-              method = 'Account';
-            }
-          }
-          ScheduleManager.save(data, switches);
-          d('schedule data loaded');
-        }
-        const response: LoadResponse<ScheduleData> = {
-          mode: Mode.SCHEDULE,
-          data,
-          activeId,
-          originalDataString,
-          method,
-          latestTermId,
-        };
-        return response;
-      }
+      return {
+        mode,
+        data,
+        activeId,
+        method,
+        latestTermId,
+      };
     }
 
     d('no data to load');
 
     return {
       mode,
-      data: await (mode === Mode.PLAN
-        ? PlanManager
-        : ScheduleManager
-      ).loadFromString(),
+      data: await manager.load(),
       activeId,
-      originalDataString,
       method,
       latestTermId,
     };

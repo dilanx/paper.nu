@@ -1,18 +1,18 @@
-import { PaperError, PaperExpectedAuthError } from './utility/PaperError';
+import debug from 'debug';
 import {
-  Document,
   AuthenticationResponseToken,
   ConnectionResponse,
-  UserInformation,
-  GetResponse,
   CreateResponse,
+  DeleteResponse,
+  Document,
   DocumentCache,
   DocumentType,
+  GetResponse,
   UpdateResponse,
-  DeleteResponse,
+  UserInformation,
 } from './types/AccountTypes';
+import { PaperError, PaperExpectedAuthError } from './utility/PaperError';
 import Utility from './utility/Utility';
-import debug from 'debug';
 const da = debug('account:auth');
 const dh = debug('account:http');
 const dp = debug('account:op');
@@ -234,7 +234,7 @@ let Account = {
     const res = await operation<UpdateResponse>(
       `/paper/documents/${id}`,
       'PATCH',
-      body
+      { ...body, type: type === 'plans' ? 1 : 2 }
     );
     if (!cache[type]) cache[type] = await Account.get(type, true, false);
     if (res) {

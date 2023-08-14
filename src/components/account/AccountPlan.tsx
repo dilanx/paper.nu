@@ -1,15 +1,15 @@
-import { motion } from 'framer-motion';
 import {
   DocumentDuplicateIcon,
   PencilIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
+import { motion } from 'framer-motion';
+import { getTermName } from '../../DataManager';
 import {
   AccountModificationFunctions,
   Document,
 } from '../../types/AccountTypes';
-import ScheduleManager from '../../ScheduleManager';
-import { getTermName } from '../../DataManager';
+import { SerializedScheduleData } from '../../types/ScheduleTypes';
 
 interface AccountPlanProps {
   id: string;
@@ -23,10 +23,11 @@ const variants = {
   visible: { x: 0, opacity: 1 },
 };
 
+// TODO update subtext like term and last updated once save button is pressed
+
 function AccountPlan(props: AccountPlanProps) {
-  let id = props.id;
-  let plan = props.plan;
-  const termId = ScheduleManager.getTermFromDataString(plan.content);
+  const { id, plan } = props;
+  const termId = (plan.data as SerializedScheduleData)?.termId;
   const termName = termId ? getTermName(termId) : undefined;
 
   return (
@@ -99,7 +100,7 @@ function AccountPlan(props: AccountPlanProps) {
             ACTIVE
           </p>
         ) : (
-          !plan.content && (
+          !plan.data && (
             <p className="absolute -bottom-2 right-2 rounded-md bg-white px-1 text-xs font-bold text-rose-400 transition-all duration-150 group-hover:shadow-sm dark:bg-gray-800">
               EMPTY
             </p>

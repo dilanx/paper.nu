@@ -54,6 +54,7 @@ import {
   AppState,
   ReadUserOptions,
   ContextMenuData,
+  SaveDataOptions,
 } from './types/BaseTypes';
 import {
   Course,
@@ -195,7 +196,6 @@ class App extends React.Component<{}, AppState> implements AppType {
       clp: !lastVersion || lastVersion !== VERSION_NO_PATCH,
       loadingLogin: false,
       unsavedChanges: false,
-      originalDataString: '',
       scheduleInteractions: {
         hoverSection: {
           set: (id) => this.interactionUpdate('hoverSection', id),
@@ -274,108 +274,104 @@ class App extends React.Component<{}, AppState> implements AppType {
           this.setSwitch('tab', 'Plans');
           this.setSwitch('active_plan_id', 'None', true);
         }
-        this.initialize(() => {
-          this.setState({ loadingLogin: false });
-        }, hash);
+        this.initialize(
+          () => {
+            this.setState({ loadingLogin: false });
+          },
+          { hash }
+        );
       });
     } else {
-      this.initialize(() => {
-        this.setState({ loadingLogin: false });
-      }, hash);
+      this.initialize(
+        () => {
+          this.setState({ loadingLogin: false });
+        },
+        { hash }
+      );
     }
   }
 
-  initialize(callback: () => void, hash?: string, params?: URLSearchParams) {
+  initialize(callback: () => void, options?: SaveDataOptions) {
     d('initializing');
-    SaveDataManager.load(this.state.switches, hash, params)
-      .then(
-        ({
-          mode,
-          data,
-          activeId,
-          originalDataString,
-          method,
-          latestTermId,
-        }) => {
-          const modeStr = mode === Mode.PLAN ? 'plan' : 'schedule';
-          if (data === 'malformed') {
-            this.setState({
-              schedule: {
-                termId: latestTermId,
-                ...this.state.schedule,
-              },
-              latestTermId,
-            });
-            this.showAlert({
-              title: `Unable to load ${modeStr}.`,
-              message: `The ${modeStr} you're trying to access is not valid. If you're loading it through a URL, ensure that it hasn't been manually modified.`,
-              confirmButton: 'What a shame.',
-              color: 'red',
-              icon: ExclamationTriangleIcon,
-            });
-            return;
-          }
-          this.setSwitch('mode', mode);
-          this.setSwitch(
-            mode === Mode.PLAN ? 'active_plan_id' : 'active_schedule_id',
-            activeId,
-            true
-          );
+    SaveDataManager.load(this.state.switches, options)
+      .then(({ mode, data, activeId, method, latestTermId }) => {
+        const modeStr = mode === Mode.PLAN ? 'plan' : 'schedule';
+        if (data === 'malformed') {
           this.setState({
-            originalDataString,
-            unsavedChanges: false,
+            schedule: {
+              termId: latestTermId,
+              ...this.state.schedule,
+            },
             latestTermId,
           });
-          if (data === 'empty') {
-            this.setState({
-              schedule: {
-                termId: latestTermId,
-                ...this.state.schedule,
-              },
-            });
-            return;
-          }
-
-          switch (mode) {
-            case Mode.PLAN:
-              this.setState({
-                data: data as PlanData,
-                schedule: { termId: latestTermId, ...this.state.schedule },
-              });
-              break;
-            case Mode.SCHEDULE:
-              this.setState({ schedule: data as ScheduleData });
-              break;
-          }
-
-          switch (method) {
-            case 'URL':
-              toast.success(`Loaded ${modeStr} from URL`);
-              break;
-            case 'Account':
-              toast.success(
-                `Loaded ${modeStr}: ` +
-                  (mode === Mode.PLAN
-                    ? Account.getPlanName(activeId || 'None')
-                    : Account.getScheduleName(activeId || 'None'))
-              );
-              break;
-            case 'Storage':
-              toast.success(`Loaded recently edited ${modeStr}`);
-              break;
-            case 'TermChange':
-              const sdata = data as ScheduleData;
-              toast.success(
-                `Changed term to ${
-                  sdata.termId
-                    ? getTermName(sdata.termId) || 'unknown'
-                    : 'unknown'
-                }`
-              );
-              break;
-          }
+          this.showAlert({
+            title: `Unable to load ${modeStr}.`,
+            message: `The ${modeStr} you're trying to access is not valid. If you're loading it through a URL, ensure that it hasn't been manually modified.`,
+            confirmButton: 'What a shame.',
+            color: 'red',
+            icon: ExclamationTriangleIcon,
+          });
+          return;
         }
-      )
+        this.setSwitch('mode', mode);
+        this.setSwitch(
+          mode === Mode.PLAN ? 'active_plan_id' : 'active_schedule_id',
+          activeId,
+          true
+        );
+        this.setState({
+          unsavedChanges: false,
+          latestTermId,
+        });
+        if (data === 'empty') {
+          this.setState({
+            schedule: {
+              termId: latestTermId,
+              ...this.state.schedule,
+            },
+          });
+          return;
+        }
+
+        switch (mode) {
+          case Mode.PLAN:
+            this.setState({
+              data: data as PlanData,
+              schedule: { termId: latestTermId, ...this.state.schedule },
+            });
+            break;
+          case Mode.SCHEDULE:
+            this.setState({ schedule: data as ScheduleData });
+            break;
+        }
+
+        switch (method) {
+          case 'URL':
+            toast.success(`Loaded ${modeStr} from URL`);
+            break;
+          case 'Account':
+            toast.success(
+              `Loaded ${modeStr}: ` +
+                (mode === Mode.PLAN
+                  ? Account.getPlanName(activeId || 'None')
+                  : Account.getScheduleName(activeId || 'None'))
+            );
+            break;
+          case 'Storage':
+            toast.success(`Loaded recently edited ${modeStr}`);
+            break;
+          case 'TermChange':
+            const sdata = data as ScheduleData;
+            toast.success(
+              `Changed term to ${
+                sdata.termId
+                  ? getTermName(sdata.termId) || 'unknown'
+                  : 'unknown'
+              }`
+            );
+            break;
+        }
+      })
       .catch((error: PaperError) => {
         this.showAlert(Utility.errorAlert('initialization', error));
       })
@@ -386,6 +382,7 @@ class App extends React.Component<{}, AppState> implements AppType {
   }
 
   componentDidUpdate(_: Readonly<{}>, prevState: Readonly<AppState>) {
+    // TODO implement auto save here
     if (prevState.unsavedChanges !== this.state.unsavedChanges) {
       if (this.state.unsavedChanges) {
         d('there are now unsaved changes');
@@ -467,19 +464,7 @@ class App extends React.Component<{}, AppState> implements AppType {
       () => {
         this.setState({ loadingLogin: false });
       },
-      undefined,
-      new URLSearchParams({ t: termId })
-    );
-  }
-
-  loadLegacyUrl(url: URL) {
-    this.setState({ loadingLogin: true });
-    this.initialize(
-      () => {
-        this.setState({ loadingLogin: false });
-      },
-      undefined,
-      new URLSearchParams(url.search)
+      { changeTerm: termId }
     );
   }
 
@@ -727,7 +712,6 @@ class App extends React.Component<{}, AppState> implements AppType {
                   switches={switches}
                   loading={this.state.loadingLogin}
                   openAboutMenu={() => this.setState({ about: true })}
-                  loadLegacyUrl={(url) => this.loadLegacyUrl(url)}
                 />
                 <AnimatePresence mode="wait">
                   {switches.get.mode === Mode.PLAN ? (

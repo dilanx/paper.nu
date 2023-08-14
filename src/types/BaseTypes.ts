@@ -26,7 +26,6 @@ export interface AppState {
   ff: SearchModificationFunctions;
   loadingLogin: boolean;
   unsavedChanges: boolean;
-  originalDataString: string;
   scheduleInteractions: ScheduleInteractions;
   searchDefaults?: SearchDefaults;
   about?: boolean;
@@ -76,6 +75,7 @@ export interface LoadResponse<T> {
   activeId?: string;
   method: LoadMethods;
   latestTermId: string;
+  error?: string;
 }
 
 export type Color =
@@ -123,6 +123,8 @@ export interface DataMapInformation {
     [term: string]: {
       name: string;
       updated: string;
+      start: string;
+      end: string;
     };
   };
 }
@@ -158,8 +160,6 @@ export interface ContextMenu {
 export type InfoSetValFn = () => Promise<string>;
 export type InfoSetItem<T> = [string, T];
 export type InfoSetData<T = string | InfoSetValFn> = InfoSetItem<T>[];
-
-export type LoadLegacyUrlFunction = (url: URL) => void;
 
 export interface SaveDataOptions {
   hash?: string;

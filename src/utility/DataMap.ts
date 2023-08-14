@@ -15,9 +15,8 @@ export function plan({ courses, legacy, majors, ...rest }: any): RawCourseData {
 
   const m: MajorData = {};
 
-  for (const [major, { i, d, c }] of Object.entries<any>(majors)) {
+  for (const [major, { d, c }] of Object.entries<any>(majors)) {
     m[major] = {
-      id: i,
       display: d,
       color: c,
     };

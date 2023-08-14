@@ -42,10 +42,10 @@ const exportMenu = ({
   actions,
 }: ExportMenuData): ContextMenuData => {
   const isPlan = plan !== undefined;
-  const dataString = plan
-    ? PlanManager.getDataString(plan)
+  const sData = plan
+    ? PlanManager.serialize(plan)
     : schedule
-    ? ScheduleManager.getDataString(schedule)
+    ? ScheduleManager.serialize(schedule)
     : undefined;
 
   const data = {
@@ -60,7 +60,7 @@ const exportMenu = ({
           const id = toast.loading('Generating link...');
 
           async function generateShortLink() {
-            if (!dataString) {
+            if (!sData) {
               throw new PaperError('No data to shorten');
             }
 
@@ -70,7 +70,8 @@ const exportMenu = ({
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                content: dataString,
+                // TODO update this!
+                content: sData,
               }),
             });
             if (!response.ok) {

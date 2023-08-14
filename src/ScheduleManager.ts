@@ -1,6 +1,6 @@
 import debug from 'debug';
 import JSONSchoolData from './data/school.json';
-import { getScheduleData } from './DataManager';
+import { getScheduleData, getTermInfo } from './DataManager';
 import PlanManager from './PlanManager';
 import { UserOptions } from './types/BaseTypes';
 import {
@@ -11,11 +11,13 @@ import {
   ScheduleLocation,
   ScheduleSection,
   SerializedScheduleData,
+  SerializedScheduleSection,
   Time,
 } from './types/ScheduleTypes';
 import { FilterOptions, SearchError, SearchResults } from './types/SearchTypes';
 import { Days, DistroMap, Mode } from './utility/Constants';
 import Utility from './utility/Utility';
+import localforage from 'localforage';
 const ds = debug('schedule-manager:ser');
 
 let scheduleData: ScheduleCourse[] | undefined = undefined;
@@ -23,13 +25,13 @@ const school = JSONSchoolData as RawSchoolData;
 const SEARCH_RESULT_LIMIT = 50;
 
 async function loadData(
-  serializedData: SerializedScheduleData
+  serializedData?: SerializedScheduleData
 ): Promise<ScheduleData | 'malformed' | 'empty'> {
   if (!PlanManager.isPlanDataLoaded()) {
     await PlanManager.loadPlanData();
   }
 
-  const termId = serializedData.termId;
+  const termId = serializedData?.termId;
   let res = await getScheduleData(termId ?? undefined);
 
   if (res) {
@@ -43,7 +45,7 @@ async function loadData(
   }
 
   if (!termId) {
-    if (serializedData.schedule || serializedData.bookmarks) {
+    if (serializedData?.schedule || serializedData?.bookmarks) {
       return 'malformed';
     }
     return 'empty';
@@ -71,6 +73,8 @@ async function loadData(
       } else {
         const sectionId = `CUSTOM-${customId}`;
         customId++;
+
+        const { start, end } = getTermInfo(termId) || {};
         const section: ScheduleSection = {
           section_id: sectionId,
           title: sSection.subtitle || '',
@@ -79,10 +83,11 @@ async function loadData(
           meeting_days: [sSection.meeting_days],
           start_time: [sSection.start_time],
           end_time: [sSection.end_time],
+          room: [null],
           component: 'CUS',
+          start_date: start,
+          end_date: end,
         };
-
-        // TODO continue here!
 
         if (sSection.instructor) {
           section.instructors = [
@@ -96,68 +101,61 @@ async function loadData(
           section.room = [sSection.location.name];
           // TODO implement lat lon perhaps?
         }
+
+        data.schedule[sectionId] = section;
+        ds('custom course section loaded: %s as %s', sSection.title, sectionId);
       }
     }
 
-    if (params.has('s')) {
-      let sections = params.get('s')!.split(',');
-
-      let sectionData: ScheduleDataMap = {};
-      for (let id of sections) {
-        let section = ScheduleManager.getSectionById(id);
-        if (!section) {
-          ds('course section not found: %s', id);
-          continue;
-        }
-        sectionData[id] = section;
-        ds('course section loaded: %s', id);
+    for (const sCourseId of serializedData.bookmarks || []) {
+      const course = ScheduleManager.getCourseById(sCourseId);
+      if (!course) {
+        ds('bookmark course not found: %s', sCourseId);
+        continue;
       }
-      data.schedule = sectionData;
+      data.bookmarks.push(course);
+      ds('schedule bookmark added: %s', sCourseId);
     }
-    if (params.has('sf')) {
-      let bookmarks = params.get('sf')!.split(',');
-
-      let bookmarksData: ScheduleCourse[] = [];
-      for (let id of bookmarks) {
-        let course = ScheduleManager.getCourseById(id);
-        if (!course) {
-          ds('course not found: %s', id);
-          continue;
-        }
-        bookmarksData.push(course);
-        ds('schedule bookmark added: %s', id);
-      }
-      data.bookmarks = bookmarksData;
-    }
+    return data;
   } catch (e) {
     return 'malformed';
   }
-
-  return data;
 }
 
-function saveData(data: ScheduleData) {
-  let params = new URLSearchParams();
-  let schedule = data.schedule;
-  let bookmarks = data.bookmarks;
+function saveData({
+  termId,
+  schedule,
+  bookmarks,
+}: ScheduleData): SerializedScheduleData {
+  const serializedData = Object.values(schedule).map<SerializedScheduleSection>(
+    (s) => {
+      if (s.custom) {
+        return {
+          title: s.subject,
+          subtitle: s.title,
+          meeting_days: s.meeting_days[0] as string,
+          start_time: s.start_time[0] as Time,
+          end_time: s.end_time[0] as Time,
+          location: s.room[0]
+            ? {
+                name: s.room[0],
+              }
+            : undefined,
+          instructor: s.instructors?.[0]?.name,
+        };
+      } else {
+        return s.section_id;
+      }
+    }
+  );
 
-  params.set('t', data.termId ?? '');
+  const serializedBookmarks = bookmarks.map((s) => s.course_id);
 
-  let s = [];
-  for (let id in schedule) {
-    s.push(id);
-  }
-  if (s.length > 0) params.set('s', s.join(','));
-
-  let b = [];
-  for (let course of bookmarks) {
-    b.push(course.course_id);
-  }
-  if (b.length > 0) params.set('sf', b.join(','));
-
-  ds('schedule data saved');
-
-  return params;
+  return {
+    termId,
+    schedule: serializedData,
+    bookmarks: serializedBookmarks,
+  };
 }
 
 const ScheduleManager = {
@@ -500,49 +498,37 @@ const ScheduleManager = {
     }
   },
 
-  getTermFromDataString: (dataStr?: string) => {
-    if (!dataStr) return;
-    const params = new URLSearchParams(dataStr);
-    return params.get('t') || undefined;
-  },
-
-  loadFromURL: async (params: URLSearchParams) => {
-    return await loadData(params);
+  load: async (serializedData?: SerializedScheduleData) => {
+    return await loadData(serializedData);
   },
 
   loadFromStorage: async () => {
-    let dataStr = localStorage.getItem('schedule');
-    let params = new URLSearchParams(dataStr || undefined);
-    return await loadData(params);
+    const serializedData = await localforage.getItem<SerializedScheduleData>(
+      'data_schedule'
+    );
+    return await loadData(serializedData || {});
   },
 
-  loadFromString: async (dataStr?: string) => {
-    return await loadData(new URLSearchParams(dataStr || undefined));
+  serialize: (data: ScheduleData) => {
+    const sData = saveData(data);
+    ds('serialized schedule data');
+    return sData;
   },
 
-  getDataString: (data: ScheduleData) => {
-    return saveData(data).toString();
-  },
+  save: (data: ScheduleData, switches: UserOptions) => {
+    const serializedData = saveData(data);
+    ds('serialized schedule data and preparing to save');
+    localforage
+      .setItem('data_schedule', serializedData)
+      .then(() => {
+        ds('schedule data saved locally');
+      })
+      .catch(() => {
+        ds('schedule data failed to save locally');
+      });
 
-  save: (
-    data: ScheduleData,
-    switches: UserOptions,
-    compareAgainstDataString?: string
-  ) => {
-    let params = saveData(data);
-    let paramsStr = params.toString();
-
-    localStorage.setItem('schedule', paramsStr);
-
-    let activeScheduleId = switches?.get.active_schedule_id as
-      | string
-      | undefined;
-
-    if (activeScheduleId && activeScheduleId !== 'None') {
-      return paramsStr !== compareAgainstDataString;
-    }
-
-    return false;
+    const activeId = switches.get.active_schedule_id;
+    return !!activeId && activeId !== 'None';
   },
 };
 

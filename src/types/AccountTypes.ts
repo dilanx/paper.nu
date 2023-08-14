@@ -1,3 +1,6 @@
+import { SerializedPlanData } from './PlanTypes';
+import { SerializedScheduleData } from './ScheduleTypes';
+
 /**
  * Invariant for now:
  * - If `success` is true, `data` can be anything
@@ -37,7 +40,7 @@ export interface Document {
   id: string;
   name: string;
   createdAt: number;
-  content: string;
+  data?: SerializedPlanData | SerializedScheduleData;
   lastUpdated?: number;
   notes?: string;
 }

@@ -18,7 +18,6 @@ import { Alert } from '../../../types/AlertTypes';
 import {
   ContextMenu,
   ContextMenuData,
-  LoadLegacyUrlFunction,
   UserOptions,
 } from '../../../types/BaseTypes';
 import { PlanData } from '../../../types/PlanTypes';
@@ -42,7 +41,6 @@ interface ToolbarProps {
   switches: UserOptions;
   loading: boolean;
   openAboutMenu: () => void;
-  loadLegacyUrl: LoadLegacyUrlFunction;
 }
 
 function Toolbar({
@@ -55,7 +53,6 @@ function Toolbar({
   switches,
   loading,
   openAboutMenu,
-  loadLegacyUrl,
 }: ToolbarProps) {
   const [takeImage, setTakeImage] = useState(false);
 
@@ -204,7 +201,7 @@ function Toolbar({
         </ToolbarButton>
         <ToolbarButton
           icon={Cog6ToothIcon}
-          onClick={() => alert(settingsMenu(loadLegacyUrl))}
+          onClick={() => alert(settingsMenu())}
         >
           Settings
         </ToolbarButton>

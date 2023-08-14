@@ -25,6 +25,7 @@ export function isSerializedScheduleData(
   }
 
   return (
+    Object.keys(data).length === 0 ||
     data.termId ||
     data.schedule ||
     (data.bookmarks && Array.isArray(data.bookmarks))
@@ -47,8 +48,8 @@ export interface SerializedCustomScheduleSection {
 
 export interface SerializedCustomLocation {
   name: string;
-  lat: number;
-  lon: number;
+  lat?: number;
+  lon?: number;
 }
 
 export interface ScheduleDataMap {
@@ -102,6 +103,7 @@ export interface ScheduleSection {
   descs?: ScheduleSectionDescription[];
   distros?: string;
   preview?: boolean;
+  custom?: boolean;
 }
 
 export interface ValidScheduleSection extends ScheduleSection {

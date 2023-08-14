@@ -1,19 +1,16 @@
 import {
+  ArrowPathIcon,
   CalendarIcon,
   Cog6ToothIcon,
-  RectangleStackIcon,
   EllipsisHorizontalIcon,
-  ArrowPathIcon,
-  LinkIcon,
+  RectangleStackIcon,
 } from '@heroicons/react/24/outline';
 import debugModule from 'debug';
 import { clearCache } from '../../../DataManager';
 import { AlertData } from '../../../types/AlertTypes';
 import Utility from '../../../utility/Utility';
-import { LoadLegacyUrlFunction } from '../../../types/BaseTypes';
-import { toast } from 'react-hot-toast';
 
-const settingsMenu = (loadLegacyUrl: LoadLegacyUrlFunction): AlertData => ({
+const settingsMenu = (): AlertData => ({
   title: 'Settings',
   message: `Customize your Paper experience! These settings are saved in your browser and not in the URL.`,
   cancelButton: 'Close',
@@ -64,41 +61,6 @@ const settingsMenu = (loadLegacyUrl: LoadLegacyUrlFunction): AlertData => ({
                   clearCache().finally(() => {
                     window.location.reload();
                   });
-                },
-              });
-            },
-          },
-          {
-            title: 'Load legacy URL',
-            description:
-              'Load old Paper plan and schedule URLs (or Plan Northwestern plan URLs).',
-            action: (_, next) => {
-              next({
-                title: 'Load legacy URL',
-                color: 'purple',
-                icon: LinkIcon,
-                message: 'Enter the legacy plan or schedule URL below.',
-                textInput: {
-                  focusByDefault: true,
-                  placeholder: 'https://www.paper.nu/?...',
-                  match:
-                    /https?:\/\/(?:www\.)?(?:paper\.nu|plan-nu\.com)\/?\?[^#]+$/,
-                  matchError: 'Invalid legacy plan or schedule URL',
-                },
-                cancelButton: 'Cancel',
-                confirmButton: 'Load',
-                action: ({ inputText }) => {
-                  if (!inputText) {
-                    return;
-                  }
-
-                  try {
-                    const url = new URL(inputText);
-                    loadLegacyUrl(url);
-                  } catch (e) {
-                    console.error(e);
-                    toast.error('Invalid legacy plan or schedule URL');
-                  }
                 },
               });
             },

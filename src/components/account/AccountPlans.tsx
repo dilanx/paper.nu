@@ -268,7 +268,7 @@ class AccountPlans extends React.Component<
         self.setState({ loading: true });
         toast.promise(
           Account.create(isSchedule ? 'schedules' : 'plans', name, {
-            content: doc.content,
+            data: doc.data,
             notes: doc.notes,
           }),
           {

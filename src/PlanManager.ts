@@ -1,6 +1,7 @@
 import debug from 'debug';
 import localforage from 'localforage';
 import { getPlanData } from './DataManager';
+import { UserOptions } from './types/BaseTypes';
 import {
   Course,
   PlanData,
@@ -50,7 +51,7 @@ function basePlanArrays<T = Course>(data: any[][][] | undefined): T[][][] {
 }
 
 async function loadData(
-  serializedData: SerializedPlanData
+  serializedData?: SerializedPlanData
 ): Promise<PlanData | 'malformed' | 'empty'> {
   await loadCourseData();
 
@@ -63,7 +64,7 @@ async function loadData(
 
   try {
     const data = basePlanArrays(
-      serializedData.courses?.map((year, y) =>
+      serializedData?.courses?.map((year, y) =>
         year.map((quarter, q) =>
           quarter
             .map<Course | null>((c) => {
@@ -79,7 +80,7 @@ async function loadData(
                   return null;
                 }
               } else {
-                ds('loaded custom course: %s (y%dq%d)', c.title, y, q);
+                ds('custom course loaded: %s (y%dq%d)', c.title, y, q);
                 return {
                   id: c.title,
                   name: c.subtitle || '',
@@ -117,11 +118,11 @@ async function loadData(
 
     const bookmarksNoCredit = deserializeBookmarks(
       'no credit',
-      serializedData.bookmarks?.noCredit
+      serializedData?.bookmarks?.noCredit
     );
     const bookmarksForCredit = deserializeBookmarks(
       'for credit',
-      serializedData.bookmarks?.forCredit
+      serializedData?.bookmarks?.forCredit
     );
 
     if (malformed) {
@@ -170,8 +171,6 @@ function saveData({ courses, bookmarks }: PlanData): SerializedPlanData {
     noCredit: Array.from(bookmarks.noCredit).map((c) => c.id),
     forCredit: Array.from(bookmarks.forCredit).map((c) => c.id),
   };
-
-  ds('course data saved');
 
   return {
     courses: serializedData,
@@ -402,15 +401,37 @@ const PlanManager = {
     return !!courseData.majors[subject];
   },
 
-  load: (serializedData: SerializedPlanData) => {
-    return loadData(serializedData);
+  load: async (serializedData?: SerializedPlanData) => {
+    return await loadData(serializedData);
   },
 
-  save: async (data: PlanData) => {
-    const serializedData = saveData(data);
-    await localforage.setItem('data_plan', serializedData);
+  loadFromStorage: async () => {
+    const serializedData = await localforage.getItem<SerializedPlanData>(
+      'data_plan'
+    );
+    return await loadData(serializedData || {});
+  },
 
-    // TODO initiate save??
+  serialize: (data: PlanData) => {
+    const sData = saveData(data);
+    ds('serialized plan data');
+    return sData;
+  },
+
+  save: (data: PlanData, switches: UserOptions) => {
+    const serializedData = saveData(data);
+    ds('serialized plan data and preparing to save');
+    localforage
+      .setItem('data_plan', serializedData)
+      .then(() => {
+        ds('plan data saved locally');
+      })
+      .catch(() => {
+        ds('plan data failed to save locally');
+      });
+
+    const activeId = switches.get.active_plan_id;
+    return !!activeId && activeId !== 'None';
   },
 };
 

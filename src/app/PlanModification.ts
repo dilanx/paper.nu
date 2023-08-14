@@ -1,4 +1,5 @@
 import {
+  BookmarkSlashIcon,
   ExclamationTriangleIcon,
   SunIcon,
   TrashIcon,
@@ -10,6 +11,8 @@ import { AppType } from '../types/BaseTypes';
 import { Course, CourseLocation } from '../types/PlanTypes';
 import Utility from '../utility/Utility';
 const d = debug('app:plan-mod');
+
+// TODO disable adding custom courses to bookmarks here and in the side card
 
 function courseConfirmationPrompts(
   app: AppType,
@@ -85,11 +88,7 @@ export function addCourse(
     d('course added: %s (y%dq%d)', course.id, year, quarter);
     app.setState({
       data,
-      unsavedChanges: PlanManager.save(
-        data,
-        app.state.switches,
-        app.state.originalDataString
-      ),
+      unsavedChanges: PlanManager.save(data, app.state.switches),
     });
   });
 }
@@ -111,11 +110,7 @@ export function removeCourse(
   d('course removed: %s (y%dq%d)', course.id, year, quarter);
   app.setState({
     data,
-    unsavedChanges: PlanManager.save(
-      data,
-      app.state.switches,
-      app.state.originalDataString
-    ),
+    unsavedChanges: PlanManager.save(data, app.state.switches),
   });
 }
 
@@ -149,11 +144,7 @@ export function moveCourse(
       d('course moved: %s (y%dq%d) -> (y%dq%d)', course.id, oy, oq, ny, nq);
       app.setState({
         data,
-        unsavedChanges: PlanManager.save(
-          data,
-          app.state.switches,
-          app.state.originalDataString
-        ),
+        unsavedChanges: PlanManager.save(data, app.state.switches),
       });
     },
     true
@@ -161,6 +152,18 @@ export function moveCourse(
 }
 
 export function addBookmark(app: AppType, course: Course, forCredit: boolean) {
+  if (course.custom) {
+    app.showAlert({
+      title: "Custom courses can't be bookmarked",
+      message:
+        'Only built-in courses can be bookmarked. Custom courses cannot.',
+      color: 'red',
+      icon: BookmarkSlashIcon,
+      cancelButton: 'Close',
+    });
+    return;
+  }
+
   const bookmarks = app.state.data.bookmarks;
   if (forCredit) {
     bookmarks.forCredit.add(course);
@@ -176,11 +179,7 @@ export function addBookmark(app: AppType, course: Course, forCredit: boolean) {
     };
     return {
       data,
-      unsavedChanges: PlanManager.save(
-        data,
-        app.state.switches,
-        prevState.originalDataString
-      ),
+      unsavedChanges: PlanManager.save(data, app.state.switches),
     };
   });
 }
@@ -205,11 +204,7 @@ export function removeBookmark(
     };
     return {
       data,
-      unsavedChanges: PlanManager.save(
-        data,
-        prevState.switches,
-        prevState.originalDataString
-      ),
+      unsavedChanges: PlanManager.save(data, prevState.switches),
     };
   });
 }
@@ -248,11 +243,7 @@ export function removeSummerQuarter(app: AppType, year: number) {
       data.courses[year].pop();
       app.setState({
         data: data,
-        unsavedChanges: PlanManager.save(
-          data,
-          app.state.switches,
-          app.state.originalDataString
-        ),
+        unsavedChanges: PlanManager.save(data, app.state.switches),
       });
       d('summer quarter removed: y%d', year);
     },
@@ -284,11 +275,7 @@ export function clearData(app: AppType, year?: number) {
     d('plan cleared');
     app.setState({
       data,
-      unsavedChanges: PlanManager.save(
-        data,
-        app.state.switches,
-        app.state.originalDataString
-      ),
+      unsavedChanges: PlanManager.save(data, app.state.switches),
     });
   } else {
     const yearText = Utility.convertYear(year).toLowerCase();
@@ -313,11 +300,7 @@ export function clearData(app: AppType, year?: number) {
         });
         app.setState({
           data,
-          unsavedChanges: PlanManager.save(
-            data,
-            app.state.switches,
-            app.state.originalDataString
-          ),
+          unsavedChanges: PlanManager.save(data, app.state.switches),
         });
       },
     });
