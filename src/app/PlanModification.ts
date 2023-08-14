@@ -1,14 +1,14 @@
 import {
   ExclamationTriangleIcon,
-  PlusIcon,
+  SunIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
+import debug from 'debug';
+import toast from 'react-hot-toast';
 import PlanManager from '../PlanManager';
 import { AppType } from '../types/BaseTypes';
 import { Course, CourseLocation } from '../types/PlanTypes';
 import Utility from '../utility/Utility';
-import debug from 'debug';
-import toast from 'react-hot-toast';
 const d = debug('app:plan-mod');
 
 function courseConfirmationPrompts(
@@ -223,7 +223,7 @@ export function addSummerQuarter(app: AppType, year: number) {
     confirmButton: 'Add quarter',
     cancelButton: 'Close',
     color: 'yellow',
-    icon: PlusIcon,
+    icon: SunIcon,
     action: () => {
       const data = app.state.data;
       data.courses[year].push([]);
@@ -242,7 +242,7 @@ export function removeSummerQuarter(app: AppType, year: number) {
     confirmButton: 'Remove quarter',
     cancelButton: 'Close',
     color: 'yellow',
-    icon: PlusIcon,
+    icon: SunIcon,
     action: () => {
       const data = app.state.data;
       data.courses[year].pop();

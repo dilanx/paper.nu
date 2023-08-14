@@ -1,7 +1,13 @@
 import debug from 'debug';
+import localforage from 'localforage';
 import { getPlanData } from './DataManager';
-import { UserOptions } from './types/BaseTypes';
-import { Course, PlanData, RawCourseData } from './types/PlanTypes';
+import {
+  Course,
+  PlanData,
+  RawCourseData,
+  SerializedPlanCourse,
+  SerializedPlanData,
+} from './types/PlanTypes';
 import {
   FilterOptions,
   SearchError,
@@ -21,8 +27,30 @@ async function loadCourseData() {
   }
 }
 
+function basePlanArrays<T = Course>(data: any[][][] | undefined): T[][][] {
+  if (!data) {
+    return [
+      [[], [], []],
+      [[], [], []],
+      [[], [], []],
+    ];
+  }
+
+  while (data.length < 3) {
+    data.push([[], [], []]);
+  }
+
+  for (let y = 0; y < data.length; y++) {
+    while (data[y].length < 3) {
+      data[y].push([]);
+    }
+  }
+
+  return data;
+}
+
 async function loadData(
-  params: URLSearchParams
+  serializedData: SerializedPlanData
 ): Promise<PlanData | 'malformed' | 'empty'> {
   await loadCourseData();
 
@@ -30,146 +58,125 @@ async function loadData(
     return 'malformed';
   }
 
-  let allCourseData: Course[][][] = [
-    [[], [], []],
-    [[], [], []],
-    [[], [], []],
-    [[], [], []],
-  ];
-
-  let bookmarksNoCredit = new Set<Course>();
-  let bookmarksForCredit = new Set<Course>();
-
   let loadedSomething = false;
+  let malformed = false;
 
   try {
-    for (const [key, value] of params) {
-      if (key.startsWith('y')) {
-        loadedSomething = true;
+    const data = basePlanArrays(
+      serializedData.courses?.map((year, y) =>
+        year.map((quarter, q) =>
+          quarter
+            .map<Course | null>((c) => {
+              loadedSomething = true;
+              if (typeof c === 'string') {
+                const course = PlanManager.getCourse(c);
+                if (course) {
+                  ds('course loaded: %s (y%dq%d)', c, y, q);
+                  return course;
+                } else {
+                  ds('course not found: %s (y%dq%d)', c, y, q);
+                  malformed = true;
+                  return null;
+                }
+              } else {
+                ds('loaded custom course: %s (y%dq%d)', c.title, y, q);
+                return {
+                  id: c.title,
+                  name: c.subtitle || '',
+                  units: c.units || '',
+                  repeatable: false,
+                  description: '',
+                };
+              }
+            })
+            .sort((a, b) => (a?.id || '').localeCompare(b?.id || ''))
+        )
+      )
+    );
 
-        let year = parseInt(key.substring(1).split('q')[0]);
-        let quarter = parseInt(key.split('q')[1]);
-        let classes = value.split(',');
-        let classData: Course[] = [];
+    if (malformed) return 'malformed';
 
-        for (let id of classes) {
-          let sp = id.split('_');
-          let subjId = sp[0];
-          let num = sp[1];
-          let subj = courseData.major_ids[subjId];
-          let courseId = subj + ' ' + num;
-
-          let course = PlanManager.getCourse(courseId);
-          if (!course) return 'malformed';
-          classData.push(course);
-          ds('course loaded: %s (y%dq%d)', courseId, year, quarter);
-        }
-
-        classData.sort((a, b) => {
-          return a.id.localeCompare(b.id);
-        });
-
-        while (allCourseData.length < year + 1) {
-          allCourseData.push([[], [], []]);
-        }
-
-        while (allCourseData[year].length < quarter + 1) {
-          allCourseData[year].push([]);
-        }
-
-        allCourseData[year][quarter] = classData;
-      }
-
-      if (key.startsWith('f')) {
-        loadedSomething = true;
-
-        let classesLists = value.split(';');
-        for (let i = 0; i < classesLists.length; i++) {
-          let classes = classesLists[i].split(',');
-          for (let id of classes) {
-            if (id === '') continue;
-            let sp = id.split('_');
-            let subjId = sp[0];
-            let num = sp[1];
-            let subj = courseData.major_ids[subjId];
-            let courseId = subj + ' ' + num;
-
-            let course = PlanManager.getCourse(courseId);
-            if (!course) return 'malformed';
-            if (i === 0) {
-              bookmarksNoCredit.add(course);
-              ds('plan bookmark added: %s (credit = false)', courseId);
-            } else {
-              bookmarksForCredit.add(course);
-              ds('plan bookmark added: %s (credit = true)', courseId);
-            }
+    const deserializeBookmarks = (
+      type: 'for credit' | 'no credit',
+      bookmarks?: string[]
+    ) =>
+      new Set(
+        bookmarks?.map((c) => {
+          loadedSomething = true;
+          const course = PlanManager.getCourse(c);
+          if (course) {
+            ds('plan bookmark %s loaded: %s', type, c);
+            return course;
+          } else {
+            ds('plan bookmark %s not found: %s', type, c);
+            malformed = true;
+            return null;
           }
-        }
-      }
+        }) || []
+      );
+
+    const bookmarksNoCredit = deserializeBookmarks(
+      'no credit',
+      serializedData.bookmarks?.noCredit
+    );
+    const bookmarksForCredit = deserializeBookmarks(
+      'for credit',
+      serializedData.bookmarks?.forCredit
+    );
+
+    if (malformed) {
+      return 'malformed';
     }
+
+    if (!loadedSomething) {
+      return 'empty';
+    }
+
+    return {
+      courses: data,
+      bookmarks: {
+        noCredit: bookmarksNoCredit as Set<Course>,
+        forCredit: bookmarksForCredit as Set<Course>,
+      },
+    };
   } catch (e) {
     return 'malformed';
   }
-
-  if (!loadedSomething) return 'empty';
-
-  return {
-    courses: allCourseData,
-    bookmarks: {
-      noCredit: bookmarksNoCredit,
-      forCredit: bookmarksForCredit,
-    },
-  };
 }
 
-function saveData({ courses, bookmarks }: PlanData) {
-  let params = new URLSearchParams();
-
+function saveData({ courses, bookmarks }: PlanData): SerializedPlanData {
   if (!courseData) {
     ds('course data is not loaded');
-    return params;
+    return {};
   }
 
-  for (let y = 0; y < courses.length; y++) {
-    for (let q = 0; q < courses[y].length; q++) {
-      let str = '';
-      for (let course of courses[y][q]) {
-        let sp = course.id.split(' ');
-        let subj = sp[0];
-        let num = sp[1];
-        let subjId = courseData?.majors[subj].id;
-        str += `${subjId}_${num},`;
-      }
-      if (str.length > 0) {
-        params.set(`y${y}q${q}`, str.substring(0, str.length - 1));
-      }
-    }
-  }
+  const serializedData = courses.map((year) =>
+    year.map((quarter) =>
+      quarter.map<SerializedPlanCourse>((c) => {
+        if (c.custom) {
+          return {
+            title: c.id,
+            subtitle: c.name,
+            units: c.units,
+          };
+        } else {
+          return c.id;
+        }
+      })
+    )
+  );
 
-  let bookmarksNoCredit = Array.from(bookmarks.noCredit);
-  let bookmarksForCredit = Array.from(bookmarks.forCredit);
-
-  if (bookmarksNoCredit.length > 0 || bookmarksForCredit.length > 0) {
-    let conv = (course: Course) => {
-      let courseId = course.id;
-      let sp = courseId.split(' ');
-      let subj = sp[0];
-      let num = sp[1];
-      let subjId = courseData?.majors[subj].id;
-      return subjId + '_' + num;
-    };
-
-    params.set(
-      'f',
-      bookmarksNoCredit.map(conv).join(',') +
-        ';' +
-        bookmarksForCredit.map(conv).join(',')
-    );
-  }
+  const serializedBookmarks = {
+    noCredit: Array.from(bookmarks.noCredit).map((c) => c.id),
+    forCredit: Array.from(bookmarks.forCredit).map((c) => c.id),
+  };
 
   ds('course data saved');
 
-  return params;
+  return {
+    courses: serializedData,
+    bookmarks: serializedBookmarks,
+  };
 }
 
 function countCourseUnitsInHundreds(courseList: Course[] | Set<Course>) {
@@ -395,41 +402,15 @@ const PlanManager = {
     return !!courseData.majors[subject];
   },
 
-  loadFromURL: async (params: URLSearchParams) => {
-    return await loadData(params);
+  load: (serializedData: SerializedPlanData) => {
+    return loadData(serializedData);
   },
 
-  loadFromStorage: async () => {
-    let dataStr = localStorage.getItem('data');
-    let params = new URLSearchParams(dataStr || undefined);
-    return await loadData(params);
-  },
+  save: async (data: PlanData) => {
+    const serializedData = saveData(data);
+    await localforage.setItem('data_plan', serializedData);
 
-  loadFromString: async (dataStr?: string) => {
-    return await loadData(new URLSearchParams(dataStr || 'undefined'));
-  },
-
-  getDataString: (data: PlanData) => {
-    return saveData(data).toString();
-  },
-
-  save: (
-    data: PlanData,
-    switches: UserOptions,
-    compareAgainstDataString?: string
-  ) => {
-    let params = saveData(data);
-    let paramsStr = params.toString();
-
-    localStorage.setItem('data', paramsStr);
-
-    let activePlanId = switches?.get.active_plan_id as string | undefined;
-
-    if (activePlanId && activePlanId !== 'None') {
-      return paramsStr !== compareAgainstDataString;
-    }
-
-    return false;
+    // TODO initiate save??
   },
 };
 

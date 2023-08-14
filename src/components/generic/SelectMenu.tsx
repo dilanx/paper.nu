@@ -13,7 +13,7 @@ function SelectMenu({ options, value, setValue, color }: SelectMenuProps) {
     <div className="m-2 flex flex-wrap gap-2">
       {options.map((option, i) => (
         <button
-          className={`rounded-xl px-4 py-1 text-sm font-medium
+          className={`rounded-md px-4 py-1 text-sm font-medium
           ${
             option.value === value
               ? `bg-${color}-500 text-white`

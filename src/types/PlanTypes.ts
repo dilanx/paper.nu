@@ -4,13 +4,11 @@ export interface RawCourseData {
   courses: Course[];
   legacy: Course[];
   majors: MajorData;
-  major_ids: { [key: string]: string };
   shortcuts: { [key: string]: string[] };
 }
 
 export interface MajorData {
   [key: string]: {
-    id: string;
     display: string;
     color: Color;
   };
@@ -24,6 +22,14 @@ export interface PlanData {
 export interface SerializedPlanData {
   courses?: SerializedPlanCourse[][][];
   bookmarks?: SerializedBookmarksData;
+}
+
+export function isSerializedPlanData(data: any): data is SerializedPlanData {
+  if (!data) {
+    return false;
+  }
+
+  return data.courses || (data.bookmarks && typeof data.bookmarks === 'object');
 }
 
 export interface SerializedCustomPlanCourse {
@@ -54,6 +60,7 @@ export interface Course {
   distros?: string;
   placeholder?: boolean;
   legacy?: boolean;
+  custom?: boolean;
 }
 
 export interface CourseLocation {

@@ -10,6 +10,7 @@ import {
   ScheduleDataMap,
   ScheduleLocation,
   ScheduleSection,
+  SerializedScheduleData,
   Time,
 } from './types/ScheduleTypes';
 import { FilterOptions, SearchError, SearchResults } from './types/SearchTypes';
@@ -22,12 +23,13 @@ const school = JSONSchoolData as RawSchoolData;
 const SEARCH_RESULT_LIMIT = 50;
 
 async function loadData(
-  params: URLSearchParams
+  serializedData: SerializedScheduleData
 ): Promise<ScheduleData | 'malformed' | 'empty'> {
   if (!PlanManager.isPlanDataLoaded()) {
     await PlanManager.loadPlanData();
   }
-  let termId = params.get('t');
+
+  const termId = serializedData.termId;
   let res = await getScheduleData(termId ?? undefined);
 
   if (res) {
@@ -41,19 +43,62 @@ async function loadData(
   }
 
   if (!termId) {
-    if (params.has('s') || params.has('sf')) {
+    if (serializedData.schedule || serializedData.bookmarks) {
       return 'malformed';
     }
     return 'empty';
   }
 
-  let data: ScheduleData = {
+  const data: ScheduleData = {
     termId: termId,
     schedule: {},
     bookmarks: [],
   };
 
+  let customId = 1;
+
   try {
+    for (const sSection of serializedData.schedule || []) {
+      if (typeof sSection === 'string') {
+        const section = ScheduleManager.getSectionById(sSection);
+        if (!section) {
+          ds('course section not found: %s', sSection);
+          continue;
+        }
+
+        data.schedule[sSection] = section;
+        ds('course section loaded: %s', sSection);
+      } else {
+        const sectionId = `CUSTOM-${customId}`;
+        customId++;
+        const section: ScheduleSection = {
+          section_id: sectionId,
+          title: sSection.subtitle || '',
+          subject: sSection.title,
+          section: '',
+          meeting_days: [sSection.meeting_days],
+          start_time: [sSection.start_time],
+          end_time: [sSection.end_time],
+          component: 'CUS',
+        };
+
+        // TODO continue here!
+
+        if (sSection.instructor) {
+          section.instructors = [
+            {
+              name: sSection.instructor,
+            },
+          ];
+        }
+
+        if (sSection.location) {
+          section.room = [sSection.location.name];
+          // TODO implement lat lon perhaps?
+        }
+      }
+    }
+
     if (params.has('s')) {
       let sections = params.get('s')!.split(',');
 
@@ -164,7 +209,7 @@ const ScheduleManager = {
 
         if (course.hide_section_ids.length === course.sections.length) return;
       }
-      const id = course.subject + ' ' + course.number;
+      const id = `${course.subject}${course.number ? ` ${course.number}` : ''}`;
       for (let term of terms) {
         if (id.toLowerCase().replace(/-|_/g, ' ').includes(term)) {
           courseIdResults.push(course);
@@ -194,7 +239,9 @@ const ScheduleManager = {
     }
 
     courseIdResults.sort((a, b) =>
-      (a.subject + ' ' + a.number).localeCompare(b.subject + ' ' + b.number)
+      `${a.subject}${a.number ? ` ${a.number}` : ''}`.localeCompare(
+        `${b.subject}${b.number ? ` ${b.number}` : ''}`
+      )
     );
     courseNameResults.sort((a, b) => a.title.localeCompare(b.title));
 

@@ -8,10 +8,19 @@ import {
   LoadMethods,
   LoadResponse,
   ReadUserOptions,
+  SaveDataOptions,
   UserOptions,
 } from './types/BaseTypes';
-import { PlanData } from './types/PlanTypes';
-import { ScheduleData } from './types/ScheduleTypes';
+import {
+  PlanData,
+  SerializedPlanData,
+  isSerializedPlanData,
+} from './types/PlanTypes';
+import {
+  ScheduleData,
+  SerializedScheduleData,
+  isSerializedScheduleData,
+} from './types/ScheduleTypes';
 import { Mode } from './utility/Constants';
 import Utility from './utility/Utility';
 const d = debug('save-data-manager');
@@ -35,15 +44,16 @@ function matchAccountId(accountData: Document[], content: string) {
 let SaveDataManager = {
   load: async (
     switches: UserOptions,
-    hash?: string,
-    params?: URLSearchParams
+    { hash, changeTerm }: SaveDataOptions
   ): Promise<LoadResponse<PlanData | ScheduleData>> => {
     let activeId: string | undefined = undefined;
-    let originalDataString: string = '';
     let accountPlans: Document[] | undefined = undefined;
     let accountSchedules: Document[] | undefined = undefined;
     let method: LoadMethods = 'None';
     const latestTermId = (await getDataMapInformation()).latest;
+
+    let serializedData: SerializedPlanData | SerializedScheduleData | null =
+      null;
 
     if (Account.isLoggedIn()) {
       const accountInit = await Account.init();
@@ -59,7 +69,6 @@ let SaveDataManager = {
         return {
           mode: Mode.PLAN,
           data: 'malformed',
-          originalDataString,
           method: 'URL',
           latestTermId,
         };
@@ -73,17 +82,41 @@ let SaveDataManager = {
         return {
           mode: Mode.PLAN,
           data: 'malformed',
-          originalDataString,
           method: 'URL',
           latestTermId,
         };
       }
       const scContent = await scContentResponse.json();
-      params = new URLSearchParams(scContent.content);
-      d('fetched content for short code and loaded it into params');
+      if (!scContent.data) {
+        d('short code has no data, thus must have legacy data');
+        return {
+          mode: Mode.PLAN,
+          data: 'malformed',
+          method: 'URL',
+          latestTermId,
+        };
+      }
+      serializedData = JSON.parse(scContent.data) as SerializedPlanData;
+      d('fetched content for short code URL, trying to load');
+
+      if (serializedData) {
+        if (isSerializedPlanData(serializedData)) {
+          d('URL data is plan data');
+          const planData = await PlanManager.load(serializedData);
+          if (planData !== 'empty') {
+            if (planData !== 'malformed') {
+              d('plan URL load successful');
+              method = 'URL';
+            }
+          }
+        } else if (isSerializedScheduleData(serializedData)) {
+          d('URL data is schedule data');
+          // TODO continue here
+        }
+      }
     }
 
-    if (params) {
+    if (serializedData) {
       d('trying to load schedule URL data');
       let scheduleData = await ScheduleManager.loadFromURL(params);
       if (scheduleData !== 'empty') {

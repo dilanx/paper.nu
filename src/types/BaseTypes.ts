@@ -74,7 +74,6 @@ export interface LoadResponse<T> {
   mode: Mode;
   data: T | 'malformed' | 'empty';
   activeId?: string;
-  originalDataString: string;
   method: LoadMethods;
   latestTermId: string;
 }
@@ -165,4 +164,5 @@ export type LoadLegacyUrlFunction = (url: URL) => void;
 export interface SaveDataOptions {
   hash?: string;
   legacyParams?: URLSearchParams;
+  changeTerm?: string;
 }

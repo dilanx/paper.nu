@@ -17,6 +17,20 @@ export interface SerializedScheduleData {
   bookmarks?: string[];
 }
 
+export function isSerializedScheduleData(
+  data: any
+): data is SerializedScheduleData {
+  if (!data) {
+    return false;
+  }
+
+  return (
+    data.termId ||
+    data.schedule ||
+    (data.bookmarks && Array.isArray(data.bookmarks))
+  );
+}
+
 export type SerializedScheduleSection =
   | string
   | SerializedCustomScheduleSection;
@@ -74,7 +88,7 @@ export interface ScheduleSection {
   title: string;
   topic?: string;
   subject: string;
-  number: string;
+  number?: string;
   section: string;
   meeting_days: (string | null)[];
   start_time: (Time | null)[];

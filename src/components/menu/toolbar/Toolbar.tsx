@@ -80,7 +80,7 @@ function Toolbar({
 
   return (
     <div
-      className={`sticky top-0 z-30 flex w-full flex-col items-center justify-center gap-1 bg-white px-4 pt-4 pb-2 dark:bg-gray-800 md:flex-row lg:justify-end ${
+      className={`sticky top-0 z-30 flex w-full flex-col items-center justify-center gap-1 bg-white px-4 pt-4 pb-1 dark:bg-gray-800 md:flex-row lg:justify-end ${
         !isSchedule ? 'border-b-2 border-gray-200 dark:border-gray-700' : ''
       }`}
     >

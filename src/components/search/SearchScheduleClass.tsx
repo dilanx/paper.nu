@@ -82,7 +82,7 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
       }}
     >
       <p className="text-lg font-bold text-black dark:text-gray-50">
-        {course.subject + ' ' + course.number}
+        {`${course.subject}${course.number ? ` ${course.number}` : ''}`}
       </p>
       <p className="text-sm text-black dark:text-gray-50">{course.title}</p>
 

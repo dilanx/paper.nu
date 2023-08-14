@@ -80,7 +80,9 @@ function getDetails(
               alert?.({
                 icon: UserIcon,
                 title: instructor.name ?? 'No name',
-                subtitle: `${section.subject} ${section.number} (section ${section.section})`,
+                subtitle: `${section.subject}${
+                  section.number ? ` ${section.number}` : ''
+                } (section ${section.section})`,
                 color: 'rose',
                 cancelButton: 'Close',
                 extras: [
@@ -223,7 +225,9 @@ export function openInfo(
   interactions?: ScheduleInteractions,
   mod?: SectionModificationWithinInfo
 ) {
-  const name = section.subject + ' ' + section.number;
+  const name = `${section.subject}${
+    section.number ? ` ${section.number}` : ''
+  }`;
   const course = PlanManager.getCourse(name);
   const scheduleCourse = ScheduleManager.getCourseById(
     section.section_id.split('-')[0]

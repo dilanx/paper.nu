@@ -70,7 +70,7 @@ export const getAlertOptions = (
           {option.appearanceToggle && (
             <div className="flex gap-4 px-4">
               <button
-                className={`flex-1 rounded-md border-2 bg-white p-1 text-black opacity-100 shadow-md ${
+                className={`flex-1 rounded-md border-2 bg-white p-1 text-black opacity-100 shadow-sm ${
                   !enabled
                     ? 'border-orange-400'
                     : 'border-gray-700 hover:border-orange-300 active:border-orange-300 active:opacity-80'
@@ -80,7 +80,7 @@ export const getAlertOptions = (
                 Light
               </button>
               <button
-                className={`flex-1 rounded-md border-2 bg-gray-800 p-1 text-white opacity-100 shadow-md ${
+                className={`flex-1 rounded-md border-2 bg-gray-800 p-1 text-white opacity-100 shadow-sm ${
                   enabled
                     ? 'border-orange-400'
                     : 'border-white hover:border-orange-300 active:border-orange-300 active:opacity-80'

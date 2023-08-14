@@ -256,7 +256,10 @@ let Utility = {
 
   formatSections: (schedule: ScheduleDataMap) =>
     Object.values(schedule)
-      .map((section) => `${section.subject} ${section.number}`)
+      .map(
+        (section) =>
+          `${section.subject}${section.number ? ` ${section.number}` : ''}`
+      )
       .join(', '),
 
   errorAlert: (from: PlanErrorLocation, error: PaperError): AlertData => {
