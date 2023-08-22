@@ -54,7 +54,8 @@ function CampusMinimap({ expand, location, section }: CampusMinimapProps) {
                   icon={
                     section
                       ? getMapMarkerIcon(
-                          ScheduleManager.getCourseColor(section.subject)
+                          section.color ||
+                            ScheduleManager.getCourseColor(section.subject)
                         )
                       : getMapMarkerIcon(location![1])
                   }

@@ -138,7 +138,8 @@ function getDetails(
                   if (interactions)
                     interactions.hoverLocation.set([
                       room,
-                      ScheduleManager.getCourseColor(section.subject),
+                      section.color ||
+                        ScheduleManager.getCourseColor(section.subject),
                     ]);
                 }}
                 onMouseLeave={() => {
