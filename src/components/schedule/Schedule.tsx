@@ -164,34 +164,36 @@ export default function Schedule(props: ScheduleProps) {
       >
         <HoursColumn start={start} end={end} />
         {days}
-        <div className="absolute top-4 right-6 flex items-center gap-1">
-          <UtilityButton
-            Icon={PlusIcon}
-            onClick={() => {
-              if (enableCustom) {
-                props.sf.addCustomSection();
-              } else {
-                props.alert({
-                  title: 'Add custom sections to your schedule.',
-                  message:
-                    "Keep your entire school schedule, including things other than classes, in one place by adding custom sections to your schedule! You'll need to be logged in and have a schedule activated to do this.",
-                  color: 'green',
-                  icon: PlusIcon,
-                  cancelButton: 'Close',
-                  confirmButton: 'Go to schedules',
-                  action: () => {
-                    props.switches.set('tab', 'Plans');
-                  },
-                });
-              }
-            }}
-          >
-            CUSTOM
-          </UtilityButton>
-          <UtilityButton Icon={TrashIcon} onClick={() => props.sf.clear()}>
-            CLEAR
-          </UtilityButton>
-        </div>
+        {!imageMode && (
+          <div className="absolute top-4 right-6 flex items-center gap-1">
+            <UtilityButton
+              Icon={PlusIcon}
+              onClick={() => {
+                if (enableCustom) {
+                  props.sf.putCustomSection();
+                } else {
+                  props.alert({
+                    title: 'Add custom sections to your schedule.',
+                    message:
+                      "Keep your entire school schedule, including things other than classes, in one place by adding custom sections to your schedule! You'll need to be logged in and have a schedule activated to do this.",
+                    color: 'green',
+                    icon: PlusIcon,
+                    cancelButton: 'Close',
+                    confirmButton: 'Go to schedules',
+                    action: () => {
+                      props.switches.set('tab', 'Plans');
+                    },
+                  });
+                }
+              }}
+            >
+              CUSTOM
+            </UtilityButton>
+            <UtilityButton Icon={TrashIcon} onClick={() => props.sf.clear()}>
+              CLEAR
+            </UtilityButton>
+          </div>
+        )}
       </div>
 
       {imageMode && (

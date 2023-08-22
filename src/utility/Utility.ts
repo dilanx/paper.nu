@@ -1,5 +1,6 @@
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
+import Account from '../Account';
 import { AlertData } from '../types/AlertTypes';
 import { Color, InfoSetData } from '../types/BaseTypes';
 import { PlanErrorLocation } from '../types/ErrorTypes';
@@ -9,10 +10,8 @@ import {
   SectionWithMeetingPattern,
   Time,
 } from '../types/ScheduleTypes';
-import { FilterBadgeName, FilterOptions } from '../types/SearchTypes';
-import { Mode } from './Constants';
+import { FilterBadgeName } from '../types/SearchTypes';
 import { PaperError, PaperExpectedAuthError } from './PaperError';
-import Account from '../Account';
 
 let Utility = {
   BACKGROUND_LIGHT: '#FFFFFF',
@@ -174,7 +173,9 @@ let Utility = {
       pm = true;
       h -= 12;
     }
-    if (h === 12) {
+    if (h === 0) {
+      h = 12;
+    } else if (h === 12) {
       pm = true;
     }
 
@@ -199,6 +200,8 @@ let Utility = {
         return 'seminar';
       case 'PED':
         return 'performance';
+      case 'CUS':
+        return 'custom';
       default:
         return component;
     }
@@ -319,29 +322,6 @@ let Utility = {
 
   capitalizeFirstLetter: (text: string) => {
     return text.charAt(0).toUpperCase() + text.slice(1);
-  },
-
-  filterBelongsTo: (option: keyof FilterOptions, mode: Mode) => {
-    switch (option) {
-      case 'subject':
-      case 'distros':
-        return true;
-      case 'unitGeq':
-      case 'unitLeq':
-      case 'include':
-        return mode === Mode.PLAN;
-      case 'startAfter':
-      case 'startBefore':
-      case 'endAfter':
-      case 'endBefore':
-      case 'meetingDays':
-      case 'components':
-      case 'instructor':
-      case 'location':
-        return mode === Mode.SCHEDULE;
-      default:
-        return false;
-    }
   },
 
   getFilterBadgeInfo: (

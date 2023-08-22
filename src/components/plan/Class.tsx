@@ -163,7 +163,7 @@ function Class(props: ClassProps) {
         className={`rounded-lg bg-opacity-60 p-2 bg-${color}-100 border-2
             dark:bg-gray-800 border-${color}-300 compact:py-05 group w-full transform overflow-visible border-opacity-60
             text-left transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md compact:px-2 ${
-              isDragging ? 'cursor-grab' : 'cursor-default'
+              isDragging ? 'cursor-grab' : 'cursor-pointer'
             }`}
         onClick={() => openInfo(props)}
       >

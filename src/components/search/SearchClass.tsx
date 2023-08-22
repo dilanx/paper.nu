@@ -61,12 +61,14 @@ function SearchClass(props: SearchClassProps) {
       ref={drag}
       className={`rounded-lg border-2 bg-opacity-60 p-2 dark:bg-gray-800 ${
         props.selected
-          ? `bg-white border-${props.color}-400 -translate-y-2 shadow-lg`
-          : `bg-${props.color}-100 border-${props.color}-300 border-opacity-60 hover:-translate-y-1 hover:shadow-md`
+          ? `bg-white border-${props.color}-400 -translate-y-2 cursor-default shadow-lg`
+          : `bg-${props.color}-100 border-${
+              props.color
+            }-300 border-opacity-60 hover:-translate-y-1 hover:shadow-md ${
+              isDragging ? 'cursor-grab ' : 'cursor-pointer'
+            }`
       }
-            group m-4 transition duration-300 ease-in-out ${
-              isDragging ? 'cursor-grab ' : 'cursor-default'
-            }`}
+            group m-4 transition duration-300 ease-in-out`}
       onClick={() => {
         if (props.select) props.select(course.id);
       }}

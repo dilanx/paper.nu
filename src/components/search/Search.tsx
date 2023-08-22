@@ -56,6 +56,7 @@ import SearchClass from './SearchClass';
 import SearchFilterDisplay from './SearchFilterDisplay';
 import SearchScheduleClass from './SearchScheduleClass';
 import SearchBoxNotice from './SearchBoxNotice';
+import { searchPlan, searchSchedule } from '../../Search';
 
 interface SearchProps {
   data: PlanData;
@@ -181,8 +182,8 @@ class Search extends React.Component<SearchProps, SearchState> {
   ): SearchResultsElements {
     let results =
       appMode === Mode.PLAN
-        ? PlanManager.search(query, filter)
-        : ScheduleManager.search(query, filter);
+        ? searchPlan(query, filter)
+        : searchSchedule(query, filter);
 
     const easterEgg = Utility.friendlyEasterEgg(query.toLowerCase());
     if (easterEgg) {

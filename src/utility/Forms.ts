@@ -5,9 +5,10 @@ import {
   AlertFormFieldMultiSelect,
   AlertFormFieldText,
   AlertFormFieldTime,
+  AlertFormResponse,
   AlertFormSection,
 } from '../types/AlertTypes';
-import { TextValidator } from '../types/BaseTypes';
+import { Color, TextValidator } from '../types/BaseTypes';
 import { Time } from '../types/ScheduleTypes';
 import { FilterOptions } from '../types/SearchTypes';
 import { Components, Days, Distros } from './Constants';
@@ -172,29 +173,33 @@ export function planSearchFilterForm(
   ];
 }
 
-export function customSectionForm(): AlertFormSection[] {
+export function customSectionForm(
+  defaults: AlertFormResponse = {}
+): AlertFormSection[] {
   const text = (name: string, required = false): AlertFormFieldText => ({
     name,
     type: 'text',
     maxLength: 100,
     required,
+    defaultValue: defaults[name],
   });
   const time = (name: string): AlertFormFieldTime => ({
     name,
     type: 'time',
-    placeholder: 'hh:mm am/pm',
     required: true,
+    defaultValue: defaults[name],
   });
   const sel: AlertFormFieldMultiSelect = {
     name: 'meeting_days',
     type: 'multi-select',
     options: ['Mo', 'Tu', 'We', 'Th', 'Fr'],
     required: true,
+    defaultValue: defaults['meeting_days'],
   };
   const col: AlertFormFieldColorSelect = {
     name: 'color',
     type: 'color-select',
-    defaultValue: 'gray',
+    defaultValue: (defaults['color'] as Color) || 'gray',
   };
 
   return [

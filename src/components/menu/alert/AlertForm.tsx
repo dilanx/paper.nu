@@ -32,7 +32,7 @@ export const getAlertForm = (
         if (formFieldIs<AlertFormFieldText>(field, 'text')) {
           return (
             <TextInput
-              value={values[field.name]}
+              value={values[field.name] || ''}
               setValue={(value) => setValue(field.name, value)}
               placeholder={field.placeholder}
               validator={field.validator}
@@ -46,7 +46,7 @@ export const getAlertForm = (
         if (formFieldIs<AlertFormFieldTime>(field, 'time')) {
           return (
             <TimeInput
-              value={values[field.name]}
+              value={values[field.name] || ''}
               setValue={(value) => setValue(field.name, value)}
               placeholder={field.placeholder}
               required={field.required}
@@ -71,7 +71,9 @@ export const getAlertForm = (
             <MultiSelectInput
               title={field.name}
               options={field.options}
-              value={values[field.name] ? values[field.name].split(',') : []}
+              value={
+                values[field.name] ? values[field.name]?.split(',') || [] : []
+              }
               setValue={(selected) => setValue(field.name, selected.join(','))}
               required={field.required}
               key={`alert-form-field-${field.name}`}

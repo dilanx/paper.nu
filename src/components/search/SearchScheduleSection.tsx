@@ -74,7 +74,7 @@ function SearchScheduleSection({
                 bg-gray-200 bg-opacity-50 text-left dark:bg-gray-700 dark:text-white ${
                   disabled
                     ? 'cursor-not-allowed opacity-60'
-                    : `hover:border-${color}-400`
+                    : `cursor-pointer hover:border-${color}-400`
                 }`}
         onMouseEnter={() => {
           if (!disabled) interactions.previewSection.set(section);

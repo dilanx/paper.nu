@@ -4,7 +4,6 @@ export interface RawCourseData {
   courses: Course[];
   legacy: Course[];
   majors: MajorData;
-  shortcuts: { [key: string]: string[] };
 }
 
 export interface MajorData {
@@ -40,6 +39,7 @@ export interface SerializedCustomPlanCourse {
   title: string;
   subtitle?: string;
   units?: string;
+  color?: Color;
 }
 
 export type SerializedPlanCourse = string | SerializedCustomPlanCourse;
@@ -65,6 +65,7 @@ export interface Course {
   placeholder?: boolean;
   legacy?: boolean;
   custom?: boolean;
+  color?: Color;
 }
 
 export interface CourseLocation {

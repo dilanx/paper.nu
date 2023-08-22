@@ -44,6 +44,7 @@ export interface SerializedCustomScheduleSection {
   end_time: Time;
   location?: SerializedCustomLocation;
   instructor?: string;
+  color?: Color;
 }
 
 export interface SerializedCustomLocation {
@@ -104,6 +105,7 @@ export interface ScheduleSection {
   distros?: string;
   preview?: boolean;
   custom?: boolean;
+  color?: Color;
 }
 
 export interface ValidScheduleSection extends ScheduleSection {
@@ -136,34 +138,6 @@ export function isSectionWithValidMeetingPattern(
   swmp: SectionWithMeetingPattern | undefined
 ): swmp is SectionWithValidMeetingPattern {
   return !!swmp && !!swmp.start_time && !!swmp.end_time && !!swmp.meeting_days;
-}
-
-export interface RawSchoolData {
-  locations: ScheduleLocations;
-  schools: UniversitySchools;
-}
-
-export interface UniversitySchools {
-  [symbol: string]: UniversitySchool;
-}
-
-export interface UniversitySchool {
-  name: string;
-  subjects: UniversitySubject[];
-}
-
-export interface UniversitySubject {
-  symbol: string;
-  name: string;
-}
-
-export interface ScheduleLocations {
-  [building: string]: ScheduleLocation | null;
-}
-
-export interface ScheduleLocation {
-  lat: number;
-  lon: number;
 }
 
 export interface ScheduleDate {
@@ -203,7 +177,7 @@ export interface ScheduleModificationFunctions {
   removeSection: (section: ScheduleSection) => void;
   addScheduleBookmark: (course: ScheduleCourse) => void;
   removeScheduleBookmark: (course: ScheduleCourse) => void;
-  addCustomSection: () => void;
+  putCustomSection: (sectionToEdit?: ScheduleSection) => void;
   clear: () => void;
 }
 

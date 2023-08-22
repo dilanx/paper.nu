@@ -4,6 +4,9 @@
 
 _2023-XX-XX_
 
+- **Improved search!**
+  - Partial text matching is now supported. For example, searching something like "intro sociol" will match "introduction to sociology".
+  - You can now search by section topic, making specific sections in special topics classes (like CS 396) easier to find.
 - Various UI updates, bug fixes, and other small changes.
 
 ### 2.6.1

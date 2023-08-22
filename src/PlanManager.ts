@@ -9,18 +9,11 @@ import {
   SerializedPlanCourse,
   SerializedPlanData,
 } from './types/PlanTypes';
-import {
-  FilterOptions,
-  SearchError,
-  SearchResults,
-  SearchShortcut,
-} from './types/SearchTypes';
-import { DistroMap, Mode } from './utility/Constants';
-import Utility from './utility/Utility';
+import { FilterOptions } from './types/SearchTypes';
+import { DistroMap } from './utility/Constants';
 const ds = debug('plan-manager:ser');
 
 let courseData: RawCourseData | undefined = undefined;
-const SEARCH_RESULT_LIMIT = 100;
 
 async function loadCourseData() {
   if (!courseData) {
@@ -87,6 +80,8 @@ async function loadData(
                   units: c.units || '',
                   repeatable: false,
                   description: '',
+                  color: c.color,
+                  custom: true,
                 };
               }
             })
@@ -159,6 +154,7 @@ function saveData({ courses, bookmarks }: PlanData): SerializedPlanData {
             title: c.id,
             subtitle: c.name,
             units: c.units,
+            color: c.color,
           };
         } else {
           return c.id;
@@ -193,123 +189,7 @@ const PlanManager = {
   isPlanDataLoaded: () => !!courseData,
   loadPlanData: async () => await loadCourseData(),
 
-  prepareQuery: (query: string) => {
-    query = query.toLowerCase().replace(/-|_/g, ' ');
-    let terms = [query];
-
-    let firstWord = query.split(' ')[0];
-    let shortcut: SearchShortcut | undefined;
-    if (courseData?.shortcuts[firstWord]) {
-      let shortcuts = courseData.shortcuts[firstWord];
-      let remainder = query.substring(firstWord.length + 1);
-      terms = shortcuts.map(
-        (shortcut) =>
-          shortcut.toLowerCase().replace(/-|_/g, ' ') + ' ' + remainder
-      );
-      shortcut = {
-        replacing: firstWord.toUpperCase(),
-        with: shortcuts.join(', '),
-      };
-    }
-
-    // TODO remove this eventually lol
-    if (query === 'elena') {
-      terms = ['comp sci 446'];
-    }
-
-    return {
-      terms,
-      shortcut,
-    };
-  },
-
-  search: (
-    query: string,
-    filter?: FilterOptions
-  ): SearchResults<Course> | SearchError => {
-    let { terms, shortcut } = PlanManager.prepareQuery(query);
-
-    const filterExists =
-      filter &&
-      Object.keys(filter).filter(
-        (f) =>
-          f !== 'include' &&
-          Utility.filterBelongsTo(f as keyof FilterOptions, Mode.PLAN)
-      ).length > 0;
-
-    if (!courseData) {
-      if (query.length === 0) {
-        return 'no_query';
-      }
-
-      return 'not_loaded';
-    }
-
-    if (!filterExists) {
-      for (let term of terms) {
-        if (term.length === 0) {
-          return 'no_query';
-        }
-
-        if (term.length < 3) {
-          return 'too_short';
-        }
-      }
-    }
-
-    let courseIdResults: Course[] = [];
-    let courseNameResults: Course[] = [];
-
-    const checkCourse = (course: Course) => {
-      if (filterExists && !PlanManager.courseMatchesFilter(course, filter)) {
-        return;
-      }
-
-      for (let term of terms) {
-        if (course.id.toLowerCase().replace(/-|_/g, ' ').includes(term)) {
-          courseIdResults.push(course);
-        } else if (
-          course.name.toLowerCase().replace(/-|_/g, ' ').includes(term)
-        ) {
-          courseNameResults.push(course);
-        }
-      }
-    };
-
-    courseData.courses.forEach(checkCourse);
-
-    if (filter?.include?.includes('Legacy Courses')) {
-      courseData.legacy.forEach(checkCourse);
-    }
-
-    let total = courseIdResults.length + courseNameResults.length;
-    if (total === 0) return 'no_results';
-
-    let limitExceeded = false;
-    if (total > SEARCH_RESULT_LIMIT) {
-      limitExceeded = true;
-      if (courseIdResults.length > SEARCH_RESULT_LIMIT) {
-        courseIdResults = courseIdResults.slice(0, SEARCH_RESULT_LIMIT);
-        courseNameResults = [];
-      } else {
-        courseNameResults = courseNameResults.slice(
-          0,
-          SEARCH_RESULT_LIMIT - courseIdResults.length
-        );
-      }
-    }
-
-    courseIdResults.sort((a, b) => a.id.localeCompare(b.id));
-    courseNameResults.sort((a, b) => a.name.localeCompare(b.name));
-
-    let filtered = courseIdResults.concat(courseNameResults);
-
-    return {
-      results: filtered,
-      shortcut: shortcut,
-      limitExceeded: limitExceeded ? total - SEARCH_RESULT_LIMIT : undefined,
-    };
-  },
+  getPlanCourseData: () => courseData,
 
   courseMatchesFilter: (course: Course, filter?: FilterOptions): boolean => {
     if (!filter) return true;

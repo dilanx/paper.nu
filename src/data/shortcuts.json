@@ -1,0 +1,13 @@
+{
+  "cs": ["COMP_SCI"],
+  "ea": ["GEN_ENG 205", "GEN_ENG 206"],
+  "dtc": ["DSGN 106", "ENGLISH 106"],
+  "bio": ["BIOL_SCI"],
+  "ee": ["ELEC_ENG"],
+  "bme": ["BMD_ENG"],
+  "meche": ["MECH_ENG"],
+  "me": ["MECH_ENG"],
+  "ce": ["COMP_ENG"],
+  "cive": ["CIV_ENV"],
+  "ie": ["IEMS"]
+}

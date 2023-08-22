@@ -29,8 +29,17 @@ interface ScheduleClassProps {
 function ScheduleClass(props: ScheduleClassProps) {
   const { swmp, interactions, sf, ff, switches, imageMode, split } = props;
   const { section, start_time, end_time } = swmp;
-  const { subject, number, title, topic, instructors } = section;
-  const color = ScheduleManager.getCourseColor(subject);
+  const {
+    subject,
+    number,
+    title,
+    topic,
+    instructors,
+    custom,
+    color: customColor,
+    preview,
+  } = section;
+  const color = customColor || ScheduleManager.getCourseColor(subject);
 
   const startDif = start_time.m / 60;
   const length =
@@ -69,11 +78,13 @@ function ScheduleClass(props: ScheduleClassProps) {
     <div
       className={`absolute z-10 rounded-lg bg-opacity-60
                 bg-${color}-100 border-2 border-l-4 dark:bg-gray-800 border-${color}-400 group
-                cursor-default overflow-visible transition duration-300 ease-in-out ${
+                cursor-pointer overflow-visible transition duration-300 ease-in-out ${
                   interactions?.hoverSection.get === section.section_id
                     ? '-translate-y-2 shadow-lg'
                     : ''
-                } ${section.preview ? 'opacity-60' : ''}`}
+                } ${preview ? 'opacity-60' : ''} ${
+        custom ? 'border-l-2 border-dashed' : 'border-solid'
+      }`}
       style={{
         top: `${startDif * 100}%`,
         left,
@@ -109,7 +120,7 @@ function ScheduleClass(props: ScheduleClassProps) {
             } m-0 p-0 text-black dark:text-white`}
           >
             {subject} {number}
-            {section.component !== 'LEC' && (
+            {section.component !== 'LEC' && section.component !== 'CUS' && (
               <>
                 {' '}
                 <span className="text-xs font-medium text-gray-600 dark:text-gray-400">

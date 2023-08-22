@@ -113,8 +113,20 @@ export function formFieldIs<T extends AlertFormField>(
   return field.type === type;
 }
 
+export interface TimeInputConstraint {
+  minKey: string;
+  maxKey: string;
+  error: string;
+}
+
+export interface AlertFormData {
+  sections: AlertFormSection[];
+  timeConstraints?: TimeInputConstraint[];
+  onSubmit: (response: AlertFormResponse) => void;
+}
+
 export interface AlertFormResponse {
-  [field: string]: string;
+  [field: string]: string | undefined;
 }
 
 export interface SelectMenuOption {
@@ -158,10 +170,7 @@ export interface AlertData {
     defaultValue?: string;
   };
   textHTML?: JSX.Element;
-  form?: {
-    sections: AlertFormSection[];
-    onSubmit: (response: AlertFormResponse) => void;
-  };
+  form?: AlertFormData;
   selectMenu?: {
     options: SelectMenuOption[];
     defaultValue?: string;

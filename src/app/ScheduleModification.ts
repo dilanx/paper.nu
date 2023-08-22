@@ -1,14 +1,18 @@
 import {
   ExclamationTriangleIcon,
+  PencilIcon,
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import debug from 'debug';
 import ScheduleManager from '../ScheduleManager';
-import { AppType } from '../types/BaseTypes';
+import { AppType, Color } from '../types/BaseTypes';
 import { ScheduleCourse, ScheduleSection } from '../types/ScheduleTypes';
 import { toast } from 'react-hot-toast';
 import { customSectionForm } from '../utility/Forms';
+import { DayMap, Days } from '../utility/Constants';
+import Utility from '../utility/Utility';
+import { getTermInfo } from '../DataManager';
 const d = debug('app:schedule-mod');
 
 function courseConfirmationPrompts(
@@ -20,7 +24,7 @@ function courseConfirmationPrompts(
 
   const overlaps = ScheduleManager.sectionsOverlap(section, data.schedule);
 
-  if (overlaps && app.state.switches.get.schedule_warnings) {
+  if (overlaps && !section.custom && app.state.switches.get.schedule_warnings) {
     app.showAlert({
       title: 'Overlapping sections',
       message: `It looks like that section overlaps with ${overlaps.subject} ${overlaps.number} (section ${overlaps.section}). Are you sure you want to add it?`,
@@ -108,21 +112,93 @@ export function removeScheduleBookmark(app: AppType, course: ScheduleCourse) {
   });
 }
 
-export function addCustomSection(app: AppType) {
+function getNextAvailableCustomSectionId(app: AppType) {
+  const schedule = app.state.schedule;
+
+  let id = 1;
+  while (schedule.schedule[`CUSTOM-${id}`]) {
+    id++;
+  }
+
+  return id;
+}
+
+export function putCustomSection(
+  app: AppType,
+  sectionToEdit?: ScheduleSection
+) {
   app.showAlert({
-    title: 'Add custom section',
+    title: sectionToEdit ? 'Edit custom section' : 'Add custom section',
     message:
       'Keep your entire school schedule, including things other than classes, in one place by adding custom sections to your schedule!',
     color: 'green',
-    icon: PlusIcon,
+    icon: sectionToEdit ? PencilIcon : PlusIcon,
     form: {
-      sections: customSectionForm(),
+      sections: customSectionForm(
+        sectionToEdit
+          ? {
+              title: sectionToEdit.subject,
+              subtitle: sectionToEdit.title,
+              instructor: sectionToEdit.instructors?.[0].name,
+              location: sectionToEdit.room[0] || undefined,
+              start: sectionToEdit.start_time[0]
+                ? Utility.convertTime(sectionToEdit.start_time[0], true)
+                : undefined,
+              end: sectionToEdit.end_time[0]
+                ? Utility.convertTime(sectionToEdit.end_time[0], true)
+                : undefined,
+              meeting_days:
+                sectionToEdit.meeting_days[0]
+                  ?.split('')
+                  .map((d) => Days[parseInt(d)])
+                  .join(',') || undefined,
+              color: sectionToEdit.color,
+            }
+          : undefined
+      ),
+      timeConstraints: [
+        {
+          minKey: 'start',
+          maxKey: 'end',
+          error: 'The start time must be earlier than the end time',
+        },
+      ],
       onSubmit: (res) => {
-        console.log(res);
+        const { start, end } =
+          getTermInfo(app.state.schedule.termId || app.state.latestTermId) ||
+          {};
+        addSection(app, {
+          section_id: `CUSTOM-${getNextAvailableCustomSectionId(app)}`,
+          ...(sectionToEdit || {}),
+          title: res.subtitle || '',
+          subject: res.title!,
+          section: '',
+          meeting_days: [
+            res
+              .meeting_days!.split(',')
+              .map((d) => DayMap[d])
+              .join(''),
+          ],
+          start_time: [Utility.parseTime(res.start) || null],
+          end_time: [Utility.parseTime(res.end) || null],
+          room: [res.location || null],
+          component: 'CUS',
+          start_date: start,
+          end_date: end,
+          custom: true,
+          color: res.color as Color,
+          instructors: res.instructor
+            ? [
+                {
+                  name: res.instructor,
+                },
+              ]
+            : undefined,
+        });
       },
     },
     cancelButton: 'Cancel',
-    confirmButton: 'Add',
+    confirmButton: sectionToEdit ? 'Save' : 'Add',
   });
 }
 

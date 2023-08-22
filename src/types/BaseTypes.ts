@@ -166,3 +166,26 @@ export interface SaveDataOptions {
   legacyParams?: URLSearchParams;
   changeTerm?: string;
 }
+
+export interface UniversitySchools {
+  [symbol: string]: UniversitySchool;
+}
+
+export interface UniversitySchool {
+  name: string;
+  subjects: UniversitySubject[];
+}
+
+export interface UniversitySubject {
+  symbol: string;
+  name: string;
+}
+
+export interface UniversityLocations {
+  [building: string]: UniversityLocation | null;
+}
+
+export interface UniversityLocation {
+  lat: number;
+  lon: number;
+}

@@ -29,7 +29,7 @@ import {
   removeSummerQuarter,
 } from './app/PlanModification';
 import {
-  addCustomSection,
+  putCustomSection,
   addScheduleBookmark,
   addSection,
   clearSchedule,
@@ -66,6 +66,7 @@ import {
   ScheduleData,
   ScheduleInteractions,
   ScheduleModificationFunctions,
+  ScheduleSection,
 } from './types/ScheduleTypes';
 import { SearchModificationFunctions } from './types/SearchTypes';
 import { SideCardData } from './types/SideCardTypes';
@@ -150,7 +151,8 @@ class App extends React.Component<{}, AppState> implements AppType {
       removeSection: (section) => removeSection(app, section),
       addScheduleBookmark: (course) => addScheduleBookmark(app, course),
       removeScheduleBookmark: (course) => removeScheduleBookmark(app, course),
-      addCustomSection: () => addCustomSection(app),
+      putCustomSection: (sectionToEdit?: ScheduleSection) =>
+        putCustomSection(app, sectionToEdit),
       clear: () => clearSchedule(app),
     };
 

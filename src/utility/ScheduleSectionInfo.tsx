@@ -82,7 +82,7 @@ function getDetails(
                 title: instructor.name ?? 'No name',
                 subtitle: `${section.subject}${
                   section.number ? ` ${section.number}` : ''
-                } (section ${section.section})`,
+                }${section.section ? `(section ${section.section})` : ''}`,
                 color: 'rose',
                 cancelButton: 'Close',
                 extras: [
@@ -120,6 +120,7 @@ function getDetails(
         MapPinIcon,
         <>
           {section.room.map((room, i) => {
+            room = room || 'None';
             let roomFinderLink: string | null = null;
             if (room) {
               roomFinderLink = ScheduleManager.getRoomFinderLink(room);
@@ -130,8 +131,8 @@ function getDetails(
               <button
                 className={`my-1 inline-flex items-center justify-center gap-1 underline underline-offset-4 ${
                   roomFinderLink
-                    ? 'hover:text-emerald-500 active:text-emerald-600 dark:hover:text-emerald-300 dark:active:text-emerald-200'
-                    : 'decoration-dotted hover:text-emerald-800 dark:hover:text-emerald-100'
+                    ? 'cursor-pointer hover:text-emerald-500 active:text-emerald-600 dark:hover:text-emerald-300 dark:active:text-emerald-200'
+                    : 'cursor-default decoration-dotted hover:text-emerald-800 dark:hover:text-emerald-100'
                 }`}
                 onMouseEnter={() => {
                   if (interactions)
@@ -249,51 +250,65 @@ export function openInfo(
     'DESCRIPTIONS',
   ];
 
-  let sideCardButtons: AnySideCardButtonData[] | undefined;
+  let sideCardButtons: AnySideCardButtonData[] | undefined = undefined;
 
   if (mod) {
-    sideCardButtons = [
-      {
+    sideCardButtons = [];
+    if (section.custom) {
+      sideCardButtons.push({
+        text: 'Edit custom section',
+        onClick: (close) => {
+          mod.sf.putCustomSection(section);
+          close();
+        },
+      });
+    } else {
+      sideCardButtons.push({
         text: 'Show all sections',
         onClick: (close) => {
           mod.ff.set(name, scheduleCourse?.course_id);
           close();
         },
-      },
-      {
-        text: 'Remove section',
-        danger: true,
-        onClick: (close) => {
-          mod.sf.removeSection(section);
-          close();
-        },
-      },
-    ];
-
-    if (scheduleCourse) {
-      sideCardButtons.splice(1, 0, {
-        toggle: true,
-        data: mod.bookmarks,
-        key: scheduleCourse,
-        indexProperty: 'course_id',
-        enabled: {
-          text: 'Remove from bookmarks',
-          onClick: () => {
-            mod.sf.removeScheduleBookmark(scheduleCourse);
-          },
-        },
-        disabled: {
-          text: 'Add to bookmarks',
-          onClick: () => {
-            mod.sf.addScheduleBookmark(scheduleCourse);
-          },
-        },
       });
+
+      if (scheduleCourse) {
+        sideCardButtons.splice(1, 0, {
+          toggle: true,
+          data: mod.bookmarks,
+          key: scheduleCourse,
+          indexProperty: 'course_id',
+          enabled: {
+            text: 'Remove from bookmarks',
+            onClick: () => {
+              mod.sf.removeScheduleBookmark(scheduleCourse);
+            },
+          },
+          disabled: {
+            text: 'Add to bookmarks',
+            onClick: () => {
+              mod.sf.addScheduleBookmark(scheduleCourse);
+            },
+          },
+        });
+      }
     }
+
+    sideCardButtons.push({
+      text: 'Remove section',
+      danger: true,
+      onClick: (close) => {
+        mod.sf.removeSection(section);
+        close();
+      },
+    });
   }
 
   const sideCardData: SideCardData = {
-    type: mod ? 'SECTION INFO' : 'SECTION INFO (SEARCH)',
+    type: section.custom
+      ? 'SECTION INFO (CUSTOM)'
+      : mod
+      ? 'SECTION INFO'
+      : 'SECTION INFO (SEARCH)',
     themeColor: PlanManager.getCourseColor(name),
     title: name,
     subtitle: section.title,

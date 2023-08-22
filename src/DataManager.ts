@@ -25,8 +25,8 @@ export function getTerms() {
   }));
 }
 
-export function getTermInfo(termId: string) {
-  if (!info) return;
+export function getTermInfo(termId?: string) {
+  if (!info || !termId) return;
   const termInfo = info.terms[termId];
   return {
     value: termId,

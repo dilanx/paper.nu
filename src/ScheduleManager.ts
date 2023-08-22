@@ -1,28 +1,32 @@
 import debug from 'debug';
-import JSONSchoolData from './data/school.json';
+import localforage from 'localforage';
 import { getScheduleData, getTermInfo } from './DataManager';
 import PlanManager from './PlanManager';
-import { UserOptions } from './types/BaseTypes';
+import LocationsJson from './data/locations.json';
+import SchoolsJson from './data/schools.json';
 import {
-  RawSchoolData,
+  UniversityLocation,
+  UniversityLocations,
+  UniversitySchools,
+  UserOptions,
+} from './types/BaseTypes';
+import {
   ScheduleCourse,
   ScheduleData,
   ScheduleDataMap,
-  ScheduleLocation,
   ScheduleSection,
   SerializedScheduleData,
   SerializedScheduleSection,
   Time,
 } from './types/ScheduleTypes';
-import { FilterOptions, SearchError, SearchResults } from './types/SearchTypes';
-import { Days, DistroMap, Mode } from './utility/Constants';
+import { FilterOptions } from './types/SearchTypes';
+import { Days, DistroMap } from './utility/Constants';
 import Utility from './utility/Utility';
-import localforage from 'localforage';
 const ds = debug('schedule-manager:ser');
 
 let scheduleData: ScheduleCourse[] | undefined = undefined;
-const school = JSONSchoolData as RawSchoolData;
-const SEARCH_RESULT_LIMIT = 50;
+const schools = SchoolsJson as UniversitySchools;
+const locations = LocationsJson as UniversityLocations;
 
 async function loadData(
   serializedData?: SerializedScheduleData
@@ -83,10 +87,12 @@ async function loadData(
           meeting_days: [sSection.meeting_days],
           start_time: [sSection.start_time],
           end_time: [sSection.end_time],
-          room: [null],
+          room: [null], // set location below
           component: 'CUS',
           start_date: start,
           end_date: end,
+          color: sSection.color,
+          custom: true,
         };
 
         if (sSection.instructor) {
@@ -142,6 +148,7 @@ function saveData({
               }
             : undefined,
           instructor: s.instructors?.[0]?.name,
+          color: s.color,
         };
       } else {
         return s.section_id;
@@ -159,98 +166,7 @@ function saveData({
 }
 
 const ScheduleManager = {
-  search: (
-    query: string,
-    filter?: FilterOptions
-  ): SearchResults<ScheduleCourse> | SearchError => {
-    // TODO this is repetitive between both search functions so it should be abstracted
-    // TODO useTransition when searching
-    let { terms, shortcut } = PlanManager.prepareQuery(query);
-    const filterExists =
-      filter &&
-      Object.keys(filter).filter((f) =>
-        Utility.filterBelongsTo(f as keyof FilterOptions, Mode.SCHEDULE)
-      ).length > 0;
-
-    if (!scheduleData) {
-      if (query.length === 0) {
-        return 'no_query';
-      }
-
-      return 'not_loaded';
-    }
-
-    if (!filterExists) {
-      for (let term of terms) {
-        if (term.length === 0) {
-          return 'no_query';
-        }
-        if (term.length < 3) {
-          return 'too_short';
-        }
-      }
-    }
-
-    let data = scheduleData;
-
-    let courseIdResults: ScheduleCourse[] = [];
-    let courseNameResults: ScheduleCourse[] = [];
-
-    data?.forEach((course) => {
-      course.hide_section_ids = [];
-      if (filterExists) {
-        for (const section of course.sections) {
-          if (!ScheduleManager.sectionMatchesFilter(section, filter)) {
-            course.hide_section_ids.push(section.section_id);
-          }
-        }
-
-        if (course.hide_section_ids.length === course.sections.length) return;
-      }
-      const id = `${course.subject}${course.number ? ` ${course.number}` : ''}`;
-      for (let term of terms) {
-        if (id.toLowerCase().replace(/-|_/g, ' ').includes(term)) {
-          courseIdResults.push(course);
-        } else if (
-          course.title.toLowerCase().replace(/-|_/g, ' ').includes(term)
-        ) {
-          courseNameResults.push(course);
-        }
-      }
-    });
-
-    let total = courseIdResults.length + courseNameResults.length;
-    if (total === 0) return 'no_results';
-
-    let limitExceeded = false;
-    if (total > SEARCH_RESULT_LIMIT) {
-      limitExceeded = true;
-      if (courseIdResults.length > SEARCH_RESULT_LIMIT) {
-        courseIdResults = courseIdResults.slice(0, SEARCH_RESULT_LIMIT);
-        courseNameResults = [];
-      } else {
-        courseNameResults = courseNameResults.slice(
-          0,
-          SEARCH_RESULT_LIMIT - courseIdResults.length
-        );
-      }
-    }
-
-    courseIdResults.sort((a, b) =>
-      `${a.subject}${a.number ? ` ${a.number}` : ''}`.localeCompare(
-        `${b.subject}${b.number ? ` ${b.number}` : ''}`
-      )
-    );
-    courseNameResults.sort((a, b) => a.title.localeCompare(b.title));
-
-    let filtered = courseIdResults.concat(courseNameResults);
-
-    return {
-      results: filtered,
-      shortcut: shortcut,
-      limitExceeded: limitExceeded ? total - SEARCH_RESULT_LIMIT : undefined,
-    };
-  },
+  getScheduleCourseData: () => scheduleData,
 
   getCourseById: (id: string): ScheduleCourse | undefined => {
     if (!scheduleData) return;
@@ -269,9 +185,9 @@ const ScheduleManager = {
 
   getLocation: (
     building_name?: string | null
-  ): ScheduleLocation | undefined => {
+  ): UniversityLocation | undefined => {
     if (!building_name) return;
-    return school.locations[building_name] ?? undefined;
+    return locations[building_name] ?? undefined;
   },
 
   getTechRoomFinderLink: (room: string) => {
@@ -319,18 +235,16 @@ const ScheduleManager = {
   },
 
   getAllSchoolSymbols: () => {
-    return Object.keys(school.schools);
+    return Object.keys(schools);
   },
 
   getSchoolName: (symbol: string) => {
-    return school.schools[symbol]?.name ?? 'Unknown';
+    return schools[symbol]?.name ?? 'Unknown';
   },
 
   isSchoolSubject: (symbol: string) => {
-    for (const s in school.schools) {
-      if (
-        school.schools[s].subjects.some((subject) => subject.symbol === symbol)
-      ) {
+    for (const s in schools) {
+      if (schools[s].subjects.some((subject) => subject.symbol === symbol)) {
         return true;
       }
     }
@@ -338,12 +252,12 @@ const ScheduleManager = {
   },
 
   getSchoolSubjects: (symbol: string) => {
-    return school.schools[symbol]?.subjects ?? [];
+    return schools[symbol]?.subjects ?? [];
   },
 
   getSchoolOfSubject: (subject: string) => {
-    for (const s in school.schools) {
-      if (school.schools[s].subjects.some((s) => s.symbol === subject)) {
+    for (const s in schools) {
+      if (schools[s].subjects.some((s) => s.symbol === subject)) {
         return s;
       }
     }

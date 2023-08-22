@@ -74,3 +74,12 @@ export interface SearchDefaults {
   scheduleCurrent?: string;
   updated?: boolean;
 }
+
+export interface SearchShortcuts {
+  [key: string]: string[];
+}
+
+export interface SearchQuery {
+  terms: string[];
+  shortcut?: SearchShortcut;
+}

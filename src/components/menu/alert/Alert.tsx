@@ -42,6 +42,7 @@ export default function Alert({
     [string | undefined, TextViewStatus]
   >([data.textView?.text, 'none']);
   const [badInput, setBadInput] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (data.textInput?.match) {
@@ -63,7 +64,9 @@ export default function Alert({
 
   useEffect(() => {
     if (data.form) {
-      setBadInput(!formIsValid(formValues, data.form.sections));
+      const [valid, error] = formIsValid(formValues, data.form);
+      setBadInput(!valid);
+      setErrorMessage(error);
     }
   }, [data.form, formValues]);
 
@@ -350,42 +353,49 @@ export default function Alert({
                   </div>
                 )}
 
-                <div className="bg-gray-50 px-4 py-3 dark:bg-gray-800 sm:flex sm:flex-row-reverse sm:px-6">
-                  {data.confirmButton && (
-                    <button
-                      type="button"
-                      ref={confirmButton}
-                      className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 shadow-sm 
+                <div className="bg-gray-50 px-4 py-1 dark:bg-gray-800 sm:px-6">
+                  {errorMessage && (
+                    <p className="text-right text-xs font-medium text-red-500">
+                      {errorMessage}
+                    </p>
+                  )}
+                  <div className="py-2 sm:flex sm:flex-row-reverse">
+                    {data.confirmButton && (
+                      <button
+                        type="button"
+                        ref={confirmButton}
+                        className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 shadow-sm 
                         bg-${data.color}-500
                         opacity-100 hover:bg-${data.color}-600 active:bg-${data.color}-700
                         text-base font-medium
                         text-white outline-none disabled:cursor-not-allowed disabled:opacity-30 sm:ml-3 sm:w-auto sm:text-sm`}
-                      disabled={
-                        badInput || data.disableConfirmButton !== undefined
-                      }
-                      onClick={() => {
-                        if (data.form) {
-                          data.form.onSubmit(formValues);
+                        disabled={
+                          badInput || data.disableConfirmButton !== undefined
                         }
-                        confirm();
-                      }}
-                    >
-                      {data.confirmButton}
-                    </button>
-                  )}
-                  {data.cancelButton && (
-                    <button
-                      type="button"
-                      className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2
+                        onClick={() => {
+                          if (data.form) {
+                            data.form.onSubmit(formValues);
+                          }
+                          confirm();
+                        }}
+                      >
+                        {data.confirmButton}
+                      </button>
+                    )}
+                    {data.cancelButton && (
+                      <button
+                        type="button"
+                        className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2
                                 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-100 active:bg-gray-200 active:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600
                                 dark:active:bg-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                      onClick={() => {
-                        close();
-                      }}
-                    >
-                      {data.cancelButton}
-                    </button>
-                  )}
+                        onClick={() => {
+                          close();
+                        }}
+                      >
+                        {data.cancelButton}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </Dialog.Panel>
             </Transition.Child>
