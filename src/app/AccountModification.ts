@@ -184,7 +184,7 @@ export function update(app: AppType, isSchedule: boolean) {
   const sData = isSchedule
     ? ScheduleManager.serialize(app.state.schedule)
     : PlanManager.serialize(app.state.data);
-  app.setState({ unsavedChanges: false });
+  //app.setState({ unsavedChanges: false });
 
   // TODO remove toast save when implementing auto save
   toast.promise(

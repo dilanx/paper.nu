@@ -72,9 +72,9 @@ function getDetails(
         UserIcon,
         section.instructors?.map((instructor, i) => (
           <button
-            className="my-1 underline underline-offset-4
-              hover:text-rose-500 active:text-rose-600
-              dark:hover:text-rose-300 dark:active:text-rose-200"
+            className="m-1 underline
+              underline-offset-4 hover:text-rose-500
+              active:text-rose-600 dark:hover:text-rose-300 dark:active:text-rose-200"
             key={`section-info-instructor-${i}`}
             onClick={() => {
               alert?.({

@@ -25,7 +25,7 @@ export interface AppState {
   sf: ScheduleModificationFunctions;
   ff: SearchModificationFunctions;
   loadingLogin: boolean;
-  unsavedChanges: boolean;
+  saveState: SaveState;
   scheduleInteractions: ScheduleInteractions;
   searchDefaults?: SearchDefaults;
   about?: boolean;
@@ -189,3 +189,5 @@ export interface UniversityLocation {
   lat: number;
   lon: number;
 }
+
+export type SaveState = 'idle' | 'saving' | 'error';

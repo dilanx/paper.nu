@@ -197,7 +197,7 @@ class App extends React.Component<{}, AppState> implements AppType {
       ff,
       clp: !lastVersion || lastVersion !== VERSION_NO_PATCH,
       loadingLogin: false,
-      unsavedChanges: false,
+      saveState: 'idle',
       scheduleInteractions: {
         hoverSection: {
           set: (id) => this.interactionUpdate('hoverSection', id),
@@ -384,6 +384,16 @@ class App extends React.Component<{}, AppState> implements AppType {
   }
 
   componentDidUpdate(_: Readonly<{}>, prevState: Readonly<AppState>) {
+    if (prevState.unsavedChanges === false && this.state.unsavedChanges) {
+      d('there are now unsaved changes');
+      window.onbeforeunload = () => {
+        return true;
+      };
+
+      setTimeout(() => {
+        update(this, this.state.switches.get.mode === Mode.SCHEDULE);
+      }, 2000);
+    }
     // TODO implement auto save here
     if (prevState.unsavedChanges !== this.state.unsavedChanges) {
       if (this.state.unsavedChanges) {
