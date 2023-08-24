@@ -4,6 +4,11 @@
 
 _2023-XX-XX_
 
+- **Custom courses and sections!**
+  - Enhance your plan or schedule with custom courses and sections. This allows you to add things to your schedule that aren't in the course catalog.
+  - With a new custom item creator menu, you can customize each element of the course or section, including the color, and make changes to it later.
+  - Custom courses and sections are included when sharing or exporting a plan or schedule.
+- **Automatic saving!** Modified plans and schedules linked to your account will automatically be saved as you make changes.
 - **Improved search!**
   - Partial text matching is now supported. For example, searching something like "intro sociol" will match "introduction to sociology".
   - You can now search by section topic, making specific sections in special topics classes (like CS 396) easier to find.

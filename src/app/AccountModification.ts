@@ -90,7 +90,7 @@ export function activateAccountPlan(app: AppType, planId: string) {
       app.state.switches.set('notes', false);
       app.state.switches.set('unsaved_notes', false);
       app.setState({
-        unsavedChanges: true,
+        saveState: 'start',
       });
       toast.success('Activated plan: ' + Account.getPlanName(planId));
       d('plan activated: %s (empty)', planId);
@@ -118,7 +118,7 @@ export function activateAccountSchedule(app: AppType, scheduleId: string) {
     if (data === 'empty') {
       app.state.switches.set('active_schedule_id', scheduleId, true);
       app.setState({
-        unsavedChanges: true,
+        saveState: 'start',
         loadingLogin: false,
       });
       toast.success(
@@ -184,36 +184,26 @@ export function update(app: AppType, isSchedule: boolean) {
   const sData = isSchedule
     ? ScheduleManager.serialize(app.state.schedule)
     : PlanManager.serialize(app.state.data);
-  //app.setState({ unsavedChanges: false });
+  app.setState({ saveState: 'save' });
 
-  // TODO remove toast save when implementing auto save
-  toast.promise(
-    Account.update(isSchedule ? 'schedules' : 'plans', activeId as string, {
-      data: sData,
-    }),
-    {
-      loading: 'Saving...',
-      success: () => {
-        return (
-          'Saved ' +
-          (isSchedule ? Account.getScheduleName : Account.getPlanName)(
-            activeId as string
-          )
-        );
-      },
-      error: (err: PaperError) => {
-        app.setState({
-          unsavedChanges: true,
-        });
-        app.showAlert(Utility.errorAlert(`account_update_${t}`, err));
-        return 'Something went wrong';
-      },
-    }
-  );
+  Account.update(isSchedule ? 'schedules' : 'plans', activeId as string, {
+    data: sData,
+  })
+    .then(() => {
+      app.setState({
+        saveState: 'idle',
+      });
+    })
+    .catch((err: PaperError) => {
+      app.setState({
+        saveState: 'error',
+      });
+      app.showAlert(Utility.errorAlert(`account_update_${t}`, err));
+    });
 }
 
 export function discardChanges(app: AppType, action: () => void) {
-  if (app.state.unsavedChanges) {
+  if (app.state.saveState !== 'idle') {
     app.showAlert({
       title: 'Hold on...',
       message:
@@ -223,7 +213,7 @@ export function discardChanges(app: AppType, action: () => void) {
       color: 'red',
       icon: ExclamationTriangleIcon,
       action: () => {
-        app.setState({ unsavedChanges: false });
+        app.setState({ saveState: 'idle' });
         action();
       },
     });

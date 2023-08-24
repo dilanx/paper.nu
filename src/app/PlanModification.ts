@@ -88,7 +88,7 @@ export function addCourse(
     d('course added: %s (y%dq%d)', course.id, year, quarter);
     app.setState({
       data,
-      unsavedChanges: PlanManager.save(data, app.state.switches),
+      saveState: PlanManager.save(data, app.state.switches),
     });
   });
 }
@@ -110,7 +110,7 @@ export function removeCourse(
   d('course removed: %s (y%dq%d)', course.id, year, quarter);
   app.setState({
     data,
-    unsavedChanges: PlanManager.save(data, app.state.switches),
+    saveState: PlanManager.save(data, app.state.switches),
   });
 }
 
@@ -144,7 +144,7 @@ export function moveCourse(
       d('course moved: %s (y%dq%d) -> (y%dq%d)', course.id, oy, oq, ny, nq);
       app.setState({
         data,
-        unsavedChanges: PlanManager.save(data, app.state.switches),
+        saveState: PlanManager.save(data, app.state.switches),
       });
     },
     true
@@ -179,7 +179,7 @@ export function addBookmark(app: AppType, course: Course, forCredit: boolean) {
     };
     return {
       data,
-      unsavedChanges: PlanManager.save(data, app.state.switches),
+      saveState: PlanManager.save(data, app.state.switches),
     };
   });
 }
@@ -204,7 +204,7 @@ export function removeBookmark(
     };
     return {
       data,
-      unsavedChanges: PlanManager.save(data, prevState.switches),
+      saveState: PlanManager.save(data, prevState.switches),
     };
   });
 }
@@ -243,7 +243,7 @@ export function removeSummerQuarter(app: AppType, year: number) {
       data.courses[year].pop();
       app.setState({
         data: data,
-        unsavedChanges: PlanManager.save(data, app.state.switches),
+        saveState: PlanManager.save(data, app.state.switches),
       });
       d('summer quarter removed: y%d', year);
     },
@@ -275,7 +275,7 @@ export function clearData(app: AppType, year?: number) {
     d('plan cleared');
     app.setState({
       data,
-      unsavedChanges: PlanManager.save(data, app.state.switches),
+      saveState: PlanManager.save(data, app.state.switches),
     });
   } else {
     const yearText = Utility.convertYear(year).toLowerCase();
@@ -300,7 +300,7 @@ export function clearData(app: AppType, year?: number) {
         });
         app.setState({
           data,
-          unsavedChanges: PlanManager.save(data, app.state.switches),
+          saveState: PlanManager.save(data, app.state.switches),
         });
       },
     });

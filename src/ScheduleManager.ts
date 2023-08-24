@@ -442,7 +442,7 @@ const ScheduleManager = {
       });
 
     const activeId = switches.get.active_schedule_id;
-    return !!activeId && activeId !== 'None';
+    return !!activeId && activeId !== 'None' ? 'start' : 'idle';
   },
 };
 

@@ -51,7 +51,7 @@ export function addSection(app: AppType, section: ScheduleSection) {
     d('schedule section added: %s', section.section_id);
     app.setState({
       schedule,
-      unsavedChanges: ScheduleManager.save(schedule, app.state.switches),
+      saveState: ScheduleManager.save(schedule, app.state.switches),
     });
   });
 }
@@ -62,7 +62,7 @@ export function removeSection(app: AppType, section: ScheduleSection) {
   d('schedule section removed: %s', section.section_id);
   app.setState({
     schedule,
-    unsavedChanges: ScheduleManager.save(schedule, app.state.switches),
+    saveState: ScheduleManager.save(schedule, app.state.switches),
   });
 }
 
@@ -78,7 +78,7 @@ export function addScheduleBookmark(app: AppType, course: ScheduleCourse) {
   schedule.bookmarks.push(course);
   app.setState({
     schedule,
-    unsavedChanges: ScheduleManager.save(schedule, app.state.switches),
+    saveState: ScheduleManager.save(schedule, app.state.switches),
   });
 }
 
@@ -108,7 +108,7 @@ export function removeScheduleBookmark(app: AppType, course: ScheduleCourse) {
 
   app.setState({
     schedule,
-    unsavedChanges: ScheduleManager.save(schedule, app.state.switches),
+    saveState: ScheduleManager.save(schedule, app.state.switches),
   });
 }
 
@@ -224,7 +224,7 @@ export function clearSchedule(app: AppType) {
       });
       app.setState({
         schedule,
-        unsavedChanges: ScheduleManager.save(schedule, app.state.switches),
+        saveState: ScheduleManager.save(schedule, app.state.switches),
       });
     },
   });

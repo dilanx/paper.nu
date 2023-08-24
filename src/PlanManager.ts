@@ -1,7 +1,7 @@
 import debug from 'debug';
 import localforage from 'localforage';
 import { getPlanData } from './DataManager';
-import { UserOptions } from './types/BaseTypes';
+import { SaveState, UserOptions } from './types/BaseTypes';
 import {
   Course,
   PlanData,
@@ -298,7 +298,7 @@ const PlanManager = {
     return sData;
   },
 
-  save: (data: PlanData, switches: UserOptions) => {
+  save: (data: PlanData, switches: UserOptions): SaveState => {
     const serializedData = saveData(data);
     ds('serialized plan data and preparing to save');
     localforage
@@ -311,7 +311,7 @@ const PlanManager = {
       });
 
     const activeId = switches.get.active_plan_id;
-    return !!activeId && activeId !== 'None';
+    return !!activeId && activeId !== 'None' ? 'start' : 'idle';
   },
 };
 

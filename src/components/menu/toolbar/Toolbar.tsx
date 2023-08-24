@@ -8,6 +8,8 @@ import {
   PencilSquareIcon,
   QuestionMarkCircleIcon,
   UserCircleIcon,
+  CheckCircleIcon,
+  XCircleIcon,
 } from '@heroicons/react/24/outline';
 import { CalendarIcon, RectangleStackIcon } from '@heroicons/react/24/solid';
 import { useEffect, useState } from 'react';
@@ -18,6 +20,7 @@ import { Alert } from '../../../types/AlertTypes';
 import {
   ContextMenu,
   ContextMenuData,
+  SaveState,
   UserOptions,
 } from '../../../types/BaseTypes';
 import { PlanData } from '../../../types/PlanTypes';
@@ -30,6 +33,7 @@ import exportMenu from './Export';
 import settingsMenu from './Settings';
 import ToolbarAccount from './ToolbarAccount';
 import ToolbarButton from './ToolbarButton';
+import { SpinnerCircularFixed } from 'spinners-react';
 
 interface ToolbarProps {
   alert: Alert;
@@ -41,6 +45,7 @@ interface ToolbarProps {
   switches: UserOptions;
   loading: boolean;
   openAboutMenu: () => void;
+  saveState: SaveState;
 }
 
 function Toolbar({
@@ -53,10 +58,12 @@ function Toolbar({
   switches,
   loading,
   openAboutMenu,
+  saveState,
 }: ToolbarProps) {
   const [takeImage, setTakeImage] = useState(false);
 
   const isSchedule = switches.get.mode === Mode.SCHEDULE;
+  const darkMode = switches.get.dark;
 
   const activeItem = isSchedule
     ? switches.get.active_schedule_id
@@ -91,6 +98,36 @@ function Toolbar({
           <p className="overflow-hidden text-ellipsis whitespace-nowrap text-sm">
             {activeItem}
           </p>
+          <div className="flex items-center gap-1 text-xs font-normal text-gray-400">
+            {saveState === 'idle' && (
+              <>
+                <CheckCircleIcon className="h-4 w-4" />
+                <p>saved!</p>
+              </>
+            )}
+            {(saveState === 'start' ||
+              saveState === 'wait' ||
+              saveState === 'save') && (
+              <>
+                <SpinnerCircularFixed
+                  size={14}
+                  thickness={200}
+                  speed={200}
+                  color={darkMode ? 'rgb(212, 212, 212)' : 'rgb(115, 115, 115)'}
+                  secondaryColor={
+                    darkMode ? 'rgb(64, 64, 64)' : 'rgba(245, 245, 245)'
+                  }
+                />
+                <p>saving...</p>
+              </>
+            )}
+            {saveState === 'error' && (
+              <>
+                <XCircleIcon className="h-4 w-4 text-red-500" />
+                <p className="text-red-500">error when saving.</p>
+              </>
+            )}
+          </div>
         </div>
       )}
       <div className="flex gap-1">

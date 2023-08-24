@@ -1,14 +1,13 @@
-import {
-  ArrowDownTrayIcon,
-  ExclamationTriangleIcon,
-} from '@heroicons/react/24/outline';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import debug from 'debug';
-import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
+import { AnimatePresence, MotionConfig } from 'framer-motion';
 import React from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import toast, { Toaster } from 'react-hot-toast';
 import Account from './Account';
+import { getTermName } from './DataManager';
+import SaveDataManager from './SaveDataManager';
 import {
   activateAccountPlan,
   activateAccountSchedule,
@@ -17,6 +16,7 @@ import {
   discardNotesChanges,
   update,
 } from './app/AccountModification';
+import clp from './app/ChangeLogPreview';
 import {
   addBookmark,
   addCourse,
@@ -29,31 +29,35 @@ import {
   removeSummerQuarter,
 } from './app/PlanModification';
 import {
-  putCustomSection,
   addScheduleBookmark,
   addSection,
   clearSchedule,
+  putCustomSection,
   removeScheduleBookmark,
   removeSection,
 } from './app/ScheduleModification';
 import AccountPlans from './components/account/AccountPlans';
 import Bookmarks from './components/bookmarks/Bookmarks';
-import Alert from './components/menu/alert/Alert';
+import CampusMap from './components/map/CampusMap';
+import ChangeLogPreview from './components/menu/ChangeLogPreview';
 import Info from './components/menu/Info';
 import ModeSwitch from './components/menu/ModeSwitch';
-import SideCard from './components/menu/side-card/SideCard';
+import Notes from './components/menu/Notes';
 import Taskbar from './components/menu/Taskbar';
+import About from './components/menu/about/About';
+import Alert from './components/menu/alert/Alert';
+import ContextMenu from './components/menu/context-menu/ContextMenu';
+import SideCard from './components/menu/side-card/SideCard';
+import Toolbar from './components/menu/toolbar/Toolbar';
 import Content from './components/plan/Content';
-import CampusMap from './components/map/CampusMap';
 import Schedule from './components/schedule/Schedule';
 import Search from './components/search/Search';
-import SaveDataManager from './SaveDataManager';
 import { AlertData } from './types/AlertTypes';
 import {
-  AppType,
   AppState,
-  ReadUserOptions,
+  AppType,
   ContextMenuData,
+  ReadUserOptions,
   SaveDataOptions,
 } from './types/BaseTypes';
 import {
@@ -73,13 +77,6 @@ import { SideCardData } from './types/SideCardTypes';
 import { Mode } from './utility/Constants';
 import { PaperError } from './utility/PaperError';
 import Utility from './utility/Utility';
-import About from './components/menu/about/About';
-import { getTermName } from './DataManager';
-import ChangeLogPreview from './components/menu/ChangeLogPreview';
-import clp from './app/ChangeLogPreview';
-import Toolbar from './components/menu/toolbar/Toolbar';
-import ContextMenu from './components/menu/context-menu/ContextMenu';
-import Notes from './components/menu/Notes';
 const d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
@@ -322,7 +319,7 @@ class App extends React.Component<{}, AppState> implements AppType {
           true
         );
         this.setState({
-          unsavedChanges: false,
+          saveState: 'idle',
           latestTermId,
         });
         if (data === 'empty') {
@@ -384,27 +381,38 @@ class App extends React.Component<{}, AppState> implements AppType {
   }
 
   componentDidUpdate(_: Readonly<{}>, prevState: Readonly<AppState>) {
-    if (prevState.unsavedChanges === false && this.state.unsavedChanges) {
-      d('there are now unsaved changes');
+    if (prevState.saveState !== 'start' && this.state.saveState === 'start') {
+      d(
+        'save timer reset (prev %s), waiting grace period before saving',
+        this.state.saveTimeoutId
+      );
       window.onbeforeunload = () => {
         return true;
       };
 
-      setTimeout(() => {
-        update(this, this.state.switches.get.mode === Mode.SCHEDULE);
+      const app = this;
+      window.clearTimeout(this.state.saveTimeoutId);
+
+      const activeIdKey =
+        this.state.switches.get.mode === Mode.PLAN
+          ? 'active_plan_id'
+          : 'active_schedule_id';
+      const activeId = this.state.switches.get[activeIdKey];
+      const timeoutId = window.setTimeout(() => {
+        const nowActiveId = this.state.switches.get[activeIdKey];
+        if (nowActiveId !== activeId) {
+          d('active id changed, aborting save');
+          return;
+        }
+        d('saving now');
+        update(app, this.state.switches.get.mode === Mode.SCHEDULE);
       }, 2000);
+      this.setState({ saveState: 'wait', saveTimeoutId: timeoutId });
     }
-    // TODO implement auto save here
-    if (prevState.unsavedChanges !== this.state.unsavedChanges) {
-      if (this.state.unsavedChanges) {
-        d('there are now unsaved changes');
-        window.onbeforeunload = () => {
-          return true;
-        };
-      } else {
-        d('there are no longer unsaved changes');
-        window.onbeforeunload = null;
-      }
+
+    if (prevState.saveState !== 'idle' && this.state.saveState === 'idle') {
+      d('there are no longer unsaved changes');
+      window.onbeforeunload = null;
     }
   }
 
@@ -415,7 +423,7 @@ class App extends React.Component<{}, AppState> implements AppType {
       val === 'None' &&
       switches.get[key] !== val
     ) {
-      this.setState({ unsavedChanges: false });
+      this.setState({ saveState: 'idle' });
     }
     switches.get[key] = val;
     this.setState({ switches: switches });
@@ -724,6 +732,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                   switches={switches}
                   loading={this.state.loadingLogin}
                   openAboutMenu={() => this.setState({ about: true })}
+                  saveState={this.state.saveState}
                 />
                 <AnimatePresence mode="wait">
                   {switches.get.mode === Mode.PLAN ? (
@@ -764,7 +773,7 @@ class App extends React.Component<{}, AppState> implements AppType {
               </div>
             </div>
             <AnimatePresence>
-              {this.state.unsavedChanges && (
+              {/* {this.state.unsavedChanges && (
                 <motion.div
                   initial={{ x: 20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
@@ -788,7 +797,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                     </>
                   </button>
                 </motion.div>
-              )}
+              )} */}
             </AnimatePresence>
           </div>
         </MotionConfig>

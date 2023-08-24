@@ -26,6 +26,7 @@ export interface AppState {
   ff: SearchModificationFunctions;
   loadingLogin: boolean;
   saveState: SaveState;
+  saveTimeoutId?: number;
   scheduleInteractions: ScheduleInteractions;
   searchDefaults?: SearchDefaults;
   about?: boolean;
@@ -190,4 +191,12 @@ export interface UniversityLocation {
   lon: number;
 }
 
-export type SaveState = 'idle' | 'saving' | 'error';
+/**
+ * The state of auto save
+ * - idle: no changes have been made
+ * - start: changes were just made
+ * - wait: grace period before saving to batch changes
+ * - save: saving changes
+ * - error: error occurred while saving
+ */
+export type SaveState = 'idle' | 'start' | 'wait' | 'save' | 'error';
