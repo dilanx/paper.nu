@@ -12,8 +12,6 @@ import { Course, CourseLocation } from '../types/PlanTypes';
 import Utility from '../utility/Utility';
 const d = debug('app:plan-mod');
 
-// TODO disable adding custom courses to bookmarks here and in the side card
-
 function courseConfirmationPrompts(
   app: AppType,
   course: Course,

@@ -93,7 +93,7 @@ export function TabButton(props: TabBarButtonProps) {
         <Tooltip
           color={color}
           className={`text-md left-1/2 -translate-x-1/2 ${
-            props.tooltipBelow ? '-bottom-10' : '-top-10'
+            props.tooltipBelow ? '-bottom-9' : '-top-9'
           }`}
         >
           {props.display ?? props.name}

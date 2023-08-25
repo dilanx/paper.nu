@@ -1,10 +1,11 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
-import { Fragment, useRef, useState } from 'react';
+import { CheckIcon, LinkIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { UserOptions } from '../../../types/BaseTypes';
 import { SideCardData } from '../../../types/SideCardTypes';
 import SideCardButton from './SideCardButton';
 import SideCardItem from './SideCardItem';
+import Tooltip from '../../generic/Tooltip';
 
 interface SideCardProps {
   data: SideCardData;
@@ -14,8 +15,19 @@ interface SideCardProps {
 
 function SideCard({ data, switches, onClose }: SideCardProps) {
   const [isOpen, setIsOpen] = useState(true);
+  const [hasCopied, setHasCopied] = useState(false);
 
   const initialFocus = useRef(null);
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      setHasCopied(false);
+    }, 2000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [hasCopied]);
 
   function close() {
     setIsOpen(false);
@@ -54,19 +66,44 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
             <Dialog.Panel className="no-scrollbar h-full w-full overflow-y-scroll rounded-xl bg-white p-4 shadow-xl dark:bg-gray-700">
               <div
                 ref={initialFocus}
-                className="mb-8 flex w-full items-center gap-2"
+                className="mb-6 flex w-full items-center gap-2"
               >
                 <p
-                  className={`text-${data.themeColor}-400 flex-grow text-sm font-bold tracking-wider`}
+                  className={`flex-grow text-sm font-bold tracking-wider text-gray-600 dark:text-gray-400`}
                 >
                   {data.type}
                 </p>
-                <div>
+                <div className="flex items-center">
+                  {data.link && (
+                    <button
+                      className="group relative flex items-center text-gray-600 hover:text-sky-400 active:text-sky-500 dark:text-gray-400 dark:hover:text-sky-400 dark:active:text-sky-300"
+                      onClick={() => {
+                        if (data.link) {
+                          navigator.clipboard.writeText(data.link);
+                          setHasCopied(true);
+                        }
+                      }}
+                    >
+                      {hasCopied ? (
+                        <CheckIcon className="h-6 w-6" />
+                      ) : (
+                        <LinkIcon className="h-6 w-6" />
+                      )}
+                      <Tooltip className="-bottom-9 right-0 w-36" color="sky">
+                        {hasCopied
+                          ? 'Copied to clipboard!'
+                          : 'Copy link to section'}
+                      </Tooltip>
+                    </button>
+                  )}
                   <button
-                    className="flex items-center text-gray-600 hover:text-red-400 active:text-red-500 dark:text-gray-500 dark:hover:text-red-400 dark:active:text-red-300"
+                    className="group relative flex items-center text-gray-600 hover:text-red-400 active:text-red-500 dark:text-gray-400 dark:hover:text-red-400 dark:active:text-red-300"
                     onClick={() => close()}
                   >
                     <XMarkIcon className="h-7 w-7" />
+                    <Tooltip className="-bottom-9 right-0" color="red">
+                      Close
+                    </Tooltip>
                   </button>
                 </div>
               </div>
@@ -77,9 +114,12 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
                   </p>
                 </div>
               )}
-              <p
-                className={`text-center text-2xl font-bold text-gray-800 dark:text-gray-50 sm:text-left`}
-              >
+              {data.tag && (
+                <p className={`text-xs font-bold text-${data.tag.color}-400`}>
+                  {data.tag.text}
+                </p>
+              )}
+              <p className="text-center text-2xl font-bold text-gray-800 dark:text-gray-50 sm:text-left">
                 {data.title}
               </p>
               {data.subtitle && (

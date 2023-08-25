@@ -111,12 +111,10 @@ function Toolbar({
               <>
                 <SpinnerCircularFixed
                   size={14}
-                  thickness={200}
+                  thickness={160}
                   speed={200}
-                  color={darkMode ? 'rgb(212, 212, 212)' : 'rgb(115, 115, 115)'}
-                  secondaryColor={
-                    darkMode ? 'rgb(64, 64, 64)' : 'rgba(245, 245, 245)'
-                  }
+                  color="#a1a1aa"
+                  secondaryColor={darkMode ? '#404040' : '#f5f5f5'}
                 />
                 <p>saving...</p>
               </>

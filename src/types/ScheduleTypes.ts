@@ -106,6 +106,7 @@ export interface ScheduleSection {
   preview?: boolean;
   custom?: boolean;
   color?: Color;
+  termId?: string;
 }
 
 export interface ValidScheduleSection extends ScheduleSection {

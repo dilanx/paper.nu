@@ -1,6 +1,10 @@
 import debug from 'debug';
 import Account from './Account';
-import { getDataMapInformation } from './DataManager';
+import {
+  getDataMapInformation,
+  getPlanData,
+  getScheduleData,
+} from './DataManager';
 import PlanManager from './PlanManager';
 import ScheduleManager from './ScheduleManager';
 import { Document } from './types/AccountTypes';
@@ -12,12 +16,14 @@ import {
   UserOptions,
 } from './types/BaseTypes';
 import {
+  Course,
   PlanData,
   SerializedPlanData,
   isSerializedPlanData,
 } from './types/PlanTypes';
 import {
   ScheduleData,
+  ScheduleSection,
   SerializedScheduleData,
   isSerializedScheduleData,
 } from './types/ScheduleTypes';
@@ -48,16 +54,36 @@ function matchAccountId(
 let SaveDataManager = {
   load: async (
     switches: UserOptions,
-    { hash, changeTerm }: SaveDataOptions = {}
+    { hash, changeTerm, showCourse, showSection }: SaveDataOptions = {}
   ): Promise<LoadResponse<PlanData | ScheduleData>> => {
     let activeId: string | undefined = undefined;
     let accountPlans: Document[] | undefined = undefined;
     let accountSchedules: Document[] | undefined = undefined;
     let method: LoadMethods = 'None';
+    let sharedCourse: Course | undefined = undefined;
+    let sharedSection: ScheduleSection | undefined = undefined;
     const latestTermId = (await getDataMapInformation()).latest;
 
     let serializedData: SerializedPlanData | SerializedScheduleData | null =
       null;
+
+    const ret = (
+      mode: Mode,
+      data: PlanData | ScheduleData | 'malformed' | 'empty',
+      method: LoadMethods,
+      error?: string
+    ): LoadResponse<PlanData | ScheduleData> => {
+      return {
+        mode,
+        data,
+        method,
+        activeId,
+        latestTermId,
+        error,
+        sharedCourse,
+        sharedSection,
+      };
+    };
 
     if (Account.isLoggedIn()) {
       const accountInit = await Account.init();
@@ -77,16 +103,54 @@ let SaveDataManager = {
       };
     }
 
+    if (showCourse) {
+      d('showing shared course %s', showCourse);
+      const data = await getPlanData();
+      const course = data.courses.find((c) => c.id === showCourse);
+      if (course) {
+        sharedCourse = course;
+      } else {
+        d('shared course %s not found', showCourse);
+      }
+    }
+
+    if (showSection) {
+      d('showing shared section %s', showSection);
+      const [term, courseId, sectionId] = showSection.split('-');
+      if (term && courseId && sectionId) {
+        const data = await getScheduleData(term);
+        if (data) {
+          const course = data.data.find((c) => c.course_id === courseId);
+          if (course) {
+            const section = course.sections.find(
+              (s) => s.section === sectionId
+            );
+            if (section) {
+              sharedSection = section;
+              d('shared section %s found', sectionId);
+            } else {
+              d(
+                'shared section %s not found in course %s',
+                sectionId,
+                courseId
+              );
+            }
+          } else {
+            d('shared section course %s not found in term %s', courseId, term);
+          }
+        } else {
+          d('failed to fetch schedule data for shared section term %s', term);
+        }
+      } else {
+        d('invalid shared section format, ignoring');
+      }
+    }
+
     if (hash) {
       d('hash short code %s detected, trying to load', hash);
       if (hash.length !== 13) {
         d('hash is not 13 chars (# + 12), not a short code');
-        return {
-          mode: Mode.PLAN,
-          data: 'malformed',
-          method: 'URL',
-          latestTermId,
-        };
+        return ret(Mode.PLAN, 'malformed', 'URL');
       }
       d('fetching content for short code from server');
       const scContentResponse = await fetch(
@@ -94,23 +158,12 @@ let SaveDataManager = {
       );
       if (!scContentResponse.ok) {
         d('failed to fetch short code with error %s', scContentResponse.status);
-        return {
-          mode: Mode.PLAN,
-          data: 'malformed',
-          method: 'URL',
-          latestTermId,
-        };
+        return ret(Mode.PLAN, 'malformed', 'URL');
       }
       const scContent = await scContentResponse.json();
       if (!scContent.data) {
         d('short code has no data, thus must have legacy data');
-        return {
-          mode: Mode.PLAN,
-          data: 'malformed',
-          method: 'URL',
-          latestTermId,
-          error: 'legacy',
-        };
+        return ret(Mode.PLAN, 'malformed', 'URL', 'legacy');
       }
       serializedData = JSON.parse(scContent.data) as SerializedPlanData;
       d('fetched content for short code URL, trying to load');
@@ -125,13 +178,7 @@ let SaveDataManager = {
               method = 'URL';
               PlanManager.save(planData, switches);
             }
-            return {
-              mode: Mode.PLAN,
-              data: planData,
-              activeId,
-              method,
-              latestTermId,
-            };
+            return ret(Mode.PLAN, planData, method);
           }
         } else if (isSerializedScheduleData(serializedData)) {
           d('URL data is schedule data');
@@ -142,23 +189,11 @@ let SaveDataManager = {
               d('schedule URL load successful');
               ScheduleManager.save(scheduleData, switches);
             }
-            return {
-              mode: Mode.SCHEDULE,
-              data: scheduleData,
-              activeId,
-              method,
-              latestTermId,
-            };
+            return ret(Mode.SCHEDULE, scheduleData, method);
           }
         } else {
           d('URL data does not match plan or schedule format');
-          return {
-            mode: Mode.SCHEDULE,
-            data: 'malformed',
-            activeId,
-            method,
-            latestTermId,
-          };
+          return ret(Mode.SCHEDULE, 'malformed', method);
         }
       }
     }
@@ -193,13 +228,7 @@ let SaveDataManager = {
             d('%s data loaded', modeStr);
           }
 
-          return {
-            mode,
-            data,
-            activeId,
-            method: 'Account',
-            latestTermId,
-          };
+          return ret(mode, data, 'Account');
         }
       }
     }
@@ -223,25 +252,13 @@ let SaveDataManager = {
         d('%s data loaded', modeStr);
       }
 
-      return {
-        mode,
-        data,
-        activeId,
-        method,
-        latestTermId,
-      };
+      return ret(mode, data, method);
     }
 
     d('no data to load');
-
-    return {
-      mode,
-      data: await manager.load(),
-      activeId,
-      method,
-      latestTermId,
-    };
+    return ret(mode, await manager.load(), method);
   },
+
   loadSwitchesFromStorage: (
     setSwitchFunction: (
       key: keyof ReadUserOptions,

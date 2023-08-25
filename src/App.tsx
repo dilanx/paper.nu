@@ -77,6 +77,8 @@ import { SideCardData } from './types/SideCardTypes';
 import { Mode } from './utility/Constants';
 import { PaperError } from './utility/PaperError';
 import Utility from './utility/Utility';
+import { openInfo as scheduleOpenInfo } from './utility/ScheduleSectionInfo';
+import { openInfo as planOpenInfo } from './utility/CourseInfo';
 const d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
@@ -223,13 +225,11 @@ class App extends React.Component<{}, AppState> implements AppType {
     const hash = window.location.hash;
 
     const code = params.get('code');
-    params.delete('code');
     const state = params.get('state');
-    params.delete('state');
     const action = params.get('action');
-    params.delete('action');
     const search = params.get('fs');
-    params.delete('fs');
+    const showCourse = params.get('c');
+    const showSection = params.get('s');
 
     window.history.replaceState({}, '', window.location.pathname);
 
@@ -277,7 +277,7 @@ class App extends React.Component<{}, AppState> implements AppType {
           () => {
             this.setState({ loadingLogin: false });
           },
-          { hash }
+          { hash, showCourse, showSection }
         );
       });
     } else {
@@ -285,7 +285,7 @@ class App extends React.Component<{}, AppState> implements AppType {
         () => {
           this.setState({ loadingLogin: false });
         },
-        { hash }
+        { hash, showCourse, showSection }
       );
     }
   }
@@ -293,84 +293,111 @@ class App extends React.Component<{}, AppState> implements AppType {
   initialize(callback: () => void, options?: SaveDataOptions) {
     d('initializing');
     SaveDataManager.load(this.state.switches, options)
-      .then(({ mode, data, activeId, method, latestTermId }) => {
-        const modeStr = mode === Mode.PLAN ? 'plan' : 'schedule';
-        if (data === 'malformed') {
+      .then(
+        ({
+          mode,
+          data,
+          activeId,
+          method,
+          latestTermId,
+          sharedCourse,
+          sharedSection,
+        }) => {
+          const modeStr = mode === Mode.PLAN ? 'plan' : 'schedule';
+
+          if (sharedCourse) {
+            planOpenInfo((data) => this.showSideCard(data), sharedCourse);
+          }
+
+          if (sharedSection) {
+            scheduleOpenInfo(
+              (data) => this.showSideCard(data),
+              (data) => this.showAlert(data),
+              sharedSection,
+              undefined,
+              {
+                ff: this.state.ff,
+              }
+            );
+          }
+
+          if (data === 'malformed') {
+            this.setState({
+              schedule: {
+                termId: latestTermId,
+                ...this.state.schedule,
+              },
+              latestTermId,
+            });
+            this.showAlert({
+              title: `Unable to load ${modeStr}.`,
+              message: `The ${modeStr} you're trying to access is not valid. If you're loading it through a URL, ensure that it hasn't been manually modified.`,
+              confirmButton: 'What a shame.',
+              color: 'red',
+              icon: ExclamationTriangleIcon,
+            });
+            return;
+          }
+          this.setSwitch('mode', mode);
+          this.setSwitch(
+            mode === Mode.PLAN ? 'active_plan_id' : 'active_schedule_id',
+            activeId,
+            true
+          );
           this.setState({
-            schedule: {
-              termId: latestTermId,
-              ...this.state.schedule,
-            },
+            saveState: 'idle',
             latestTermId,
           });
-          this.showAlert({
-            title: `Unable to load ${modeStr}.`,
-            message: `The ${modeStr} you're trying to access is not valid. If you're loading it through a URL, ensure that it hasn't been manually modified.`,
-            confirmButton: 'What a shame.',
-            color: 'red',
-            icon: ExclamationTriangleIcon,
-          });
-          return;
-        }
-        this.setSwitch('mode', mode);
-        this.setSwitch(
-          mode === Mode.PLAN ? 'active_plan_id' : 'active_schedule_id',
-          activeId,
-          true
-        );
-        this.setState({
-          saveState: 'idle',
-          latestTermId,
-        });
-        if (data === 'empty') {
-          this.setState({
-            schedule: {
-              termId: latestTermId,
-              ...this.state.schedule,
-            },
-          });
-          return;
-        }
-
-        switch (mode) {
-          case Mode.PLAN:
+          if (data === 'empty') {
             this.setState({
-              data: data as PlanData,
-              schedule: { termId: latestTermId, ...this.state.schedule },
+              schedule: {
+                termId: latestTermId,
+                ...this.state.schedule,
+              },
             });
-            break;
-          case Mode.SCHEDULE:
-            this.setState({ schedule: data as ScheduleData });
-            break;
-        }
+            return;
+          }
 
-        switch (method) {
-          case 'URL':
-            toast.success(`Loaded ${modeStr} from URL`);
-            break;
-          case 'Account':
-            toast.success(
-              `Loaded ${modeStr}: ` +
-                (mode === Mode.PLAN
-                  ? Account.getPlanName(activeId || 'None')
-                  : Account.getScheduleName(activeId || 'None'))
-            );
-            break;
-          case 'Storage':
-            toast.success(`Loaded recently edited ${modeStr}`);
-            break;
-          case 'TermChange':
-            const sdata = data as ScheduleData;
-            toast.success(
-              `Changed term to ${
-                sdata.termId
-                  ? getTermName(sdata.termId) || 'unknown'
-                  : 'unknown'
-              }`
-            );
-            break;
+          switch (mode) {
+            case Mode.PLAN:
+              this.setState({
+                data: data as PlanData,
+                schedule: { termId: latestTermId, ...this.state.schedule },
+              });
+              break;
+            case Mode.SCHEDULE:
+              this.setState({ schedule: data as ScheduleData });
+              break;
+          }
+
+          switch (method) {
+            case 'URL':
+              toast.success(`Loaded ${modeStr} from URL`);
+              break;
+            case 'Account':
+              toast.success(
+                `Loaded ${modeStr}: ` +
+                  (mode === Mode.PLAN
+                    ? Account.getPlanName(activeId || 'None')
+                    : Account.getScheduleName(activeId || 'None'))
+              );
+              break;
+            case 'Storage':
+              toast.success(`Loaded recently edited ${modeStr}`);
+              break;
+            case 'TermChange':
+              const sdata = data as ScheduleData;
+              toast.success(
+                `Changed term to ${
+                  sdata.termId
+                    ? getTermName(sdata.termId) || 'unknown'
+                    : 'unknown'
+                }`
+              );
+              break;
+          }
         }
-      })
+      )
       .catch((error: PaperError) => {
         this.showAlert(Utility.errorAlert('initialization', error));
       })
@@ -406,7 +433,7 @@ class App extends React.Component<{}, AppState> implements AppType {
         }
         d('saving now');
         update(app, this.state.switches.get.mode === Mode.SCHEDULE);
-      }, 2000);
+      }, 1500);
       this.setState({ saveState: 'wait', saveTimeoutId: timeoutId });
     }
 

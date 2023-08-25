@@ -78,7 +78,8 @@ export async function getPlanData(): Promise<RawCourseData> {
 }
 
 export async function getScheduleData(
-  termId?: string
+  termId?: string,
+  lockedTermId?: string
 ): Promise<{ termId: string; data: ScheduleCourse[] } | undefined> {
   d('schedule data: get');
   const info = await getDataMapInformation();
@@ -105,6 +106,14 @@ export async function getScheduleData(
     const data = await localforage.getItem<ScheduleDataCache>(loc);
     if (data) {
       if (oldestCache < 0 || data.cacheUpdated < oldestTime) {
+        if (lockedTermId && data.termId === lockedTermId) {
+          d(
+            'schedule data: cache is for locked term %s, skipping (%s)',
+            lockedTermId,
+            cacheLocations[i]
+          );
+          continue;
+        }
         oldestTime = data.cacheUpdated;
         oldestCache = i;
       }
@@ -114,7 +123,7 @@ export async function getScheduleData(
           d('schedule data: cache hit');
           return {
             termId,
-            data: schedule(data.data),
+            data: schedule(data.data, termId),
           };
         } else {
           d('schedule data: cache out of date, fetching data');
@@ -168,7 +177,7 @@ export async function getScheduleData(
   );
   return {
     termId,
-    data: schedule(json),
+    data: schedule(json, termId),
   };
 }
 

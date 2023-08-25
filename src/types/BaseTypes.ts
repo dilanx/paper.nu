@@ -2,6 +2,7 @@ import { Component, ComponentProps } from 'react';
 import { Mode } from '../utility/Constants';
 import { AlertData } from './AlertTypes';
 import {
+  Course,
   PlanData,
   PlanModificationFunctions,
   PlanSpecialFunctions,
@@ -10,6 +11,7 @@ import {
   ScheduleData,
   ScheduleInteractions,
   ScheduleModificationFunctions,
+  ScheduleSection,
 } from './ScheduleTypes';
 import { SearchDefaults, SearchModificationFunctions } from './SearchTypes';
 import { SideCardData } from './SideCardTypes';
@@ -77,6 +79,8 @@ export interface LoadResponse<T> {
   method: LoadMethods;
   latestTermId: string;
   error?: string;
+  sharedCourse?: Course;
+  sharedSection?: ScheduleSection;
 }
 
 export type Color =
@@ -164,8 +168,9 @@ export type InfoSetData<T = string | InfoSetValFn> = InfoSetItem<T>[];
 
 export interface SaveDataOptions {
   hash?: string;
-  legacyParams?: URLSearchParams;
   changeTerm?: string;
+  showCourse?: string | null;
+  showSection?: string | null;
 }
 
 export interface UniversitySchools {

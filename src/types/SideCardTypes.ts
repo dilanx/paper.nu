@@ -4,12 +4,17 @@ import { Color, IconElement } from './BaseTypes';
 export interface SideCardData {
   type: string;
   themeColor: Color;
+  tag?: {
+    text: string;
+    color: Color;
+  };
   title: string;
   subtitle?: string;
   alertMessage?: string;
   message?: string;
   items?: SideCardItemData[];
   buttons?: (SideCardButtonData | ToggleableSideCardButtonData)[];
+  link?: string;
 }
 
 export interface SideCardItemData {

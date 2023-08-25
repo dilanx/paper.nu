@@ -28,8 +28,8 @@ function ModeSwitchButton({
       }`}
       onClick={onClick}
     >
-      <props.icon className={`h-5 w-5`} />
-      <p className={`font-medium`}>{text}</p>
+      <props.icon className="h-5 w-5" />
+      <p className="text-sm font-medium">{text}</p>
     </button>
   );
 }

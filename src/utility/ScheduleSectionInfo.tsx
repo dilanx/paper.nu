@@ -34,6 +34,7 @@ import {
   SideCardItemData,
 } from '../types/SideCardTypes';
 import Utility from './Utility';
+import { getTermName } from '../DataManager';
 
 function getDetails(
   detail: string,
@@ -215,8 +216,8 @@ function getDetails(
 }
 
 interface SectionModificationWithinInfo {
-  bookmarks: ScheduleBookmarks;
-  sf: ScheduleModificationFunctions;
+  bookmarks?: ScheduleBookmarks;
+  sf?: ScheduleModificationFunctions;
   ff: SearchModificationFunctions;
 }
 
@@ -255,24 +256,24 @@ export function openInfo(
 
   if (mod) {
     sideCardButtons = [];
-    if (section.custom) {
+    if (section.custom && mod.sf) {
       sideCardButtons.push({
         text: 'Edit custom section',
         onClick: (close) => {
-          mod.sf.putCustomSection(section);
+          mod.sf!.putCustomSection(section);
           close();
         },
       });
     } else {
       sideCardButtons.push({
-        text: 'Show all sections',
+        text: mod.sf ? 'Show all sections' : 'Show sections in current term',
         onClick: (close) => {
           mod.ff.set(name, scheduleCourse?.course_id);
           close();
         },
       });
 
-      if (scheduleCourse) {
+      if (scheduleCourse && mod.bookmarks && mod.sf) {
         sideCardButtons.splice(1, 0, {
           toggle: true,
           data: mod.bookmarks,
@@ -281,34 +282,40 @@ export function openInfo(
           enabled: {
             text: 'Remove from bookmarks',
             onClick: () => {
-              mod.sf.removeScheduleBookmark(scheduleCourse);
+              mod.sf!.removeScheduleBookmark(scheduleCourse);
             },
           },
           disabled: {
             text: 'Add to bookmarks',
             onClick: () => {
-              mod.sf.addScheduleBookmark(scheduleCourse);
+              mod.sf!.addScheduleBookmark(scheduleCourse);
             },
           },
         });
       }
     }
 
-    sideCardButtons.push({
-      text: 'Remove section',
-      danger: true,
-      onClick: (close) => {
-        mod.sf.removeSection(section);
-        close();
-      },
-    });
+    if (mod.sf) {
+      sideCardButtons.push({
+        text: 'Remove section',
+        danger: true,
+        onClick: (close) => {
+          mod.sf!.removeSection(section);
+          close();
+        },
+      });
+    }
   }
+
+  const termName = section.termId && getTermName(section.termId);
 
   const sideCardData: SideCardData = {
     type: section.custom
       ? 'SECTION INFO (CUSTOM)'
       : mod
-      ? 'SECTION INFO'
+      ? mod.sf
+        ? 'SECTION INFO'
+        : 'SECTION INFO (SHARE)'
       : 'SECTION INFO (SEARCH)',
     themeColor: PlanManager.getCourseColor(name),
     title: name,
@@ -327,6 +334,16 @@ export function openInfo(
       return filtered;
     }, []),
     buttons: sideCardButtons,
+    link:
+      !section.custom && section.termId
+        ? `${window.location.origin}?s=${section.termId}-${section.section_id}`
+        : undefined,
+    tag: termName
+      ? {
+          text: termName.toUpperCase(),
+          color: Utility.getTermColor(termName),
+        }
+      : undefined,
   };
 
   sideCard(sideCardData);

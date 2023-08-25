@@ -30,7 +30,7 @@ export function plan({ courses, legacy, majors, ...rest }: any): RawCourseData {
   };
 }
 
-export function schedule(data: any): ScheduleCourse[] {
+export function schedule(data: any, termId: string): ScheduleCourse[] {
   return data.map(({ i, c, t, u, n, s }: any) => ({
     course_id: i,
     school: c,
@@ -40,6 +40,7 @@ export function schedule(data: any): ScheduleCourse[] {
     sections: s?.map(
       ({ i, r, t, k, u, n, s, m, x, y, l, d, e, c, a, q, p, o }: any) => ({
         section_id: i,
+        termId,
         instructors: r?.map(({ n, p, a, o, b, u }: any) => ({
           name: n,
           phone: p,
