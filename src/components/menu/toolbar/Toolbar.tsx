@@ -1,6 +1,7 @@
 import {
   ArrowRightOnRectangleIcon,
   ArrowTopRightOnSquareIcon,
+  CheckCircleIcon,
   Cog6ToothIcon,
   InboxArrowDownIcon,
   InformationCircleIcon,
@@ -8,12 +9,12 @@ import {
   PencilSquareIcon,
   QuestionMarkCircleIcon,
   UserCircleIcon,
-  CheckCircleIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline';
 import { CalendarIcon, RectangleStackIcon } from '@heroicons/react/24/solid';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { SpinnerCircularFixed } from 'spinners-react';
 import Account from '../../../Account';
 import { discardNotesChanges } from '../../../app/AccountModification';
 import { Alert } from '../../../types/AlertTypes';
@@ -27,13 +28,14 @@ import { PlanData } from '../../../types/PlanTypes';
 import { ScheduleData } from '../../../types/ScheduleTypes';
 import { exportScheduleAsICS } from '../../../utility/Calendar';
 import { Mode } from '../../../utility/Constants';
+import { feedbackForm } from '../../../utility/Forms';
 import { exportScheduleAsImage } from '../../../utility/Image';
+import Links from '../../../utility/StaticLinks';
 import Schedule from '../../schedule/Schedule';
 import exportMenu from './Export';
 import settingsMenu from './Settings';
 import ToolbarAccount from './ToolbarAccount';
 import ToolbarButton from './ToolbarButton';
-import { SpinnerCircularFixed } from 'spinners-react';
 
 interface ToolbarProps {
   alert: Alert;
@@ -147,17 +149,96 @@ function Toolbar({
                   text: 'Help',
                   icon: QuestionMarkCircleIcon,
                   onClick: () => {
-                    window.open('https://kb.dilanxd.com/paper', '_blank');
+                    window.open(Links.SUPPORT, '_blank');
                   },
                 },
                 {
                   text: 'Feedback',
                   icon: InboxArrowDownIcon,
                   onClick: () => {
-                    window.open(
-                      'https://kb.dilanxd.com/paper/feedback',
-                      '_blank'
-                    );
+                    const loggedIn = Account.isLoggedIn();
+                    alert({
+                      title: 'Leave feedback on Paper',
+                      message:
+                        "I'm always looking to improve Paper through bug fixes and new features! Share your thoughts below.",
+                      textHTML: (
+                        <div className="mt-3">
+                          <ul className="list-disc pl-4">
+                            <li>
+                              You <span className="font-bold">MUST</span> read
+                              the{' '}
+                              <a
+                                href={Links.FAQ}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                Frequently Asked Questions
+                              </a>{' '}
+                              before submitting any issues!
+                            </li>
+                            <li>
+                              Submitting this form creates a public issue{' '}
+                              <a
+                                href={Links.ISSUES}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                here on GitHub
+                              </a>
+                              . If you have a GitHub account, you can{' '}
+                              <a
+                                href="https://github.com/dilanx/paper.nu/issues/new"
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                create an issue
+                              </a>{' '}
+                              there directly to be notified of updates.
+                            </li>
+                            <li>
+                              Your account information will not be shared
+                              publicly in the posted issue but will be visible
+                              to me privately.
+                            </li>
+                            <li>
+                              You'll receive a confirmation email with the link
+                              to your issue. Feel free to check back there for
+                              updates!
+                            </li>
+                          </ul>
+
+                          {!loggedIn && (
+                            <p className="mt-3 text-base font-bold text-red-500 dark:text-red-400">
+                              You must be logged in to Paper to submit feedback.
+                            </p>
+                          )}
+                        </div>
+                      ),
+                      color: 'purple',
+                      icon: InboxArrowDownIcon,
+                      form: loggedIn
+                        ? {
+                            sections: feedbackForm(),
+                            onSubmit: (data) => {
+                              toast.promise(Account.feedback(data), {
+                                loading: 'Submitting feedback...',
+                                success: 'Feedback submitted!',
+                                error: (err) => {
+                                  console.error(err);
+                                  return 'Failed to submit feedback.';
+                                },
+                              });
+                            },
+                          }
+                        : undefined,
+                      confirmButton: loggedIn ? 'Submit' : 'Log in',
+                      action: () => {
+                        if (!loggedIn) {
+                          Account.logIn();
+                        }
+                      },
+                      cancelButton: 'Cancel',
+                    });
                   },
                 },
               ],
@@ -265,7 +346,7 @@ function Toolbar({
                 text: 'Manage account',
                 icon: UserCircleIcon,
                 onClick: () => {
-                  window.open('https://auth.dilanxd.com/account', '_blank');
+                  window.open(Links.ACCOUNT, '_blank');
                 },
               },
               {

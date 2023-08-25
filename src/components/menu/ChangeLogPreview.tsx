@@ -6,6 +6,7 @@ import {
 } from '../../types/BaseTypes';
 import paperBlack from '../../assets/paper-full-black.png';
 import paperWhite from '../../assets/paper-full-white.png';
+import Links from '../../utility/StaticLinks';
 
 interface ChangeLogPreviewProps {
   version: string;
@@ -100,10 +101,7 @@ function ChangeLogPreview({
                         window.open(info.link.url, '_blank');
                         return;
                       }
-                      window.open(
-                        'https://www.dilanxd.com/paper/changelog',
-                        '_blank'
-                      );
+                      window.open(Links.CHANGELOG, '_blank');
                     }}
                   >
                     {info.link

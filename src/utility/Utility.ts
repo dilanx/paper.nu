@@ -299,7 +299,7 @@ let Utility = {
       },
       action: () => {
         window.open(
-          `https://kb.dilanxd.com/paper/troubleshooting?e=${encodeURIComponent(
+          `https://support.dilanxd.com/paper/troubleshooting?e=${encodeURIComponent(
             errorText
           )}`,
           '_blank'

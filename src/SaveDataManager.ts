@@ -30,6 +30,7 @@ import {
 import { Mode } from './utility/Constants';
 import Utility from './utility/Utility';
 import { isEqual } from 'lodash';
+import Links from './utility/StaticLinks';
 const d = debug('save-data-manager');
 
 const DEFAULT_SWITCHES: ReadUserOptions = {
@@ -154,7 +155,7 @@ let SaveDataManager = {
       }
       d('fetching content for short code from server');
       const scContentResponse = await fetch(
-        `${Account.SERVER}/paper/shorten/${hash.slice(1)}`
+        `${Links.SERVER}/paper/shorten/${hash.slice(1)}`
       );
       if (!scContentResponse.ok) {
         d('failed to fetch short code with error %s', scContentResponse.status);

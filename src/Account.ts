@@ -13,12 +13,11 @@ import {
 } from './types/AccountTypes';
 import { PaperError, PaperExpectedAuthError } from './utility/PaperError';
 import Utility from './utility/Utility';
+import Links from './utility/StaticLinks';
+import { AlertFormResponse } from './types/AlertTypes';
 const da = debug('account:auth');
 const dh = debug('account:http');
 const dp = debug('account:op');
-
-const TOKEN_URL = 'https://api.dilanxd.com/auth/token';
-const SERVER = 'https://api.dilanxd.com';
 
 const cache: DocumentCache = {};
 
@@ -46,7 +45,8 @@ async function authLogin(
     localStorage.setItem('t_s', state);
     da('no auth code in query, new access token required, redirecting');
     window.open(
-      'https://api.dilanxd.com/auth?client_id=' +
+      Links.AUTH +
+        '?client_id=' +
         process.env.REACT_APP_PUBLIC_CLIENT_ID +
         '&redirect_uri=' +
         encodeURIComponent(url.toString()) +
@@ -80,7 +80,7 @@ async function obtainAccessToken(
 ): Promise<AuthenticationResponseToken> {
   try {
     dh('POST token');
-    const response = await fetch(TOKEN_URL, {
+    const response = await fetch(Links.TOKEN, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -105,7 +105,7 @@ async function authLogout(): Promise<ConnectionResponse> {
   let url = new URL(window.location.href);
   url.searchParams.set('action', 'logout');
   window.open(
-    `https://api.dilanxd.com/auth/logout?redirect_uri=${encodeURIComponent(
+    `${Links.AUTH}/logout?redirect_uri=${encodeURIComponent(
       url.toString()
     )}&action=logout`,
     '_self'
@@ -121,7 +121,7 @@ async function operation<T>(
 ): Promise<T | undefined> {
   dh('%s %s (body: %o)', method, endpoint, body);
   try {
-    const response = await fetch(SERVER + endpoint, {
+    const response = await fetch(Links.SERVER + endpoint, {
       method: method,
       headers: {
         'Content-Type': 'application/json',
@@ -157,7 +157,6 @@ async function operation<T>(
 }
 
 let Account = {
-  SERVER,
   isLoggedIn: () => {
     return !!localStorage.getItem('t');
   },
@@ -258,6 +257,10 @@ let Account = {
     }
 
     return cache[type];
+  },
+  feedback: async (data: AlertFormResponse) => {
+    dp(`feedback`);
+    await operation(`/paper/feedback`, 'POST', data);
   },
   getPlanName: (planId: string) => {
     if (planId === 'None') return 'None';

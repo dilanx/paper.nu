@@ -3,6 +3,7 @@ import ScheduleManager from '../ScheduleManager';
 import {
   AlertFormFieldColorSelect,
   AlertFormFieldMultiSelect,
+  AlertFormFieldSingleSelect,
   AlertFormFieldText,
   AlertFormFieldTime,
   AlertFormResponse,
@@ -240,6 +241,50 @@ export function customSectionForm(
       title: 'COLOR',
       fullRow: true,
       fields: [col],
+    },
+  ];
+}
+
+export function feedbackForm(): AlertFormSection[] {
+  const type: AlertFormFieldSingleSelect = {
+    name: 'type',
+    type: 'single-select',
+    options: ['Bug', 'Feature Request', 'Course Data Error', 'Other'],
+    required: true,
+    defaultValue: 'Bug',
+  };
+  const title: AlertFormFieldText = {
+    name: 'title',
+    type: 'text',
+    maxLength: 70,
+    required: true,
+  };
+  const content: AlertFormFieldText = {
+    name: 'content',
+    type: 'text',
+    maxLength: 1000,
+    paragraph: true,
+    required: true,
+  };
+
+  return [
+    {
+      title: 'TYPE',
+      fullRow: true,
+      fields: [type],
+    },
+    {
+      title: 'TITLE',
+      description: 'A brief summary of the feedback topic.',
+      fullRow: true,
+      fields: [title],
+    },
+    {
+      title: 'MESSAGE',
+      description:
+        'If applicable, share details like the steps to reproduce the bug.',
+      fullRow: true,
+      fields: [content],
     },
   ];
 }

@@ -4,7 +4,6 @@ import {
   LinkIcon,
 } from '@heroicons/react/24/outline';
 import { toast } from 'react-hot-toast';
-import Account from '../../../Account';
 import PlanManager from '../../../PlanManager';
 import ScheduleManager from '../../../ScheduleManager';
 import { Alert } from '../../../types/AlertTypes';
@@ -16,6 +15,7 @@ import {
 } from '../../../types/ScheduleTypes';
 import { getSections } from '../../../utility/Calendar';
 import { PaperError } from '../../../utility/PaperError';
+import Links from '../../../utility/StaticLinks';
 import Utility from '../../../utility/Utility';
 
 type ActionFunction<T = null> = (data: T) => void;
@@ -64,7 +64,7 @@ const exportMenu = ({
               throw new PaperError('No data to shorten');
             }
 
-            const response = await fetch(`${Account.SERVER}/paper/shorten`, {
+            const response = await fetch(`${Links.SERVER}/paper/shorten`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -149,17 +149,9 @@ const exportMenu = ({
                 <p className="my-2">
                   Here are some instructions on how to import events into some
                   popular calendar apps:{' '}
-                  <a href="https://support.apple.com/en-ca/guide/calendar/icl1023/mac">
-                    Apple Calendar
-                  </a>
-                  ,{' '}
-                  <a href="https://support.google.com/calendar/answer/37118?hl=en&co=GENIE.Platform%3DDesktop">
-                    Google Calendar
-                  </a>
-                  ,{' '}
-                  <a href="https://support.microsoft.com/en-us/office/import-calendars-into-outlook-8e8364e1-400e-4c0f-a573-fe76b5a2d379">
-                    Microsoft Outlook
-                  </a>
+                  <a href={Links.EXPORT_APPLE}>Apple Calendar</a>,{' '}
+                  <a href={Links.EXPORT_GOOGLE}>Google Calendar</a>,{' '}
+                  <a href={Links.EXPORT_MICROSOFT}>Microsoft Outlook</a>
                 </p>
               ),
               confirmButton: 'Download',

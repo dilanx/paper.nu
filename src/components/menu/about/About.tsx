@@ -1,18 +1,18 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import localforage from 'localforage';
 import { Fragment, useState } from 'react';
-import planImage from '../../../assets/plan.svg';
-import saladImage from '../../../assets/salad.png';
 import paperBlack from '../../../assets/paper-full-vertical-black.png';
 import paperWhite from '../../../assets/paper-full-vertical-white.png';
+import planImage from '../../../assets/plan.svg';
+import saladImage from '../../../assets/salad.png';
 import { InfoSetData, UserOptions } from '../../../types/BaseTypes';
+import { PlanDataCache } from '../../../types/PlanTypes';
+import { ScheduleDataCache } from '../../../types/ScheduleTypes';
+import Links from '../../../utility/StaticLinks';
+import Utility from '../../../utility/Utility';
 import AboutButton from './AboutButton';
 import InfoSet from './InfoSet';
-import Account from '../../../Account';
-import localforage from 'localforage';
-import { PlanDataCache } from '../../../types/PlanTypes';
-import Utility from '../../../utility/Utility';
-import { ScheduleDataCache } from '../../../types/ScheduleTypes';
 
 function getLocalTime<T>(location: string, key: keyof T) {
   return async () => {
@@ -37,7 +37,7 @@ const versions: InfoSetData = [
   [
     'API Version',
     async () => {
-      const response = await fetch(Account.SERVER);
+      const response = await fetch(Links.SERVER);
       const data = await response.json();
       return data.version;
     },
@@ -123,16 +123,10 @@ function About({ switches, onClose }: AboutProps) {
                   </p>
                 </div>
                 <div className="my-8 flex w-full flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4">
-                  <AboutButton href="https://www.dilanxd.com/paper">
-                    Learn More
-                  </AboutButton>
-                  <AboutButton href="https://kb.dilanxd.com/paper">
-                    Help Center
-                  </AboutButton>
-                  <AboutButton href="https://www.dilanxd.com/paper/changelog">
-                    Change Log
-                  </AboutButton>
-                  <AboutButton href="https://github.com/dilanx/paper.nu">
+                  <AboutButton href={Links.HOMEPAGE}>Learn More</AboutButton>
+                  <AboutButton href={Links.SUPPORT}>Help Center</AboutButton>
+                  <AboutButton href={Links.CHANGELOG}>Change Log</AboutButton>
+                  <AboutButton href={Links.SOURCE_CODE}>
                     Source Code
                   </AboutButton>
                 </div>
@@ -141,7 +135,7 @@ function About({ switches, onClose }: AboutProps) {
                   <p className="text-lg font-medium">
                     <a
                       className="text-black underline-offset-2 hover:underline dark:text-white"
-                      href="https://www.dilanxd.com"
+                      href={Links.DEVELOPER}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -152,7 +146,7 @@ function About({ switches, onClose }: AboutProps) {
                   <p className="text-md font-medium">
                     <a
                       className="text-black underline-offset-2 hover:underline dark:text-white"
-                      href="https://www.mccormick.northwestern.edu/computer-science/"
+                      href={Links.NU_CS}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -162,7 +156,7 @@ function About({ switches, onClose }: AboutProps) {
                   <p className="text-md font-medium">
                     <a
                       className="text-black underline-offset-2 hover:underline dark:text-white"
-                      href="https://www.registrar.northwestern.edu"
+                      href={Links.NU_REGISTRAR}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -172,7 +166,7 @@ function About({ switches, onClose }: AboutProps) {
                   <p className="text-md font-medium">
                     <a
                       className="text-black underline-offset-2 hover:underline dark:text-white"
-                      href="https://www.it.northwestern.edu"
+                      href={Links.NU_IT}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -195,7 +189,7 @@ function About({ switches, onClose }: AboutProps) {
                           by{' '}
                           <a
                             className="underline underline-offset-4 hover:opacity-75"
-                            href="https://www.dilanxd.com"
+                            href={Links.DEVELOPER}
                             target="_blank"
                             rel="noreferrer"
                           >
@@ -216,7 +210,7 @@ function About({ switches, onClose }: AboutProps) {
                           by{' '}
                           <a
                             className="underline underline-offset-4 hover:opacity-75"
-                            href="https://github.com/Everthings"
+                            href={Links.SALAD}
                             target="_blank"
                             rel="noreferrer"
                           >
@@ -234,7 +228,7 @@ function About({ switches, onClose }: AboutProps) {
                     afforded to students through{' '}
                     <a
                       className="underline underline-offset-2 hover:opacity-75"
-                      href="https://www.registrar.northwestern.edu/records/student-information-privacy/privacy-policy-ferpa.html"
+                      href={Links.FERPA}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -244,7 +238,7 @@ function About({ switches, onClose }: AboutProps) {
                     way with your official student records. See the{' '}
                     <a
                       className="underline underline-offset-2 hover:opacity-75"
-                      href="https://www.dilanxd.com/privacy/"
+                      href={Links.PRIVACY}
                       target="_blank"
                       rel="noreferrer"
                     >

@@ -4,6 +4,7 @@ import debug from 'debug';
 import { PlanDataCache, RawCourseData } from './types/PlanTypes';
 import { ScheduleCourse, ScheduleDataCache } from './types/ScheduleTypes';
 import { plan, schedule } from './utility/DataMap';
+import Links from './utility/StaticLinks';
 const d = debug('data-manager');
 
 let info: DataMapInformation | undefined = undefined;
@@ -44,7 +45,7 @@ export async function getDataMapInformation() {
   }
 
   d('data map information: cache miss, fetching data');
-  const res = await fetch('https://api.dilanxd.com/paper/data');
+  const res = await fetch(`${Links.SERVER}/paper/data`);
   const json = await res.json();
 
   info = json as DataMapInformation;
