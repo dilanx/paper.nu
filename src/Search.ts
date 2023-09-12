@@ -2,7 +2,7 @@ import PlanManager from './PlanManager';
 import ScheduleManager from './ScheduleManager';
 import ShortcutsJson from './data/shortcuts.json';
 import { Course } from './types/PlanTypes';
-import { ScheduleCourse } from './types/ScheduleTypes';
+import { ScheduleCourse, ScheduleData } from './types/ScheduleTypes';
 import {
   FilterOptions,
   SearchError,
@@ -31,11 +31,12 @@ function filterBelongsTo(option: keyof FilterOptions, mode: Mode) {
     case 'unitLeq':
     case 'include':
       return mode === Mode.PLAN;
+    case 'meetingDays':
     case 'startAfter':
     case 'startBefore':
     case 'endAfter':
     case 'endBefore':
-    case 'meetingDays':
+    case 'allAvailability':
     case 'components':
     case 'instructor':
     case 'location':
@@ -45,7 +46,7 @@ function filterBelongsTo(option: keyof FilterOptions, mode: Mode) {
   }
 }
 
-function filterExists(filter: FilterOptions | undefined, mode: Mode) {
+export function filterExists(filter: FilterOptions | undefined, mode: Mode) {
   return (
     filter &&
     Object.keys(filter).filter((f) => {
@@ -171,6 +172,7 @@ function fullId(course: ScheduleCourse) {
 
 export function searchSchedule(
   query: string,
+  schedule: ScheduleData,
   filter?: FilterOptions
 ): SearchResults<ScheduleCourse> | SearchError {
   const { terms, shortcut } = prepareQuery(query);
@@ -198,7 +200,7 @@ export function searchSchedule(
     course.hide_section_ids = [];
     if (useFilters) {
       for (const section of course.sections) {
-        if (!ScheduleManager.sectionMatchesFilter(section, filter)) {
+        if (!ScheduleManager.sectionMatchesFilter(section, schedule, filter)) {
           course.hide_section_ids.push(section.section_id);
         }
       }

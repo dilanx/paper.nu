@@ -265,10 +265,22 @@ const ScheduleManager = {
 
   sectionMatchesFilter: (
     section: ScheduleSection,
+    schedule: ScheduleData,
     filter?: FilterOptions
   ): boolean => {
     if (!filter) return true;
     if (filter.subject && filter.subject !== section.subject) return false;
+
+    if (filter.meetingDays) {
+      if (
+        !section.meeting_days ||
+        !Array.from(section.meeting_days).every(
+          (d) => d && filter.meetingDays?.includes(Days[parseInt(d)])
+        )
+      ) {
+        return false;
+      }
+    }
 
     const t = (
       start: (Time | null)[] | undefined,
@@ -305,13 +317,8 @@ const ScheduleManager = {
       return false;
     }
 
-    if (filter.meetingDays) {
-      if (
-        !section.meeting_days ||
-        !Array.from(section.meeting_days).every(
-          (d) => d && filter.meetingDays?.includes(Days[parseInt(d)])
-        )
-      ) {
+    if (filter.allAvailability) {
+      if (ScheduleManager.sectionsOverlap(section, schedule.schedule)) {
         return false;
       }
     }

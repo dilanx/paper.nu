@@ -21,12 +21,12 @@ export const getAlertForm = (
   setValue: (name: string, value: string) => void,
   sections: AlertFormSection[]
 ) =>
-  sections.map((section) => (
+  sections.map((section, i) => (
     <Section
       title={section.title}
       description={section.description}
-      fullRow={section.fullRow}
-      key={`alert-form-section-${section.title}`}
+      totalRowItems={section.totalRowItems}
+      key={`alert-form-section-${i}`}
     >
       {section.fields.map((field) => {
         if (formFieldIs<AlertFormFieldText>(field, 'text')) {

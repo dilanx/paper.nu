@@ -58,9 +58,9 @@ export function editButtonIsToggleable(
 }
 
 export interface AlertFormSection {
-  title: string;
+  title?: string;
   description?: string;
-  fullRow?: boolean;
+  totalRowItems?: 1 | 2 | 4;
   fields: AlertFormField[];
 }
 

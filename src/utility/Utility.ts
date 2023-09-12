@@ -330,12 +330,14 @@ let Utility = {
     switch (filterBadgeName) {
       case 'subject':
         return ['blue', 'b'];
+      case 'meeting days':
+        return ['fuchsia', 's'];
       case 'start':
         return ['green', 's'];
       case 'end':
         return ['red', 's'];
-      case 'meeting days':
-        return ['fuchsia', 's'];
+      case 'time slots':
+        return ['pink', 's'];
       case 'components':
         return ['amber', 's'];
       case 'instructor':

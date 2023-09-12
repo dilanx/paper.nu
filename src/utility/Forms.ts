@@ -54,12 +54,17 @@ export function scheduleSearchFilterForm(
   return [
     {
       title: 'SUBJECT',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [
         text('subject', 'ex. COMP_SCI', filter.subject, (value) =>
           ScheduleManager.isSchoolSubject(value.toUpperCase())
         ),
       ],
+    },
+    {
+      title: 'MEETING DAYS',
+      totalRowItems: 1,
+      fields: [sel('meetingDays', Days, filter.meetingDays)],
     },
     {
       title: 'START AFTER',
@@ -78,28 +83,34 @@ export function scheduleSearchFilterForm(
       fields: [time('endBefore', 'ex. 4:00 pm', filter.endBefore)],
     },
     {
-      title: 'MEETING DAYS',
-      fullRow: true,
-      fields: [sel('meetingDays', Days, filter.meetingDays)],
+      totalRowItems: 1,
+      fields: [
+        sel(
+          'allAvailability',
+          ['Filter by all available times on schedule'],
+          filter.allAvailability
+        ),
+      ],
     },
+
     {
       title: 'DISTRIBUTION AREAS',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [sel('distros', Distros, filter.distros)],
     },
     {
       title: 'COMPONENTS',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [sel('components', Components, filter.components)],
     },
     {
       title: 'INSTRUCTOR',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [text('instructor', 'ex. John Doe', filter.instructor)],
     },
     {
       title: 'LOCATION',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [
         text('location', 'ex. Technological Institute', filter.location),
       ],
@@ -136,7 +147,7 @@ export function planSearchFilterForm(
   return [
     {
       title: 'SUBJECT',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [
         text('subject', 'ex. COMP_SCI', filter.subject, (value) =>
           PlanManager.isValidSubject(value.toUpperCase())
@@ -145,7 +156,7 @@ export function planSearchFilterForm(
     },
     {
       title: 'DISTRIBUTION AREAS',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [sel('distros', Distros, filter.distros)],
     },
     {
@@ -168,7 +179,7 @@ export function planSearchFilterForm(
     },
     {
       title: 'INCLUDE',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [sel('include', ['Legacy Courses'], filter.include)],
     },
   ];
@@ -206,40 +217,42 @@ export function customSectionForm(
   return [
     {
       title: 'TITLE',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [text('title', true)],
     },
     {
       title: 'SUBTITLE',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [text('subtitle')],
     },
     {
       title: 'INSTRUCTOR',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [text('instructor')],
     },
     {
       title: 'LOCATION',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [text('location')],
     },
     {
+      title: 'MEETING DAYS',
+      totalRowItems: 1,
+      fields: [sel],
+    },
+    {
       title: 'START',
+      totalRowItems: 2,
       fields: [time('start')],
     },
     {
       title: 'END',
+      totalRowItems: 2,
       fields: [time('end')],
     },
     {
-      title: 'MEETING DAYS',
-      fullRow: true,
-      fields: [sel],
-    },
-    {
       title: 'COLOR',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [col],
     },
   ];
@@ -270,20 +283,20 @@ export function feedbackForm(): AlertFormSection[] {
   return [
     {
       title: 'TYPE',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [type],
     },
     {
       title: 'TITLE',
       description: 'A brief summary of the feedback topic.',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [title],
     },
     {
       title: 'MESSAGE',
       description:
         'If applicable, share details like the steps to reproduce the bug.',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [content],
     },
   ];

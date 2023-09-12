@@ -335,7 +335,7 @@ export default function Alert({
                 {optionList.length > 0 && optionList}
 
                 {data.form && (
-                  <div className="m-4 sm:grid sm:grid-cols-2 sm:gap-2">
+                  <div className="m-4 sm:grid sm:grid-cols-4 sm:gap-2">
                     {getAlertForm(
                       formValues,
                       (name, value) => {

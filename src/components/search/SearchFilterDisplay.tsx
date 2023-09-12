@@ -17,11 +17,12 @@ const display = (
 
 function filtersAsStrings({
   subject,
+  meetingDays,
   startAfter,
   startBefore,
   endAfter,
   endBefore,
-  meetingDays,
+  allAvailability,
   components,
   instructor,
   location,
@@ -34,6 +35,13 @@ function filtersAsStrings({
 
   if (subject) {
     filters['subject'] = display(subject, 'subject');
+  }
+
+  if (meetingDays) {
+    filters['meeting days'] = display(
+      meetingDays.sort((a, b) => DayMap[a] - DayMap[b]).join(''),
+      'meetingDays'
+    );
   }
 
   if (startAfter || startBefore) {
@@ -58,11 +66,8 @@ function filtersAsStrings({
     filters['end'] = display(`${after} - ${before}`, 'endAfter', 'endBefore');
   }
 
-  if (meetingDays) {
-    filters['meeting days'] = display(
-      meetingDays.sort((a, b) => DayMap[a] - DayMap[b]).join(''),
-      'meetingDays'
-    );
+  if (allAvailability) {
+    filters['time slots'] = display('all available', 'allAvailability');
   }
 
   if (components) {

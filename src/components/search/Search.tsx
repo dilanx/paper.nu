@@ -56,7 +56,7 @@ import SearchClass from './SearchClass';
 import SearchFilterDisplay from './SearchFilterDisplay';
 import SearchScheduleClass from './SearchScheduleClass';
 import SearchBoxNotice from './SearchBoxNotice';
-import { searchPlan, searchSchedule } from '../../Search';
+import { filterExists, searchPlan, searchSchedule } from '../../Search';
 
 interface SearchProps {
   data: PlanData;
@@ -183,7 +183,7 @@ class Search extends React.Component<SearchProps, SearchState> {
     let results =
       appMode === Mode.PLAN
         ? searchPlan(query, filter)
-        : searchSchedule(query, filter);
+        : searchSchedule(query, this.props.schedule, filter);
 
     const easterEgg = Utility.friendlyEasterEgg(query.toLowerCase());
     if (easterEgg) {
@@ -310,7 +310,14 @@ class Search extends React.Component<SearchProps, SearchState> {
     if (results === 'no_results') {
       return {
         placeholder: [
-          this.searchMessage('Aw, no results.', `Try refining your search.`),
+          this.searchMessage(
+            'Aw, no results.',
+            `Try refining your search.${
+              filterExists(filter, appMode)
+                ? ' Note that omitted course results could be because of your active filters.'
+                : ''
+            }`
+          ),
         ],
       };
     }
@@ -574,11 +581,12 @@ class Search extends React.Component<SearchProps, SearchState> {
                               : scheduleSearchFilterForm(filter.get),
                           onSubmit: ({
                             subject,
+                            meetingDays,
                             startAfter,
                             startBefore,
                             endAfter,
                             endBefore,
-                            meetingDays,
+                            allAvailability,
                             components,
                             instructor,
                             location,
@@ -589,12 +597,14 @@ class Search extends React.Component<SearchProps, SearchState> {
                           }) => {
                             filter.set({
                               subject: Utility.safe(subject)?.toUpperCase(),
+                              meetingDays:
+                                Utility.safeArrayCommaSplit(meetingDays),
                               startAfter: Utility.parseTime(startAfter),
                               startBefore: Utility.parseTime(startBefore),
                               endAfter: Utility.parseTime(endAfter),
                               endBefore: Utility.parseTime(endBefore),
-                              meetingDays:
-                                Utility.safeArrayCommaSplit(meetingDays),
+                              allAvailability:
+                                Utility.safeArrayCommaSplit(allAvailability),
                               components:
                                 Utility.safeArrayCommaSplit(components),
                               instructor:

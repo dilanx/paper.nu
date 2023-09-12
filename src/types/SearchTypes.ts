@@ -24,11 +24,12 @@ export interface SearchFilter {
 
 export interface FilterOptions {
   subject?: string;
+  meetingDays?: string[];
   startAfter?: Time;
   startBefore?: Time;
   endAfter?: Time;
   endBefore?: Time;
-  meetingDays?: string[];
+  allAvailability?: string[];
   components?: string[];
   instructor?: string;
   location?: string;
@@ -40,9 +41,10 @@ export interface FilterOptions {
 
 export type FilterBadgeName =
   | 'subject'
+  | 'meeting days'
   | 'start'
   | 'end'
-  | 'meeting days'
+  | 'time slots'
   | 'components'
   | 'instructor'
   | 'location'
