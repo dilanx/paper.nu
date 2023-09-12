@@ -38,34 +38,47 @@ export function schedule(data: any, termId: string): ScheduleCourse[] {
     subject: u,
     number: n,
     sections: s?.map(
-      ({ i, r, t, k, u, n, s, m, x, y, l, d, e, c, a, q, p, o }: any) => ({
-        section_id: i,
-        termId,
-        instructors: r?.map(({ n, p, a, o, b, u }: any) => ({
-          name: n,
-          phone: p,
-          campus_address: a,
-          office_hours: o,
-          bio: b,
-          url: u,
-        })),
-        title: t,
-        topic: k,
-        subject: u,
-        number: n,
-        section: s,
-        meeting_days: m,
-        start_time: x,
-        end_time: y,
-        room: l,
-        start_date: d,
-        end_date: e,
-        component: c,
-        capacity: a,
-        enrl_req: q,
-        descs: p,
-        distros: o,
-      })
+      ({ i, r, t, k, u, n, s, m, x, y, l, d, e, c, a, q, p, o }: any) => {
+        for (let i = 0; i < m.length; i++) {
+          if (l[i]?.toLowerCase().includes('midterm')) {
+            m.splice(i, 1);
+            x.splice(i, 1);
+            y.splice(i, 1);
+            l.splice(i, 1);
+
+            i--;
+          }
+        }
+
+        return {
+          section_id: i,
+          termId,
+          instructors: r?.map(({ n, p, a, o, b, u }: any) => ({
+            name: n,
+            phone: p,
+            campus_address: a,
+            office_hours: o,
+            bio: b,
+            url: u,
+          })),
+          title: t,
+          topic: k,
+          subject: u,
+          number: n,
+          section: s,
+          meeting_days: m,
+          start_time: x,
+          end_time: y,
+          room: l,
+          start_date: d,
+          end_date: e,
+          component: c,
+          capacity: a,
+          enrl_req: q,
+          descs: p,
+          distros: o,
+        };
+      }
     ),
   }));
 }

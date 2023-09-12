@@ -87,7 +87,7 @@ class Year extends React.Component<YearProps, YearState> {
     return (
       <motion.div initial="hidden" animate="visible" variants={variants}>
         <div
-          className="relative m-5 rounded-lg border-4 border-gray-200 bg-white p-4 shadow-sm transition-all duration-150
+          className="relative m-5 rounded-xl border-4 border-gray-200 bg-white p-4 shadow-sm transition-all duration-150
                     compact:my-0 compact:border-0 compact:py-2 compact:shadow-none dark:border-gray-700 dark:bg-gray-800"
         >
           <p

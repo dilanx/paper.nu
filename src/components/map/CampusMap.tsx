@@ -110,7 +110,11 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
                       key={`map-marker-${i}`}
                       icon={getMapMarkerIcon(color)}
                     >
-                      <MapTooltip>
+                      <MapTooltip
+                        direction="right"
+                        className="border-none bg-white/50 text-black shadow-lg backdrop-blur-md before:border-r-white/50 dark:bg-gray-700/50 dark:text-white dark:before:border-r-gray-700/50"
+                        opacity={1}
+                      >
                         <div>
                           {sections.map((section, j) => (
                             <div
@@ -176,7 +180,7 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
                   </p>
                 </div>
                 {locations.length > 0 && (
-                  <div className="absolute right-2 bottom-8 z-[500] flex flex-col rounded-l-lg bg-white bg-opacity-50 p-2 dark:bg-gray-700 dark:bg-opacity-50 md:bottom-1/2 md:translate-y-1/2">
+                  <div className="absolute right-2 bottom-8 z-[500] flex flex-col rounded-l-lg bg-white/50 p-2 backdrop-blur-md dark:bg-gray-700/50 dark:bg-opacity-50 md:bottom-1/2 md:translate-y-1/2">
                     <p className="text-xs font-bold italic text-gray-600 dark:text-gray-200">
                       Hover to find class
                     </p>

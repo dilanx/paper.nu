@@ -4,17 +4,32 @@
 
 _2023-XX-XX_
 
-- **Custom courses and sections!**
+- **Add custom courses and sections to your plans and schedules.**
   - Enhance your plan or schedule with custom courses and sections. This allows you to add things to your schedule that aren't in the course catalog.
   - With a new custom item creator menu, you can customize each element of the course or section, including the color, and make changes to it later.
   - Custom courses and sections are included when sharing or exporting a plan or schedule.
-- **Improved sharing!**
+- **Share better.**
   - Share a link directly to any course or section.
-- **Automatic saving!** Modified plans and schedules linked to your account will automatically be saved as you make changes.
-- **Improved search!**
+- **Your plans and schedules save automatically.**
+  - Modified plans and schedules linked to your account will automatically be saved as you make changes.
+- **Searching just got easier.**
   - Partial text matching is now supported. For example, searching something like "intro sociol" will match "introduction to sociology".
   - You can now search by section topic, making specific sections in special topics classes (like CS 396) easier to find.
-- Various UI updates, bug fixes, and other small changes.
+  - You can now filter by all available schedule time.
+- **Submit feedback right from the app.**
+  - The built-in feedback submission feature is back. Check it out in the "About" toolbar menu.
+- **The entire internal data system has been redesigned.**
+  - Developers working with Paper APIs will have a better time.
+  - This doesn't really affect the end user, but the custom courses and sections feature is possible because of this change.
+- **And a lot of small things.**
+  - The schedule is now gray instead of green so it blends in well with the rest of the UI.
+  - Actions for a given year on the plan view have been moved into a context menu (press the three lines at the top right of a year to open).
+  - The design of the appearance toggle has been refreshed. (Did you know Paper has a light AND dark mode? Check the settings!)
+  - Fixed a bug where the Paper logo would sometimes not appear on schedules that are exported as an image.
+  - Sections that add their midterms to their section's meeting times now don't have their midterms displayed on their weekly schedule. Hopefully. I'm not completely sure but I tried.
+  - UI elements on the map now look nicer.
+  - Legacy plan and schedule URLs are completely discontinued. You can no longer load them from settings.
+  - A bunch of other UI updates, bug fixes, and other small changes.
 
 ### 2.6.1
 

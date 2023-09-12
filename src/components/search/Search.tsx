@@ -675,7 +675,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                       transition={{ delay: 0.25, duration: 0.2 }}
                       className="absolute bottom-1 left-1/2 z-20 w-full -translate-x-1/2 px-2"
                     >
-                      <p className="rounded-lg bg-gray-400 px-1 py-0.5 text-center text-xs font-medium text-white dark:bg-gray-500">
+                      <p className="rounded-lg bg-gray-400/50 px-1 py-0.5 text-center text-xs font-medium text-white backdrop-blur-md dark:bg-gray-700/50">
                         ROOM FINDER AVAILABLE FROM COURSE INFO MENU
                       </p>
                     </motion.div>

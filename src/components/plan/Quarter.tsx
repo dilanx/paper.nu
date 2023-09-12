@@ -78,15 +78,14 @@ function Quarter(props: QuarterProps) {
       });
     } else {
       classes = (
-        <div
-          className="overflow-hidden whitespace-nowrap rounded-lg border-2 border-dashed border-black bg-white p-2 opacity-40 compact:px-2
-                    compact:py-0.5 dark:border-gray-500 dark:bg-gray-900"
-        >
-          <p className="text-md font-bold text-black dark:text-white">
+        <div className="text-center">
+          <p
+            className={`text-xs font-medium text-${props.color}-500 dark:text-${props.color}-400`}
+          >
             No classes to show.
           </p>
-          <p className="text-xs compact:hidden dark:text-white">
-            Use the search bar.
+          <p className="text-xs text-gray-400 compact:hidden dark:text-gray-500">
+            Use the search bar to find a class, then drag it here.
           </p>
         </div>
       );
@@ -104,13 +103,13 @@ function Quarter(props: QuarterProps) {
     <motion.div variants={variants}>
       <div
         ref={drop}
-        className={`relative block rounded-lg border-2 px-8 pt-4 pb-8
+        className={`relative block rounded-xl border-2 px-8 pt-4 pb-8
             ${
               isOver
                 ? `border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50`
                 : `border-solid bg-${props.color}-50 dark:bg-gray-800 border-${props.color}-400`
             }
-                h-full space-y-3 shadow-lg compact:py-2 compact:shadow-sm ${
+                h-full space-y-3 shadow-md compact:py-2 compact:shadow-sm ${
                   props.yearHasSummer ? 'lg:px-4' : ''
                 }`}
       >

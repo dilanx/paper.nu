@@ -155,7 +155,7 @@ export default function Schedule(props: ScheduleProps) {
         : {})}
     >
       <div
-        className={`schedule-grid-cols grid rounded-lg border-4 border-opacity-75 bg-white bg-opacity-50 p-4
+        className={`schedule-grid-cols grid rounded-xl border-4 border-opacity-75 bg-white bg-opacity-50 p-4
                       shadow-md dark:bg-gray-800 ${
                         imageMode
                           ? 'h-full border-black dark:border-white'
@@ -165,7 +165,7 @@ export default function Schedule(props: ScheduleProps) {
         <HoursColumn start={start} end={end} />
         {days}
         {!imageMode && (
-          <div className="absolute top-4 right-6 flex items-center gap-1">
+          <div className="absolute top-4 right-7 flex items-center gap-1">
             <UtilityButton
               Icon={PlusIcon}
               onClick={() => {

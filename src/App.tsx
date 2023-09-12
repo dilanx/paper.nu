@@ -759,6 +759,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                   switches={switches}
                   loading={this.state.loadingLogin}
                   openAboutMenu={() => this.setState({ about: true })}
+                  openChangeLogPreview={() => this.setState({ clp: true })}
                   saveState={this.state.saveState}
                 />
                 <AnimatePresence mode="wait">

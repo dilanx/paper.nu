@@ -6,6 +6,7 @@ import {
   InboxArrowDownIcon,
   InformationCircleIcon,
   MapIcon,
+  NewspaperIcon,
   PencilSquareIcon,
   QuestionMarkCircleIcon,
   UserCircleIcon,
@@ -47,6 +48,7 @@ interface ToolbarProps {
   switches: UserOptions;
   loading: boolean;
   openAboutMenu: () => void;
+  openChangeLogPreview: () => void;
   saveState: SaveState;
 }
 
@@ -60,6 +62,7 @@ function Toolbar({
   switches,
   loading,
   openAboutMenu,
+  openChangeLogPreview,
   saveState,
 }: ToolbarProps) {
   const [takeImage, setTakeImage] = useState(false);
@@ -77,10 +80,17 @@ function Toolbar({
 
   useEffect(() => {
     if (takeImage) {
-      exportScheduleAsImage(switches.get.dark).finally(() => {
-        setTakeImage(false);
-        toast.success('Exported schedule as image');
-      });
+      // delay by 1 second to allow logo to load
+      const timeout = window.setTimeout(() => {
+        exportScheduleAsImage(switches.get.dark).finally(() => {
+          setTakeImage(false);
+          toast.success('Exported schedule as image');
+        });
+      }, 1000);
+
+      return () => {
+        window.clearTimeout(timeout);
+      };
     }
   }, [takeImage, switches]);
 
@@ -93,9 +103,9 @@ function Toolbar({
       {activeItem && activeItem !== 'None' && (
         <div className="flex flex-1 items-center gap-2 overflow-hidden font-semibold text-gray-400">
           {isSchedule ? (
-            <CalendarIcon className="h-5 w-5" />
+            <CalendarIcon className="h-5 min-h-[1.25rem] w-5 min-w-[1.25rem]" />
           ) : (
-            <RectangleStackIcon className="h-5 w-5" />
+            <RectangleStackIcon className="h-5 min-h-[1.25rem] w-5 min-w-[1.25rem]" />
           )}
           <p className="overflow-hidden text-ellipsis whitespace-nowrap text-sm">
             {activeItem}
@@ -144,6 +154,11 @@ function Toolbar({
                   text: 'About',
                   icon: InformationCircleIcon,
                   onClick: () => openAboutMenu(),
+                },
+                {
+                  text: "What's new",
+                  icon: NewspaperIcon,
+                  onClick: () => openChangeLogPreview(),
                 },
                 {
                   text: 'Help',
@@ -202,8 +217,9 @@ function Toolbar({
                             </li>
                             <li>
                               You'll receive a confirmation email with the link
-                              to your issue. Feel free to check back there for
-                              updates!
+                              to your issue but will not receive update emails
+                              unless you subscribe to the issue on GitHub. Feel
+                              free to check back there for updates!
                             </li>
                           </ul>
 
