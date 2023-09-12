@@ -35,12 +35,14 @@ function SearchScheduleSection({
   sideCard,
   alert,
 }: SearchScheduleSectionProps) {
-  const disabled =
+  let disabled =
     alreadyAdded ||
     !section.meeting_days?.length ||
     !section.start_time?.length ||
     !section.end_time?.length;
 
+  let anyMeetingDays = false;
+  let anyMeetingTimes = false;
   const meetingPatterns = [];
 
   for (let i = 0; i < section.meeting_days.length; i++) {
@@ -48,6 +50,10 @@ function SearchScheduleSection({
     const startTime = section.start_time[i];
     const endTime = section.end_time[i];
     const room = section.room[i];
+
+    if (meetingDays) anyMeetingDays = true;
+    if (startTime && endTime) anyMeetingTimes = true;
+
     meetingPatterns.push(
       <div key={`sss-${section.section_id}-${i}`}>
         <p className="text-sm font-normal">
@@ -65,6 +71,10 @@ function SearchScheduleSection({
         <p className="text-xs font-light">{room ?? 'no location'}</p>
       </div>
     );
+  }
+
+  if (!anyMeetingDays || !anyMeetingTimes) {
+    disabled = true;
   }
 
   return (
