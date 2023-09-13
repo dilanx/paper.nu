@@ -471,12 +471,12 @@ let Utility = {
 
   formatCacheVersion: (time: number | string, termId?: string) => {
     let t = new Date(typeof time === 'string' ? parseInt(time) : time);
-    const d = t.getDate();
-    const m = t.getMonth() + 1;
-    const y = t.getFullYear();
-    const h = t.getHours();
-    const min = t.getMinutes();
-    const s = t.getSeconds();
+    const d = t.getUTCDate();
+    const m = t.getUTCMonth() + 1;
+    const y = t.getUTCFullYear();
+    const h = t.getUTCHours();
+    const min = t.getUTCMinutes();
+    const s = t.getUTCSeconds();
 
     const p = (n: number) => (n < 10 ? `0${n}` : `${n}`);
 

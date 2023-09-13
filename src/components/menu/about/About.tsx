@@ -14,7 +14,7 @@ import Utility from '../../../utility/Utility';
 import AboutButton from './AboutButton';
 import InfoSet from './InfoSet';
 
-function getLocalTime<T>(location: string, key: keyof T) {
+function getTime<T>(location: string, key: keyof T) {
   return async () => {
     const data: any = await localforage.getItem<T>(location);
     if (!data) {
@@ -42,30 +42,30 @@ const versions: InfoSetData = [
       return data.version;
     },
   ],
-  ['Plan Cache Data Version', getLocalTime<PlanDataCache>('plan', 'updated')],
+  ['Plan Cache Data Version', getTime<PlanDataCache>('plan', 'updated')],
   [
     'Schedule Cache 0 Storage Version',
-    getLocalTime<ScheduleDataCache>('schedule0', 'cacheUpdated'),
+    getTime<ScheduleDataCache>('schedule0', 'cacheUpdated'),
   ],
   [
     'Schedule Cache 0 Data Version',
-    getLocalTime<ScheduleDataCache>('schedule0', 'dataUpdated'),
+    getTime<ScheduleDataCache>('schedule0', 'dataUpdated'),
   ],
   [
     'Schedule Cache 1 Storage Version',
-    getLocalTime<ScheduleDataCache>('schedule1', 'cacheUpdated'),
+    getTime<ScheduleDataCache>('schedule1', 'cacheUpdated'),
   ],
   [
     'Schedule Cache 1 Data Version',
-    getLocalTime<ScheduleDataCache>('schedule1', 'dataUpdated'),
+    getTime<ScheduleDataCache>('schedule1', 'dataUpdated'),
   ],
   [
     'Schedule Cache 2 Storage Version',
-    getLocalTime<ScheduleDataCache>('schedule2', 'cacheUpdated'),
+    getTime<ScheduleDataCache>('schedule2', 'cacheUpdated'),
   ],
   [
     'Schedule Cache 2 Data Version',
-    getLocalTime<ScheduleDataCache>('schedule2', 'dataUpdated'),
+    getTime<ScheduleDataCache>('schedule2', 'dataUpdated'),
   ],
 ];
 
