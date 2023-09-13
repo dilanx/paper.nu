@@ -80,7 +80,7 @@ function Quarter(props: QuarterProps) {
       classes = (
         <div className="text-center">
           <p
-            className={`text-xs font-medium text-${props.color}-500 dark:text-${props.color}-400`}
+            className={`text-sm font-medium text-${props.color}-500 dark:text-${props.color}-400`}
           >
             No classes to show.
           </p>

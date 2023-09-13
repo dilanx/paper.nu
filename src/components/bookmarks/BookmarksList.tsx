@@ -63,7 +63,7 @@ function BookmarksList(props: BookmarksListProps) {
   } else {
     classes = (
       <div className={`overflow-hidden whitespace-normal text-center`}>
-        <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+        <p className="px-2 text-sm font-light text-gray-500 dark:text-gray-400">
           {props.credit
             ? `Classes here are counted towards total credit (like classes you've received AP/IB credit for).`
             : `Find a class you're interested in but don't have a spot for it on your schedule yet? Bookmark it for later by dragging it here.`}

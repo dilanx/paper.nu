@@ -461,7 +461,8 @@ class AccountPlans extends React.Component<
             {items.length < (isSchedule ? SCHEDULE_LIMIT : PLAN_LIMIT) && (
               <button
                 className="mx-auto my-4 block rounded-lg bg-rose-300 px-4 py-1 text-sm text-white
-                                shadow-sm hover:bg-rose-400 dark:bg-rose-600 dark:hover:bg-rose-500"
+                                shadow-sm hover:bg-rose-400 active:bg-rose-500
+                                dark:bg-rose-600 dark:hover:bg-rose-500 dark:active:bg-rose-400"
                 onClick={() => {
                   this.create(isSchedule);
                 }}

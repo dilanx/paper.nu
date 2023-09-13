@@ -23,8 +23,6 @@ const variants = {
   visible: { x: 0, opacity: 1 },
 };
 
-// TODO update subtext like term and last updated once save button is pressed
-
 function AccountPlan(props: AccountPlanProps) {
   const { id, plan } = props;
   const termId = (plan.data as SerializedScheduleData)?.termId;
@@ -50,7 +48,7 @@ function AccountPlan(props: AccountPlanProps) {
         <p className="text-lg font-semibold text-black dark:text-white">
           {plan.name}
         </p>
-        <p className="text-xs font-medium text-gray-600 dark:text-gray-300">
+        <p className="text-xs text-gray-600 dark:text-gray-300">
           {termId ? (termName ? termName : 'unknown term') + ' • ' : ''}last
           updated{' '}
           {plan.lastUpdated

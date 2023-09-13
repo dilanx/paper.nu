@@ -61,10 +61,10 @@ function ScheduleBookmarksList(props: ScheduleBookmarksListProps) {
   } else {
     classes = (
       <div className={`overflow-hidden whitespace-normal text-center`}>
-        <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+        <p className="px-2 text-sm font-light text-gray-500 dark:text-gray-400">
           Find a class you're interested in but don't have a spot for it on your
           schedule yet? Bookmark it for later using the bookmark button found on
-          each course in search results!
+          each course in search results.
         </p>
       </div>
     );

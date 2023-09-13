@@ -32,7 +32,7 @@ function ContextMenu({ data, switches, onClose }: ContextMenuProps) {
         >
           <Dialog.Panel
             style={{ right: `calc(100vw - ${data.x}px)`, top: data.y }}
-            className="fixed z-30 overflow-hidden rounded-lg bg-white shadow-lg dark:bg-gray-700"
+            className="fixed z-30 overflow-hidden rounded-lg bg-gray-50 shadow-lg dark:bg-gray-700"
           >
             {data.items.map((item, i) => (
               <ContextMenuButton
