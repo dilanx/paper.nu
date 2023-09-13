@@ -60,8 +60,8 @@ function About({ switches, onClose }: AboutProps) {
                   <p className="text-center font-light">
                     the ultimate Northwestern course planning tool
                   </p>
-                  <p className="text-center text-sm font-bold text-gray-600 dark:text-gray-400">
-                    VERSION {process.env.REACT_APP_VERSION}
+                  <p className="text-center text-lg font-medium text-gray-600 dark:text-gray-400">
+                    version {process.env.REACT_APP_VERSION}
                   </p>
                 </div>
                 <div className="my-8 flex w-full flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4">
