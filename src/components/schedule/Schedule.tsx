@@ -1,7 +1,11 @@
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import { Alert } from '../../types/AlertTypes';
-import { UserOptions } from '../../types/BaseTypes';
+import {
+  ContextMenu,
+  ContextMenuData,
+  UserOptions,
+} from '../../types/BaseTypes';
 import {
   isSectionWithValidMeetingPattern,
   isValidScheduleSection,
@@ -17,9 +21,17 @@ import Day from './Day';
 import HoursColumn from './HoursColumn';
 import paperBlack from '../../assets/paper-full-black.png';
 import paperWhite from '../../assets/paper-full-white.png';
-import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import {
+  ArrowTopRightOnSquareIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 import UtilityButton from '../menu/UtilityButton';
 import Account from '../../Account';
+import { exportScheduleAsImage } from '../../utility/Image';
+import toast from 'react-hot-toast';
+import exportMenu from '../menu/toolbar/Export';
+import { exportScheduleAsICS } from '../../utility/Calendar';
 
 interface DayMeetingPatterns {
   [day: number]: SectionWithValidMeetingPattern[];
@@ -29,6 +41,8 @@ interface ScheduleProps {
   schedule: ScheduleData;
   alert: Alert;
   sideCard?: SideCard;
+  contextMenuData?: ContextMenuData;
+  contextMenu?: ContextMenu;
   interactions?: ScheduleInteractions;
   sf: ScheduleModificationFunctions;
   ff: SearchModificationFunctions;
@@ -38,6 +52,7 @@ interface ScheduleProps {
 
 export default function Schedule(props: ScheduleProps) {
   const [enableCustom, setEnableCustom] = useState(false);
+  const [takeImage, setTakeImage] = useState(false);
   useEffect(() => {
     if (Account.isLoggedIn()) {
       const activeId = props.switches.get.active_schedule_id;
@@ -48,6 +63,22 @@ export default function Schedule(props: ScheduleProps) {
     }
     setEnableCustom(false);
   }, [props.switches.get.active_schedule_id]);
+
+  useEffect(() => {
+    if (takeImage) {
+      // delay by 1 second to allow logo to load
+      const timeout = window.setTimeout(() => {
+        exportScheduleAsImage(props.switches.get.dark).finally(() => {
+          setTakeImage(false);
+          toast.success('Exported schedule as image');
+        });
+      }, 1000);
+
+      return () => {
+        window.clearTimeout(timeout);
+      };
+    }
+  }, [takeImage, props.switches]);
 
   let days: JSX.Element[] = [];
   let sectionDays: DayMeetingPatterns = { 0: [], 1: [], 2: [], 3: [], 4: [] };
@@ -189,6 +220,41 @@ export default function Schedule(props: ScheduleProps) {
             >
               CUSTOM
             </UtilityButton>
+            <UtilityButton
+              Icon={ArrowTopRightOnSquareIcon}
+              active={props.contextMenuData?.name === 'export'}
+              onClick={(x, y) => {
+                if (!props.contextMenu) {
+                  return;
+                }
+
+                props.contextMenu(
+                  exportMenu({
+                    x,
+                    y,
+                    schedule: props.schedule,
+                    alert: props.alert,
+                    actions: {
+                      image() {
+                        setTakeImage(true);
+                      },
+                      calendar(validSections) {
+                        toast.promise(exportScheduleAsICS(validSections), {
+                          loading: 'Exporting schedule...',
+                          success: 'Exported schedule',
+                          error: (res) => {
+                            console.error(res);
+                            return 'Failed to export schedule';
+                          },
+                        });
+                      },
+                    },
+                  })
+                );
+              }}
+            >
+              EXPORT
+            </UtilityButton>
             <UtilityButton Icon={TrashIcon} onClick={() => props.sf.clear()}>
               CLEAR
             </UtilityButton>
@@ -202,6 +268,19 @@ export default function Schedule(props: ScheduleProps) {
           alt="paper.nu"
           className="absolute top-6 right-8 h-[40px]"
         />
+      )}
+
+      {takeImage && (
+        <div className="relative">
+          <Schedule
+            schedule={props.schedule}
+            alert={props.alert}
+            switches={props.switches}
+            sf={undefined as any}
+            ff={undefined as any}
+            imageMode={true}
+          />
+        </div>
       )}
     </motion.div>
   );

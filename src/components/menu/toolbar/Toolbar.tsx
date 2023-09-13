@@ -1,6 +1,5 @@
 import {
   ArrowRightOnRectangleIcon,
-  ArrowTopRightOnSquareIcon,
   CheckCircleIcon,
   Cog6ToothIcon,
   InboxArrowDownIcon,
@@ -10,10 +9,10 @@ import {
   PencilSquareIcon,
   QuestionMarkCircleIcon,
   UserCircleIcon,
+  UserGroupIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline';
 import { CalendarIcon, RectangleStackIcon } from '@heroicons/react/24/solid';
-import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { SpinnerCircularFixed } from 'spinners-react';
 import Account from '../../../Account';
@@ -27,13 +26,9 @@ import {
 } from '../../../types/BaseTypes';
 import { PlanData } from '../../../types/PlanTypes';
 import { ScheduleData } from '../../../types/ScheduleTypes';
-import { exportScheduleAsICS } from '../../../utility/Calendar';
 import { Mode } from '../../../utility/Constants';
 import { feedbackForm } from '../../../utility/Forms';
-import { exportScheduleAsImage } from '../../../utility/Image';
 import Links from '../../../utility/StaticLinks';
-import Schedule from '../../schedule/Schedule';
-import exportMenu from './Export';
 import settingsMenu from './Settings';
 import ToolbarAccount from './ToolbarAccount';
 import ToolbarButton from './ToolbarButton';
@@ -65,8 +60,6 @@ function Toolbar({
   openChangeLogPreview,
   saveState,
 }: ToolbarProps) {
-  const [takeImage, setTakeImage] = useState(false);
-
   const isSchedule = switches.get.mode === Mode.SCHEDULE;
   const darkMode = switches.get.dark;
 
@@ -77,22 +70,6 @@ function Toolbar({
     : switches.get.active_plan_id
     ? Account.getPlanName(switches.get.active_plan_id)
     : undefined;
-
-  useEffect(() => {
-    if (takeImage) {
-      // delay by 1 second to allow logo to load
-      const timeout = window.setTimeout(() => {
-        exportScheduleAsImage(switches.get.dark).finally(() => {
-          setTakeImage(false);
-          toast.success('Exported schedule as image');
-        });
-      }, 1000);
-
-      return () => {
-        window.clearTimeout(timeout);
-      };
-    }
-  }, [takeImage, switches]);
 
   return (
     <div
@@ -291,45 +268,8 @@ function Toolbar({
         >
           Notes
         </ToolbarButton>
-        <ToolbarButton
-          icon={ArrowTopRightOnSquareIcon}
-          active={contextMenuData?.name === 'export'}
-          onClick={(x, y) => {
-            contextMenu(
-              exportMenu({
-                x,
-                y,
-                plan: isSchedule ? undefined : plan,
-                schedule: isSchedule ? schedule : undefined,
-                alert,
-                actions: {
-                  link(text) {
-                    if (!text) {
-                      toast.error('Unable to copy URL');
-                      return;
-                    }
-                    navigator.clipboard.writeText(text);
-                    toast.success('URL copied to clipboard');
-                  },
-                  image() {
-                    setTakeImage(true);
-                  },
-                  calendar(validSections) {
-                    toast.promise(exportScheduleAsICS(validSections), {
-                      loading: 'Exporting schedule...',
-                      success: 'Exported schedule',
-                      error: (res) => {
-                        console.error(res);
-                        return 'Failed to export schedule';
-                      },
-                    });
-                  },
-                },
-              })
-            );
-          }}
-        >
-          Export
+        <ToolbarButton icon={UserGroupIcon} onClick={(x, y) => {}}>
+          Share
         </ToolbarButton>
         <ToolbarButton
           icon={Cog6ToothIcon}
@@ -386,18 +326,6 @@ function Toolbar({
           });
         }}
       />
-      {takeImage && (
-        <div className="relative">
-          <Schedule
-            schedule={schedule}
-            alert={alert}
-            switches={switches}
-            sf={undefined as any}
-            ff={undefined as any}
-            imageMode={true}
-          />
-        </div>
-      )}
     </div>
   );
 }

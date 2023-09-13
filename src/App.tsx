@@ -790,6 +790,10 @@ class App extends React.Component<{}, AppState> implements AppType {
                       sideCard={(sideCardData) => {
                         this.showSideCard(sideCardData);
                       }}
+                      contextMenuData={this.state.contextMenuData}
+                      contextMenu={(contextMenuData) => {
+                        this.showContextMenu(contextMenuData);
+                      }}
                       interactions={this.state.scheduleInteractions}
                       sf={this.state.sf}
                       ff={this.state.ff}

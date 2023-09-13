@@ -1,11 +1,4 @@
-import {
-  CalendarIcon,
-  CameraIcon,
-  LinkIcon,
-} from '@heroicons/react/24/outline';
-import { toast } from 'react-hot-toast';
-import PlanManager from '../../../PlanManager';
-import ScheduleManager from '../../../ScheduleManager';
+import { CalendarIcon, CameraIcon } from '@heroicons/react/24/outline';
 import { Alert } from '../../../types/AlertTypes';
 import { ContextMenuData } from '../../../types/BaseTypes';
 import { PlanData } from '../../../types/PlanTypes';
@@ -14,7 +7,6 @@ import {
   ValidScheduleDataMap,
 } from '../../../types/ScheduleTypes';
 import { getSections } from '../../../utility/Calendar';
-import { PaperError } from '../../../utility/PaperError';
 import Links from '../../../utility/StaticLinks';
 import Utility from '../../../utility/Utility';
 
@@ -27,7 +19,6 @@ interface ExportMenuData {
   schedule?: ScheduleData;
   alert: Alert;
   actions: {
-    link: ActionFunction<string | undefined>;
     image: ActionFunction;
     calendar: ActionFunction<ValidScheduleDataMap>;
   };
@@ -36,75 +27,64 @@ interface ExportMenuData {
 const exportMenu = ({
   x,
   y,
-  plan,
   schedule,
   alert,
   actions,
 }: ExportMenuData): ContextMenuData => {
-  const isPlan = plan !== undefined;
-  const sData = plan
-    ? PlanManager.serialize(plan)
-    : schedule
-    ? ScheduleManager.serialize(schedule)
-    : undefined;
-
-  const data = {
+  const data: ContextMenuData = {
     name: 'export',
     x,
     y,
     items: [
-      {
-        text: 'Share link',
-        icon: LinkIcon,
-        onClick: () => {
-          const id = toast.loading('Generating link...');
-
-          async function generateShortLink() {
-            if (!sData) {
-              throw new PaperError('No data to shorten');
-            }
-
-            const response = await fetch(`${Links.SERVER}/paper/shorten`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                // TODO update this!
-                content: sData,
-              }),
-            });
-            if (!response.ok) {
-              throw new PaperError('Failed to generate shortened link');
-            }
-            const data = await response.json();
-            return `${window.location.origin}/#${data.shortCode}`;
-          }
-
-          generateShortLink()
-            .then((link) => {
-              toast.success('Link generated!', { id });
-              alert({
-                title: 'Ready to share!',
-                message: `Share your ${
-                  isPlan ? 'plan' : 'schedule'
-                } with others using the link below. TODO dilan update this message don't forget pls!`,
-                confirmButton: 'Copy to clipboard',
-                cancelButton: 'Close',
-                color: 'sky',
-                icon: LinkIcon,
-                textView: {
-                  text: link,
-                },
-                action: ({ textViewValue }) => actions.link(textViewValue),
-              });
-            })
-            .catch((err) => {
-              console.error(err);
-              toast.error('Failed to generate link', { id });
-            });
-        },
-      },
+      // {
+      //   text: 'Share link',
+      //   icon: LinkIcon,
+      //   onClick: () => {
+      //     const id = toast.loading('Generating link...');
+      //     async function generateShortLink() {
+      //       if (!sData) {
+      //         throw new PaperError('No data to shorten');
+      //       }
+      //       const response = await fetch(`${Links.SERVER}/paper/shorten`, {
+      //         method: 'POST',
+      //         headers: {
+      //           'Content-Type': 'application/json',
+      //         },
+      //         body: JSON.stringify({
+      //           // TODO update this!
+      //           content: sData,
+      //         }),
+      //       });
+      //       if (!response.ok) {
+      //         throw new PaperError('Failed to generate shortened link');
+      //       }
+      //       const data = await response.json();
+      //       return `${window.location.origin}/#${data.shortCode}`;
+      //     }
+      //     generateShortLink()
+      //       .then((link) => {
+      //         toast.success('Link generated!', { id });
+      //         alert({
+      //           title: 'Ready to share!',
+      //           message: `Share your ${
+      //             isPlan ? 'plan' : 'schedule'
+      //           } with others using the link below. TODO dilan update this message don't forget pls!`,
+      //           confirmButton: 'Copy to clipboard',
+      //           cancelButton: 'Close',
+      //           color: 'sky',
+      //           icon: LinkIcon,
+      //           textView: {
+      //             text: link,
+      //           },
+      //           action: ({ textViewValue }) => actions.link(textViewValue),
+      //         });
+      //       })
+      //       .catch((err) => {
+      //         console.error(err);
+      //         toast.error('Failed to generate link', { id });
+      //       });
+      //   },
+      // },
     ],
   };
 
