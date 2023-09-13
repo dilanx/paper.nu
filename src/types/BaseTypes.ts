@@ -123,6 +123,7 @@ export type TextValidator = (value: string) => boolean;
 
 export interface DataMapInformation {
   latest: string;
+  subjects: string;
   plan: string;
   terms: {
     [term: string]: {
@@ -178,7 +179,7 @@ export interface UniversitySchools {
 }
 
 export interface UniversitySchool {
-  name: string;
+  name?: string;
   subjects: UniversitySubject[];
 }
 
@@ -205,3 +206,21 @@ export interface UniversityLocation {
  * - error: error occurred while saving
  */
 export type SaveState = 'idle' | 'start' | 'wait' | 'save' | 'error';
+
+export interface SubjectData {
+  [subject: string]: {
+    color?: Color;
+    display?: string;
+    schools?: string[];
+  };
+}
+
+export interface SubjectDataCache {
+  updated: string;
+  data: SubjectData;
+}
+
+export interface SubjectsAndSchools {
+  subjects: SubjectData;
+  schools: UniversitySchools;
+}

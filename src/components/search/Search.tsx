@@ -531,8 +531,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                         filter.set({ subject: undefined });
                         this.setState({
                           mode: SearchMode.BROWSE,
-                          browseSchool:
-                            ScheduleManager.getSchoolOfSubject(subj),
+                          browseSchool: PlanManager.getSchoolOfSubject(subj),
                         });
                         return;
                       }

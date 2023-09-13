@@ -24,6 +24,8 @@ _2023-XX-XX_
 - **And a lot of small things.**
   - The schedule is now gray instead of green so it blends in well with the rest of the UI.
   - Actions for a given year on the plan view have been moved into a context menu (press the three lines at the top right of a year to open).
+  - Subjects with missing colors now have a color.
+  - The browse menu in the search box now shows more schools and subjects.
   - The design of the appearance toggle has been refreshed. (Did you know Paper has a light AND dark mode? Check the settings!)
   - Fixed a bug where the Paper logo would sometimes not appear on schedules that are exported as an image.
   - Sections that add their midterms to their section's meeting times now don't have their midterms displayed on their weekly schedule. Hopefully. I'm not completely sure but I tried.

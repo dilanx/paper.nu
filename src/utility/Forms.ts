@@ -1,5 +1,4 @@
 import PlanManager from '../PlanManager';
-import ScheduleManager from '../ScheduleManager';
 import {
   AlertFormFieldColorSelect,
   AlertFormFieldMultiSelect,
@@ -57,7 +56,7 @@ export function scheduleSearchFilterForm(
       totalRowItems: 1,
       fields: [
         text('subject', 'ex. COMP_SCI', filter.subject, (value) =>
-          ScheduleManager.isSchoolSubject(value.toUpperCase())
+          PlanManager.isSchoolSubject(value.toUpperCase())
         ),
       ],
     },

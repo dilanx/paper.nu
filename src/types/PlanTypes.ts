@@ -3,14 +3,6 @@ import { Color } from './BaseTypes';
 export interface RawCourseData {
   courses: Course[];
   legacy: Course[];
-  majors: MajorData;
-}
-
-export interface MajorData {
-  [key: string]: {
-    display: string;
-    color: Color;
-  };
 }
 
 export interface PlanData {

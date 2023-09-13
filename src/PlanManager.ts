@@ -1,7 +1,12 @@
 import debug from 'debug';
 import localforage from 'localforage';
-import { getPlanData } from './DataManager';
-import { SaveState, UserOptions } from './types/BaseTypes';
+import { getPlanData, getSubjectData } from './DataManager';
+import {
+  SaveState,
+  SubjectData,
+  UniversitySchools,
+  UserOptions,
+} from './types/BaseTypes';
 import {
   Course,
   PlanData,
@@ -13,10 +18,15 @@ import { FilterOptions } from './types/SearchTypes';
 import { DistroMap } from './utility/Constants';
 const ds = debug('plan-manager:ser');
 
+let subjectData: SubjectData | undefined = undefined;
+let schoolData: UniversitySchools | undefined = undefined;
 let courseData: RawCourseData | undefined = undefined;
 
 async function loadCourseData() {
-  if (!courseData) {
+  if (!subjectData || !schoolData || !courseData) {
+    const subjectsAndSchools = await getSubjectData();
+    subjectData = subjectsAndSchools.subjects;
+    schoolData = subjectsAndSchools.schools;
     courseData = await getPlanData();
   }
 }
@@ -48,7 +58,7 @@ async function loadData(
 ): Promise<PlanData | 'malformed' | 'empty'> {
   await loadCourseData();
 
-  if (!courseData) {
+  if (!subjectData || !courseData) {
     return 'malformed';
   }
 
@@ -271,14 +281,45 @@ const PlanManager = {
   },
 
   getCourseColor: (courseId: string) => {
-    if (!courseData) return 'gray';
+    if (!subjectData) return 'gray';
     let subj = courseId.split(' ')[0];
-    return courseData.majors[subj]?.color ?? 'gray';
+    return subjectData[subj]?.color ?? 'gray';
   },
 
   isValidSubject: (subject: string) => {
-    if (!courseData) return false;
-    return !!courseData.majors[subject];
+    if (!subjectData) return false;
+    return !!subjectData[subject];
+  },
+
+  getAllSchoolSymbols: () => {
+    return Object.keys(schoolData ?? {}).sort();
+  },
+
+  getSchoolName: (symbol: string) => {
+    return schoolData?.[symbol]?.name ?? 'Unknown';
+  },
+
+  isSchoolSubject: (symbol: string) => {
+    for (const s in schoolData ?? {}) {
+      if (
+        schoolData?.[s].subjects.some((subject) => subject.symbol === symbol)
+      ) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  getSchoolSubjects: (symbol: string) => {
+    return schoolData?.[symbol]?.subjects ?? [];
+  },
+
+  getSchoolOfSubject: (subject: string) => {
+    for (const s in schoolData ?? {}) {
+      if (schoolData?.[s].subjects.some((s) => s.symbol === subject)) {
+        return s;
+      }
+    }
   },
 
   load: async (serializedData?: SerializedPlanData) => {

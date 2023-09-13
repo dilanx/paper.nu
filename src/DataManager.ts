@@ -1,9 +1,13 @@
-import { DataMapInformation } from './types/BaseTypes';
-import localforage from 'localforage';
 import debug from 'debug';
+import localforage from 'localforage';
+import {
+  DataMapInformation,
+  SubjectDataCache,
+  SubjectsAndSchools,
+} from './types/BaseTypes';
 import { PlanDataCache, RawCourseData } from './types/PlanTypes';
 import { ScheduleCourse, ScheduleDataCache } from './types/ScheduleTypes';
-import { plan, schedule } from './utility/DataMap';
+import { plan, schedule, subjectsAndSchools } from './utility/DataMap';
 import Links from './utility/StaticLinks';
 const d = debug('data-manager');
 
@@ -52,6 +56,34 @@ export async function getDataMapInformation() {
   return info;
 }
 
+export async function getSubjectData(): Promise<SubjectsAndSchools> {
+  d('subject data: get');
+  const info = await getDataMapInformation();
+  const data = await localforage.getItem<SubjectDataCache>('subjects');
+  if (data) {
+    if (data.updated === info.subjects) {
+      d('subject data: cache hit');
+      return subjectsAndSchools(data.data);
+    } else {
+      d('subject data: cache out of date, fetching data');
+    }
+  } else {
+    d('subject data: cache miss, fetching data');
+  }
+
+  const res = await fetch('https://api.dilanxd.com/paper/subjects');
+  const json = await res.json();
+
+  await localforage.setItem('subjects', {
+    updated: info.subjects,
+    data: json.subjects,
+  });
+
+  d('subject data: data fetched and stored in cache subjects');
+
+  return subjectsAndSchools(json.subjects);
+}
+
 export async function getPlanData(): Promise<RawCourseData> {
   d('plan data: get');
   const info = await getDataMapInformation();
@@ -74,6 +106,8 @@ export async function getPlanData(): Promise<RawCourseData> {
     updated: info.plan,
     data: json,
   });
+
+  d('plan data: data fetched and stored in cache plan');
 
   return plan(json);
 }

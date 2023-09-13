@@ -3,11 +3,9 @@ import localforage from 'localforage';
 import { getScheduleData, getTermInfo } from './DataManager';
 import PlanManager from './PlanManager';
 import LocationsJson from './data/locations.json';
-import SchoolsJson from './data/schools.json';
 import {
   UniversityLocation,
   UniversityLocations,
-  UniversitySchools,
   UserOptions,
 } from './types/BaseTypes';
 import {
@@ -25,7 +23,6 @@ import Utility from './utility/Utility';
 const ds = debug('schedule-manager:ser');
 
 let scheduleData: ScheduleCourse[] | undefined = undefined;
-const schools = SchoolsJson as UniversitySchools;
 const locations = LocationsJson as UniversityLocations;
 
 async function loadData(
@@ -232,35 +229,6 @@ const ScheduleManager = {
 
   getCourseColor: (subject: string) => {
     return PlanManager.getCourseColor(subject);
-  },
-
-  getAllSchoolSymbols: () => {
-    return Object.keys(schools);
-  },
-
-  getSchoolName: (symbol: string) => {
-    return schools[symbol]?.name ?? 'Unknown';
-  },
-
-  isSchoolSubject: (symbol: string) => {
-    for (const s in schools) {
-      if (schools[s].subjects.some((subject) => subject.symbol === symbol)) {
-        return true;
-      }
-    }
-    return false;
-  },
-
-  getSchoolSubjects: (symbol: string) => {
-    return schools[symbol]?.subjects ?? [];
-  },
-
-  getSchoolOfSubject: (subject: string) => {
-    for (const s in schools) {
-      if (schools[s].subjects.some((s) => s.symbol === subject)) {
-        return s;
-      }
-    }
   },
 
   sectionMatchesFilter: (

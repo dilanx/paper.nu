@@ -1,7 +1,44 @@
-import { MajorData, RawCourseData } from '../types/PlanTypes';
+import {
+  SubjectData,
+  SubjectsAndSchools,
+  UniversitySchools,
+} from '../types/BaseTypes';
+import { RawCourseData } from '../types/PlanTypes';
 import { ScheduleCourse } from '../types/ScheduleTypes';
+import SchoolsJson from '../data/schools.json';
 
-export function plan({ courses, legacy, majors, ...rest }: any): RawCourseData {
+const schoolsData = SchoolsJson as { [key: string]: string };
+
+export function subjectsAndSchools(data: any): SubjectsAndSchools {
+  const subjects: SubjectData = {};
+  const schools: UniversitySchools = {};
+  for (const subject in data) {
+    const subjData = data[subject];
+    subjects[subject] = {
+      color: subjData.c,
+      display: subjData.d,
+      schools: subjData.s,
+    };
+    for (const school of subjData.s || []) {
+      if (!schools[school]) {
+        schools[school] = {
+          name: schoolsData[school],
+          subjects: [],
+        };
+      }
+      schools[school].subjects.push({
+        symbol: subject,
+        name: subjData.d,
+      });
+    }
+  }
+  return {
+    subjects,
+    schools,
+  };
+}
+
+export function plan({ courses, legacy, ...rest }: any): RawCourseData {
   const courseMap = ({ i, n, u, r, d, p, s, l }: any) => ({
     id: i,
     name: n,
@@ -13,19 +50,9 @@ export function plan({ courses, legacy, majors, ...rest }: any): RawCourseData {
     placeholder: l,
   });
 
-  const m: MajorData = {};
-
-  for (const [major, { d, c }] of Object.entries<any>(majors)) {
-    m[major] = {
-      display: d,
-      color: c,
-    };
-  }
-
   return {
     courses: courses.map(courseMap),
     legacy: legacy.map(courseMap),
-    majors: m,
     ...rest,
   };
 }
