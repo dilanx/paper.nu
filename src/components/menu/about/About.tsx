@@ -1,73 +1,15 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import localforage from 'localforage';
 import { Fragment, useState } from 'react';
 import paperBlack from '../../../assets/paper-full-vertical-black.png';
 import paperWhite from '../../../assets/paper-full-vertical-white.png';
 import planImage from '../../../assets/plan.svg';
 import saladImage from '../../../assets/salad.png';
-import { InfoSetData, UserOptions } from '../../../types/BaseTypes';
-import { PlanDataCache } from '../../../types/PlanTypes';
-import { ScheduleDataCache } from '../../../types/ScheduleTypes';
+import { UserOptions } from '../../../types/BaseTypes';
 import Links from '../../../utility/StaticLinks';
-import Utility from '../../../utility/Utility';
 import AboutButton from './AboutButton';
 import InfoSet from './InfoSet';
-
-function getTime<T>(location: string, key: keyof T) {
-  return async () => {
-    const data: any = await localforage.getItem<T>(location);
-    if (!data) {
-      return 'unused';
-    }
-    return Utility.formatCacheVersion(
-      data[key] as string | number,
-      (data['termId'] as string) || '1'
-    );
-  };
-}
-
-const versions: InfoSetData = [
-  [
-    'App Version',
-    `${process.env.REACT_APP_VERSION || 'unknown'}-${
-      process.env.REACT_APP_COMMIT || 'unknown'
-    }`,
-  ],
-  [
-    'API Version',
-    async () => {
-      const response = await fetch(Links.SERVER);
-      const data = await response.json();
-      return data.version;
-    },
-  ],
-  ['Plan Cache Data Version', getTime<PlanDataCache>('plan', 'updated')],
-  [
-    'Schedule Cache 0 Storage Version',
-    getTime<ScheduleDataCache>('schedule0', 'cacheUpdated'),
-  ],
-  [
-    'Schedule Cache 0 Data Version',
-    getTime<ScheduleDataCache>('schedule0', 'dataUpdated'),
-  ],
-  [
-    'Schedule Cache 1 Storage Version',
-    getTime<ScheduleDataCache>('schedule1', 'cacheUpdated'),
-  ],
-  [
-    'Schedule Cache 1 Data Version',
-    getTime<ScheduleDataCache>('schedule1', 'dataUpdated'),
-  ],
-  [
-    'Schedule Cache 2 Storage Version',
-    getTime<ScheduleDataCache>('schedule2', 'cacheUpdated'),
-  ],
-  [
-    'Schedule Cache 2 Data Version',
-    getTime<ScheduleDataCache>('schedule2', 'dataUpdated'),
-  ],
-];
+import { INFO_VERSIONS } from '../../../utility/InfoSets';
 
 interface AboutProps {
   switches: UserOptions;
@@ -247,7 +189,7 @@ function About({ switches, onClose }: AboutProps) {
                     to learn how your data is used.
                   </p>
                 </div>
-                <InfoSet title="more information" data={versions} />
+                <InfoSet title="more information" data={INFO_VERSIONS} />
                 <button
                   className="absolute top-2 right-2"
                   onClick={() => setOpen(false)}

@@ -15,6 +15,7 @@ import { PaperError, PaperExpectedAuthError } from './utility/PaperError';
 import Utility from './utility/Utility';
 import Links from './utility/StaticLinks';
 import { AlertFormResponse } from './types/AlertTypes';
+import { INFO_VERSIONS } from './utility/InfoSets';
 const da = debug('account:auth');
 const dh = debug('account:http');
 const dp = debug('account:op');
@@ -260,7 +261,8 @@ let Account = {
   },
   feedback: async (data: AlertFormResponse) => {
     dp(`feedback`);
-    await operation(`/paper/feedback`, 'POST', data);
+    const versions = await Utility.initializeInfoSet(INFO_VERSIONS);
+    await operation(`/paper/feedback`, 'POST', { ...data, versions });
   },
   getPlanName: (planId: string) => {
     if (planId === 'None') return 'None';
