@@ -217,7 +217,13 @@ export async function getScheduleData(
 }
 
 export async function clearCache() {
-  const cacheLocations = ['plan', 'schedule0', 'schedule1', 'schedule2'];
+  const cacheLocations = [
+    'subjects',
+    'plan',
+    'schedule0',
+    'schedule1',
+    'schedule2',
+  ];
   for (const loc of cacheLocations) {
     await localforage.removeItem(loc);
   }

@@ -1,5 +1,5 @@
 import localforage from 'localforage';
-import { InfoSetData } from '../types/BaseTypes';
+import { InfoSetData, SubjectDataCache } from '../types/BaseTypes';
 import { PlanDataCache } from '../types/PlanTypes';
 import { ScheduleDataCache } from '../types/ScheduleTypes';
 import Links from './StaticLinks';
@@ -32,6 +32,10 @@ export const INFO_VERSIONS: InfoSetData = [
       const data = await response.json();
       return data.version;
     },
+  ],
+  [
+    'Subject Cache Data Version',
+    getTime<SubjectDataCache>('subjects', 'updated'),
   ],
   ['Plan Cache Data Version', getTime<PlanDataCache>('plan', 'updated')],
   [
