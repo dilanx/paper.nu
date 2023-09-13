@@ -22,7 +22,7 @@ function getTime<T>(location: string, key: keyof T) {
     }
     return Utility.formatCacheVersion(
       data[key] as string | number,
-      'termId' in data ? (data['termId'] as string) : undefined
+      (data['termId'] as string) || '1'
     );
   };
 }

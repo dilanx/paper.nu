@@ -469,7 +469,7 @@ let Utility = {
     return newData;
   },
 
-  formatCacheVersion: (time: number | string, termId?: string) => {
+  formatCacheVersion: (time: number | string, prefix: string) => {
     let t = new Date(typeof time === 'string' ? parseInt(time) : time);
     const d = t.getUTCDate();
     const m = t.getUTCMonth() + 1;
@@ -480,9 +480,7 @@ let Utility = {
 
     const p = (n: number) => (n < 10 ? `0${n}` : `${n}`);
 
-    return `${termId ? `${termId}-` : ''}${y}.${p(m)}.${p(d)}-${p(h)}${p(
-      min
-    )}${p(s)}`;
+    return `${prefix}.${y}.${p(m)}.${p(d)}.${p(h)}.${p(min)}.${p(s)}`;
   },
 
   sectionMeetingPatternIsValid: (swmp: SectionWithMeetingPattern) => {
