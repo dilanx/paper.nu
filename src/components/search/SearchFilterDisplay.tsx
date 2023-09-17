@@ -7,7 +7,13 @@ import {
   FilterOptions,
   SearchFilter,
 } from '../../types/SearchTypes';
-import { ComponentMap, DayMap, DistroMap, Mode } from '../../utility/Constants';
+import {
+  ComponentMap,
+  DayMap,
+  DisciplineMap,
+  DistroMap,
+  Mode,
+} from '../../utility/Constants';
 import Utility from '../../utility/Utility';
 
 const display = (
@@ -27,6 +33,7 @@ function filtersAsStrings({
   instructor,
   location,
   distros,
+  disciplines,
   unitGeq,
   unitLeq,
   include,
@@ -89,6 +96,15 @@ function filtersAsStrings({
     filters['distros'] = display(
       distros.sort((a, b) => DistroMap[a] - DistroMap[b]).join(', '),
       'distros'
+    );
+  }
+
+  if (disciplines) {
+    filters['fd'] = display(
+      disciplines
+        .sort((a, b) => DisciplineMap[a] - DisciplineMap[b])
+        .join(', '),
+      'disciplines'
     );
   }
 

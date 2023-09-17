@@ -590,6 +590,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                             instructor,
                             location,
                             distros,
+                            disciplines,
                             unitGeq,
                             unitLeq,
                             include,
@@ -610,6 +611,8 @@ class Search extends React.Component<SearchProps, SearchState> {
                                 Utility.safe(instructor)?.toLowerCase(),
                               location: Utility.safe(location)?.toLowerCase(),
                               distros: Utility.safeArrayCommaSplit(distros),
+                              disciplines:
+                                Utility.safeArrayCommaSplit(disciplines),
                               unitGeq: Utility.safeNumber(unitGeq),
                               unitLeq: Utility.safeNumber(unitLeq),
                               include: Utility.safeArrayCommaSplit(include),

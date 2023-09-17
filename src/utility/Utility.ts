@@ -346,6 +346,8 @@ let Utility = {
         return ['lime', 's'];
       case 'distros':
         return ['teal', 'b'];
+      case 'fd':
+        return ['teal', 'b'];
       case 'units':
         return ['purple', 'p'];
       case 'include':

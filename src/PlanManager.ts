@@ -15,7 +15,7 @@ import {
   SerializedPlanData,
 } from './types/PlanTypes';
 import { FilterOptions } from './types/SearchTypes';
-import { DistroMap } from './utility/Constants';
+import { DisciplineMap, DistroMap } from './utility/Constants';
 const ds = debug('plan-manager:ser');
 
 let subjectData: SubjectData | undefined = undefined;
@@ -209,6 +209,15 @@ const PlanManager = {
       if (
         !filter.distros.some((d) =>
           course.distros?.includes(DistroMap[d].toString())
+        )
+      ) {
+        return false;
+      }
+    }
+    if (filter.disciplines) {
+      if (
+        !filter.disciplines.some((d) =>
+          course.disciplines?.includes(DisciplineMap[d].toString())
         )
       ) {
         return false;

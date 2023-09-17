@@ -26,6 +26,7 @@ function filterBelongsTo(option: keyof FilterOptions, mode: Mode) {
   switch (option) {
     case 'subject':
     case 'distros':
+    case 'disciplines':
       return true;
     case 'unitGeq':
     case 'unitLeq':

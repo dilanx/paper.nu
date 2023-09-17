@@ -103,6 +103,7 @@ export interface ScheduleSection {
   enrl_req?: string;
   descs?: ScheduleSectionDescription[];
   distros?: string;
+  disciplines?: string;
   preview?: boolean;
   custom?: boolean;
   color?: Color;

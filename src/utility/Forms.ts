@@ -11,7 +11,7 @@ import {
 import { Color, TextValidator } from '../types/BaseTypes';
 import { Time } from '../types/ScheduleTypes';
 import { FilterOptions } from '../types/SearchTypes';
-import { Components, Days, Distros } from './Constants';
+import { Components, Days, Disciplines, Distros } from './Constants';
 import Utility from './Utility';
 
 export function scheduleSearchFilterForm(
@@ -91,7 +91,11 @@ export function scheduleSearchFilterForm(
         ),
       ],
     },
-
+    {
+      title: 'FOUNDATIONAL DISCIPLINES',
+      totalRowItems: 1,
+      fields: [sel('disciplines', Disciplines, filter.disciplines)],
+    },
     {
       title: 'DISTRIBUTION AREAS',
       totalRowItems: 1,
@@ -152,6 +156,11 @@ export function planSearchFilterForm(
           PlanManager.isValidSubject(value.toUpperCase())
         ),
       ],
+    },
+    {
+      title: 'FOUNDATIONAL DISCIPLINES',
+      totalRowItems: 1,
+      fields: [sel('disciplines', Disciplines, filter.disciplines)],
     },
     {
       title: 'DISTRIBUTION AREAS',

@@ -18,7 +18,7 @@ import {
   Time,
 } from './types/ScheduleTypes';
 import { FilterOptions } from './types/SearchTypes';
-import { Days, DistroMap } from './utility/Constants';
+import { Days, DisciplineMap, DistroMap } from './utility/Constants';
 import Utility from './utility/Utility';
 const ds = debug('schedule-manager:ser');
 
@@ -295,6 +295,16 @@ const ScheduleManager = {
       if (
         !filter.distros.some((d) =>
           section.distros?.includes(DistroMap[d].toString())
+        )
+      ) {
+        return false;
+      }
+    }
+
+    if (filter.disciplines) {
+      if (
+        !filter.disciplines.some((d) =>
+          section.disciplines?.includes(DisciplineMap[d].toString())
         )
       ) {
         return false;
