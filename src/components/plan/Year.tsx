@@ -20,7 +20,7 @@ import {
 } from '../../types/PlanTypes';
 import { SideCard } from '../../types/SideCardTypes';
 import Utility from '../../utility/Utility';
-import Tooltip from '../generic/Tooltip';
+import UtilityButton from '../menu/UtilityButton';
 import Quarter from './Quarter';
 
 interface YearProps {
@@ -108,7 +108,56 @@ class Year extends React.Component<YearProps, YearState> {
               {quarters}
             </div>
           )}
-          <div className="absolute right-1 top-1 text-gray-300 dark:text-gray-500">
+          <div className="absolute top-1 right-2 flex items-center gap-1">
+            <UtilityButton
+              Icon={this.state.hidden ? ChevronDownIcon : ChevronUpIcon}
+              onClick={() => {
+                this.setState({
+                  hidden: !this.state.hidden,
+                });
+              }}
+            >
+              {this.state.hidden ? 'Show' : 'Hide'}
+            </UtilityButton>
+            <UtilityButton
+              Icon={Bars3Icon}
+              active={
+                this.props.contextMenuData?.name ===
+                `year-actions-${this.props.year}`
+              }
+              onClick={(x, y) => {
+                this.props.contextMenu({
+                  x: x,
+                  y: y,
+                  name: `year-actions-${this.props.year}`,
+                  items: [
+                    {
+                      text:
+                        quarters.length < 4 ? 'Add summer' : 'Remove summer',
+                      icon: SunIcon,
+                      onClick: () => {
+                        if (quarters.length < 4) {
+                          this.props.f2.addSummerQuarter(this.props.year);
+                        } else {
+                          this.props.f2.removeSummerQuarter(this.props.year);
+                        }
+                      },
+                    },
+                    {
+                      text: 'Clear courses',
+                      icon: TrashIcon,
+                      onClick: () => {
+                        this.props.f2.clearData(this.props.year);
+                      },
+                    },
+                  ],
+                });
+              }}
+            >
+              Menu
+            </UtilityButton>
+          </div>
+          {/* <div className="absolute right-1 top-1 text-gray-300 dark:text-gray-500">
             <button
               className="group relative inline-block bg-transparent p-1 hover:text-fuchsia-400 dark:hover:text-fuchsia-400"
               onClick={() => {
@@ -172,7 +221,7 @@ class Year extends React.Component<YearProps, YearState> {
                 Year actions
               </Tooltip>
             </button>
-          </div>
+          </div> */}
         </div>
       </motion.div>
     );

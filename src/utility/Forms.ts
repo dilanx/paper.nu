@@ -169,6 +169,7 @@ export function planSearchFilterForm(
     },
     {
       title: 'UNITS AT LEAST',
+      totalRowItems: 2,
       fields: [
         text('unitGeq', '', filter.unitGeq?.toString(), (v) => {
           const value = parseFloat(v);
@@ -178,6 +179,7 @@ export function planSearchFilterForm(
     },
     {
       title: 'UNITS AT MOST',
+      totalRowItems: 2,
       fields: [
         text('unitLeq', '', filter.unitLeq?.toString(), (v) => {
           const value = parseFloat(v);
