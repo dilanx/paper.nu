@@ -1,15 +1,18 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment, useState } from 'react';
+import discordLogo from '../../../assets/discord.svg';
+import instagramLogo from '../../../assets/instagram.svg';
 import paperBlack from '../../../assets/paper-full-vertical-black.png';
 import paperWhite from '../../../assets/paper-full-vertical-white.png';
 import planImage from '../../../assets/plan.svg';
 import saladImage from '../../../assets/salad.png';
 import { UserOptions } from '../../../types/BaseTypes';
+import { INFO_VERSIONS } from '../../../utility/InfoSets';
 import Links from '../../../utility/StaticLinks';
+import AboutBanner from './AboutBanner';
 import AboutButton from './AboutButton';
 import InfoSet from './InfoSet';
-import { INFO_VERSIONS } from '../../../utility/InfoSets';
 
 interface AboutProps {
   switches: UserOptions;
@@ -60,7 +63,7 @@ function About({ switches, onClose }: AboutProps) {
                   <p className="text-center font-light">
                     the ultimate Northwestern course planning tool
                   </p>
-                  <p className="text-center text-lg font-medium text-gray-600 dark:text-gray-400">
+                  <p className="text-center text-lg font-bold text-gray-600 dark:text-gray-400">
                     version {process.env.REACT_APP_VERSION}
                   </p>
                 </div>
@@ -71,6 +74,26 @@ function About({ switches, onClose }: AboutProps) {
                   <AboutButton href={Links.SOURCE_CODE}>
                     Source Code
                   </AboutButton>
+                </div>
+                <div className="m-8 flex flex-col items-center justify-center gap-2">
+                  <AboutBanner
+                    href="https://www.instagram.com/paper.nu"
+                    color="#ff0069"
+                    img={instagramLogo}
+                    alt="Instagram"
+                  >
+                    Follow <span className="font-bold">paper.nu</span> on
+                    Instagram.
+                  </AboutBanner>
+                  <AboutBanner
+                    href="https://discord.com/servers/northwestern-655629737888055317"
+                    color="#5865f2"
+                    img={discordLogo}
+                    alt="Discord"
+                  >
+                    Join the <span className="font-bold">Northwestern</span>{' '}
+                    Discord server.
+                  </AboutBanner>
                 </div>
                 <div className="my-8 flex flex-col items-center gap-2 text-center text-sm font-light">
                   <p>designed and developed by</p>

@@ -198,7 +198,7 @@ class App extends React.Component<{}, AppState> implements AppType {
       sf,
       ff,
       clp: !lastVersion || lastVersion !== VERSION_NO_PATCH,
-      banner: !bannerNoticeId || bannerNoticeId !== bn.id,
+      banner: !!bn && (!bannerNoticeId || bannerNoticeId !== bn.id),
       loadingLogin: false,
       saveState: 'idle',
       scheduleInteractions: {
@@ -555,12 +555,12 @@ class App extends React.Component<{}, AppState> implements AppType {
             className={`${darkMode ? 'dark' : ''} relative`}
             ref={this.appRef}
           >
-            {this.state.banner && (
+            {bn && this.state.banner && (
               <BannerNotice
                 data={bn}
                 alert={(alertData) => this.showAlert(alertData)}
                 dismiss={() => {
-                  localStorage.setItem('bn_id', bn.id);
+                  localStorage.setItem('bn_id', bn!.id);
                   this.setState({ banner: false });
                 }}
               />
