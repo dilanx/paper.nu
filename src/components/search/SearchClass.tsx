@@ -11,6 +11,7 @@ import {
 import { Color } from '../../types/BaseTypes';
 import { motion } from 'framer-motion';
 import AddButtons from './AddButtons';
+import ClassPropertyDisplay from '../plan/ClassPropertyDisplay';
 
 const PLACEHOLDER_MESSAGE = `Don't know which specific class to take from a certain requirement category? Use a placeholder! Search for 'placeholder' to view all.`;
 
@@ -39,20 +40,7 @@ function SearchClass(props: SearchClassProps) {
     [props.selected]
   );
 
-  let distros = [];
   let distroStrings = Utility.convertDistros(course.distros);
-
-  for (let i = 0; i < distroStrings.length; i++) {
-    distros.push(
-      <p
-        className="m-0 p-0 text-xs font-light text-gray-500 dark:text-gray-400"
-        key={`distro-${i}`}
-      >
-        {distroStrings[i]}
-      </p>
-    );
-  }
-
   let isPlaceholder = course.placeholder;
   let units = parseFloat(course.units);
   let isFavorite = props.bookmarks?.noCredit.has(course);
@@ -83,22 +71,13 @@ function SearchClass(props: SearchClassProps) {
         {isPlaceholder ? PLACEHOLDER_MESSAGE : course.description}
       </p>
       {course.prereqs && (
-        <div className="mt-4">
-          <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
-            PREREQUISITES
-          </p>
-          <p className="m-0 p-0 text-xs font-light text-gray-500 dark:text-gray-400">
-            {course.prereqs}
-          </p>
-        </div>
+        <ClassPropertyDisplay title="PREREQUISITES" value={course.prereqs} />
       )}
-      {distros.length > 0 && (
-        <div className="mt-4">
-          <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
-            DISTRIBUTION AREAS
-          </p>
-          {distros}
-        </div>
+      {distroStrings.length > 0 && (
+        <ClassPropertyDisplay
+          title="DISTRIBUTION AREAS"
+          value={distroStrings}
+        />
       )}
       <div className="mt-1">
         <p className="text-right text-xs font-light text-gray-500 dark:text-gray-400">

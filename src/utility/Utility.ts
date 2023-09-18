@@ -63,6 +63,45 @@ let Utility = {
     return strings;
   },
 
+  convertDisciplines: (disciplines: string | undefined) => {
+    let strings: string[] = [];
+
+    if (!disciplines) return strings;
+
+    for (let i = 0; i < disciplines.length; i++) {
+      let d = parseInt(disciplines[i]);
+
+      switch (d) {
+        case 1:
+          strings.push('Natural Sciences');
+          break;
+        case 2:
+          strings.push('Empirical and Deductive Reasoning');
+          break;
+        case 3:
+          strings.push('Social and Behavioral Sciences');
+          break;
+        case 4:
+          strings.push('Historical Studies');
+          break;
+        case 5:
+          strings.push('Ethical and Evaluative Thinking');
+          break;
+        case 6:
+          strings.push('Literature and Arts');
+          break;
+        case 7:
+          strings.push('Interdisciplinary');
+          break;
+        default:
+          strings.push('Unknown');
+          break;
+      }
+    }
+
+    return strings;
+  },
+
   convertYear: (num: number) => {
     switch (num) {
       case 0:

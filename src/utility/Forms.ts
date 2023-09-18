@@ -195,6 +195,57 @@ export function planSearchFilterForm(
   ];
 }
 
+export function customCourseForm(
+  defaults: AlertFormResponse = {}
+): AlertFormSection[] {
+  const text = (name: string, required = false): AlertFormFieldText => ({
+    name,
+    type: 'text',
+    maxLength: 100,
+    required,
+    defaultValue: defaults[name],
+  });
+  const units: AlertFormFieldText = {
+    name: 'units',
+    type: 'text',
+    maxLength: 10,
+    required: false,
+    defaultValue: defaults['units'],
+    validator: (value) => {
+      const val = parseFloat(value);
+      return !isNaN(val) && val >= 0 && val <= 99;
+    },
+  };
+  const col: AlertFormFieldColorSelect = {
+    name: 'color',
+    type: 'color-select',
+    defaultValue: (defaults['color'] as Color) || 'gray',
+  };
+
+  return [
+    {
+      title: 'TITLE',
+      totalRowItems: 1,
+      fields: [text('title', true)],
+    },
+    {
+      title: 'SUBTITLE',
+      totalRowItems: 1,
+      fields: [text('subtitle')],
+    },
+    {
+      title: 'UNITS',
+      totalRowItems: 1,
+      fields: [units],
+    },
+    {
+      title: 'COLOR',
+      totalRowItems: 1,
+      fields: [col],
+    },
+  ];
+}
+
 export function customSectionForm(
   defaults: AlertFormResponse = {}
 ): AlertFormSection[] {

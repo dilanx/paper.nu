@@ -15,6 +15,7 @@ import {
 import { SideCard } from '../../types/SideCardTypes';
 import { openInfo } from '../../utility/CourseInfo';
 import Utility from '../../utility/Utility';
+import ClassPropertyDisplay from './ClassPropertyDisplay';
 
 interface ClassProps {
   course: Course;
@@ -91,20 +92,16 @@ function Class(props: ClassProps) {
         {showMoreInfo && (
           <div>
             {course.prereqs && (
-              <div className="mt-4 text-gray-500 dark:text-gray-400">
-                <p className="text-xs font-bold">PREREQUISITES</p>
-                <p className="m-0 whitespace-normal p-0 text-xs font-light">
-                  {course.prereqs}
-                </p>
-              </div>
+              <ClassPropertyDisplay
+                title="PREREQUISITES"
+                value={course.prereqs}
+              />
             )}
             {course.distros && (
-              <div className="mt-4 text-gray-500 dark:text-gray-400">
-                <p className="text-xs font-bold">DISTRIBUTION AREAS</p>
-                <p className="m-0 whitespace-normal p-0 text-xs font-light">
-                  {Utility.convertDistros(course.distros).join(', ')}
-                </p>
-              </div>
+              <ClassPropertyDisplay
+                title="DISTRIBUTION AREAS"
+                value={Utility.convertDistros(course.distros).join(', ')}
+              />
             )}
             <div className="mt-1">
               <p className="text-right text-xs font-light text-gray-500 dark:text-gray-400">

@@ -13,6 +13,7 @@ import {
 } from '../../types/PlanTypes';
 import { SideCard } from '../../types/SideCardTypes';
 import Class from './Class';
+import QuarterUtilityButton from './QuarterUtilityButton';
 
 interface QuarterProps {
   data: Course[];
@@ -103,7 +104,7 @@ function Quarter(props: QuarterProps) {
     <motion.div variants={variants}>
       <div
         ref={drop}
-        className={`relative block rounded-xl border-2 px-8 pt-4 pb-8
+        className={`group/quarter relative block rounded-xl border-2 px-8 pt-4 pb-8
             ${
               isOver
                 ? `border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50`
@@ -122,6 +123,9 @@ function Quarter(props: QuarterProps) {
             <span className="font-medium">{units}</span> {unitString}
           </p>
         )}
+        <div className="group-hover/quarter:block absolute right-2 bottom-0 hidden transition-all duration-300">
+          <QuarterUtilityButton />
+        </div>
       </div>
     </motion.div>
   );
