@@ -76,6 +76,8 @@ import clp from './app/ChangeLogPreview';
 import Toolbar from './components/menu/toolbar/Toolbar';
 import ContextMenu from './components/menu/context-menu/ContextMenu';
 import Notes from './components/menu/Notes';
+import BannerNotice from './components/menu/BannerNotice';
+import bn from './app/BannerNotice';
 const d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
@@ -175,6 +177,7 @@ class App extends React.Component<{}, AppState> implements AppType {
     }
 
     const lastVersion = localStorage.getItem('v');
+    const bannerNoticeId = localStorage.getItem('bn_id');
 
     this.appRef = React.createRef<HTMLDivElement>();
     this.state = {
@@ -189,6 +192,7 @@ class App extends React.Component<{}, AppState> implements AppType {
       sf,
       ff,
       clp: !lastVersion || lastVersion !== VERSION_NO_PATCH,
+      banner: !bannerNoticeId || bannerNoticeId !== bn.id,
       loadingLogin: false,
       unsavedChanges: false,
       originalDataString: '',
@@ -515,6 +519,16 @@ class App extends React.Component<{}, AppState> implements AppType {
             className={`${darkMode ? 'dark' : ''} relative`}
             ref={this.appRef}
           >
+            {this.state.banner && (
+              <BannerNotice
+                data={bn}
+                alert={(alertData) => this.showAlert(alertData)}
+                dismiss={() => {
+                  localStorage.setItem('bn_id', bn.id);
+                  this.setState({ banner: false });
+                }}
+              />
+            )}
             {this.state.alertData && (
               <Alert
                 data={this.state.alertData}
@@ -593,7 +607,11 @@ class App extends React.Component<{}, AppState> implements AppType {
             </AnimatePresence>
 
             <div className="grid grid-cols-1 bg-white dark:bg-gray-800 lg:grid-cols-8">
-              <div className="col-span-2 flex h-192 flex-col px-4 md:h-screen">
+              <div
+                className={`col-span-2 flex h-192 flex-col px-4 ${
+                  this.state.banner ? 'md:h-screen-banner' : 'md:h-screen'
+                }`}
+              >
                 <Info
                   dark={darkMode}
                   openAboutMenu={() => this.setState({ about: true })}
@@ -705,7 +723,9 @@ class App extends React.Component<{}, AppState> implements AppType {
               <div
                 className={`${
                   switches.get.compact ? 'compact-mode ' : ''
-                } no-scrollbar col-span-6 flex flex-col pt-0 lg:h-screen lg:overflow-y-scroll`}
+                } no-scrollbar col-span-6 flex flex-col pt-0 ${
+                  this.state.banner ? 'lg:h-screen-banner' : 'lg:h-screen'
+                } lg:overflow-y-scroll`}
               >
                 <Toolbar
                   alert={(alertData) => {

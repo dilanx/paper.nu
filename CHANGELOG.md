@@ -1,5 +1,11 @@
 # Paper Change Log
 
+### 2.6.2
+
+_2023-09-18_
+
+- Add support for dismissable banner notices.
+
 ### 2.6.1
 
 _2023-07-10_

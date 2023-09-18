@@ -30,6 +30,7 @@ export interface AppState {
   scheduleInteractions: ScheduleInteractions;
   searchDefaults?: SearchDefaults;
   about?: boolean;
+  banner?: boolean;
   clp?: boolean;
   map?: boolean;
   latestTermId?: string;
@@ -162,3 +163,9 @@ export type InfoSetItem<T> = [string, T];
 export type InfoSetData<T = string | InfoSetValFn> = InfoSetItem<T>[];
 
 export type LoadLegacyUrlFunction = (url: URL) => void;
+
+export interface BannerData {
+  id: string;
+  content: React.ReactNode;
+  gradient?: number;
+}

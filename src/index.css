@@ -78,4 +78,20 @@
     z-index: -1;
     border-radius: 8px;
   }
+
+  .background-gradient-1 {
+    background: #a770ef; /* fallback for old browsers */
+    background: -webkit-linear-gradient(
+      to right,
+      #fdb99b,
+      #cf8bf3,
+      #a770ef
+    ); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(
+      to right,
+      #fdb99b,
+      #cf8bf3,
+      #a770ef
+    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  }
 }
