@@ -38,6 +38,7 @@ module.exports = {
         192: '48rem',
         imgw: '1440px',
         imgh: '960px',
+        'screen-banner': 'calc(100vh - 2rem)',
       },
     },
   },

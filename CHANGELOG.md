@@ -33,6 +33,12 @@ _2023-XX-XX_
   - Legacy plan and schedule URLs are completely discontinued. You can no longer load them from settings.
   - A bunch of other UI updates, bug fixes, and other small changes.
 
+### 2.6.2
+
+_2023-09-18_
+
+- Add support for dismissable banner notices.
+
 ### 2.6.1
 
 _2023-07-10_

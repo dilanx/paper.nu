@@ -32,6 +32,7 @@ export interface AppState {
   scheduleInteractions: ScheduleInteractions;
   searchDefaults?: SearchDefaults;
   about?: boolean;
+  banner?: boolean;
   clp?: boolean;
   map?: boolean;
   latestTermId?: string;
@@ -223,4 +224,10 @@ export interface SubjectDataCache {
 export interface SubjectsAndSchools {
   subjects: SubjectData;
   schools: UniversitySchools;
+}
+
+export interface BannerData {
+  id: string;
+  content: React.ReactNode;
+  gradient?: number;
 }
