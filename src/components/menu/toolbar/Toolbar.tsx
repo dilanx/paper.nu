@@ -73,7 +73,7 @@ function Toolbar({
 
   return (
     <div
-      className={`sticky top-0 z-30 flex w-full flex-col items-center justify-center gap-1 bg-white px-4 pt-4 pb-1 dark:bg-gray-800 md:flex-row lg:justify-end ${
+      className={`sticky top-0 z-30 flex w-full flex-col items-center justify-center gap-1 bg-white px-4 pb-1 pt-4 dark:bg-gray-800 md:flex-row lg:justify-end ${
         !isSchedule ? 'border-b-2 border-gray-200 dark:border-gray-700' : ''
       }`}
     >
@@ -281,7 +281,7 @@ function Toolbar({
       <ToolbarAccount
         loading={loading}
         active={contextMenuData?.name === 'account'}
-        onClick={(x, y, signedIn) => {
+        onClick={(x, y, signedIn, email) => {
           if (!signedIn) {
             Account.logIn();
             return;
@@ -290,6 +290,7 @@ function Toolbar({
             name: 'account',
             x,
             y,
+            topText: email,
             items: [
               {
                 text: isSchedule ? 'Schedules' : 'Plans',

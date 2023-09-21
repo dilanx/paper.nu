@@ -151,6 +151,7 @@ export interface ContextMenuData {
   name: string;
   x: number;
   y: number;
+  topText?: string;
   items: ContextMenuItem[];
 }
 

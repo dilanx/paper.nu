@@ -34,6 +34,11 @@ function ContextMenu({ data, switches, onClose }: ContextMenuProps) {
             style={{ right: `calc(100vw - ${data.x}px)`, top: data.y }}
             className="fixed z-30 overflow-hidden rounded-lg bg-gray-50 shadow-lg dark:bg-gray-700"
           >
+            {data.topText && (
+              <p className="px-2 py-1 text-right text-xs text-gray-400">
+                {data.topText}
+              </p>
+            )}
             {data.items.map((item, i) => (
               <ContextMenuButton
                 data={item}

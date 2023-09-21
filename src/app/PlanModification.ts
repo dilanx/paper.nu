@@ -301,8 +301,7 @@ export function removeYear(app: AppType, year: number) {
   const yearText = Utility.convertYear(year).toLowerCase();
   app.showAlert({
     title: `Remove ${yearText}?`,
-    message:
-      'All of the courses in this year will be removed and the year will disappear from your plan.',
+    message: `All of the courses in your ${yearText} will be removed and the year will disappear from your plan.`,
     color: 'red',
     icon: MinusIcon,
     confirmButton: 'Remove',

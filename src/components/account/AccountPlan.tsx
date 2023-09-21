@@ -49,13 +49,12 @@ function AccountPlan(props: AccountPlanProps) {
           {plan.name}
         </p>
         <p className="text-xs text-gray-600 dark:text-gray-300">
-          {termId ? (termName ? termName : 'unknown term') + ' • ' : ''}last
-          updated{' '}
+          {termId ? (termName ? termName : 'unknown term') + ' • ' : ''}updated{' '}
           {plan.lastUpdated
             ? new Date(plan.lastUpdated).toLocaleDateString()
             : 'N/A'}
         </p>
-        <div className="absolute -top-2 -right-2 flex overflow-hidden rounded-lg">
+        <div className="absolute -right-2 -top-2 flex overflow-hidden rounded-lg">
           <button
             title="Rename"
             className="z-20 hidden bg-gray-200 px-1 py-0.5
