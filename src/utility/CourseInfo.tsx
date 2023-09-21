@@ -61,7 +61,11 @@ export function openInfo(
   ];
 
   const sideCardData: SideCardData = {
-    type: mod ? 'COURSE INFO' : 'COURSE INFO (SHARE)',
+    type: course.custom
+      ? 'COURSE INFO (CUSTOM)'
+      : mod
+      ? 'COURSE INFO'
+      : 'COURSE INFO (SHARE)',
     themeColor: PlanManager.getCourseColor(course.id),
     title: placeholder ? 'Placeholder' : course.id,
     subtitle: course.name,
@@ -84,23 +88,31 @@ export function openInfo(
     }, []),
     buttons: mod
       ? [
-          {
-            toggle: true,
-            data: mod.bookmarks.noCredit,
-            key: course,
-            enabled: {
-              text: 'Remove from bookmarks',
-              onClick: () => {
-                mod.f.removeBookmark(course, false);
+          course.custom
+            ? {
+                text: 'Edit custom course',
+                onClick: (close) => {
+                  mod.f.putCustomCourse(mod.location, course);
+                  close();
+                },
+              }
+            : {
+                toggle: true,
+                data: mod.bookmarks.noCredit,
+                key: course,
+                enabled: {
+                  text: 'Remove from bookmarks',
+                  onClick: () => {
+                    mod.f.removeBookmark(course, false);
+                  },
+                },
+                disabled: {
+                  text: 'Add to bookmarks',
+                  onClick: () => {
+                    mod.f.addBookmark(course, false);
+                  },
+                },
               },
-            },
-            disabled: {
-              text: 'Add to bookmarks',
-              onClick: () => {
-                mod.f.addBookmark(course, false);
-              },
-            },
-          },
           {
             text: 'Remove course',
             danger: true,

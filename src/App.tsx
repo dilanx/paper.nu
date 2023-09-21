@@ -16,6 +16,7 @@ import {
   discardNotesChanges,
   update,
 } from './app/AccountModification';
+import bn from './app/BannerNotice';
 import clp from './app/ChangeLogPreview';
 import {
   addBookmark,
@@ -24,6 +25,7 @@ import {
   addYear,
   clearData,
   moveCourse,
+  putCustomCourse,
   removeBookmark,
   removeCourse,
   removeSummerQuarter,
@@ -39,6 +41,7 @@ import {
 import AccountPlans from './components/account/AccountPlans';
 import Bookmarks from './components/bookmarks/Bookmarks';
 import CampusMap from './components/map/CampusMap';
+import BannerNotice from './components/menu/BannerNotice';
 import ChangeLogPreview from './components/menu/ChangeLogPreview';
 import Info from './components/menu/Info';
 import ModeSwitch from './components/menu/ModeSwitch';
@@ -70,17 +73,14 @@ import {
   ScheduleData,
   ScheduleInteractions,
   ScheduleModificationFunctions,
-  ScheduleSection,
 } from './types/ScheduleTypes';
 import { SearchModificationFunctions } from './types/SearchTypes';
 import { SideCardData } from './types/SideCardTypes';
 import { Mode } from './utility/Constants';
-import { PaperError } from './utility/PaperError';
-import Utility from './utility/Utility';
-import { openInfo as scheduleOpenInfo } from './utility/ScheduleSectionInfo';
 import { openInfo as planOpenInfo } from './utility/CourseInfo';
-import BannerNotice from './components/menu/BannerNotice';
-import bn from './app/BannerNotice';
+import { PaperError } from './utility/PaperError';
+import { openInfo as scheduleOpenInfo } from './utility/ScheduleSectionInfo';
+import Utility from './utility/Utility';
 const d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
@@ -130,6 +130,8 @@ class App extends React.Component<{}, AppState> implements AppType {
       removeBookmark: (course, forCredit) => {
         removeBookmark(app, course, forCredit);
       },
+      putCustomCourse: (location, courseToEdit) =>
+        putCustomCourse(app, location, courseToEdit),
     };
 
     const f2: PlanSpecialFunctions = {
@@ -152,8 +154,7 @@ class App extends React.Component<{}, AppState> implements AppType {
       removeSection: (section) => removeSection(app, section),
       addScheduleBookmark: (course) => addScheduleBookmark(app, course),
       removeScheduleBookmark: (course) => removeScheduleBookmark(app, course),
-      putCustomSection: (sectionToEdit?: ScheduleSection) =>
-        putCustomSection(app, sectionToEdit),
+      putCustomSection: (sectionToEdit) => putCustomSection(app, sectionToEdit),
       clear: () => clearSchedule(app),
     };
 

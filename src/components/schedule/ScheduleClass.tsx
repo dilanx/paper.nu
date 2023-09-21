@@ -77,14 +77,14 @@ function ScheduleClass(props: ScheduleClassProps) {
   return (
     <div
       className={`absolute z-10 rounded-lg bg-opacity-60
-                bg-${color}-100 border-2 border-l-4 dark:bg-gray-800 border-${color}-400 group
+                bg-${color}-100 border-2 dark:bg-gray-800 border-${color}-400 group
                 cursor-pointer overflow-visible transition duration-300 ease-in-out ${
                   interactions?.hoverSection.get === section.section_id
                     ? '-translate-y-2 shadow-lg'
                     : ''
                 } ${preview ? 'opacity-60' : ''} ${
-        custom ? 'border-l-2 border-dashed' : 'border-solid'
-      }`}
+                  custom ? 'border-dashed' : 'border-l-4 border-solid'
+                }`}
       style={{
         top: `${startDif * 100}%`,
         left,
@@ -147,7 +147,7 @@ function ScheduleClass(props: ScheduleClassProps) {
         )}
       </div>
       <button
-        className={`absolute -top-2 -right-2 rounded-full p-0.5
+        className={`absolute -right-2 -top-2 rounded-full p-0.5
                     ${
                       interactions?.hoverSection.get === section.section_id &&
                       interactions?.hoverDelete.get

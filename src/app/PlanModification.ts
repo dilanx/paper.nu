@@ -1,15 +1,18 @@
 import {
   BookmarkSlashIcon,
   ExclamationTriangleIcon,
+  PencilIcon,
+  PlusIcon,
   SunIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import debug from 'debug';
 import toast from 'react-hot-toast';
 import PlanManager from '../PlanManager';
-import { AppType } from '../types/BaseTypes';
+import { AppType, Color } from '../types/BaseTypes';
 import { Course, CourseLocation } from '../types/PlanTypes';
 import Utility from '../utility/Utility';
+import { customCourseForm } from '../utility/Forms';
 const d = debug('app:plan-mod');
 
 function courseConfirmationPrompts(
@@ -102,7 +105,9 @@ export function removeCourse(
   }
   const data = app.state.data;
   data.courses[year][quarter].splice(
-    data.courses[year][quarter].indexOf(course),
+    data.courses[year][quarter].findIndex((c) =>
+      Utility.shallowEqual(c, course)
+    ),
     1
   );
   d('course removed: %s (y%dq%d)', course.id, year, quarter);
@@ -129,7 +134,12 @@ export function moveCourse(
     () => {
       if (oy >= 0) {
         const data = app.state.data;
-        data.courses[oy][oq].splice(data.courses[oy][oq].indexOf(course), 1);
+        data.courses[oy][oq].splice(
+          data.courses[oy][oq].findIndex((c) =>
+            Utility.shallowEqual(c, course)
+          ),
+          1
+        );
       }
       const data = app.state.data;
       data.courses[ny][nq].push(course);
@@ -147,6 +157,33 @@ export function moveCourse(
     },
     true
   );
+}
+
+export function editCourse(
+  app: AppType,
+  oldCourse: Course,
+  newCourse: Course,
+  { year, quarter }: CourseLocation
+) {
+  const data = app.state.data;
+  data.courses[year][quarter].splice(
+    data.courses[year][quarter].findIndex((c) =>
+      Utility.shallowEqual(c, oldCourse)
+    ),
+    1,
+    newCourse
+  );
+  d(
+    'course edited: %s -> %s (y%dq%d)',
+    oldCourse.id,
+    newCourse.id,
+    year,
+    quarter
+  );
+  app.setState({
+    data,
+    saveState: PlanManager.save(data, app.state.switches),
+  });
 }
 
 export function addBookmark(app: AppType, course: Course, forCredit: boolean) {
@@ -253,6 +290,58 @@ export function addYear(app: AppType) {
   data.courses.push([[], [], []]);
   app.setState({ data: data });
   d('year added: y%d', data.courses.length);
+}
+
+export function putCustomCourse(
+  app: AppType,
+  location: CourseLocation,
+  courseToEdit?: Course
+) {
+  app.showAlert({
+    title: courseToEdit ? 'Edit custom course' : 'Add custom course',
+    message:
+      'Keep your entire school schedule, including things other than classes, in one place by adding custom sections to your schedule!',
+    color: 'green',
+    icon: courseToEdit ? PencilIcon : PlusIcon,
+    form: {
+      sections: customCourseForm(
+        courseToEdit
+          ? {
+              title: courseToEdit.id,
+              subtitle: courseToEdit.name,
+              units: courseToEdit.units,
+              color: courseToEdit.color,
+            }
+          : undefined
+      ),
+      timeConstraints: [
+        {
+          minKey: 'start',
+          maxKey: 'end',
+          error: 'The start time must be earlier than the end time',
+        },
+      ],
+      onSubmit: (res) => {
+        const course: Course = {
+          id: res.title!,
+          name: res.subtitle || '',
+          units: res.units || '0',
+          color: res.color as Color,
+          custom: true,
+          repeatable: true,
+          description: 'Custom course',
+        };
+
+        if (courseToEdit) {
+          editCourse(app, courseToEdit, course, location);
+        } else {
+          addCourse(app, course, location);
+        }
+      },
+    },
+    cancelButton: 'Cancel',
+    confirmButton: courseToEdit ? 'Save' : 'Add',
+  });
 }
 
 export function clearData(app: AppType, year?: number) {

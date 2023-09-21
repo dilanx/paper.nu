@@ -5,6 +5,7 @@ import {
   AlertActionData,
   AlertData,
   AlertFormResponse,
+  AlertNextFn,
 } from '../../../types/AlertTypes';
 import { UserOptions } from '../../../types/BaseTypes';
 import { formIsValid } from '../../../utility/AlertFormInputValidation';
@@ -20,7 +21,7 @@ interface AlertProps {
   data: AlertData;
   switches: UserOptions;
   onConfirm: (data: AlertActionData) => void;
-  onSwitch: (next: AlertData) => void;
+  onSwitch: AlertNextFn;
   onClose: () => void;
 }
 
@@ -157,7 +158,7 @@ export default function Alert({
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all dark:bg-gray-700 sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
-                <div className="bg-white px-4 pt-5 pb-4 dark:bg-gray-700 sm:p-6 sm:pb-4">
+                <div className="bg-white px-4 pb-4 pt-5 dark:bg-gray-700 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
                     <div
                       ref={initialFocus}
@@ -168,7 +169,7 @@ export default function Alert({
                         aria-hidden="true"
                       />
                     </div>
-                    <div className="mt-3 flex-1 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <div className="mt-3 flex-1 text-center sm:ml-4 sm:mt-0 sm:text-left">
                       <Dialog.Title
                         as="h3"
                         className="text-lg font-medium leading-6 text-black dark:text-white"
@@ -293,7 +294,7 @@ export default function Alert({
                                 </p>
                                 {textViewStatus === 'loading' && (
                                   <SpinnerCircularFixed
-                                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
                                     size={20}
                                     thickness={160}
                                     speed={200}
@@ -347,7 +348,7 @@ export default function Alert({
                 )}
 
                 {(editButtonList.length > 0 || tabBar) && (
-                  <div className="absolute top-4 right-5 flex flex-row gap-1">
+                  <div className="absolute right-5 top-4 flex flex-row gap-1">
                     {tabBar}
                     {editButtonList.length > 0 && editButtonList}
                   </div>
@@ -374,7 +375,7 @@ export default function Alert({
                         }
                         onClick={() => {
                           if (data.form) {
-                            data.form.onSubmit(formValues);
+                            data.form.onSubmit(formValues, onSwitch);
                           }
                           confirm();
                         }}
@@ -387,7 +388,7 @@ export default function Alert({
                         type="button"
                         className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2
                                 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-100 active:bg-gray-200 active:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600
-                                dark:active:bg-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                                dark:active:bg-gray-500 sm:ml-3 sm:mt-0 sm:w-auto sm:text-sm"
                         onClick={() => {
                           close();
                         }}

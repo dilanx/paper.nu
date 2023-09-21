@@ -1,5 +1,7 @@
 import { Color, ColorMap, IconElement, ReadUserOptions } from './BaseTypes';
 
+export type AlertNextFn = (nextAlert: AlertData) => void;
+
 export interface AlertDataExtra {
   title: string;
   content: string;
@@ -10,7 +12,7 @@ export interface AlertDataOption {
   title: string;
   description?: string;
   saveToStorage?: boolean;
-  action?: (newSwitch: boolean, next: (nextAlert: AlertData) => void) => void;
+  action?: (newSwitch: boolean, next: AlertNextFn) => void;
   appearanceToggle?: boolean;
 }
 
@@ -122,7 +124,7 @@ export interface TimeInputConstraint {
 export interface AlertFormData {
   sections: AlertFormSection[];
   timeConstraints?: TimeInputConstraint[];
-  onSubmit: (response: AlertFormResponse) => void;
+  onSubmit: (response: AlertFormResponse, next: AlertNextFn) => void;
 }
 
 export interface AlertFormResponse {

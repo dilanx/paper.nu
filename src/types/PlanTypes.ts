@@ -76,6 +76,7 @@ export interface PlanModificationFunctions {
   ) => void;
   addBookmark: (course: Course, forCredit: boolean) => void;
   removeBookmark: (course: Course, forCredit: boolean) => void;
+  putCustomCourse: (location: CourseLocation, courseToEdit?: Course) => void;
 }
 
 export interface PlanSpecialFunctions {

@@ -32,30 +32,31 @@ const variants = {
 };
 
 function Class(props: ClassProps) {
-  let course = props.course;
-
-  const dragItem: CourseDragItem = {
-    course,
-    from: props.location,
-  };
+  const course = props.course;
 
   const [{ isDragging }, drag] = useDrag<
     CourseDragItem,
     CourseDropResult,
     DragCollectProps
   >(() => {
+    const dragItem: CourseDragItem = {
+      course,
+      from: props.location,
+    };
+
     return {
       type: 'Class',
       item: dragItem,
       collect: (monitor) => ({ isDragging: monitor.isDragging() }),
     };
-  });
+  }, [course]);
 
-  let color = PlanManager.getCourseColor(course.id);
-  let showMoreInfo =
+  const custom = course.custom;
+  const color = course.color || PlanManager.getCourseColor(course.id);
+  const showMoreInfo =
     props.switches.get.more_info && !props.switches.get.compact;
-  let isPlaceholder = course.placeholder;
-  let units = parseFloat(course.units);
+  const isPlaceholder = course.placeholder;
+  const units = parseFloat(course.units);
 
   return (
     <motion.div variants={variants}>
@@ -64,8 +65,8 @@ function Class(props: ClassProps) {
         className={`rounded-lg bg-opacity-60 p-2 bg-${color}-100 border-2
             dark:bg-gray-800 border-${color}-300 compact:py-05 group w-full transform overflow-visible border-opacity-60
             text-left transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md compact:px-2 ${
-              isDragging ? 'cursor-grab' : 'cursor-pointer'
-            }`}
+              custom ? 'border-dashed' : 'border-solid'
+            } ${isDragging ? 'cursor-grab' : 'cursor-pointer'}`}
         onClick={() =>
           openInfo(props.sideCard, course, {
             bookmarks: props.bookmarks,
@@ -112,7 +113,7 @@ function Class(props: ClassProps) {
           </div>
         )}
         <button
-          className="absolute -top-2 -right-2 z-20 hidden rounded-full bg-gray-200 p-0.5
+          className="absolute -right-2 -top-2 z-20 hidden rounded-full bg-gray-200 p-0.5
                         text-xs text-gray-500 opacity-80 transition-all duration-150 hover:bg-red-100 hover:text-red-400
                         hover:opacity-100 group-hover:block dark:bg-gray-700 dark:text-white dark:hover:text-red-400"
           onClick={(e) => {

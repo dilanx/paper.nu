@@ -88,8 +88,8 @@ async function loadData(
                   id: c.title,
                   name: c.subtitle || '',
                   units: c.units || '',
-                  repeatable: false,
-                  description: '',
+                  repeatable: true,
+                  description: 'Custom course',
                   color: c.color,
                   custom: true,
                 };
@@ -207,8 +207,8 @@ const PlanManager = {
       return false;
     if (filter.distros) {
       if (
-        !filter.distros.some((d) =>
-          course.distros?.includes(DistroMap[d].toString())
+        !filter.distros.some(
+          (d) => course.distros?.includes(DistroMap[d].toString())
         )
       ) {
         return false;
@@ -216,8 +216,8 @@ const PlanManager = {
     }
     if (filter.disciplines) {
       if (
-        !filter.disciplines.some((d) =>
-          course.disciplines?.includes(DisciplineMap[d].toString())
+        !filter.disciplines.some(
+          (d) => course.disciplines?.includes(DisciplineMap[d].toString())
         )
       ) {
         return false;
@@ -336,9 +336,8 @@ const PlanManager = {
   },
 
   loadFromStorage: async () => {
-    const serializedData = await localforage.getItem<SerializedPlanData>(
-      'data_plan'
-    );
+    const serializedData =
+      await localforage.getItem<SerializedPlanData>('data_plan');
     return await loadData(serializedData || {});
   },
 

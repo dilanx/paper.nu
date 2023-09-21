@@ -540,6 +540,17 @@ let Utility = {
 
     return null;
   },
+
+  shallowEqual: (obj1: any, obj2: any) => {
+    return (
+      Object.keys(obj1).length === Object.keys(obj2).length &&
+      Object.keys(obj1).every(
+        (key) =>
+          Object.prototype.hasOwnProperty.call(obj2, key) &&
+          obj1[key] === obj2[key]
+      )
+    );
+  },
 };
 
 export default Utility;

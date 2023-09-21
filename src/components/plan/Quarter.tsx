@@ -14,6 +14,7 @@ import {
 import { SideCard } from '../../types/SideCardTypes';
 import Class from './Class';
 import QuarterUtilityButton from './QuarterUtilityButton';
+import { PlusIcon } from '@heroicons/react/24/outline';
 
 interface QuarterProps {
   data: Course[];
@@ -104,7 +105,7 @@ function Quarter(props: QuarterProps) {
     <motion.div variants={variants}>
       <div
         ref={drop}
-        className={`group/quarter relative block rounded-xl border-2 px-8 pt-4 pb-8
+        className={`group/quarter relative block rounded-xl border-2 px-8 pb-8 pt-4
             ${
               isOver
                 ? `border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50`
@@ -123,8 +124,15 @@ function Quarter(props: QuarterProps) {
             <span className="font-medium">{units}</span> {unitString}
           </p>
         )}
-        <div className="group-hover/quarter:block absolute right-2 bottom-0 hidden transition-all duration-300">
-          <QuarterUtilityButton />
+        <div className="absolute bottom-1 right-2 hidden transition-all duration-300 group-hover/quarter:block">
+          <QuarterUtilityButton
+            Icon={PlusIcon}
+            onClick={() => {
+              props.f.putCustomCourse(props.location);
+            }}
+          >
+            Custom
+          </QuarterUtilityButton>
         </div>
       </div>
     </motion.div>
