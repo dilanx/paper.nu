@@ -39,7 +39,7 @@ export function subjectsAndSchools(data: any): SubjectsAndSchools {
 }
 
 export function plan({ courses, legacy, ...rest }: any): RawCourseData {
-  const courseMap = ({ i, n, u, r, d, p, s, l }: any) => ({
+  const courseMap = ({ i, n, u, r, d, p, s, f, l }: any) => ({
     id: i,
     name: n,
     units: u,
@@ -47,6 +47,7 @@ export function plan({ courses, legacy, ...rest }: any): RawCourseData {
     description: d,
     prereqs: p,
     distros: s,
+    disciplines: f,
     placeholder: l,
   });
 
@@ -65,7 +66,7 @@ export function schedule(data: any, termId: string): ScheduleCourse[] {
     subject: u,
     number: n,
     sections: s?.map(
-      ({ i, r, t, k, u, n, s, m, x, y, l, d, e, c, a, q, p, o }: any) => {
+      ({ i, r, t, k, u, n, s, m, x, y, l, d, e, c, a, q, p, o, f }: any) => {
         for (let i = 0; i < m.length; i++) {
           if (l[i]?.toLowerCase().includes('midterm')) {
             m.splice(i, 1);
@@ -104,6 +105,7 @@ export function schedule(data: any, termId: string): ScheduleCourse[] {
           enrl_req: q,
           descs: p,
           distros: o,
+          disciplines: f,
         };
       }
     ),

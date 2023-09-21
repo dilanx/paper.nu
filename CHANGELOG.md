@@ -25,6 +25,7 @@ _2023-XX-XX_
   - The schedule is now gray instead of green so it blends in well with the rest of the UI.
   - Actions for a given year on the plan view have been moved into a context menu (press the three lines at the top right of a year to open).
   - Subjects with missing colors now have a color.
+  - Northwestern's new foundational disciplines are now supported.
   - The browse menu in the search box now shows more schools and subjects.
   - The design of the appearance toggle has been refreshed. (Did you know Paper has a light AND dark mode? Check the settings!)
   - Fixed a bug where the Paper logo would sometimes not appear on schedules that are exported as an image.

@@ -182,6 +182,13 @@ function getDetails(
       ];
     case 'PREREQUISITES':
       return [ListBulletIcon, course?.prereqs];
+    case 'FOUNDATIONAL DISCIPLINES':
+      return [
+        BuildingLibraryIcon,
+        section?.disciplines
+          ? Utility.convertDisciplines(section.disciplines).join(', ')
+          : undefined,
+      ];
     case 'DISTRIBUTION AREAS':
       return [
         BuildingLibraryIcon,
@@ -245,6 +252,7 @@ export function openInfo(
     'LOCATION',
     'START/END DATES',
     'PREREQUISITES',
+    'FOUNDATIONAL DISCIPLINES',
     'DISTRIBUTION AREAS',
     'UNITS',
     'CAPACITY',

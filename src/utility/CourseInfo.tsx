@@ -26,6 +26,13 @@ function getDetails(
   switch (detail) {
     case 'PREREQUISITES':
       return [ListBulletIcon, course.prereqs];
+    case 'FOUNDATIONAL DISCIPLINES':
+      return [
+        BuildingLibraryIcon,
+        course.disciplines
+          ? Utility.convertDisciplines(course.disciplines).join(', ')
+          : undefined,
+      ];
     case 'DISTRIBUTION AREAS':
       return [
         BuildingLibraryIcon,
@@ -55,6 +62,7 @@ export function openInfo(
 
   const items = [
     'PREREQUISITES',
+    'FOUNDATIONAL DISCIPLINES',
     'DISTRIBUTION AREAS',
     'UNITS',
     'REPEATABLE FOR CREDIT',
