@@ -81,7 +81,7 @@ class Content extends React.Component<ContentProps> {
                   this.props.alert({
                     title: 'Add a year?',
                     message:
-                      'This will add another year to your plan. You can remove it by removing all classes from that year and refreshing the page.',
+                      'This will add another year to your plan. You can remove it by opening the year\'s menu and clicking "Delete year".',
                     confirmButton: 'Add year',
                     cancelButton: 'Close',
                     color: 'cyan',

@@ -2,6 +2,7 @@ import {
   Bars3Icon,
   ChevronDownIcon,
   ChevronUpIcon,
+  MinusIcon,
   SunIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
@@ -84,6 +85,37 @@ class Year extends React.Component<YearProps, YearState> {
       });
     }
 
+    const menuItems = [
+      {
+        text: quarters.length < 4 ? 'Add summer' : 'Remove summer',
+        icon: SunIcon,
+        onClick: () => {
+          if (quarters.length < 4) {
+            this.props.f2.addSummerQuarter(this.props.year);
+          } else {
+            this.props.f2.removeSummerQuarter(this.props.year);
+          }
+        },
+      },
+      {
+        text: 'Clear courses',
+        icon: TrashIcon,
+        onClick: () => {
+          this.props.f2.clearData(this.props.year);
+        },
+      },
+    ];
+
+    if (this.props.year >= 4) {
+      menuItems.push({
+        text: 'Delete year',
+        icon: MinusIcon,
+        onClick: () => {
+          this.props.f2.removeYear(this.props.year);
+        },
+      });
+    }
+
     return (
       <motion.div initial="hidden" animate="visible" variants={variants}>
         <div
@@ -108,7 +140,7 @@ class Year extends React.Component<YearProps, YearState> {
               {quarters}
             </div>
           )}
-          <div className="absolute top-1 right-2 flex items-center gap-1">
+          <div className="absolute right-2 top-1 flex items-center gap-1">
             <UtilityButton
               Icon={this.state.hidden ? ChevronDownIcon : ChevronUpIcon}
               onClick={() => {
@@ -130,27 +162,7 @@ class Year extends React.Component<YearProps, YearState> {
                   x: x,
                   y: y,
                   name: `year-actions-${this.props.year}`,
-                  items: [
-                    {
-                      text:
-                        quarters.length < 4 ? 'Add summer' : 'Remove summer',
-                      icon: SunIcon,
-                      onClick: () => {
-                        if (quarters.length < 4) {
-                          this.props.f2.addSummerQuarter(this.props.year);
-                        } else {
-                          this.props.f2.removeSummerQuarter(this.props.year);
-                        }
-                      },
-                    },
-                    {
-                      text: 'Clear courses',
-                      icon: TrashIcon,
-                      onClick: () => {
-                        this.props.f2.clearData(this.props.year);
-                      },
-                    },
-                  ],
+                  items: menuItems,
                 });
               }}
             >

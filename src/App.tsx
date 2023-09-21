@@ -29,6 +29,7 @@ import {
   removeBookmark,
   removeCourse,
   removeSummerQuarter,
+  removeYear,
 } from './app/PlanModification';
 import {
   addScheduleBookmark,
@@ -143,6 +144,9 @@ class App extends React.Component<{}, AppState> implements AppType {
       },
       addYear: () => {
         addYear(app);
+      },
+      removeYear: (year) => {
+        removeYear(app, year);
       },
       clearData: (year?: number) => {
         clearData(app, year);

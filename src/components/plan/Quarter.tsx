@@ -80,7 +80,7 @@ function Quarter(props: QuarterProps) {
       });
     } else {
       classes = (
-        <div className="text-center">
+        <div className="text-center opacity-75">
           <p
             className={`text-sm font-medium text-${props.color}-500 dark:text-${props.color}-400`}
           >

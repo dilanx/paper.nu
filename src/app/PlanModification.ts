@@ -1,6 +1,7 @@
 import {
   BookmarkSlashIcon,
   ExclamationTriangleIcon,
+  MinusIcon,
   PencilIcon,
   PlusIcon,
   SunIcon,
@@ -290,6 +291,32 @@ export function addYear(app: AppType) {
   data.courses.push([[], [], []]);
   app.setState({ data: data });
   d('year added: y%d', data.courses.length);
+}
+
+export function removeYear(app: AppType, year: number) {
+  if (year < 4) {
+    return;
+  }
+
+  const yearText = Utility.convertYear(year).toLowerCase();
+  app.showAlert({
+    title: `Remove ${yearText}?`,
+    message:
+      'All of the courses in this year will be removed and the year will disappear from your plan.',
+    color: 'red',
+    icon: MinusIcon,
+    confirmButton: 'Remove',
+    cancelButton: 'Cancel',
+    action: () => {
+      const data = app.state.data;
+      data.courses.splice(year, 1);
+      app.setState({
+        data: data,
+        saveState: PlanManager.save(data, app.state.switches),
+      });
+      d('year removed: y%d', year);
+    },
+  });
 }
 
 export function putCustomCourse(
