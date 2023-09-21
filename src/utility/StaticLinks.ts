@@ -19,11 +19,10 @@ const Links = {
   NU_REGISTRAR: 'https://www.registrar.northwestern.edu',
   NU_IT: 'https://www.it.northwestern.edu',
 
-  SALAD: 'https://github.com/Everthings',
-
   FERPA:
     'https://www.registrar.northwestern.edu/records/student-information-privacy/privacy-policy-ferpa.html',
   PRIVACY: 'https://www.dilanxd.com/privacy/',
+  ATTRIBUTIONS: 'http://www.dilanxd.com/attributions/#paper',
 
   EXPORT_APPLE: 'https://support.apple.com/en-ca/guide/calendar/icl1023/mac',
   EXPORT_GOOGLE:

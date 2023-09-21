@@ -5,8 +5,6 @@ import discordLogo from '../../../assets/discord.svg';
 import instagramLogo from '../../../assets/instagram.svg';
 import paperBlack from '../../../assets/paper-full-vertical-black.png';
 import paperWhite from '../../../assets/paper-full-vertical-white.png';
-import planImage from '../../../assets/plan.svg';
-import saladImage from '../../../assets/salad.png';
 import { UserOptions } from '../../../types/BaseTypes';
 import { INFO_VERSIONS } from '../../../utility/InfoSets';
 import Links from '../../../utility/StaticLinks';
@@ -97,7 +95,7 @@ function About({ switches, onClose }: AboutProps) {
                 </div>
                 <div className="my-8 flex flex-col items-center gap-2 text-center text-sm font-light">
                   <p>designed and developed by</p>
-                  <p className="text-lg font-medium">
+                  <p className="text-2xl font-medium">
                     <a
                       className="text-black underline-offset-2 hover:underline dark:text-white"
                       href={Links.DEVELOPER}
@@ -139,55 +137,8 @@ function About({ switches, onClose }: AboutProps) {
                     </a>
                   </p>
                 </div>
-                <div className="my-8 flex flex-col items-center gap-2 text-sm font-light">
-                  <p>the future of</p>
-                  <div className="flex w-full flex-col gap-2 dark:text-black sm:flex-row">
-                    <div className="flex flex-1 items-center gap-2 rounded-xl bg-purple-50 p-4 dark:bg-purple-300">
-                      <img
-                        className="h-8 w-8"
-                        src={planImage}
-                        alt="Plan Northwestern logo"
-                      />
-                      <div className="flex-grow text-center">
-                        <p className="font-medium">Plan Northwestern</p>
-                        <p>
-                          by{' '}
-                          <a
-                            className="underline underline-offset-4 hover:opacity-75"
-                            href={Links.DEVELOPER}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Dilan Nair
-                          </a>
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex flex-1 items-center gap-2 rounded-lg bg-green-50 p-4 dark:bg-green-300">
-                      <img
-                        className="h-8 w-8"
-                        src={saladImage}
-                        alt="salad.nu logo"
-                      />
-                      <div className="flex-grow text-center">
-                        <p className="font-medium">salad.nu</p>
-                        <p>
-                          by{' '}
-                          <a
-                            className="underline underline-offset-4 hover:opacity-75"
-                            href={Links.SALAD}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Andy Xu
-                          </a>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="my-4">
-                  <p className="text-center text-xs font-light">
+                <div className="my-4 text-center text-xs font-light">
+                  <p className="my-2">
                     Because all user data connected to Paper is managed by a
                     student and not the university itself, privacy rights
                     afforded to students through{' '}
@@ -211,10 +162,20 @@ function About({ switches, onClose }: AboutProps) {
                     </a>{' '}
                     to learn how your data is used.
                   </p>
+                  <p className="my-2">
+                    <a
+                      className="underline underline-offset-2 hover:opacity-75"
+                      href={Links.ATTRIBUTIONS}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      View project attributions
+                    </a>
+                  </p>
                 </div>
                 <InfoSet title="more information" data={INFO_VERSIONS} />
                 <button
-                  className="absolute top-2 right-2"
+                  className="absolute right-2 top-2"
                   onClick={() => setOpen(false)}
                 >
                   <XMarkIcon

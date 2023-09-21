@@ -32,6 +32,7 @@ _2023-XX-XX_
   - Sections that add their midterms to their section's meeting times now don't have their midterms displayed on their weekly schedule. Hopefully. I'm not completely sure but I tried.
   - UI elements on the map now look nicer.
   - Legacy plan and schedule URLs are completely discontinued. You can no longer load them from settings.
+  - The Plan Northwestern and salad.nu bubbles in the about menu have been removed. This information is in the project attributions, which is now linked in the menu instead.
   - A bunch of other UI updates, bug fixes, and other small changes.
 
 ### 2.6.2
