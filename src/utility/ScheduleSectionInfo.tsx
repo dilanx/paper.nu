@@ -83,7 +83,7 @@ function getDetails(
                 title: instructor.name ?? 'No name',
                 subtitle: `${section.subject}${
                   section.number ? ` ${section.number}` : ''
-                }${section.section ? `(section ${section.section})` : ''}`,
+                }${section.section ? ` (section ${section.section})` : ''}`,
                 color: 'rose',
                 cancelButton: 'Close',
                 extras: [
