@@ -23,7 +23,7 @@ export function isSerializedPlanData(data: any): data is SerializedPlanData {
   return (
     Object.keys(data).length === 0 ||
     data.courses ||
-    (data.bookmarks && typeof data.bookmarks === 'object')
+    (data.bookmarks && !Array.isArray(data.bookmarks))
   );
 }
 

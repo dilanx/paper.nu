@@ -91,6 +91,7 @@ export function activateAccountPlan(app: AppType, planId: string) {
       app.state.switches.set('unsaved_notes', false);
       app.setState({
         saveState: 'start',
+        loadingLogin: false,
       });
       toast.success('Activated plan: ' + Account.getPlanName(planId));
       d('plan activated: %s (empty)', planId);

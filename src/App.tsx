@@ -308,6 +308,7 @@ class App extends React.Component<{}, AppState> implements AppType {
           data,
           activeId,
           method,
+          error,
           latestTermId,
           sharedCourse,
           sharedSection,
@@ -339,8 +340,10 @@ class App extends React.Component<{}, AppState> implements AppType {
               latestTermId,
             });
             this.showAlert({
-              title: `Unable to load ${modeStr}.`,
-              message: `The ${modeStr} you're trying to access is not valid. If you're loading it through a URL, ensure that it hasn't been manually modified.`,
+              title: `Something went wrong.`,
+              message:
+                error ||
+                `Something problematic happened when trying to load stuff.`,
               confirmButton: 'What a shame.',
               color: 'red',
               icon: ExclamationTriangleIcon,

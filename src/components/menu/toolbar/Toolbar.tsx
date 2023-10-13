@@ -30,8 +30,14 @@ import { Mode } from '../../../utility/Constants';
 import { feedbackForm } from '../../../utility/Forms';
 import Links from '../../../utility/StaticLinks';
 import settingsMenu from './Settings';
+import { shareMenu } from './Share';
 import ToolbarAccount from './ToolbarAccount';
 import ToolbarButton from './ToolbarButton';
+import Tooltip from '../../generic/Tooltip';
+
+function ToolbarDivider() {
+  return <div className="h-4 w-[1px] bg-gray-300 dark:bg-gray-500" />;
+}
 
 interface ToolbarProps {
   alert: Alert;
@@ -65,10 +71,10 @@ function Toolbar({
 
   const activeItem = isSchedule
     ? switches.get.active_schedule_id
-      ? Account.getScheduleName(switches.get.active_schedule_id)
+      ? Account.getSchedule(switches.get.active_schedule_id)
       : undefined
     : switches.get.active_plan_id
-    ? Account.getPlanName(switches.get.active_plan_id)
+    ? Account.getPlan(switches.get.active_plan_id)
     : undefined;
 
   return (
@@ -77,7 +83,7 @@ function Toolbar({
         !isSchedule ? 'border-b-2 border-gray-200 dark:border-gray-700' : ''
       }`}
     >
-      {activeItem && activeItem !== 'None' && (
+      {activeItem && (
         <div className="flex flex-1 items-center gap-2 overflow-hidden font-semibold text-gray-400">
           {isSchedule ? (
             <CalendarIcon className="h-5 min-h-[1.25rem] w-5 min-w-[1.25rem]" />
@@ -85,9 +91,28 @@ function Toolbar({
             <RectangleStackIcon className="h-5 min-h-[1.25rem] w-5 min-w-[1.25rem]" />
           )}
           <p className="overflow-hidden text-ellipsis whitespace-nowrap text-sm">
-            {activeItem}
+            {activeItem.name || '-'}
           </p>
-          <div className="flex items-center gap-1 text-xs font-normal text-gray-400">
+          {activeItem.public && (
+            <>
+              <ToolbarDivider />
+              <div className="group relative flex items-center justify-center rounded-sm p-0.5 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <UserGroupIcon className="group relative h-4 w-4" />
+                <Tooltip
+                  mini
+                  color="sky"
+                  style={{
+                    left: 'calc(100% + 0.5rem)',
+                  }}
+                  className="top-1/2 -translate-y-1/2"
+                >
+                  Persistent share enabled
+                </Tooltip>
+              </div>
+            </>
+          )}
+          <ToolbarDivider />
+          <div className="group relative flex cursor-default items-center gap-1 rounded-sm p-0.5 text-xs font-normal text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
             {saveState === 'idle' && (
               <>
                 <CheckCircleIcon className="h-4 w-4" />
@@ -114,6 +139,21 @@ function Toolbar({
                 <p className="text-red-500">error when saving.</p>
               </>
             )}
+            <Tooltip
+              mini
+              color="green"
+              style={{
+                left: 'calc(100% + 0.5rem)',
+              }}
+              className="top-1/2 -translate-y-1/2"
+            >
+              {saveState === 'idle' && 'All changes saved'}
+              {(saveState === 'start' || saveState === 'wait') &&
+                'Preparing to save...'}
+              {saveState === 'save' && 'Saving...'}
+              {saveState === 'error' &&
+                'An error occurred when saving. Try again later.'}
+            </Tooltip>
           </div>
         </div>
       )}
@@ -268,7 +308,13 @@ function Toolbar({
         >
           Notes
         </ToolbarButton>
-        <ToolbarButton icon={UserGroupIcon} onClick={(x, y) => {}}>
+        <ToolbarButton
+          active={contextMenuData?.name === 'share'}
+          icon={UserGroupIcon}
+          onClick={(x, y) => {
+            contextMenu(shareMenu({ x, y, plan, schedule, alert, switches }));
+          }}
+        >
           Share
         </ToolbarButton>
         <ToolbarButton

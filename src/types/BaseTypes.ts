@@ -159,6 +159,10 @@ export interface ContextMenuItem {
   text: string;
   icon: IconElement;
   onClick: () => void;
+  description?: string;
+  disabled?: boolean;
+  disabledReason?: string;
+  danger?: boolean;
 }
 
 export interface ContextMenu {

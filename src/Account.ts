@@ -8,14 +8,15 @@ import {
   DocumentCache,
   DocumentType,
   GetResponse,
+  SharePostResponse,
   UpdateResponse,
   UserInformation,
 } from './types/AccountTypes';
-import { PaperError, PaperExpectedAuthError } from './utility/PaperError';
-import Utility from './utility/Utility';
-import Links from './utility/StaticLinks';
 import { AlertFormResponse } from './types/AlertTypes';
 import { INFO_VERSIONS } from './utility/InfoSets';
+import { PaperError, PaperExpectedAuthError } from './utility/PaperError';
+import Links from './utility/StaticLinks';
+import Utility from './utility/Utility';
 const da = debug('account:auth');
 const dh = debug('account:http');
 const dp = debug('account:op');
@@ -157,6 +158,18 @@ async function operation<T>(
   }
 }
 
+async function updateCache(type: DocumentType, data?: Document) {
+  if (!cache[type]) cache[type] = await Account.get(type, true, false);
+  if (data) {
+    cache[type] = cache[type]?.map((doc) => {
+      if (doc.id === data.id) return data;
+      return doc;
+    });
+  }
+
+  return cache[type];
+}
+
 let Account = {
   isLoggedIn: () => {
     return !!localStorage.getItem('t');
@@ -236,15 +249,8 @@ let Account = {
       'PATCH',
       { ...body, type: type === 'plans' ? 1 : 2 }
     );
-    if (!cache[type]) cache[type] = await Account.get(type, true, false);
-    if (res) {
-      cache[type] = cache[type]?.map((doc) => {
-        if (doc.id === id) return res.document;
-        return doc;
-      });
-    }
 
-    return cache[type];
+    return await updateCache(type, res?.document);
   },
   delete: async (type: DocumentType, id: string) => {
     dp(`${type}: delete`);
@@ -281,6 +287,32 @@ let Account = {
       return '-';
     }
     return schedule.name;
+  },
+  sharePersistent: async (type: DocumentType, id: string) => {
+    dp(`${type}: share persistent`);
+    const response = await operation<SharePostResponse>(
+      `/paper/share/${id}`,
+      'POST'
+    );
+    await updateCache(type, response?.document);
+    return response;
+  },
+  revokePersistent: async (type: DocumentType, id: string) => {
+    dp(`${type}: revoke persistent`);
+    const response = await operation<SharePostResponse>(
+      `/paper/share/${id}`,
+      'DELETE'
+    );
+    await updateCache(type, response?.document);
+    return response;
+  },
+  getPlan: (planId: string) => {
+    if (!planId || planId === 'None') return undefined;
+    return cache.plans?.find((plan) => plan.id === planId);
+  },
+  getSchedule: (scheduleId: string) => {
+    if (!scheduleId || scheduleId === 'None') return undefined;
+    return cache.schedules?.find((schedule) => schedule.id === scheduleId);
   },
 };
 

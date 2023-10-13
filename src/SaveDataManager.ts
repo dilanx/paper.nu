@@ -149,24 +149,44 @@ let SaveDataManager = {
 
     if (hash) {
       d('hash short code %s detected, trying to load', hash);
-      if (hash.length !== 13) {
-        d('hash is not 13 chars (# + 12), not a short code');
+      if (hash.length !== 9) {
+        if (hash.length === 13) {
+          d('hash is 13 chars, might be a legacy short code');
+          return ret(
+            Mode.PLAN,
+            'malformed',
+            'URL',
+            'Pre-v3 share codes are no longer supported.'
+          );
+        }
+        d('hash is not 9 chars (# + 8), not a short code');
         return ret(Mode.PLAN, 'malformed', 'URL');
       }
       d('fetching content for short code from server');
       const scContentResponse = await fetch(
-        `${Links.SERVER}/paper/shorten/${hash.slice(1)}`
+        `${Links.SERVER}/paper/share/${hash.slice(1).toUpperCase()}`
       );
       if (!scContentResponse.ok) {
+        if (scContentResponse.status === 403) {
+          d('short code is not public');
+          return ret(
+            Mode.PLAN,
+            'malformed',
+            'URL',
+            'The shared document you are trying to retrieve is no longer public.'
+          );
+        }
         d('failed to fetch short code with error %s', scContentResponse.status);
         return ret(Mode.PLAN, 'malformed', 'URL');
       }
       const scContent = await scContentResponse.json();
       if (!scContent.data) {
-        d('short code has no data, thus must have legacy data');
-        return ret(Mode.PLAN, 'malformed', 'URL', 'legacy');
+        d('short code has no data');
+        return ret(Mode.PLAN, 'malformed', 'URL');
       }
-      serializedData = JSON.parse(scContent.data) as SerializedPlanData;
+      serializedData = scContent.data as
+        | SerializedPlanData
+        | SerializedScheduleData;
       d('fetched content for short code URL, trying to load');
 
       if (serializedData) {

@@ -36,6 +36,13 @@ export interface DeleteResponse {
   id: string;
 }
 
+export interface SharePostResponse {
+  success: boolean;
+  reuse: boolean;
+  shortCode: string;
+  document?: Document;
+}
+
 export interface Document {
   id: string;
   name: string;
@@ -43,6 +50,7 @@ export interface Document {
   data?: SerializedPlanData | SerializedScheduleData;
   lastUpdated?: number;
   notes?: string;
+  public?: boolean;
 }
 
 export interface DocumentCache {
