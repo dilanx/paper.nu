@@ -340,11 +340,11 @@ class App extends React.Component<{}, AppState> implements AppType {
               latestTermId,
             });
             this.showAlert({
-              title: `Something went wrong.`,
+              title: `Nothing to load.`,
               message:
                 error ||
                 `Something problematic happened when trying to load stuff.`,
-              confirmButton: 'What a shame.',
+              cancelButton: 'Close',
               color: 'red',
               icon: ExclamationTriangleIcon,
             });
@@ -745,7 +745,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                       activateAccountSchedule(this, id);
                     }}
                     deactivate={() => {
-                      deactivate(this, isSchedule);
+                      deactivate(this);
                     }}
                     activeId={
                       switches.get[

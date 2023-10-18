@@ -78,7 +78,7 @@ function ScheduleClass(props: ScheduleClassProps) {
     <div
       className={`absolute z-10 rounded-lg bg-opacity-60
                 bg-${color}-100 border-2 dark:bg-gray-800 border-${color}-400 group
-                cursor-pointer overflow-visible transition duration-300 ease-in-out ${
+                cursor-pointer overflow-visible transition duration-300 ease-in-out active:opacity-50 ${
                   interactions?.hoverSection.get === section.section_id
                     ? '-translate-y-2 shadow-lg'
                     : ''

@@ -34,7 +34,7 @@ function AccountPlan(props: AccountPlanProps) {
         tabIndex={0}
         className={`block border-2 ${
           props.active ? 'border-emerald-400 ' : 'border-rose-400'
-        }  group my-4 w-full transform cursor-pointer rounded-lg px-4 py-2
+        }  group my-4 w-full transform cursor-pointer rounded-lg px-4 py-1
             text-left text-black transition duration-300 ease-in-out hover:-translate-y-1
             hover:shadow-md active:opacity-50 dark:bg-gray-800`}
         onClick={() => {
@@ -45,7 +45,7 @@ function AccountPlan(props: AccountPlanProps) {
           }
         }}
       >
-        <p className="text-lg font-semibold text-black dark:text-white">
+        <p className="text-base font-semibold text-black dark:text-white">
           {plan.name}
         </p>
         <p className="text-xs text-gray-600 dark:text-gray-300">

@@ -11,6 +11,7 @@ import { PlanData } from '../types/PlanTypes';
 import { ScheduleData } from '../types/ScheduleTypes';
 import { PaperError } from '../utility/PaperError';
 import Utility from '../utility/Utility';
+import { Mode } from '../utility/Constants';
 const d = debug('app:account-mod');
 
 function activate(
@@ -146,8 +147,8 @@ export function activateAccountSchedule(app: AppType, scheduleId: string) {
   });
 }
 
-export function deactivate(app: AppType, isSchedule: boolean) {
-  const t = isSchedule ? 'schedule' : 'plan';
+export function deactivate(app: AppType) {
+  const t = app.state.switches.get.mode === Mode.SCHEDULE ? 'schedule' : 'plan';
   discardChanges(app, () => {
     discardNotesChanges(
       app.state.switches,

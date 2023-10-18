@@ -1,4 +1,5 @@
 import debug from 'debug';
+import { isEqual } from 'lodash';
 import Account from './Account';
 import {
   getDataMapInformation,
@@ -28,9 +29,8 @@ import {
   isSerializedScheduleData,
 } from './types/ScheduleTypes';
 import { Mode } from './utility/Constants';
-import Utility from './utility/Utility';
-import { isEqual } from 'lodash';
 import Links from './utility/StaticLinks';
+import Utility from './utility/Utility';
 const d = debug('save-data-manager');
 
 const DEFAULT_SWITCHES: ReadUserOptions = {
@@ -60,7 +60,6 @@ let SaveDataManager = {
     let activeId: string | undefined = undefined;
     let accountPlans: Document[] | undefined = undefined;
     let accountSchedules: Document[] | undefined = undefined;
-    let method: LoadMethods = 'None';
     let sharedCourse: Course | undefined = undefined;
     let sharedSection: ScheduleSection | undefined = undefined;
     const latestTermId = (await getDataMapInformation()).latest;
@@ -193,28 +192,44 @@ let SaveDataManager = {
         if (isSerializedPlanData(serializedData)) {
           d('URL data is plan data');
           const planData = await PlanManager.load(serializedData);
-          if (planData !== 'empty') {
-            if (planData !== 'malformed') {
-              d('plan URL load successful');
-              method = 'URL';
-              PlanManager.save(planData, switches);
-            }
-            return ret(Mode.PLAN, planData, method);
+
+          if (planData === 'empty') {
+            d('plan URL data is empty');
+            return ret(
+              Mode.PLAN,
+              planData,
+              'URL',
+              'The shared document you are trying to retrieve has no content.'
+            );
           }
+
+          if (planData !== 'malformed') {
+            d('plan URL load successful');
+            PlanManager.save(planData, switches);
+          }
+          return ret(Mode.PLAN, planData, 'URL');
         } else if (isSerializedScheduleData(serializedData)) {
           d('URL data is schedule data');
           const scheduleData = await ScheduleManager.load(serializedData);
-          if (scheduleData !== 'empty') {
-            if (scheduleData !== 'malformed') {
-              method = 'URL';
-              d('schedule URL load successful');
-              ScheduleManager.save(scheduleData, switches);
-            }
-            return ret(Mode.SCHEDULE, scheduleData, method);
+
+          if (scheduleData === 'empty') {
+            d('schedule URL data is empty');
+            return ret(
+              Mode.SCHEDULE,
+              scheduleData,
+              'URL',
+              'The shared document you are trying to retrieve has no content.'
+            );
           }
+
+          if (scheduleData !== 'malformed') {
+            d('schedule URL load successful');
+            ScheduleManager.save(scheduleData, switches);
+          }
+          return ret(Mode.SCHEDULE, scheduleData, 'URL');
         } else {
           d('URL data does not match plan or schedule format');
-          return ret(Mode.SCHEDULE, 'malformed', method);
+          return ret(Mode.SCHEDULE, 'malformed', 'URL');
         }
       }
     }
@@ -257,9 +272,9 @@ let SaveDataManager = {
     d('nothing to load from account, trying storage instead');
     const data = await manager.loadFromStorage();
     if (data !== 'empty') {
+      let method: LoadMethods = 'Storage';
       if (data !== 'malformed') {
         d('%s storage load successful', modeStr);
-        method = 'Storage';
         if (accountDocs) {
           const sData = manager.serialize(data as any);
           const id = matchAccountId(accountDocs, sData);
@@ -277,7 +292,7 @@ let SaveDataManager = {
     }
 
     d('no data to load');
-    return ret(mode, await manager.load(), method);
+    return ret(mode, await manager.load(), 'None');
   },
 
   loadSwitchesFromStorage: (

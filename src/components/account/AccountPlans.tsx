@@ -452,7 +452,7 @@ class AccountPlans extends React.Component<
           />
         ) : (
           <>
-            <p className="mx-8 text-center text-sm text-gray-500">
+            <p className="mx-4 text-center text-xs text-gray-500">
               {items.length === 0
                 ? `It looks like you don't have any ${t}s yet. When you create one, it'll appear here.`
                 : `Select a ${t} to activate it, and again to deactivate it. Activating empty ${t}s won't overwrite current ${t} data.`}

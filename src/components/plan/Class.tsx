@@ -62,7 +62,7 @@ function Class(props: ClassProps) {
     <motion.div variants={variants}>
       <div
         ref={drag}
-        className={`rounded-lg bg-opacity-60 p-2 bg-${color}-100 border-2
+        className={`rounded-lg bg-opacity-60 p-2 active:opacity-50 bg-${color}-100 border-2
             dark:bg-gray-800 border-${color}-300 compact:py-05 group w-full transform overflow-visible border-opacity-60
             text-left transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md compact:px-2 ${
               custom ? 'border-dashed' : 'border-solid'

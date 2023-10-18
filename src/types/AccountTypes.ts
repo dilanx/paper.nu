@@ -75,3 +75,17 @@ export interface UserInformation {
   email: string;
   color: string;
 }
+
+export interface RecentShareOwner {
+  firstName: string;
+  lastName: string;
+  color: string;
+}
+
+export interface RecentShareItem {
+  shortCode: string;
+  type: 1 | 2;
+  name: string;
+  owner: RecentShareOwner;
+  termId: string;
+}

@@ -15,6 +15,7 @@ import {
 } from './ScheduleTypes';
 import { SearchDefaults, SearchModificationFunctions } from './SearchTypes';
 import { SideCardData } from './SideCardTypes';
+import { RecentShareItem } from './AccountTypes';
 
 export interface AppState {
   data: PlanData;
@@ -82,6 +83,7 @@ export interface LoadResponse<T> {
   error?: string;
   sharedCourse?: Course;
   sharedSection?: ScheduleSection;
+  recentShare?: RecentShareItem | null;
 }
 
 export type Color =
