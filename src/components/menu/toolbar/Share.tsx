@@ -217,7 +217,13 @@ export const shareMenu = ({
         revokeAccess()
           .then(() => {
             d('share persistent link revoked');
-            toast.success(`Persistent share link revoked!`, { id });
+            toast.success(`Persistent share link revoked!`, {
+              id,
+              iconTheme: {
+                primary: 'red',
+                secondary: 'white',
+              },
+            });
           })
           .catch((err) => {
             d('failed to revoke share persistent link');

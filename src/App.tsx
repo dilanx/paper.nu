@@ -347,12 +347,19 @@ class App extends React.Component<{}, AppState> implements AppType {
           }
 
           if (recentShare) {
-            this.setState({
-              recentShare:
-                typeof recentShare === 'string'
-                  ? updateRecentShare(recentShare)
-                  : updateRecentShare(recentShare.shortCode, recentShare),
-            });
+            if (typeof recentShare === 'string') {
+              this.setState({
+                recentShare: updateRecentShare(recentShare),
+              });
+            } else {
+              this.setState({
+                recentShare: updateRecentShare(
+                  recentShare.shortCode,
+                  recentShare
+                ),
+              });
+              mode = recentShare.type === 1 ? Mode.PLAN : Mode.SCHEDULE;
+            }
           }
 
           if (data === 'malformed') {
