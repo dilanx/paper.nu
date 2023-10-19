@@ -77,15 +77,20 @@ export interface UserInformation {
 }
 
 export interface RecentShareOwner {
-  firstName: string;
-  lastName: string;
-  color: string;
+  firstName?: string;
+  lastName?: string;
+  color?: string;
 }
 
 export interface RecentShareItem {
   shortCode: string;
   type: 1 | 2;
   name: string;
-  owner: RecentShareOwner;
-  termId: string;
+  owner?: RecentShareOwner;
+  termId?: string;
+}
+
+export interface RecentShareModificationFunctions {
+  open: (shortCode: string) => void;
+  remove: (shortCode: string) => void;
 }

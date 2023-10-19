@@ -1,17 +1,55 @@
-import localforage from 'localforage';
 import { RecentShareItem } from '../types/AccountTypes';
+import { AppType } from '../types/BaseTypes';
+import { discardChanges, discardNotesChanges } from './AccountModification';
 
-export async function updateRecentShare(item: RecentShareItem, remove = false) {
-  const recentShare =
-    (await localforage.getItem<RecentShareItem[]>('recent_share')) || [];
-  const newRecentShare = recentShare.filter(
-    (i) => i.shortCode !== item.shortCode
-  );
-  if (!remove) {
+export function updateRecentShare(shortCode: string, item?: RecentShareItem) {
+  const recentShare = JSON.parse(
+    localStorage.getItem('recent_share') || '[]'
+  ) as RecentShareItem[];
+  const newRecentShare = recentShare.filter((i) => i.shortCode !== shortCode);
+  if (item) {
     newRecentShare.unshift(item);
   }
 
-  await localforage.setItem('recent_share', newRecentShare);
+  if (newRecentShare.length > 50) {
+    newRecentShare.pop();
+  }
+
+  localStorage.setItem('recent_share', JSON.stringify(newRecentShare));
 
   return newRecentShare;
+}
+
+export function getRecentShare() {
+  return JSON.parse(
+    localStorage.getItem('recent_share') || '[]'
+  ) as RecentShareItem[];
+}
+
+export function activateRecentShare(app: AppType, shortCode: string) {
+  discardChanges(app, () => {
+    discardNotesChanges(
+      app.state.switches,
+      (alertData) => app.showAlert(alertData),
+      () => {
+        app.state.switches.set('notes', false);
+        app.state.switches.set('unsaved_notes', false);
+        app.setState({ loadingLogin: true });
+        app.initialize(
+          () => {
+            app.setState({ loadingLogin: false });
+          },
+          {
+            hash: `#${shortCode}`,
+          }
+        );
+      }
+    );
+  });
+}
+
+export function removeRecentShareHistory(app: AppType, shortCode: string) {
+  app.setState({
+    recentShare: updateRecentShare(shortCode),
+  });
 }

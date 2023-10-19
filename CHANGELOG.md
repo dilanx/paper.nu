@@ -4,25 +4,27 @@
 
 _2023-XX-XX_
 
-- **Add custom courses and sections to your plans and schedules.**
+- **Custom courses and sections**
   - Enhance your plan or schedule with custom courses and sections. This allows you to add things to your schedule that aren't in the course catalog.
   - With a new custom item creator menu, you can customize each element of the course or section, including the color, and make changes to it later.
   - Custom courses and sections are included when sharing or exporting a plan or schedule.
-- **Share better.**
-  - Share a link directly to any course or section.
-- **Your plans and schedules save automatically.**
+- **Persistent share**
+  - Share persistent links to your plans and schedules. When you update your plan or schedule, others can refresh to see the changes.
+  - Easily access your friends' plans and schedules. When you use someone's persistent share link, their name and their document's name is saved to your Plans/Schedules tab so you can easily access it later.
+- **Autosave**
   - Modified plans and schedules linked to your account will automatically be saved as you make changes.
-- **Searching just got easier.**
+- **Improved search**
   - Partial text matching is now supported. For example, searching something like "intro sociol" will match "introduction to sociology".
   - You can now search by section topic, making specific sections in special topics classes (like CS 396) easier to find.
   - You can now filter by all available schedule time.
-- **Submit feedback right from the app.**
+- **Built-in feedback submission**
   - The built-in feedback submission feature is back. Check it out in the "About" toolbar menu.
-- **The entire internal data system has been redesigned.**
+- **Redesigned internal data system**
   - Developers working with Paper APIs will have a better time.
   - This doesn't really affect the end user, but the custom courses and sections feature is possible because of this change.
-- **And a lot of small things.**
+- **A ton of small things**
   - The schedule is now gray instead of green so it blends in well with the rest of the UI.
+  - Share a link directly to any course or section.
   - Actions for a given year on the plan view have been moved into a context menu (press the three lines at the top right of a year to open).
   - Subjects with missing colors now have a color.
   - Northwestern's new foundational disciplines are now supported.

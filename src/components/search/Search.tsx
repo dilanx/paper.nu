@@ -430,8 +430,8 @@ class Search extends React.Component<SearchProps, SearchState> {
       this.props.schedule.schedule[
         this.props.scheduleInteractions.hoverSection.get || ''
       ];
-    const roomFinderAvailable = mapSection?.room?.some((r) =>
-      r?.toLowerCase().includes('tech')
+    const roomFinderAvailable = mapSection?.room?.some(
+      (r) => r?.toLowerCase().includes('tech')
     );
     const isBrowsing = searchMode === SearchMode.BROWSE || filter.get.subject;
     const isBrowsingDeep =
@@ -462,7 +462,7 @@ class Search extends React.Component<SearchProps, SearchState> {
         ) : (
           <>
             <div className="mb-2 rounded-lg bg-white p-2 dark:bg-gray-800">
-              <div className="relative mx-auto mt-4 mb-2 block w-11/12">
+              <div className="relative mx-auto mb-2 mt-4 block w-11/12">
                 <input
                   className="w-full rounded-lg border-2 border-gray-300 bg-white p-2 px-4
                     text-lg text-black shadow-sm outline-none transition-all duration-150 hover:border-gray-500 focus:border-black dark:border-gray-700
@@ -491,7 +491,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                 />
                 {!queryEmpty && (
                   <button
-                    className="absolute right-4 top-0 bottom-0 my-2 block text-gray-300 transition-colors duration-150 
+                    className="absolute bottom-0 right-4 top-0 my-2 block text-gray-300 transition-colors duration-150 
                                             hover:text-red-400 active:text-red-300 dark:text-gray-600 dark:hover:text-red-400 dark:active:text-red-500"
                     onClick={() => {
                       this.setState({ search: '' });

@@ -5,7 +5,7 @@ import { Avatar } from '@dilanx/avatar';
 
 interface ToolbarAccountProps {
   loading: boolean;
-  onClick?: (x: number, y: number, signedIn: boolean, email?: string) => void;
+  onClick?: (x: number, y: number, signedIn: boolean) => void;
   active?: boolean;
 }
 
@@ -43,7 +43,7 @@ function ToolbarAccount({ loading, onClick, active }: ToolbarAccountProps) {
         if (onClick) {
           const { x, y, width, height } =
             e.currentTarget.getBoundingClientRect();
-          onClick(x + width, y + height + 10, true, info.email);
+          onClick(x + width, y + height + 10, true);
         }
       }}
       className={`mx-2 flex items-center rounded-lg text-sm font-bold text-black shadow-sm dark:text-white ${

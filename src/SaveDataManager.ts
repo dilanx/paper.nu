@@ -8,7 +8,7 @@ import {
 } from './DataManager';
 import PlanManager from './PlanManager';
 import ScheduleManager from './ScheduleManager';
-import { Document } from './types/AccountTypes';
+import { Document, RecentShareItem } from './types/AccountTypes';
 import {
   LoadMethods,
   LoadResponse,
@@ -67,6 +67,8 @@ let SaveDataManager = {
     let serializedData: SerializedPlanData | SerializedScheduleData | null =
       null;
 
+    let recentShare: RecentShareItem | string | undefined = undefined;
+
     const ret = (
       mode: Mode,
       data: PlanData | ScheduleData | 'malformed' | 'empty',
@@ -82,6 +84,7 @@ let SaveDataManager = {
         error,
         sharedCourse,
         sharedSection,
+        recentShare,
       };
     };
 
@@ -159,12 +162,15 @@ let SaveDataManager = {
           );
         }
         d('hash is not 9 chars (# + 8), not a short code');
-        return ret(Mode.PLAN, 'malformed', 'URL');
+        return ret(Mode.PLAN, 'malformed', 'URL', 'The share URL is invalid.');
       }
       d('fetching content for short code from server');
+      const shareCode = hash.slice(1).toUpperCase();
       const scContentResponse = await fetch(
-        `${Links.SERVER}/paper/share/${hash.slice(1).toUpperCase()}`
+        `${Links.SERVER}/paper/share/${shareCode}`
       );
+      recentShare = shareCode;
+
       if (!scContentResponse.ok) {
         if (scContentResponse.status === 403) {
           d('short code is not public');
@@ -176,7 +182,7 @@ let SaveDataManager = {
           );
         }
         d('failed to fetch short code with error %s', scContentResponse.status);
-        return ret(Mode.PLAN, 'malformed', 'URL');
+        return ret(Mode.PLAN, 'malformed', 'URL', 'The share URL is invalid.');
       }
       const scContent = await scContentResponse.json();
       if (!scContent.data) {
@@ -206,6 +212,14 @@ let SaveDataManager = {
           if (planData !== 'malformed') {
             d('plan URL load successful');
             PlanManager.save(planData, switches);
+            if (scContent.persistent) {
+              recentShare = {
+                shortCode: shareCode,
+                type: 1,
+                name: scContent.name,
+                owner: scContent.owner,
+              };
+            }
           }
           return ret(Mode.PLAN, planData, 'URL');
         } else if (isSerializedScheduleData(serializedData)) {
@@ -225,6 +239,15 @@ let SaveDataManager = {
           if (scheduleData !== 'malformed') {
             d('schedule URL load successful');
             ScheduleManager.save(scheduleData, switches);
+            if (scContent.persistent) {
+              recentShare = {
+                shortCode: shareCode,
+                type: 2,
+                name: scContent.name,
+                owner: scContent.owner,
+                termId: scheduleData.termId,
+              };
+            }
           }
           return ret(Mode.SCHEDULE, scheduleData, 'URL');
         } else {

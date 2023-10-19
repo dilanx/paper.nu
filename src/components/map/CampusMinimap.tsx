@@ -5,9 +5,9 @@ import ScheduleManager from '../../ScheduleManager';
 import { Color } from '../../types/BaseTypes';
 import { ScheduleSection } from '../../types/ScheduleTypes';
 import {
+  MapFlyTo,
   getMapMarkerIcon,
   getUnknownMapMarkerIcon,
-  MapFlyTo,
 } from './MapUtility';
 
 const DEFAULT_POSITION: [number, number] = [42.055909, -87.672709];
@@ -76,7 +76,7 @@ function CampusMinimap({ expand, location, section }: CampusMinimapProps) {
           ))}
       </MapContainer>
       <button
-        className="absolute top-2 right-2 z-20 text-gray-500 hover:text-emerald-500 active:text-emerald-600"
+        className="absolute right-2 top-2 z-20 text-gray-500 hover:text-emerald-500 active:text-emerald-600"
         onClick={() => expand()}
       >
         <ArrowsPointingOutIcon className="h-6 w-6" />

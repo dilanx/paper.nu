@@ -15,7 +15,10 @@ import {
 } from './ScheduleTypes';
 import { SearchDefaults, SearchModificationFunctions } from './SearchTypes';
 import { SideCardData } from './SideCardTypes';
-import { RecentShareItem } from './AccountTypes';
+import {
+  RecentShareItem,
+  RecentShareModificationFunctions,
+} from './AccountTypes';
 
 export interface AppState {
   data: PlanData;
@@ -27,6 +30,7 @@ export interface AppState {
   f2: PlanSpecialFunctions;
   sf: ScheduleModificationFunctions;
   ff: SearchModificationFunctions;
+  rf: RecentShareModificationFunctions;
   loadingLogin: boolean;
   saveState: SaveState;
   saveTimeoutId?: number;
@@ -38,6 +42,7 @@ export interface AppState {
   map?: boolean;
   latestTermId?: string;
   contextMenuData?: ContextMenuData;
+  recentShare?: RecentShareItem[];
 }
 
 export interface ReadUserOptions {
@@ -83,7 +88,10 @@ export interface LoadResponse<T> {
   error?: string;
   sharedCourse?: Course;
   sharedSection?: ScheduleSection;
-  recentShare?: RecentShareItem | null;
+
+  // RecentShareItem if loaded
+  // string of share code if not failed to load
+  recentShare?: RecentShareItem | string;
 }
 
 export type Color =
@@ -119,6 +127,7 @@ export type StringMap = { [key: string]: string };
 export interface AppType extends Component<{}, AppState> {
   closeSideCard(): void;
   showAlert(alertData: AlertData): void;
+  initialize(callback: () => void, options?: SaveDataOptions): void;
   appRef: React.RefObject<HTMLDivElement>;
 }
 

@@ -13,6 +13,8 @@ import Account from '../../Account';
 import {
   AccountModificationFunctions,
   Document,
+  RecentShareItem,
+  RecentShareModificationFunctions,
 } from '../../types/AccountTypes';
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
@@ -21,12 +23,15 @@ import { PaperError } from '../../utility/PaperError';
 import Utility from '../../utility/Utility';
 import AccountPlan from './AccountPlan';
 import AccountPlanMessage from './AccountPlanMessage';
+import RecentSharePlan from './RecentSharePlan';
 
 const PLAN_LIMIT = 5;
 const SCHEDULE_LIMIT = 20;
 
 interface AccountPlansProps {
   switches: UserOptions;
+  recentShare?: RecentShareItem[];
+  rf: RecentShareModificationFunctions;
   alert: Alert;
   activatePlan: (planId: string) => void;
   activateSchedule: (scheduleId: string) => void;
@@ -414,6 +419,18 @@ class AccountPlans extends React.Component<
           }) || [];
     }
 
+    const recentShare =
+      this.props.recentShare &&
+      this.props.recentShare
+        .filter((share) => share.type === (isSchedule ? 2 : 1))
+        .map((share, i) => (
+          <RecentSharePlan
+            data={share}
+            rf={this.props.rf}
+            key={`recent-share-${i}`}
+          />
+        ));
+
     return (
       <motion.div
         initial="hidden"
@@ -428,7 +445,7 @@ class AccountPlans extends React.Component<
           <AccountPlanMessage
             icon={<CloudIcon className="h-12 w-12" />}
             title="Save your stuff"
-            description="By creating an account, you can save up to 5 plans and 10 schedules. You can access them from any device at any time. It's super simple."
+            description="By creating an account, you can save up to 5 plans and 20 schedules. You can access them from any device at any time. It's super simple."
             primaryButton={{
               text: 'Log in',
               action: () => {
@@ -469,6 +486,15 @@ class AccountPlans extends React.Component<
               >
                 Create {t}
               </button>
+            )}
+            {(recentShare?.length || 0) > 0 && (
+              <>
+                <hr className="mx-12 my-8 border-gray-200 dark:border-gray-600" />
+                <p className="my-4 text-center text-xs font-bold text-gray-400 dark:text-gray-500">
+                  RECENTLY VIEWED SHARED {t.toUpperCase()}S
+                </p>
+                <div className="m-4 block">{recentShare}</div>
+              </>
             )}
           </>
         )}

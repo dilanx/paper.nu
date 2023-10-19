@@ -82,6 +82,13 @@ import { openInfo as planOpenInfo } from './utility/CourseInfo';
 import { PaperError } from './utility/PaperError';
 import { openInfo as scheduleOpenInfo } from './utility/ScheduleSectionInfo';
 import Utility from './utility/Utility';
+import {
+  activateRecentShare,
+  getRecentShare,
+  removeRecentShareHistory,
+  updateRecentShare,
+} from './app/RecentShare';
+import { RecentShareModificationFunctions } from './types/AccountTypes';
 const d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
@@ -175,6 +182,11 @@ class App extends React.Component<{}, AppState> implements AppType {
       },
     };
 
+    const rf: RecentShareModificationFunctions = {
+      open: (shortCode) => activateRecentShare(app, shortCode),
+      remove: (shortCode) => removeRecentShareHistory(app, shortCode),
+    };
+
     if (defaultSwitches.get.dark) {
       document.body.style.backgroundColor = Utility.BACKGROUND_DARK;
       document
@@ -202,6 +214,7 @@ class App extends React.Component<{}, AppState> implements AppType {
       f2,
       sf,
       ff,
+      rf,
       clp: !lastVersion || lastVersion !== VERSION_NO_PATCH,
       banner: !!bn && (!bannerNoticeId || bannerNoticeId !== bn.id),
       loadingLogin: false,
@@ -225,6 +238,7 @@ class App extends React.Component<{}, AppState> implements AppType {
         },
         multiClear: (interactions) => this.interactionMultiClear(interactions),
       },
+      recentShare: getRecentShare(),
     };
   }
 
@@ -312,6 +326,7 @@ class App extends React.Component<{}, AppState> implements AppType {
           latestTermId,
           sharedCourse,
           sharedSection,
+          recentShare,
         }) => {
           const modeStr = mode === Mode.PLAN ? 'plan' : 'schedule';
 
@@ -329,6 +344,15 @@ class App extends React.Component<{}, AppState> implements AppType {
                 ff: this.state.ff,
               }
             );
+          }
+
+          if (recentShare) {
+            this.setState({
+              recentShare:
+                typeof recentShare === 'string'
+                  ? updateRecentShare(recentShare)
+                  : updateRecentShare(recentShare.shortCode, recentShare),
+            });
           }
 
           if (data === 'malformed') {
@@ -384,7 +408,13 @@ class App extends React.Component<{}, AppState> implements AppType {
 
           switch (method) {
             case 'URL':
-              toast.success(`Loaded ${modeStr} from URL`);
+              toast.success(
+                `Loaded shared ${modeStr}${
+                  recentShare && typeof recentShare !== 'string'
+                    ? `: ${recentShare.name}`
+                    : ''
+                }`
+              );
               break;
             case 'Account':
               toast.success(
@@ -735,6 +765,8 @@ class App extends React.Component<{}, AppState> implements AppType {
                 {tab === 'Plans' && (
                   <AccountPlans
                     switches={this.state.switches}
+                    recentShare={this.state.recentShare}
+                    rf={this.state.rf}
                     alert={(alertData) => {
                       this.showAlert(alertData);
                     }}

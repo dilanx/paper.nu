@@ -106,7 +106,7 @@ function Toolbar({
                   }}
                   className="top-1/2 -translate-y-1/2"
                 >
-                  Persistent share enabled
+                  Accessible by link
                 </Tooltip>
               </div>
             </>
@@ -327,7 +327,7 @@ function Toolbar({
       <ToolbarAccount
         loading={loading}
         active={contextMenuData?.name === 'account'}
-        onClick={(x, y, signedIn, email) => {
+        onClick={(x, y, signedIn) => {
           if (!signedIn) {
             Account.logIn();
             return;
@@ -336,7 +336,6 @@ function Toolbar({
             name: 'account',
             x,
             y,
-            topText: email,
             items: [
               {
                 text: isSchedule ? 'Schedules' : 'Plans',
