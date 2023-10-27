@@ -50,8 +50,8 @@ export interface Course {
   id: string;
   name: string;
   units: string;
-  repeatable: boolean;
-  description: string;
+  repeatable?: boolean;
+  description?: string;
   prereqs?: string;
   distros?: string;
   disciplines?: string;
