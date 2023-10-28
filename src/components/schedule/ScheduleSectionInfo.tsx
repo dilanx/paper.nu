@@ -15,26 +15,26 @@ import {
 } from '@heroicons/react/24/outline';
 import { MapIcon } from '@heroicons/react/24/solid';
 import { ReactNode } from 'react';
-import PlanManager from '../PlanManager';
-import ScheduleManager from '../ScheduleManager';
-import { Alert } from '../types/AlertTypes';
-import { IconElement } from '../types/BaseTypes';
-import { Course } from '../types/PlanTypes';
+import PlanManager from '../../PlanManager';
+import ScheduleManager from '../../ScheduleManager';
+import { Alert } from '../../types/AlertTypes';
+import { IconElement } from '../../types/BaseTypes';
+import { Course } from '../../types/PlanTypes';
 import {
   ScheduleBookmarks,
   ScheduleInteractions,
   ScheduleModificationFunctions,
   ScheduleSection,
-} from '../types/ScheduleTypes';
-import { SearchModificationFunctions } from '../types/SearchTypes';
+} from '../../types/ScheduleTypes';
+import { SearchModificationFunctions } from '../../types/SearchTypes';
 import {
   AnySideCardButtonData,
   SideCard,
   SideCardData,
   SideCardItemData,
-} from '../types/SideCardTypes';
-import Utility from './Utility';
-import { getTermName } from '../DataManager';
+} from '../../types/SideCardTypes';
+import Utility from '../../utility/Utility';
+import { getTermName } from '../../DataManager';
 
 function getDetails(
   detail: string,

@@ -10,7 +10,7 @@ import {
 } from '../../types/ScheduleTypes';
 import { SearchModificationFunctions } from '../../types/SearchTypes';
 import { SideCard } from '../../types/SideCardTypes';
-import { openInfo } from '../../utility/ScheduleSectionInfo';
+import { openInfo } from './ScheduleSectionInfo';
 import Utility from '../../utility/Utility';
 
 interface ScheduleClassProps {

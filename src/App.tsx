@@ -78,9 +78,9 @@ import {
 import { SearchModificationFunctions } from './types/SearchTypes';
 import { SideCardData } from './types/SideCardTypes';
 import { Mode } from './utility/Constants';
-import { openInfo as planOpenInfo } from './utility/CourseInfo';
+import { openInfo as planOpenInfo } from './components/plan/CourseInfo';
 import { PaperError } from './utility/PaperError';
-import { openInfo as scheduleOpenInfo } from './utility/ScheduleSectionInfo';
+import { openInfo as scheduleOpenInfo } from './components/schedule/ScheduleSectionInfo';
 import Utility from './utility/Utility';
 import {
   activateRecentShare,

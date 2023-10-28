@@ -6,22 +6,22 @@ import {
   ChevronRightIcon,
   ListBulletIcon,
 } from '@heroicons/react/24/outline';
-import PlanManager from '../PlanManager';
-import { IconElement } from '../types/BaseTypes';
+import PlanManager from '../../PlanManager';
+import { IconElement } from '../../types/BaseTypes';
 import {
   BookmarksData,
   Course,
   CourseLocation,
   PlanModificationFunctions,
-} from '../types/PlanTypes';
+} from '../../types/PlanTypes';
 import {
   SideCard,
   SideCardData,
   SideCardItemData,
-} from '../types/SideCardTypes';
-import Utility from './Utility';
+} from '../../types/SideCardTypes';
+import Utility from '../../utility/Utility';
 import { ReactNode } from 'react';
-import { Alert } from '../types/AlertTypes';
+import { Alert } from '../../types/AlertTypes';
 
 function getDetails(
   detail: string,

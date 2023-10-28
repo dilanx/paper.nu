@@ -8,7 +8,7 @@ import {
   ScheduleSection,
 } from '../../types/ScheduleTypes';
 import { SideCard } from '../../types/SideCardTypes';
-import { openInfo } from '../../utility/ScheduleSectionInfo';
+import { openInfo } from '../schedule/ScheduleSectionInfo';
 import Utility from '../../utility/Utility';
 
 interface SearchScheduleSectionProps {

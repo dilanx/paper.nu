@@ -15,7 +15,7 @@ import ClassPropertyDisplay from '../plan/ClassPropertyDisplay';
 import PlanManager from '../../PlanManager';
 import { SideCard } from '../../types/SideCardTypes';
 import { Alert } from '../../types/AlertTypes';
-import { openInfo } from '../../utility/CourseInfo';
+import { openInfo } from '../plan/CourseInfo';
 
 const PLACEHOLDER_MESSAGE = `Don't know which specific class to take from a certain requirement category? Use a placeholder! Search for 'placeholder' to view all.`;
 

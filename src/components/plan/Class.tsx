@@ -13,7 +13,7 @@ import {
   PlanModificationFunctions,
 } from '../../types/PlanTypes';
 import { SideCard } from '../../types/SideCardTypes';
-import { openInfo } from '../../utility/CourseInfo';
+import { openInfo } from './CourseInfo';
 import Utility from '../../utility/Utility';
 import ClassPropertyDisplay from './ClassPropertyDisplay';
 import { Alert } from '../../types/AlertTypes';
