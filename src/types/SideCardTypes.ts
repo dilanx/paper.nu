@@ -12,6 +12,7 @@ export interface SideCardData {
   subtitle?: string;
   alertMessage?: string;
   message?: string;
+  toolbar?: ReactNode;
   items?: SideCardItemData[];
   buttons?: (SideCardButtonData | ToggleableSideCardButtonData)[];
   link?: string;

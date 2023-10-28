@@ -53,7 +53,7 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
         >
           <div className="fixed inset-0 bg-black bg-opacity-10" />
         </Transition.Child>
-        <div className="fixed top-0 right-0 h-screen w-screen px-4 py-8 md:max-w-md">
+        <div className="fixed right-0 top-0 h-screen w-screen px-4 py-8 md:max-w-md">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-200"
@@ -132,8 +132,13 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
                   {data.message}
                 </p>
               )}
+              {data.toolbar && (
+                <div className="my-2 flex items-center justify-end">
+                  {data.toolbar}
+                </div>
+              )}
               {data.items && (
-                <div className="mt-4">
+                <div className="my-4">
                   {data.items.map((item, i) => (
                     <SideCardItem
                       key={`side-card-item-${i}`}
