@@ -59,6 +59,7 @@ function Bookmarks(props: BookmarksProps) {
             credit={false}
             bookmarks={props.bookmarks}
             sideCard={props.sideCard}
+            alert={props.alert}
             f={props.f}
             switches={props.switches}
           />
@@ -66,6 +67,7 @@ function Bookmarks(props: BookmarksProps) {
             credit={true}
             bookmarks={props.bookmarks}
             sideCard={props.sideCard}
+            alert={props.alert}
             f={props.f}
             switches={props.switches}
           />

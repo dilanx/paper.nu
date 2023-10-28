@@ -15,6 +15,7 @@ import { SideCard } from '../../types/SideCardTypes';
 import Class from './Class';
 import QuarterUtilityButton from './QuarterUtilityButton';
 import { PlusIcon } from '@heroicons/react/24/outline';
+import { Alert } from '../../types/AlertTypes';
 
 interface QuarterProps {
   data: Course[];
@@ -22,6 +23,7 @@ interface QuarterProps {
   location: CourseLocation;
   f: PlanModificationFunctions;
   sideCard: SideCard;
+  alert: Alert;
   switches: UserOptions;
   title: string;
   color: Color;
@@ -71,6 +73,7 @@ function Quarter(props: QuarterProps) {
             course={classData}
             bookmarks={props.bookmarks}
             sideCard={props.sideCard}
+            alert={props.alert}
             location={props.location}
             f={props.f}
             switches={props.switches}

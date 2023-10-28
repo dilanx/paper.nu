@@ -75,7 +75,7 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
                 : `bg-${props.color}-100 border-${
                     props.color
                   }-300 border-opacity-60 hover:-translate-y-1 hover:shadow-md ${
-                    isDragging ? 'cursor-grab' : 'cursor-pointer'
+                    isDragging ? 'cursor-grabbing' : 'cursor-pointer'
                   }`
             }
             group m-4 transition duration-300 ease-in-out`}
@@ -125,7 +125,7 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
 
       {!props.selected && (
         <button
-          className="absolute -top-2 -right-2 z-20 hidden rounded-full bg-gray-200 p-1
+          className="absolute -right-2 -top-2 z-20 hidden rounded-full bg-gray-200 p-1
                         text-xs text-gray-500 opacity-80 transition-all duration-150 hover:bg-indigo-100 hover:text-indigo-400
                         hover:opacity-100 group-hover:block dark:bg-gray-700 dark:text-white dark:hover:text-indigo-400"
           onClick={(e) => {

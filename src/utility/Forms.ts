@@ -341,6 +341,13 @@ export function feedbackForm(): AlertFormSection[] {
     required: true,
   };
 
+  const readFaq: AlertFormFieldMultiSelect = {
+    name: 'read_faq',
+    type: 'multi-select',
+    options: ['I have read the Paper FAQ'],
+    required: true,
+  };
+
   return [
     {
       title: 'TYPE',
@@ -359,6 +366,13 @@ export function feedbackForm(): AlertFormSection[] {
         'If applicable, share details like the steps to reproduce the bug.',
       totalRowItems: 1,
       fields: [content],
+    },
+    {
+      title: 'BEFORE SUBMITTING...',
+      description:
+        'To prevent duplicate or unnecessary feedback, make sure you read the FAQ linked above.',
+      totalRowItems: 1,
+      fields: [readFaq],
     },
   ];
 }

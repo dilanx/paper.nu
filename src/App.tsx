@@ -331,7 +331,12 @@ class App extends React.Component<{}, AppState> implements AppType {
           const modeStr = mode === Mode.PLAN ? 'plan' : 'schedule';
 
           if (sharedCourse) {
-            planOpenInfo((data) => this.showSideCard(data), sharedCourse);
+            planOpenInfo(
+              (data) => this.showSideCard(data),
+              (data) => this.showAlert(data),
+              sharedCourse,
+              false
+            );
           }
 
           if (sharedSection) {

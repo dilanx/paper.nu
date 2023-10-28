@@ -191,6 +191,8 @@ export interface SaveDataOptions {
   showSection?: string | null;
 }
 
+export type UniversityQuarter = 'Fall' | 'Winter' | 'Spring' | 'Summer';
+
 export interface UniversitySchools {
   [symbol: string]: UniversitySchool;
 }

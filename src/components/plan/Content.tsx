@@ -42,6 +42,7 @@ class Content extends React.Component<ContentProps> {
             f={this.props.f}
             f2={this.props.f2}
             sideCard={this.props.sideCard}
+            alert={this.props.alert}
             contextMenuData={this.props.contextMenuData}
             contextMenu={this.props.contextMenu}
             switches={this.props.switches}

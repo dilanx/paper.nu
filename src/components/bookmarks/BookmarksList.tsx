@@ -9,11 +9,13 @@ import {
 } from '../../types/PlanTypes';
 import { SideCard } from '../../types/SideCardTypes';
 import Class from '../plan/Class';
+import { Alert } from '../../types/AlertTypes';
 
 interface BookmarksListProps {
   credit: boolean;
   bookmarks: BookmarksData;
   sideCard: SideCard;
+  alert: Alert;
   f: PlanModificationFunctions;
   switches: UserOptions;
 }
@@ -53,6 +55,7 @@ function BookmarksList(props: BookmarksListProps) {
           course={classData}
           bookmarks={props.bookmarks}
           sideCard={props.sideCard}
+          alert={props.alert}
           location={{ year: -1, quarter: props.credit ? 1 : 0 }}
           f={props.f}
           switches={props.switches}
@@ -83,7 +86,7 @@ function BookmarksList(props: BookmarksListProps) {
     <motion.div initial="hidden" animate="visible" variants={variants}>
       <div
         ref={drop}
-        className={`compact-mode relative m-4 rounded-lg border-2 px-4 pt-4 pb-8
+        className={`compact-mode relative m-4 rounded-lg border-2 px-4 pb-8 pt-4
                     ${
                       isOver
                         ? 'border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50'

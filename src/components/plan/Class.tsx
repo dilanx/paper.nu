@@ -16,11 +16,13 @@ import { SideCard } from '../../types/SideCardTypes';
 import { openInfo } from '../../utility/CourseInfo';
 import Utility from '../../utility/Utility';
 import ClassPropertyDisplay from './ClassPropertyDisplay';
+import { Alert } from '../../types/AlertTypes';
 
 interface ClassProps {
   course: Course;
   bookmarks: BookmarksData;
   sideCard: SideCard;
+  alert: Alert;
   location: CourseLocation;
   f: PlanModificationFunctions;
   switches: UserOptions;
@@ -66,9 +68,9 @@ function Class(props: ClassProps) {
             dark:bg-gray-800 border-${color}-300 compact:py-05 group w-full transform overflow-visible border-opacity-60
             text-left transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md compact:px-2 ${
               custom ? 'border-dashed' : 'border-solid'
-            } ${isDragging ? 'cursor-grab' : 'cursor-pointer'}`}
+            } ${isDragging ? 'cursor-grabbing' : 'cursor-pointer'}`}
         onClick={() =>
-          openInfo(props.sideCard, course, {
+          openInfo(props.sideCard, props.alert, course, false, {
             bookmarks: props.bookmarks,
             location: props.location,
             f: props.f,

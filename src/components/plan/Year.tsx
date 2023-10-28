@@ -23,6 +23,7 @@ import { SideCard } from '../../types/SideCardTypes';
 import Utility from '../../utility/Utility';
 import UtilityButton from '../menu/UtilityButton';
 import Quarter from './Quarter';
+import { Alert } from '../../types/AlertTypes';
 
 interface YearProps {
   data: Course[][];
@@ -31,6 +32,7 @@ interface YearProps {
   f: PlanModificationFunctions;
   f2: PlanSpecialFunctions;
   sideCard: SideCard;
+  alert: Alert;
   contextMenuData?: ContextMenuData;
   contextMenu: ContextMenu;
   switches: UserOptions;
@@ -75,6 +77,7 @@ class Year extends React.Component<YearProps, YearState> {
             location={{ year: this.props.year, quarter: index }}
             f={this.props.f}
             sideCard={this.props.sideCard}
+            alert={this.props.alert}
             switches={this.props.switches}
             title={title}
             color={color}

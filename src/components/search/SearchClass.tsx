@@ -1,6 +1,6 @@
 import Utility from '../../utility/Utility';
 import { useDrag } from 'react-dnd';
-import { BookmarkIcon } from '@heroicons/react/24/outline';
+import { BookmarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import {
   Course,
@@ -12,6 +12,10 @@ import { Color } from '../../types/BaseTypes';
 import { motion } from 'framer-motion';
 import AddButtons from './AddButtons';
 import ClassPropertyDisplay from '../plan/ClassPropertyDisplay';
+import PlanManager from '../../PlanManager';
+import { SideCard } from '../../types/SideCardTypes';
+import { Alert } from '../../types/AlertTypes';
+import { openInfo } from '../../utility/CourseInfo';
 
 const PLACEHOLDER_MESSAGE = `Don't know which specific class to take from a certain requirement category? Use a placeholder! Search for 'placeholder' to view all.`;
 
@@ -23,6 +27,8 @@ interface SearchClassProps {
   bookmarks: BookmarksData;
   f: PlanModificationFunctions;
   selected: boolean;
+  sideCard: SideCard;
+  alert: Alert;
 }
 
 function SearchClass(props: SearchClassProps) {
@@ -40,11 +46,12 @@ function SearchClass(props: SearchClassProps) {
     [props.selected]
   );
 
-  let distroStrings = Utility.convertDistros(course.distros);
-  let disciplinesStrings = Utility.convertDisciplines(course.disciplines);
-  let isPlaceholder = course.placeholder;
-  let units = parseFloat(course.units);
-  let isFavorite = props.bookmarks?.noCredit.has(course);
+  const recentOfferings = PlanManager.getOfferings(course).slice(0, 8);
+  const distroStrings = Utility.convertDistros(course.distros);
+  const disciplinesStrings = Utility.convertDisciplines(course.disciplines);
+  const isPlaceholder = course.placeholder;
+  const units = parseFloat(course.units);
+  const isFavorite = props.bookmarks?.noCredit.has(course);
   return (
     <div
       ref={drag}
@@ -54,7 +61,7 @@ function SearchClass(props: SearchClassProps) {
           : `bg-${props.color}-100 border-${
               props.color
             }-300 border-opacity-60 hover:-translate-y-1 hover:shadow-md ${
-              isDragging ? 'cursor-grab ' : 'cursor-pointer'
+              isDragging ? 'cursor-grabbing' : 'cursor-pointer'
             }`
       }
             group m-4 transition duration-300 ease-in-out`}
@@ -74,6 +81,14 @@ function SearchClass(props: SearchClassProps) {
       {course.prereqs && (
         <ClassPropertyDisplay title="PREREQUISITES" value={course.prereqs} />
       )}
+      <ClassPropertyDisplay
+        title="RECENT OFFERINGS"
+        value={
+          recentOfferings.length > 0
+            ? recentOfferings.join(', ')
+            : 'Not offered recently'
+        }
+      />
       {disciplinesStrings.length > 0 && (
         <ClassPropertyDisplay
           title="FOUNDATIONAL DISCIPLINES"
@@ -109,9 +124,6 @@ function SearchClass(props: SearchClassProps) {
             courses={props.courses}
           />
           <div className="py-2">
-            <p className="p-2 text-center text-sm font-bold text-gray-500">
-              BOOKMARKS
-            </p>
             <button
               className="mx-auto my-2 block w-4/5 rounded-md bg-indigo-500 p-0.5 font-medium text-white opacity-100 shadow-sm hover:opacity-75 active:opacity-50"
               onClick={(e) => {
@@ -143,6 +155,16 @@ function SearchClass(props: SearchClassProps) {
                 : 'Add for credit'}
             </button>
           </div>
+          <button
+            className="mx-auto my-2 flex items-center text-xs font-bold text-gray-400 hover:text-gray-500 active:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400 dark:active:text-gray-300"
+            onClick={(e) => {
+              e.stopPropagation();
+              openInfo(props.sideCard, props.alert, course, true);
+            }}
+          >
+            <span>VIEW MORE INFO</span>
+            <ChevronRightIcon className="h-4 w-4 stroke-2" />
+          </button>
         </motion.div>
       )}
 

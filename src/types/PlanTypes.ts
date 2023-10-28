@@ -55,6 +55,7 @@ export interface Course {
   prereqs?: string;
   distros?: string;
   disciplines?: string;
+  terms?: string[];
   placeholder?: boolean;
   legacy?: boolean;
   custom?: boolean;

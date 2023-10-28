@@ -1,9 +1,10 @@
 import debug from 'debug';
 import localforage from 'localforage';
-import { getPlanData, getSubjectData } from './DataManager';
+import { getPlanData, getSubjectData, getTermName } from './DataManager';
 import {
   SaveState,
   SubjectData,
+  UniversityQuarter,
   UniversitySchools,
   UserOptions,
 } from './types/BaseTypes';
@@ -16,6 +17,7 @@ import {
 } from './types/PlanTypes';
 import { FilterOptions } from './types/SearchTypes';
 import { DisciplineMap, DistroMap } from './utility/Constants';
+import Utility from './utility/Utility';
 const ds = debug('plan-manager:ser');
 
 let subjectData: SubjectData | undefined = undefined;
@@ -329,6 +331,32 @@ const PlanManager = {
         return s;
       }
     }
+  },
+
+  getOfferings: (course: Course, sortByOldest = false) => {
+    return (
+      course.terms
+        ?.sort((a, b) =>
+          sortByOldest ? a.localeCompare(b) : b.localeCompare(a)
+        )
+        .map((term) => getTermName(term) || 'Unknown Term') ?? []
+    );
+  },
+
+  getOfferingsOrganized: (course: Course) => {
+    const offerings = PlanManager.getOfferings(course, true);
+    const organized: { [acadYear: string]: string[] } = {};
+    for (const offering of offerings) {
+      const [year, quarter] = offering.split(' ');
+      const acadYear = Utility.getAcadYear(
+        parseInt(year),
+        quarter as UniversityQuarter
+      );
+      if (!organized[acadYear]) organized[acadYear] = [];
+      organized[acadYear].push(offering);
+    }
+
+    return organized;
   },
 
   load: async (serializedData?: SerializedPlanData) => {

@@ -2,6 +2,8 @@ import {
   AcademicCapIcon,
   ArrowPathIcon,
   BuildingLibraryIcon,
+  CalendarDaysIcon,
+  ChevronRightIcon,
   ListBulletIcon,
 } from '@heroicons/react/24/outline';
 import PlanManager from '../PlanManager';
@@ -18,12 +20,49 @@ import {
   SideCardItemData,
 } from '../types/SideCardTypes';
 import Utility from './Utility';
+import { ReactNode } from 'react';
+import { Alert } from '../types/AlertTypes';
 
 function getDetails(
   detail: string,
-  course: Course
-): [IconElement, string | undefined] | undefined {
+  course: Course,
+  alert: Alert
+): [IconElement, ReactNode] | undefined {
+  const offerings = PlanManager.getOfferings(course).slice(0, 8);
   switch (detail) {
+    case 'RECENT OFFERINGS':
+      return [
+        CalendarDaysIcon,
+        course.custom ? undefined : (
+          <>
+            <p className="text-sm">
+              {offerings.length > 0
+                ? offerings.join(', ')
+                : 'Not offered recently'}
+            </p>
+            <button
+              className="inline-flex items-center text-xs font-bold text-gray-400 hover:text-purple-500 active:text-purple-600 dark:text-gray-500 dark:hover:text-purple-300 dark:active:text-purple-200"
+              onClick={() => {
+                alert({
+                  icon: CalendarDaysIcon,
+                  title: 'Historic Offerings',
+                  subtitle: course.id,
+                  message: `All offerings for ${course.id} since 2020 Fall.`,
+                  color: 'purple',
+                  cancelButton: 'Close',
+                  extras: Utility.objAsAlertExtras(
+                    PlanManager.getOfferingsOrganized(course),
+                    (a, b) => b.localeCompare(a)
+                  ),
+                });
+              }}
+            >
+              <span>VIEW ALL OFFERINGS</span>
+              <ChevronRightIcon className="h-4 w-4 stroke-2" />
+            </button>
+          </>
+        ),
+      ];
     case 'PREREQUISITES':
       return [ListBulletIcon, course.prereqs];
     case 'FOUNDATIONAL DISCIPLINES':
@@ -41,7 +80,7 @@ function getDetails(
           : undefined,
       ];
     case 'UNITS':
-      return [AcademicCapIcon, course.units];
+      return [AcademicCapIcon, parseFloat(course.units).toFixed(2).toString()];
     case 'REPEATABLE FOR CREDIT':
       return [ArrowPathIcon, course.repeatable ? 'Yes' : 'No'];
   }
@@ -55,12 +94,15 @@ interface PlanModificationWithinInfo {
 
 export function openInfo(
   sideCard: SideCard,
+  alert: Alert,
   course: Course,
+  fromSearch: boolean,
   mod?: PlanModificationWithinInfo
 ) {
   const placeholder = course.placeholder;
 
   const items = [
+    'RECENT OFFERINGS',
     'PREREQUISITES',
     'FOUNDATIONAL DISCIPLINES',
     'DISTRIBUTION AREAS',
@@ -73,6 +115,8 @@ export function openInfo(
       ? 'COURSE INFO (CUSTOM)'
       : mod
       ? 'COURSE INFO'
+      : fromSearch
+      ? 'COURSE INFO (SEARCH)'
       : 'COURSE INFO (SHARE)',
     themeColor: PlanManager.getCourseColor(course.id),
     title: placeholder ? 'Placeholder' : course.id,
@@ -84,7 +128,7 @@ export function openInfo(
       ? `If you aren't sure which course to take to fulfill a certain requirement, you can use a placeholder! Search using 'placeholder' or by requirement category to find placeholders.`
       : course.description,
     items: items.reduce<SideCardItemData[]>((filtered, item) => {
-      const [icon, value] = getDetails(item, course) ?? [];
+      const [icon, value] = getDetails(item, course, alert) ?? [];
       if (value) {
         filtered.push({
           key: item,

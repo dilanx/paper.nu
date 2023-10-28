@@ -1,8 +1,8 @@
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import Account from '../Account';
-import { AlertData } from '../types/AlertTypes';
-import { Color, InfoSetData } from '../types/BaseTypes';
+import { AlertData, AlertDataExtra } from '../types/AlertTypes';
+import { Color, InfoSetData, UniversityQuarter } from '../types/BaseTypes';
 import { PlanErrorLocation } from '../types/ErrorTypes';
 import {
   ScheduleDataMap,
@@ -550,6 +550,35 @@ let Utility = {
           obj1[key] === obj2[key]
       )
     );
+  },
+
+  getAcadYear: (year: number, quarter: UniversityQuarter) => {
+    switch (quarter) {
+      case 'Fall':
+        return `${year}-${year + 1}`;
+      case 'Winter':
+      case 'Spring':
+      case 'Summer':
+        return `${year - 1}-${year}`;
+    }
+  },
+
+  objAsAlertExtras: (
+    obj: {
+      [key: string]: string | string[];
+    },
+    sortFn: (a: string, b: string) => number = (a, b) => a.localeCompare(b)
+  ): AlertDataExtra[] => {
+    const extras: AlertDataExtra[] = [];
+    const keys = Object.keys(obj).sort(sortFn);
+    for (const title of keys) {
+      const content = obj[title];
+      extras.push({
+        title,
+        content: typeof content === 'string' ? content : content.join(', '),
+      });
+    }
+    return extras;
   },
 };
 

@@ -23,6 +23,7 @@ module.exports = {
       crosshair: 'crosshair',
       'zoom-in': 'zoom-in',
       grab: 'grab',
+      grabbing: 'grabbing',
     },
     extend: {
       colors: {
