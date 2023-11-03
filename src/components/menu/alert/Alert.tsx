@@ -9,7 +9,7 @@ import {
 } from '../../../types/AlertTypes';
 import { UserOptions } from '../../../types/BaseTypes';
 import { formIsValid } from '../../../utility/AlertFormInputValidation';
-import SelectMenu from '../../generic/SelectMenu';
+import ScrollSelectMenu from '../../generic/ScrollSelectMenu';
 import { TabButton, Tabs } from '../Tabs';
 import { getAlertEditButtons } from './AlertEditButtons';
 import { getAlertExtras } from './AlertExtras';
@@ -71,6 +71,13 @@ export default function Alert({
     }
   }, [data.form, formValues]);
 
+  const [context, setContext] = useState(data.custom?.initialContext || {});
+
+  useEffect(() => {
+    setBadInput(!!context.error);
+    setErrorMessage(context.error || null);
+  }, [context.error]);
+
   const initialFocus = useRef(null);
   const confirmButton = useRef(null);
 
@@ -80,7 +87,7 @@ export default function Alert({
 
   function confirm() {
     setIsOpen(false);
-    onConfirm({ inputText: textValue, textViewValue: textViewData });
+    onConfirm({ inputText: textValue, textViewValue: textViewData, context });
   }
 
   const extraList = getAlertExtras(data.extras);
@@ -192,6 +199,11 @@ export default function Alert({
                         </div>
                       )}
                       {extraList.length > 0 && extraList}
+                      {data.custom && (
+                        <div>
+                          {data.custom.content(context, (c) => setContext(c))}
+                        </div>
+                      )}
                       {data.textInput && (
                         <div>
                           <input
@@ -315,13 +327,28 @@ export default function Alert({
                           )}
                         </div>
                       )}
+
                       {data.selectMenu && (
-                        <SelectMenu
-                          options={data.selectMenu.options}
-                          value={textValue}
-                          setValue={(value) => setTextValue(value)}
-                          color={data.color}
-                        />
+                        // <SelectMenuLegacy
+                        //   options={data.selectMenu.options}
+                        //   value={textValue}
+                        //   setValue={(value) => setTextValue(value)}
+                        //   color={data.color}
+                        // />
+                        // <SelectMenu />
+                        <div className="my-2 flex gap-4">
+                          <ScrollSelectMenu
+                            className="flex-1"
+                            options={[
+                              { value: '1' },
+                              { value: '2' },
+                              { value: '3' },
+                            ]}
+                            selectedValue={'3'}
+                            setSelectedValue={() => {}}
+                          />
+                          {/* <ScrollSelectMenu className="flex-1" /> */}
+                        </div>
                       )}
                       {data.notice && getAlertNotice(data.notice)}
                       {data.disableConfirmButton && (

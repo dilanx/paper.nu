@@ -216,6 +216,12 @@ export interface UniversityLocation {
   lon: number;
 }
 
+export interface OrganizedTerms {
+  [year: string]: {
+    [quarter: string]: string | null;
+  };
+}
+
 /**
  * The state of auto save
  * - idle: no changes have been made

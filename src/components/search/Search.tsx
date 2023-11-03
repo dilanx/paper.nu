@@ -16,7 +16,7 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';
-import { getTerms } from '../../DataManager';
+import { getOrganizedTerms, getTermName } from '../../DataManager';
 import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
 import { filterExists, searchPlan, searchSchedule } from '../../Search';
@@ -50,6 +50,7 @@ import {
 } from '../../utility/Forms';
 import Utility from '../../utility/Utility';
 import CampusMinimap from '../map/CampusMinimap';
+import ChangeTerm from '../menu/ChangeTerm';
 import MiniContentBlock from './MiniContentBlock';
 import SearchBrowse from './SearchBrowse';
 import SearchButton from './SearchButton';
@@ -89,20 +90,40 @@ export function switchTermAlert(
   switchTerm: (termId: string) => void,
   currentTermId?: string
 ): AlertData {
+  const terms = getOrganizedTerms();
+  const [year, quarter] =
+    (currentTermId && getTermName(currentTermId)?.split(' ')) || [];
+
   return {
     title: 'Change term',
     icon: CalendarDaysIcon,
     message:
       'Switching terms will allow you to create a schedule for a different quarter. This will clear everything on your current schedule.',
     color: 'violet',
-    selectMenu: {
-      options:
-        getTerms()?.sort((a, b) => parseInt(b.value) - parseInt(a.value)) || [],
-      defaultValue: currentTermId,
-    },
+    textHTML: !terms ? (
+      <span className="text-red-500">
+        Something went wrong when trying to load terms.
+      </span>
+    ) : undefined,
+    custom: terms
+      ? {
+          content: (context, setContext) => (
+            <ChangeTerm
+              terms={terms}
+              context={context}
+              setContext={setContext}
+            />
+          ),
+          initialContext: {
+            year,
+            quarter,
+          },
+        }
+      : undefined,
     confirmButton: 'Change',
     cancelButton: 'Cancel',
-    action: ({ inputText: termId }) => {
+    action: ({ context }) => {
+      const termId = terms?.[context.year][context.quarter];
       if (termId) {
         switchTerm(termId);
       }

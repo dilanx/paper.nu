@@ -136,9 +136,34 @@ export interface SelectMenuOption {
   label?: string;
 }
 
+// export type AlertScrollSelectMenuFn = (selected: {
+//   [name: string]: string;
+// }) => AlertScrollSelectMenu;
+
+// export interface AlertScrollSelectMenu {
+//   name: string;
+//   options: SelectMenuOption[];
+//   defaultValue?: string;
+// }
+
+// export interface AlertScrollSelectMenuSelected {
+//   [name: string]: string;
+// }
+
+/**
+ * error key indicates error
+ */
+export type AlertContext = {
+  error?: string | null;
+  [key: string]: any;
+};
+
+export type AlertContextFn = (context: AlertContext) => void;
+
 export interface AlertActionData {
   inputText?: string;
   textViewValue?: string;
+  context?: any;
 }
 
 export interface AlertData {
@@ -182,6 +207,10 @@ export interface AlertData {
   color: Color;
   cancelButton?: string;
   notice?: string;
+  custom?: {
+    content: (context: AlertContext, setContext: AlertContextFn) => JSX.Element;
+    initialContext?: AlertContext;
+  };
   action?: (data: AlertActionData) => void;
 }
 

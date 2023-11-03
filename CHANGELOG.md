@@ -27,6 +27,7 @@ _2023-XX-XX_
 - **A TON OF OTHER THINGS**
   - The schedule is now gray instead of green so it blends in well with the rest of the UI.
   - Share a link directly to any course or section.
+  - The term selection menu (selecting year and quarter) was completely redesigned to be easier to use as the number of terms Paper supports grows.
   - Open a course's info menu in plan view right from search by pressing the "view more info" button after selecting a class in your search results.
   - Actions for a given year on the plan view have been moved into a context menu (press the three lines at the top right of a year to open).
   - Subjects with missing colors now have a color.

@@ -2,6 +2,7 @@ import debug from 'debug';
 import localforage from 'localforage';
 import {
   DataMapInformation,
+  OrganizedTerms,
   SubjectDataCache,
   SubjectsAndSchools,
 } from './types/BaseTypes';
@@ -18,6 +19,17 @@ localforage.config({
   driver: [localforage.INDEXEDDB, localforage.LOCALSTORAGE],
 });
 
+export const QUARTERS: { [quarter: string]: number } = {
+  Winter: 0,
+  Spring: 1,
+  Summer: 2,
+  Fall: 3,
+};
+
+export function getLatestTermId() {
+  return info?.latest;
+}
+
 export function getTermName(termId: string) {
   return info?.terms[termId]?.name;
 }
@@ -28,6 +40,29 @@ export function getTerms() {
     value: termId,
     label: info?.terms[termId].name,
   }));
+}
+
+export function getOrganizedTerms(): OrganizedTerms | undefined {
+  if (!info) return;
+  const organizedTerms: OrganizedTerms = {};
+
+  const termIds = Object.keys(info.terms);
+  for (const termId of termIds) {
+    const termInfo = info.terms[termId];
+    const [year, quarter] = termInfo.name.split(' ');
+    if (!organizedTerms[year]) {
+      organizedTerms[year] = {
+        Winter: null,
+        Spring: null,
+        Summer: null,
+        Fall: null,
+      };
+    }
+
+    organizedTerms[year][quarter] = termId;
+  }
+
+  return organizedTerms;
 }
 
 export function getTermInfo(termId?: string) {
