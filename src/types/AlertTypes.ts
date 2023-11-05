@@ -131,6 +131,11 @@ export interface AlertFormResponse {
   [field: string]: string | undefined;
 }
 
+export interface AlertNotice {
+  type: 'tip'; // add other options if necessary
+  message: string;
+}
+
 export interface SelectMenuOption {
   value: string;
   label?: string;
@@ -206,7 +211,7 @@ export interface AlertData {
   disableConfirmButton?: string;
   color: Color;
   cancelButton?: string;
-  notice?: string;
+  notice?: AlertNotice;
   custom?: {
     content: (context: AlertContext, setContext: AlertContextFn) => JSX.Element;
     initialContext?: AlertContext;

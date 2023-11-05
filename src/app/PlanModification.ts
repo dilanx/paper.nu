@@ -27,6 +27,23 @@ function courseConfirmationPrompts(
   const isPlaceholder = course.placeholder;
   const repeatable = course.repeatable;
 
+  const numCourses = data.courses[year][quarter].length;
+  if (numCourses >= 32) {
+    app.showAlert({
+      title: 'Too many courses',
+      message: 'Plans cannot have more than 32 courses in a single quarter.',
+      notice: {
+        type: 'tip',
+        message:
+          'If you want to test out multiple potential plans, create multiple plans using the "Plans" tab!',
+      },
+      cancelButton: 'Close',
+      color: 'red',
+      icon: ExclamationTriangleIcon,
+    });
+    return;
+  }
+
   const exists = PlanManager.duplicateCourse(course, data);
 
   if (!repeatable && exists && !isPlaceholder && !ignoreExistCheck) {
@@ -56,8 +73,8 @@ function courseConfirmationPrompts(
 
   if (unitCount > 5.5) {
     app.showAlert({
-      title: 'Too many classes',
-      message: `With app course, you'll have ${unitCount} units worth of classes app quarter, which is over Northwestern's maximum of 5.5 units.`,
+      title: 'Too many courses',
+      message: `With this course, you'll have ${unitCount} units worth of courses this quarter, which is over Northwestern's maximum of 5.5 units.`,
       cancelButton: 'Go back',
       confirmButton: 'Add anyway',
       color: 'red',
@@ -201,6 +218,24 @@ export function addBookmark(app: AppType, course: Course, forCredit: boolean) {
   }
 
   const bookmarks = app.state.data.bookmarks;
+  if (
+    (forCredit && bookmarks.forCredit.size >= 64) ||
+    (!forCredit && bookmarks.noCredit.size >= 64)
+  ) {
+    app.showAlert({
+      title: 'Too many bookmarks',
+      message:
+        'Plans cannot have more than 64 courses in each bookmark list in a single quarter.',
+      notice: {
+        type: 'tip',
+        message:
+          'If you want to test out multiple potential plans, create multiple plans using the "Plans" tab!',
+      },
+      cancelButton: 'Close',
+      color: 'red',
+      icon: ExclamationTriangleIcon,
+    });
+  }
   if (forCredit) {
     bookmarks.forCredit.add(course);
   } else {

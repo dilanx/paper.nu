@@ -39,7 +39,7 @@ _2023-XX-XX_
   - UI elements on the map now look nicer.
   - Legacy plan and schedule URLs are completely discontinued. You can no longer load them from settings.
   - The Plan Northwestern and salad.nu bubbles in the about menu have been removed. This information is in the project attributions, which is now linked in the menu instead.
-  - A bunch of other UI updates, bug fixes, and other small changes to improve accessibility and user experience.
+  - A bunch of other UI updates, bug fixes, and other small changes to improve functionality, accessibility and user experience.
 
 ### 2.6.2
 

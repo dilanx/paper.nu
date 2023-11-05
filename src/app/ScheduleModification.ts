@@ -22,6 +22,23 @@ function courseConfirmationPrompts(
 ) {
   const data = app.state.schedule;
 
+  const numSections = Object.keys(data.schedule).length;
+  if (numSections >= 32) {
+    app.showAlert({
+      title: 'Too many sections',
+      message: 'Schedules cannot have more than 32 sections at a time.',
+      notice: {
+        type: 'tip',
+        message:
+          'If you want to test out multiple potential schedules, create multiple schedules using the "Schedules" tab!',
+      },
+      cancelButton: 'Close',
+      color: 'red',
+      icon: ExclamationTriangleIcon,
+    });
+    return;
+  }
+
   const overlaps = ScheduleManager.sectionsOverlap(section, data.schedule);
 
   if (overlaps && !section.custom && app.state.switches.get.schedule_warnings) {
@@ -57,7 +74,7 @@ export function addSection(app: AppType, section: ScheduleSection) {
 }
 
 export function removeSection(app: AppType, section: ScheduleSection) {
-  let schedule = app.state.schedule;
+  const schedule = app.state.schedule;
   delete schedule.schedule[section.section_id];
   d('schedule section removed: %s', section.section_id);
   app.setState({
@@ -67,7 +84,24 @@ export function removeSection(app: AppType, section: ScheduleSection) {
 }
 
 export function addScheduleBookmark(app: AppType, course: ScheduleCourse) {
-  let schedule = app.state.schedule;
+  const schedule = app.state.schedule;
+  if (schedule.bookmarks.length >= 64) {
+    app.showAlert({
+      title: 'Too many bookmarks',
+      message:
+        'Schedules cannot have more than 64 courses bookmarked at a time.',
+      notice: {
+        type: 'tip',
+        message:
+          'If you want to test out multiple potential schedules, create multiple schedules using the "Schedules" tab!',
+      },
+      cancelButton: 'Close',
+      color: 'red',
+      icon: ExclamationTriangleIcon,
+    });
+    return;
+  }
+
   if (
     schedule.bookmarks.some(
       (bookmarkCourse) => bookmarkCourse.course_id === course.course_id
