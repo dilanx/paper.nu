@@ -16,6 +16,12 @@ export interface AuthenticationResponseToken {
   error?: string;
 }
 
+export interface OperationOptions {
+  body?: object;
+  useAuth?: boolean;
+  autoAuth?: boolean;
+}
+
 export interface GetResponse {
   success: boolean;
   documents: Document[];

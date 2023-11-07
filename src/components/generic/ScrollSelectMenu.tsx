@@ -7,6 +7,7 @@ interface ScrollSelectMenuProps {
   selectedValue?: string | null;
   setSelectedValue: (value: string | null) => void;
   className?: string;
+  sm?: boolean;
   leftPiece?: boolean;
   middlePiece?: boolean;
   rightPiece?: boolean;
@@ -17,6 +18,7 @@ export default function ScrollSelectMenu({
   selectedValue,
   setSelectedValue,
   className,
+  sm,
   leftPiece,
   middlePiece,
   rightPiece,
@@ -126,7 +128,9 @@ export default function ScrollSelectMenu({
               }
             }}
             tabIndex={0}
-            className={`relative rounded-md p-1 text-center text-xl font-bold transition-all duration-200 ${
+            className={`relative rounded-md p-1 text-center ${
+              sm ? 'text-base' : 'text-xl'
+            } font-bold transition-all duration-200 ${
               option.disabled
                 ? 'cursor-not-allowed bg-gray-100 text-gray-300 line-through dark:bg-gray-800 dark:text-gray-600'
                 : `cursor-pointer ${

@@ -22,7 +22,7 @@ import {
 import Utility from '../../utility/Utility';
 import { ReactNode } from 'react';
 import { Alert } from '../../types/AlertTypes';
-import Ratings from '../ratings/Ratings';
+import RatingsTag from '../rating/RatingsTag';
 
 function getDetails(
   detail: string,
@@ -128,7 +128,7 @@ export function openInfo(
     message: placeholder
       ? `If you aren't sure which course to take to fulfill a certain requirement, you can use a placeholder! Search using 'placeholder' or by requirement category to find placeholders.`
       : course.description,
-    toolbar: <Ratings />,
+    toolbar: <RatingsTag />,
     items: items.reduce<SideCardItemData[]>((filtered, item) => {
       const [icon, value] = getDetails(item, course, alert) ?? [];
       if (value) {

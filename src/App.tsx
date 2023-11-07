@@ -89,6 +89,7 @@ import {
   updateRecentShare,
 } from './app/RecentShare';
 import { RecentShareModificationFunctions } from './types/AccountTypes';
+import Ratings from './components/rating/Ratings';
 const d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
@@ -239,6 +240,10 @@ class App extends React.Component<{}, AppState> implements AppType {
         multiClear: (interactions) => this.interactionMultiClear(interactions),
       },
       recentShare: getRecentShare(),
+      // TODO: temp
+      ratings: {
+        course: 'COMP_SCI 111-0',
+      },
     };
   }
 
@@ -650,6 +655,17 @@ class App extends React.Component<{}, AppState> implements AppType {
                   localStorage.setItem('v', VERSION_NO_PATCH);
                   this.setState({ clp: false });
                 }}
+              />
+            )}
+
+            {this.state.ratings && (
+              <Ratings
+                data={this.state.ratings}
+                alert={(alertData) => {
+                  this.showAlert(alertData);
+                }}
+                switches={switches}
+                onClose={() => this.setState({ ratings: undefined })}
               />
             )}
 

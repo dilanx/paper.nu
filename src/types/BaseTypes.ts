@@ -1,5 +1,9 @@
 import { Component, ComponentProps } from 'react';
 import { Mode } from '../utility/Constants';
+import {
+  RecentShareItem,
+  RecentShareModificationFunctions,
+} from './AccountTypes';
 import { AlertData } from './AlertTypes';
 import {
   Course,
@@ -15,10 +19,7 @@ import {
 } from './ScheduleTypes';
 import { SearchDefaults, SearchModificationFunctions } from './SearchTypes';
 import { SideCardData } from './SideCardTypes';
-import {
-  RecentShareItem,
-  RecentShareModificationFunctions,
-} from './AccountTypes';
+import { RatingsViewData } from './RatingTypes';
 
 export interface AppState {
   data: PlanData;
@@ -40,6 +41,7 @@ export interface AppState {
   banner?: boolean;
   clp?: boolean;
   map?: boolean;
+  ratings?: RatingsViewData;
   latestTermId?: string;
   contextMenuData?: ContextMenuData;
   recentShare?: RecentShareItem[];

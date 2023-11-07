@@ -8,6 +8,7 @@ import {
   DocumentCache,
   DocumentType,
   GetResponse,
+  OperationOptions,
   SharePostResponse,
   UpdateResponse,
   UserInformation,
@@ -17,6 +18,7 @@ import { INFO_VERSIONS } from './utility/InfoSets';
 import { PaperError, PaperExpectedAuthError } from './utility/PaperError';
 import Links from './utility/StaticLinks';
 import Utility from './utility/Utility';
+import { CourseRatings } from './types/RatingTypes';
 const da = debug('account:auth');
 const dh = debug('account:http');
 const dp = debug('account:op');
@@ -118,17 +120,20 @@ async function authLogout(): Promise<ConnectionResponse> {
 async function operation<T>(
   endpoint: string,
   method: string,
-  body?: object,
-  autoAuth = true
+  { body, useAuth = true, autoAuth = true }: OperationOptions = {}
 ): Promise<T | undefined> {
   dh('%s %s (body: %o)', method, endpoint, body);
   try {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+    if (useAuth) {
+      headers['Authorization'] = `Bearer ${localStorage.getItem('t')}`;
+    }
+
     const response = await fetch(Links.SERVER + endpoint, {
       method: method,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('t')}`,
-      },
+      headers,
       body: body ? JSON.stringify(body) : undefined,
     });
 
@@ -145,7 +150,7 @@ async function operation<T>(
 
     let res = await response.json();
     if (!response.ok) {
-      throw new PaperError(res.error as string);
+      throw new PaperError(res.error as string, response.status);
     }
 
     return res as T;
@@ -193,12 +198,9 @@ let Account = {
       return Promise.resolve(cache.user);
     }
     dp('user: cache miss');
-    const res = await operation<UserInformation>(
-      '/user',
-      'GET',
-      undefined,
-      false
-    );
+    const res = await operation<UserInformation>('/user', 'GET', {
+      autoAuth: false,
+    });
     if (res) cache.user = res;
     return res;
   },
@@ -217,8 +219,7 @@ let Account = {
     const res = await operation<GetResponse>(
       `/paper/documents?type=${getTypeId(type)}`,
       'GET',
-      undefined,
-      autoAuth
+      { autoAuth }
     );
     if (updateCache && res) cache[type] = res.documents;
     return res?.documents;
@@ -230,9 +231,11 @@ let Account = {
   ) => {
     dp(`${type}: ${body ? 'duplicate' : 'create'}`);
     const res = await operation<CreateResponse>('/paper/documents', 'POST', {
-      type: getTypeId(type),
-      name,
-      ...(body || {}),
+      body: {
+        type: getTypeId(type),
+        name,
+        ...(body || {}),
+      },
     });
 
     if (!cache[type]) cache[type] = await Account.get(type, true, false);
@@ -247,7 +250,7 @@ let Account = {
     const res = await operation<UpdateResponse>(
       `/paper/documents/${id}`,
       'PATCH',
-      { ...body, type: type === 'plans' ? 1 : 2 }
+      { body: { ...body, type: type === 'plans' ? 1 : 2 } }
     );
 
     return await updateCache(type, res?.document);
@@ -268,7 +271,7 @@ let Account = {
   feedback: async (data: AlertFormResponse) => {
     dp(`feedback`);
     const versions = await Utility.initializeInfoSet(INFO_VERSIONS);
-    await operation(`/paper/feedback`, 'POST', { ...data, versions });
+    await operation(`/paper/feedback`, 'POST', { body: { ...data, versions } });
   },
   getPlanName: (planId: string) => {
     if (planId === 'None') return 'None';
@@ -313,6 +316,19 @@ let Account = {
   getSchedule: (scheduleId: string) => {
     if (!scheduleId || scheduleId === 'None') return undefined;
     return cache.schedules?.find((schedule) => schedule.id === scheduleId);
+  },
+  getBasicRating: async (course: string) => {
+    dp(`rating: get basic for %s`, course);
+  },
+  getDetailedRatings: async (course: string) => {
+    dp(`rating: get detailed for %s`, course);
+    const response = await operation<CourseRatings>(
+      `/paper/ratings/detailed?course=${encodeURIComponent(course)}`,
+      'GET',
+      { autoAuth: false }
+    );
+
+    return response;
   },
 };
 
