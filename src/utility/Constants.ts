@@ -55,3 +55,5 @@ export const DisciplineMap: { [key: string]: number } = {
   'FD-LA': 6,
   'FD-I': 7,
 };
+
+export const TIME_COMMITMENT_LEVELS = ['0-3', '4-8', '9-14', '14-20', '20+'];

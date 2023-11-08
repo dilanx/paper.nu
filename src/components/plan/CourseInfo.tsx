@@ -128,7 +128,7 @@ export function openInfo(
     message: placeholder
       ? `If you aren't sure which course to take to fulfill a certain requirement, you can use a placeholder! Search using 'placeholder' or by requirement category to find placeholders.`
       : course.description,
-    toolbar: <RatingsTag />,
+    toolbar: !course.custom ? <RatingsTag /> : undefined,
     items: items.reduce<SideCardItemData[]>((filtered, item) => {
       const [icon, value] = getDetails(item, course, alert) ?? [];
       if (value) {

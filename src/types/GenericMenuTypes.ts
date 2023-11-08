@@ -6,3 +6,10 @@ export interface ScrollSelectMenuOption {
   disabled?: boolean;
   color?: Color;
 }
+
+export interface BarChartValue {
+  value: number;
+  label: string;
+}
+
+export interface BarChartData {}

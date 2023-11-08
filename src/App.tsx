@@ -242,7 +242,7 @@ class App extends React.Component<{}, AppState> implements AppType {
       recentShare: getRecentShare(),
       // TODO: temp
       ratings: {
-        course: 'COMP_SCI 111-0',
+        course: 'COMP_SCI 110-0',
       },
     };
   }
