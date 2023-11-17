@@ -24,6 +24,7 @@ import Utility from '../../utility/Utility';
 import UtilityButton from '../menu/UtilityButton';
 import Quarter from './Quarter';
 import { Alert } from '../../types/AlertTypes';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface YearProps {
   data: Course[][];
@@ -33,6 +34,7 @@ interface YearProps {
   f2: PlanSpecialFunctions;
   sideCard: SideCard;
   alert: Alert;
+  openRatings: OpenRatingsFn;
   contextMenuData?: ContextMenuData;
   contextMenu: ContextMenu;
   switches: UserOptions;
@@ -78,6 +80,7 @@ class Year extends React.Component<YearProps, YearState> {
             f={this.props.f}
             sideCard={this.props.sideCard}
             alert={this.props.alert}
+            openRatings={this.props.openRatings}
             switches={this.props.switches}
             title={title}
             color={color}

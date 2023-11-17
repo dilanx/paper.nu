@@ -28,13 +28,13 @@ function MultiSelectInput({
         const checked = value.includes(option);
         return (
           <label
-            className="group flex items-center gap-1 font-medium text-gray-500 dark:text-gray-300"
+            className="group flex cursor-pointer items-center gap-1 font-medium text-gray-500 dark:text-gray-300"
             key={`msi-${title}-${option}`}
           >
             <div className="relative flex items-center justify-center">
               <input
                 type="checkbox"
-                className="h-4 w-4 appearance-none rounded-sm border-2
+                className="h-4 w-4 cursor-pointer appearance-none rounded-sm border-2
             border-gray-400 checked:border-black checked:bg-black
             group-hover:border-gray-500 checked:group-hover:border-gray-700 checked:group-hover:bg-gray-700
             group-active:border-gray-600 checked:group-active:border-gray-600 checked:group-active:bg-gray-600

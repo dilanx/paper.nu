@@ -9,6 +9,7 @@ import {
 } from '../../types/ScheduleTypes';
 import { SideCard } from '../../types/SideCardTypes';
 import SearchScheduleClass from '../search/SearchScheduleClass';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface ScheduleBookmarksListProps {
   schedule: ScheduleData;
@@ -16,6 +17,7 @@ interface ScheduleBookmarksListProps {
   interactions: ScheduleInteractions;
   sideCard: SideCard;
   alert: Alert;
+  openRatings: OpenRatingsFn;
 }
 
 const variants = {
@@ -54,6 +56,7 @@ function ScheduleBookmarksList(props: ScheduleBookmarksListProps) {
           fromBookmarks={true}
           sideCard={props.sideCard}
           alert={props.alert}
+          openRatings={props.openRatings}
           key={`bookmark-${course.course_id}`}
         />
       );
@@ -72,7 +75,7 @@ function ScheduleBookmarksList(props: ScheduleBookmarksListProps) {
 
   return (
     <motion.div initial="hidden" animate="visible" variants={variants}>
-      <div className="compact-mode relative m-4 space-y-3 rounded-lg border-2 border-indigo-500 px-1 pt-4 pb-8 shadow-lg">
+      <div className="compact-mode relative m-4 space-y-3 rounded-lg border-2 border-indigo-500 px-1 pb-8 pt-4 shadow-lg">
         <p className="text-md m-0 p-0 text-center font-bold text-gray-600 dark:text-gray-400">
           BOOKMARKED COURSES
         </p>

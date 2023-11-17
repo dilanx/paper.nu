@@ -7,7 +7,11 @@ import {
   SubjectsAndSchools,
 } from './types/BaseTypes';
 import { PlanDataCache, RawCourseData } from './types/PlanTypes';
-import { ScheduleCourse, ScheduleDataCache } from './types/ScheduleTypes';
+import {
+  ScheduleCourse,
+  ScheduleDataCache,
+  TermInfo,
+} from './types/ScheduleTypes';
 import { plan, schedule, subjectsAndSchools } from './utility/DataMap';
 import Links from './utility/StaticLinks';
 const d = debug('data-manager');
@@ -34,11 +38,11 @@ export function getTermName(termId: string) {
   return info?.terms[termId]?.name;
 }
 
-export function getTerms() {
+export function getTerms(): TermInfo[] | undefined {
   if (!info) return;
   return Object.keys(info.terms).map((termId) => ({
-    value: termId,
-    label: info?.terms[termId].name,
+    id: termId,
+    name: info?.terms[termId].name,
   }));
 }
 
@@ -176,7 +180,11 @@ export async function getScheduleData(
     const data = await localforage.getItem<ScheduleDataCache>(loc);
     if (data) {
       if (oldestCache < 0 || data.cacheUpdated < oldestTime) {
-        if (lockedTermId && data.termId === lockedTermId) {
+        if (
+          lockedTermId &&
+          data.termId === lockedTermId &&
+          data.termId !== termId
+        ) {
           d(
             'schedule data: cache is for locked term %s, skipping (%s)',
             lockedTermId,
@@ -191,6 +199,14 @@ export async function getScheduleData(
       if (data.termId === termId) {
         if (data.dataUpdated === info.terms[termId].updated) {
           d('schedule data: cache hit');
+          return {
+            termId,
+            data: schedule(data.data, termId),
+          };
+        } else if (lockedTermId && data.termId === lockedTermId) {
+          d(
+            'schedule data: cache hit, requires update but is locked, skipping update'
+          );
           return {
             termId,
             data: schedule(data.data, termId),
@@ -252,6 +268,7 @@ export async function getScheduleData(
 }
 
 export async function clearCache() {
+  d('clearing course data cache');
   const cacheLocations = [
     'subjects',
     'plan',
@@ -262,4 +279,16 @@ export async function clearCache() {
   for (const loc of cacheLocations) {
     await localforage.removeItem(loc);
   }
+  d('course data cache cleared');
+}
+
+export async function clearRatingsCache() {
+  d('clearing ratings cache');
+  const keys = await localforage.keys();
+  for (const key of keys) {
+    if (key.startsWith('ratings.')) {
+      await localforage.removeItem(key);
+    }
+  }
+  d('ratings cache cleared');
 }

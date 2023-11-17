@@ -11,7 +11,15 @@ import {
 import { Color, TextValidator } from '../types/BaseTypes';
 import { Time } from '../types/ScheduleTypes';
 import { FilterOptions } from '../types/SearchTypes';
-import { Components, Days, Disciplines, Distros } from './Constants';
+import {
+  Components,
+  Days,
+  Disciplines,
+  Distros,
+  GRADE_LEVELS,
+  OVERALL_LEVELS,
+  TIME_COMMITMENT_LEVELS,
+} from './Constants';
 import Utility from './Utility';
 
 export function scheduleSearchFilterForm(
@@ -315,6 +323,50 @@ export function customSectionForm(
       title: 'COLOR',
       totalRowItems: 1,
       fields: [col],
+    },
+  ];
+}
+
+export function ratingsForm(): AlertFormSection[] {
+  const overall: AlertFormFieldSingleSelect = {
+    name: 'overall',
+    type: 'single-select',
+    options: OVERALL_LEVELS,
+    required: false,
+  };
+  const timeCommitment: AlertFormFieldSingleSelect = {
+    name: 'commitment',
+    type: 'single-select',
+    options: TIME_COMMITMENT_LEVELS,
+    required: false,
+  };
+  const grade: AlertFormFieldSingleSelect = {
+    name: 'grade',
+    type: 'single-select',
+    options: GRADE_LEVELS,
+    required: false,
+  };
+
+  return [
+    {
+      title: 'OVERALL',
+      description:
+        'How would you rate the course overall, with 1 being the lowest and 5 being the highest?',
+      totalRowItems: 1,
+      fields: [overall],
+    },
+    {
+      title: 'TIME COMMITMENT',
+      description:
+        'Approximately how long, in hours, did you spend per week outside of class for this course?',
+      totalRowItems: 1,
+      fields: [timeCommitment],
+    },
+    {
+      title: 'GRADE',
+      description: 'What grade did you receive in this course?',
+      totalRowItems: 1,
+      fields: [grade],
     },
   ];
 }

@@ -23,7 +23,7 @@ function Section({
     >
       <div className="m-1">
         {title && (
-          <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
+          <p className="text-xs font-bold text-gray-600 dark:text-gray-300">
             {title}
           </p>
         )}

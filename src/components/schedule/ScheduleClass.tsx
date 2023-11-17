@@ -12,12 +12,14 @@ import { SearchModificationFunctions } from '../../types/SearchTypes';
 import { SideCard } from '../../types/SideCardTypes';
 import { openInfo } from './ScheduleSectionInfo';
 import Utility from '../../utility/Utility';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface ScheduleClassProps {
   swmp: SectionWithValidMeetingPattern;
   bookmarks: ScheduleBookmarks;
   alert?: Alert;
   sideCard?: SideCard;
+  openRatings?: OpenRatingsFn;
   interactions?: ScheduleInteractions;
   sf: ScheduleModificationFunctions;
   ff: SearchModificationFunctions;
@@ -100,12 +102,19 @@ function ScheduleClass(props: ScheduleClassProps) {
         interactions?.multiClear(['hoverSection', 'hoverDelete']);
       }}
       onClick={() => {
-        if (!props.sideCard || !props.alert) return;
-        openInfo(props.sideCard, props.alert, section, interactions, {
-          bookmarks: props.bookmarks,
-          sf,
-          ff,
-        });
+        if (!props.sideCard || !props.alert || !props.openRatings) return;
+        openInfo(
+          props.sideCard,
+          props.alert,
+          props.openRatings,
+          section,
+          interactions,
+          {
+            bookmarks: props.bookmarks,
+            sf,
+            ff,
+          }
+        );
       }}
     >
       <div className="relative h-full w-full">

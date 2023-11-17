@@ -96,6 +96,7 @@ export interface AlertFormFieldTime extends AlertFormField {
 export interface AlertFormFieldSingleSelect extends AlertFormField {
   type: 'single-select';
   options: string[];
+  rangeLabels?: string[];
 }
 
 export interface AlertFormFieldMultiSelect extends AlertFormField {
@@ -124,7 +125,11 @@ export interface TimeInputConstraint {
 export interface AlertFormData {
   sections: AlertFormSection[];
   timeConstraints?: TimeInputConstraint[];
-  onSubmit: (response: AlertFormResponse, next: AlertNextFn) => void;
+  onSubmit: (
+    response: AlertFormResponse,
+    context: AlertContext,
+    next: AlertNextFn
+  ) => void;
 }
 
 export interface AlertFormResponse {
@@ -132,7 +137,7 @@ export interface AlertFormResponse {
 }
 
 export interface AlertNotice {
-  type: 'tip'; // add other options if necessary
+  type: 'note' | 'tip'; // add other options if necessary
   message: string;
 }
 

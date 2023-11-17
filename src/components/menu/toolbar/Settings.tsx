@@ -6,7 +6,7 @@ import {
   RectangleStackIcon,
 } from '@heroicons/react/24/outline';
 import debugModule from 'debug';
-import { clearCache } from '../../../DataManager';
+import { clearCache, clearRatingsCache } from '../../../DataManager';
 import { AlertData } from '../../../types/AlertTypes';
 import Utility from '../../../utility/Utility';
 
@@ -61,6 +61,25 @@ const settingsMenu = (): AlertData => ({
                   clearCache().finally(() => {
                     window.location.reload();
                   });
+                },
+              });
+            },
+          },
+          {
+            title: 'Clear local ratings cache',
+            description:
+              'This clears all of the ratings data stored in your browser without deleting any plans or schedules.',
+            action: (_, next) => {
+              next({
+                title: 'Clear local ratings cache?',
+                message:
+                  'All of the ratings data stored in your browser will be erased. Any plans or schedules will not be affected, including ones saved in your browser.',
+                color: 'red',
+                icon: ArrowPathIcon,
+                cancelButton: 'Cancel',
+                confirmButton: 'Clear',
+                action: () => {
+                  clearRatingsCache();
                 },
               });
             },

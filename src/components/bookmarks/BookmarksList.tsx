@@ -10,12 +10,14 @@ import {
 import { SideCard } from '../../types/SideCardTypes';
 import Class from '../plan/Class';
 import { Alert } from '../../types/AlertTypes';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface BookmarksListProps {
   credit: boolean;
   bookmarks: BookmarksData;
   sideCard: SideCard;
   alert: Alert;
+  openRatings: OpenRatingsFn;
   f: PlanModificationFunctions;
   switches: UserOptions;
 }
@@ -56,6 +58,7 @@ function BookmarksList(props: BookmarksListProps) {
           bookmarks={props.bookmarks}
           sideCard={props.sideCard}
           alert={props.alert}
+          openRatings={props.openRatings}
           location={{ year: -1, quarter: props.credit ? 1 : 0 }}
           f={props.f}
           switches={props.switches}

@@ -23,7 +23,7 @@ function courseConfirmationPrompts(
   const data = app.state.schedule;
 
   const numSections = Object.keys(data.schedule).length;
-  if (numSections >= 32) {
+  if (numSections >= 32 && !data.schedule[section.section_id]) {
     app.showAlert({
       title: 'Too many sections',
       message: 'Schedules cannot have more than 32 sections at a time.',

@@ -90,10 +90,17 @@ import {
 } from './app/RecentShare';
 import { RecentShareModificationFunctions } from './types/AccountTypes';
 import Ratings from './components/rating/Ratings';
+import { RatingsViewData } from './types/RatingTypes';
 const d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
 const VERSION_NO_PATCH = VERSION.split('.').slice(0, 2).join('.');
+
+/*
+
+TODO use context instead of passing down props for things like alert, side card, context menu, etc.
+
+*/
 
 class App extends React.Component<{}, AppState> implements AppType {
   appRef;
@@ -240,10 +247,6 @@ class App extends React.Component<{}, AppState> implements AppType {
         multiClear: (interactions) => this.interactionMultiClear(interactions),
       },
       recentShare: getRecentShare(),
-      // TODO: temp
-      ratings: {
-        course: 'COMP_SCI 110-0',
-      },
     };
   }
 
@@ -339,6 +342,7 @@ class App extends React.Component<{}, AppState> implements AppType {
             planOpenInfo(
               (data) => this.showSideCard(data),
               (data) => this.showAlert(data),
+              (data) => this.openRatingsView(data),
               sharedCourse,
               false
             );
@@ -348,6 +352,7 @@ class App extends React.Component<{}, AppState> implements AppType {
             scheduleOpenInfo(
               (data) => this.showSideCard(data),
               (data) => this.showAlert(data),
+              (data) => this.openRatingsView(data),
               sharedSection,
               undefined,
               {
@@ -523,6 +528,10 @@ class App extends React.Component<{}, AppState> implements AppType {
     this.setState({ alertData });
   }
 
+  postShowAlert() {
+    this.setState({ alertData: undefined });
+  }
+
   showSideCard(sideCardData: SideCardData) {
     this.setState({ sideCardData });
   }
@@ -531,16 +540,20 @@ class App extends React.Component<{}, AppState> implements AppType {
     this.setState({ sideCardData: undefined });
   }
 
-  postShowAlert() {
-    this.setState({ alertData: undefined });
-  }
-
   showContextMenu(contextMenuData: ContextMenuData) {
     this.setState({ contextMenuData });
   }
 
   closeContextMenu() {
     this.setState({ contextMenuData: undefined });
+  }
+
+  openRatingsView(ratingsData: RatingsViewData) {
+    this.setState({ ratings: ratingsData });
+  }
+
+  closeRatingsView() {
+    this.setState({ ratings: undefined });
   }
 
   interactionUpdate(interaction: keyof ScheduleInteractions, value?: any) {
@@ -757,6 +770,9 @@ class App extends React.Component<{}, AppState> implements AppType {
                   alert={(alertData) => {
                     this.showAlert(alertData);
                   }}
+                  openRatings={(ratingsData) => {
+                    this.openRatingsView(ratingsData);
+                  }}
                   defaults={this.state.searchDefaults}
                   expandMap={() => this.setState({ map: true })}
                   loading={this.state.loadingLogin}
@@ -782,6 +798,9 @@ class App extends React.Component<{}, AppState> implements AppType {
                     }}
                     alert={(alertData) => {
                       this.showAlert(alertData);
+                    }}
+                    openRatings={(ratingsData) => {
+                      this.openRatingsView(ratingsData);
                     }}
                     f={this.state.f}
                     sf={this.state.sf}
@@ -866,6 +885,9 @@ class App extends React.Component<{}, AppState> implements AppType {
                       contextMenu={(contextMenuData) => {
                         this.showContextMenu(contextMenuData);
                       }}
+                      openRatings={(ratingsData) => {
+                        this.openRatingsView(ratingsData);
+                      }}
                       switches={switches}
                       key="plan"
                     />
@@ -877,6 +899,9 @@ class App extends React.Component<{}, AppState> implements AppType {
                       }}
                       sideCard={(sideCardData) => {
                         this.showSideCard(sideCardData);
+                      }}
+                      openRatings={(ratingsData) => {
+                        this.openRatingsView(ratingsData);
                       }}
                       contextMenuData={this.state.contextMenuData}
                       contextMenu={(contextMenuData) => {

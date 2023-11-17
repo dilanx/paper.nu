@@ -12,7 +12,6 @@
     "@testing-library/user-event": "^14.4.3",
     "debug": "^4.3.4",
     "framer-motion": "^7.3.5",
-    "gh-pages": "^4.0.0",
     "html-to-image": "^1.10.8",
     "ics": "^2.40.0",
     "leaflet": "^1.9.2",
@@ -33,6 +32,7 @@
     "@types/debug": "^4.1.7",
     "@types/leaflet": "^1.9.0",
     "autoprefixer": "^10.4.11",
+    "gh-pages": "^6.0.0",
     "postcss": "^8.4.16",
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.4",
@@ -44,7 +44,9 @@
   "scripts": {
     "dev": "GENERATE_SOURCEMAP=false REACT_APP_COMMIT=\"$(git rev-parse --short HEAD)\" BROWSER=none react-scripts start",
     "build": "GENERATE_SOURCEMAP=false REACT_APP_COMMIT=\"$(git rev-parse --short HEAD)\" react-scripts build",
-    "lint:prettier": "prettier --list-different src"
+    "lint:prettier": "prettier --list-different src",
+    "predeploy:beta": "npm run build",
+    "deploy:beta": "gh-pages -d build -b beta-build"
   },
   "eslintConfig": {
     "extends": [

@@ -1,5 +1,6 @@
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 import {
   ScheduleBookmarks,
   ScheduleInteractions,
@@ -33,6 +34,7 @@ interface DayProps {
   bookmarks: ScheduleBookmarks;
   alert?: Alert;
   sideCard?: SideCard;
+  openRatings?: OpenRatingsFn;
   interactions?: ScheduleInteractions;
   sf: ScheduleModificationFunctions;
   ff: SearchModificationFunctions;
@@ -54,6 +56,7 @@ function Day(props: DayProps) {
         bookmarks={props.bookmarks}
         alert={props.alert}
         sideCard={props.sideCard}
+        openRatings={props.openRatings}
         interactions={props.interactions}
         sf={props.sf}
         ff={props.ff}

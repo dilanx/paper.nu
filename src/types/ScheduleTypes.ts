@@ -192,5 +192,5 @@ export interface ScheduleDataCache {
 
 export interface TermInfo {
   id: string;
-  name: string;
+  name?: string;
 }

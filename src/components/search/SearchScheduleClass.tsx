@@ -13,6 +13,7 @@ import {
 import { FilterOptions } from '../../types/SearchTypes';
 import { SideCard } from '../../types/SideCardTypes';
 import SearchScheduleSection from './SearchScheduleSection';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface SearchScheduleClassProps {
   course: ScheduleCourse;
@@ -26,6 +27,7 @@ interface SearchScheduleClassProps {
   filter?: FilterOptions;
   sideCard: SideCard;
   alert: Alert;
+  openRatings: OpenRatingsFn;
 }
 
 const variants = {
@@ -111,6 +113,7 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
                 alreadyAdded={section.section_id in props.schedule.schedule}
                 sideCard={props.sideCard}
                 alert={props.alert}
+                openRatings={props.openRatings}
                 key={`search-${section.section_id}`}
               />
             );

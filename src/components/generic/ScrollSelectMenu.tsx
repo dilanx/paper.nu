@@ -1,16 +1,23 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import { useEffect, useRef } from 'react';
-import { ScrollSelectMenuOption } from '../../types/GenericMenuTypes';
+import {
+  ScrollSelectMenuLoadState,
+  ScrollSelectMenuOption,
+} from '../../types/GenericMenuTypes';
+import { SpinnerCircularFixed } from 'spinners-react';
 
 interface ScrollSelectMenuProps {
   options: ScrollSelectMenuOption[];
   selectedValue?: string | null;
   setSelectedValue: (value: string | null) => void;
   className?: string;
-  sm?: boolean;
+  size?: 'xs' | 'sm' | 'base';
   leftPiece?: boolean;
   middlePiece?: boolean;
   rightPiece?: boolean;
+  showMoreState?: ScrollSelectMenuLoadState;
+  showMore?: () => void;
+  emptyMessage?: string;
 }
 
 export default function ScrollSelectMenu({
@@ -18,10 +25,13 @@ export default function ScrollSelectMenu({
   selectedValue,
   setSelectedValue,
   className,
-  sm,
+  size,
   leftPiece,
   middlePiece,
   rightPiece,
+  showMoreState = 'hidden',
+  showMore,
+  emptyMessage = 'No options',
 }: ScrollSelectMenuProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const selectedRef = useRef<HTMLDivElement>(null);
@@ -129,7 +139,11 @@ export default function ScrollSelectMenu({
             }}
             tabIndex={0}
             className={`relative rounded-md p-1 text-center ${
-              sm ? 'text-base' : 'text-xl'
+              size === 'xs'
+                ? 'text-sm'
+                : size === 'sm'
+                ? 'text-base'
+                : 'text-xl'
             } font-bold transition-all duration-200 ${
               option.disabled
                 ? 'cursor-not-allowed bg-gray-100 text-gray-300 line-through dark:bg-gray-800 dark:text-gray-600'
@@ -150,6 +164,33 @@ export default function ScrollSelectMenu({
           </div>
         );
       })}
+      {options.length === 0 && (
+        <p className="text-center text-xs text-gray-300 dark:text-gray-600">
+          {emptyMessage}
+        </p>
+      )}
+      {showMore && showMoreState !== 'hidden' && (
+        <div className="flex justify-center">
+          {showMoreState === 'loading' && (
+            // TODO abstract spinners and allow for theming with context
+            <SpinnerCircularFixed
+              size={16}
+              thickness={160}
+              speed={200}
+              color={'rgb(212, 212, 212)'}
+              secondaryColor={'rgb(64, 64, 64)'}
+            />
+          )}
+          {showMoreState === 'visible' && (
+            <button
+              onClick={() => showMore()}
+              className="rounded-md p-1 text-xs font-bold text-gray-500 transition-all duration-150 hover:bg-gray-200/50 active:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700/50 dark:active:bg-gray-700"
+            >
+              LOAD MORE
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

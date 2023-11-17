@@ -63,20 +63,19 @@ export default function Alert({
   const [formValues, setFormValues] =
     useState<AlertFormResponse>(defaultFormValues);
 
+  const [context, setContext] = useState(data.custom?.initialContext || {});
+
   useEffect(() => {
     if (data.form) {
       const [valid, error] = formIsValid(formValues, data.form);
       setBadInput(!valid);
       setErrorMessage(error);
     }
-  }, [data.form, formValues]);
-
-  const [context, setContext] = useState(data.custom?.initialContext || {});
-
-  useEffect(() => {
-    setBadInput(!!context.error);
-    setErrorMessage(context.error || null);
-  }, [context.error]);
+    if (context.error) {
+      setBadInput(!!context.error);
+      setErrorMessage(context.error || null);
+    }
+  }, [data.form, formValues, context.error]);
 
   const initialFocus = useRef(null);
   const confirmButton = useRef(null);
@@ -199,11 +198,6 @@ export default function Alert({
                         </div>
                       )}
                       {extraList.length > 0 && extraList}
-                      {data.custom && (
-                        <div>
-                          {data.custom.content(context, (c) => setContext(c))}
-                        </div>
-                      )}
                       {data.textInput && (
                         <div>
                           <input
@@ -360,6 +354,12 @@ export default function Alert({
                   </div>
                 </div>
 
+                {data.custom && (
+                  <div className="px-8 py-4">
+                    {data.custom.content(context, (c) => setContext(c))}
+                  </div>
+                )}
+
                 {optionList.length > 0 && optionList}
 
                 {data.form && (
@@ -402,7 +402,7 @@ export default function Alert({
                         }
                         onClick={() => {
                           if (data.form) {
-                            data.form.onSubmit(formValues, onSwitch);
+                            data.form.onSubmit(formValues, context, onSwitch);
                           }
                           confirm();
                         }}

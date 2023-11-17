@@ -55,17 +55,35 @@ export interface GradeRating {
   16: number;
 }
 
-export interface SectionCourseRatings {
+export interface CourseRatings {
   overall?: OverallRating;
   commitment?: CommitmentRating;
-  instructor?: InstructorRating;
   grade?: GradeRating;
 }
 
-export interface TermCourseRatings {
-  [instructorName: string]: SectionCourseRatings;
+export interface CourseRating {
+  overall?: number;
+  commitment?: number;
+  grade?: number;
 }
 
-export interface CourseRatings {
-  [termId: string]: TermCourseRatings;
+export interface SummaryRatingResponse {
+  overall: OverallRating;
 }
+
+export interface RateResponse {
+  success?: boolean;
+}
+
+export interface RatingInfo {
+  ratings: CourseRatings;
+  rated: boolean;
+}
+
+export interface CachedRatings {
+  timestamp: number;
+  summary?: OverallRating;
+  data?: RatingInfo;
+}
+
+export type OpenRatingsFn = (ratingsData: RatingsViewData) => void;

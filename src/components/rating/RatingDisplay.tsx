@@ -1,8 +1,9 @@
 import { IconElement } from '../../types/BaseTypes';
-import { BarChartValue } from '../../types/GenericMenuTypes';
+import { BarChartMode, BarChartValue } from '../../types/GenericMenuTypes';
 import BarChart from '../generic/BarChart';
 
 interface RatingDisplayProps {
+  mode?: BarChartMode;
   title: string;
   Icon: IconElement;
   chartId: string;
@@ -12,6 +13,7 @@ interface RatingDisplayProps {
 }
 
 export default function RatingDisplay({
+  mode,
   title,
   Icon,
   chartId,
@@ -19,17 +21,28 @@ export default function RatingDisplay({
   values,
   labelClassName,
 }: RatingDisplayProps) {
+  const isHorizontal = mode === 'horizontal';
+
   return (
-    <div className="flex flex-col gap-4 text-center text-black dark:text-white lg:flex-row lg:text-right">
-      <div className="flex flex-[40%] flex-col items-center justify-center lg:items-end">
+    <div
+      className={`flex flex-col gap-4 text-center text-black dark:text-white ${
+        isHorizontal ? '' : 'lg:flex-row lg:text-right'
+      }`}
+    >
+      <div
+        className={`flex flex-col items-center justify-center ${
+          isHorizontal ? '' : 'flex-[40%] lg:items-end'
+        }`}
+      >
         <div className="flex items-center gap-1">
           <Icon className="h-6 w-6" />
           <p className="text-2xl font-bold tracking-wide">{title}</p>
         </div>
         {description && <p className="text-xs">{description}</p>}
       </div>
-      <div className="flex-[60%]">
+      <div className={isHorizontal ? 'my-2' : 'flex-[60%]'}>
         <BarChart
+          mode={mode}
           id={chartId}
           values={values}
           labelClassName={labelClassName}

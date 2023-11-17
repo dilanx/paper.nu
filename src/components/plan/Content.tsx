@@ -17,6 +17,7 @@ import Year from './Year';
 import { motion } from 'framer-motion';
 import { SideCard } from '../../types/SideCardTypes';
 import PlanTaskbarButton from './PlanTaskbarButton';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface ContentProps {
   data: PlanData;
@@ -24,6 +25,7 @@ interface ContentProps {
   f2: PlanSpecialFunctions;
   alert: Alert;
   sideCard: SideCard;
+  openRatings: OpenRatingsFn;
   contextMenuData?: ContextMenuData;
   contextMenu: ContextMenu;
   switches: UserOptions;
@@ -43,6 +45,7 @@ class Content extends React.Component<ContentProps> {
             f2={this.props.f2}
             sideCard={this.props.sideCard}
             alert={this.props.alert}
+            openRatings={this.props.openRatings}
             contextMenuData={this.props.contextMenuData}
             contextMenu={this.props.contextMenu}
             switches={this.props.switches}

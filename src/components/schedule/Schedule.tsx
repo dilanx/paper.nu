@@ -32,6 +32,7 @@ import { exportScheduleAsImage } from '../../utility/Image';
 import toast from 'react-hot-toast';
 import exportMenu from '../menu/toolbar/Export';
 import { exportScheduleAsICS } from '../../utility/Calendar';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface DayMeetingPatterns {
   [day: number]: SectionWithValidMeetingPattern[];
@@ -41,6 +42,7 @@ interface ScheduleProps {
   schedule: ScheduleData;
   alert: Alert;
   sideCard?: SideCard;
+  openRatings?: OpenRatingsFn;
   contextMenuData?: ContextMenuData;
   contextMenu?: ContextMenu;
   interactions?: ScheduleInteractions;
@@ -160,6 +162,7 @@ export default function Schedule(props: ScheduleProps) {
         bookmarks={props.schedule.bookmarks}
         alert={props.alert}
         sideCard={props.sideCard}
+        openRatings={props.openRatings}
         interactions={props.interactions}
         sf={props.sf}
         ff={props.ff}
@@ -196,7 +199,7 @@ export default function Schedule(props: ScheduleProps) {
         <HoursColumn start={start} end={end} />
         {days}
         {!imageMode && (
-          <div className="absolute top-4 right-7 flex items-center gap-1">
+          <div className="absolute right-7 top-4 flex items-center gap-1">
             <UtilityButton
               Icon={PlusIcon}
               onClick={() => {
@@ -266,7 +269,7 @@ export default function Schedule(props: ScheduleProps) {
         <img
           src={dark ? paperWhite : paperBlack}
           alt="paper.nu"
-          className="absolute top-6 right-8 h-[40px]"
+          className="absolute right-8 top-6 h-[40px]"
         />
       )}
 

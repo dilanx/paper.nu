@@ -1,7 +1,26 @@
 import { Variants, motion } from 'framer-motion';
-import { BarChartValue } from '../../types/GenericMenuTypes';
+import { BarChartMode, BarChartValue } from '../../types/GenericMenuTypes';
 
-const BAR_CHAR_COLORS = ['red', 'orange', 'yellow', 'teal', 'blue'];
+const VERTICAL_BAR_CHART_COLORS = ['red', 'orange', 'yellow', 'teal', 'blue'];
+
+const HORIZONTAL_BAR_CHART_COLORS = [
+  'green', // A
+  'emerald', // A-
+  'sky', // B+
+  'blue', // B
+  'indigo', // B-
+  'fuchsia', // C+
+  'purple', // C
+  'violet', // C-
+  'yellow', // D+
+  'amber', // D
+  'orange', // D-
+  'red', // F
+  'pink', // P
+  'rose', // NP
+  'pink', // S
+  'rose', // U
+];
 
 const labelVariants: Variants = {
   open: {
@@ -38,9 +57,10 @@ const barAxisVariants = {
   },
 };
 
-const barVariants = (width: number): Variants => ({
+const barVariants = (key: 'width' | 'height', value: number): Variants => ({
   open: {
-    width: `${width}%`,
+    [key]: `${value}%`,
+    marginTop: key === 'height' ? `calc(${100 - value}%)` : 0,
     transition: {
       type: 'spring',
       stiffness: 300,
@@ -48,7 +68,7 @@ const barVariants = (width: number): Variants => ({
       delayChildren: 0.3,
     },
   },
-  closed: { width: 0, transition: { duration: 0.2 } },
+  closed: { [key]: 0, transition: { duration: 0.2 } },
 });
 
 const barLabelVariants: Variants = {
@@ -61,7 +81,7 @@ const barLabelVariants: Variants = {
 
 interface BarChartProps {
   id: string;
-  mode?: 'horizontal' | 'vertical';
+  mode?: BarChartMode;
   values: BarChartValue[];
   className?: string;
   labelClassName?: string;
@@ -81,13 +101,22 @@ export default function BarChart({
     total += value.value;
   }
 
+  const isHorizontal = mode === 'horizontal';
+
   return (
     <motion.div
       initial="closed"
       animate="open"
-      className={`flex h-32 w-48 ${className}`}
+      className={`flex ${
+        isHorizontal
+          ? 'h-48 min-h-[12rem] w-full flex-col-reverse'
+          : 'h-32 w-48 flex-row'
+      } ${className}`}
     >
-      <motion.div variants={labelVariants} className="flex flex-col">
+      <motion.div
+        variants={labelVariants}
+        className={`flex ${isHorizontal ? 'flex-row' : 'flex-col'}`}
+      >
         {values.map(({ label }, i) => (
           <div
             key={`chart-${id}-label-${i}`}
@@ -99,32 +128,54 @@ export default function BarChart({
       </motion.div>
       <motion.div
         variants={barAxisVariants}
-        className="h-full w-0.5 rounded-sm bg-gray-500"
+        className={`rounded-sm bg-gray-500 ${
+          isHorizontal ? 'h-0.5 w-full' : 'h-full w-0.5'
+        }`}
       />
       <motion.div
         key={id}
         variants={barContainerVariants}
-        className="flex h-full w-full flex-col py-0.5"
+        className={`relative flex h-full w-full ${
+          isHorizontal ? 'flex-row px-0.5' : 'flex-col py-0.5'
+        }`}
       >
         {values.map(({ value }, i) => {
-          const color = BAR_CHAR_COLORS[i] || 'gray';
+          const color =
+            (isHorizontal
+              ? HORIZONTAL_BAR_CHART_COLORS[i]
+              : VERTICAL_BAR_CHART_COLORS[i]) || 'gray';
           const maxPercentage = (value / (max || 1)) * 100;
           return (
-            <motion.div
-              variants={barVariants(maxPercentage)}
+            <div
+              className="relative h-full w-full flex-1"
               key={`chart-${id}-bar-${i}`}
-              className={`relative h-full flex-1 rounded-r-sm bg-${color}-200 dark:bg-${color}-300 text-${color}-300 font-bold hover:bg-${color}-300 dark:hover:bg-${color}-400 hover:z-20 hover:shadow-sm`}
             >
               <motion.div
-                variants={barLabelVariants}
-                className="absolute left-full top-1/2 flex -translate-y-1/2 gap-0.5 px-1 text-xs"
+                variants={barVariants(
+                  isHorizontal ? 'height' : 'width',
+                  maxPercentage
+                )}
+                className={`absolute ${
+                  isHorizontal
+                    ? ' bottom-0 left-0 rounded-t-sm'
+                    : 'left-0 top-0 rounded-r-sm'
+                } h-full w-full bg-${color}-300 dark:bg-${color}-400 text-${color}-300 font-bold hover:bg-${color}-400 dark:hover:bg-${color}-300 hover:z-20 hover:shadow-sm`}
               >
-                <p>{((value / (total || 1)) * 100).toFixed(1)}%</p>
-                <p className="font-normal text-gray-300 dark:text-gray-400">
-                  {value}
-                </p>
+                <motion.div
+                  variants={barLabelVariants}
+                  className={`absolute flex gap-0.5 text-xs ${
+                    isHorizontal
+                      ? 'bottom-full left-1/2 -translate-x-1/2 py-1'
+                      : 'left-full top-1/2 -translate-y-1/2 px-1'
+                  }`}
+                >
+                  <p>{Math.round((value / (total || 1)) * 100)}%</p>
+                  <p className="font-normal text-gray-300 dark:text-gray-400">
+                    {value}
+                  </p>
+                </motion.div>
               </motion.div>
-            </motion.div>
+            </div>
           );
         })}
       </motion.div>

@@ -17,12 +17,14 @@ import { openInfo } from './CourseInfo';
 import Utility from '../../utility/Utility';
 import ClassPropertyDisplay from './ClassPropertyDisplay';
 import { Alert } from '../../types/AlertTypes';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface ClassProps {
   course: Course;
   bookmarks: BookmarksData;
   sideCard: SideCard;
   alert: Alert;
+  openRatings: OpenRatingsFn;
   location: CourseLocation;
   f: PlanModificationFunctions;
   switches: UserOptions;
@@ -70,11 +72,18 @@ function Class(props: ClassProps) {
               custom ? 'border-dashed' : 'border-solid'
             } ${isDragging ? 'cursor-grabbing' : 'cursor-pointer'}`}
         onClick={() =>
-          openInfo(props.sideCard, props.alert, course, false, {
-            bookmarks: props.bookmarks,
-            location: props.location,
-            f: props.f,
-          })
+          openInfo(
+            props.sideCard,
+            props.alert,
+            props.openRatings,
+            course,
+            false,
+            {
+              bookmarks: props.bookmarks,
+              location: props.location,
+              f: props.f,
+            }
+          )
         }
       >
         <p

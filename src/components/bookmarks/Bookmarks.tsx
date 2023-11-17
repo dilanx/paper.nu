@@ -15,12 +15,14 @@ import { Mode } from '../../utility/Constants';
 import AccountPlanMessage from '../account/AccountPlanMessage';
 import BookmarksList from './BookmarksList';
 import ScheduleBookmarksList from './ScheduleBookmarksList';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface BookmarksProps {
   bookmarks: BookmarksData;
   schedule: ScheduleData;
   sideCard: SideCard;
   alert: Alert;
+  openRatings: OpenRatingsFn;
   f: PlanModificationFunctions;
   sf: ScheduleModificationFunctions;
   scheduleInteractions: ScheduleInteractions;
@@ -60,6 +62,7 @@ function Bookmarks(props: BookmarksProps) {
             bookmarks={props.bookmarks}
             sideCard={props.sideCard}
             alert={props.alert}
+            openRatings={props.openRatings}
             f={props.f}
             switches={props.switches}
           />
@@ -68,6 +71,7 @@ function Bookmarks(props: BookmarksProps) {
             bookmarks={props.bookmarks}
             sideCard={props.sideCard}
             alert={props.alert}
+            openRatings={props.openRatings}
             f={props.f}
             switches={props.switches}
           />
@@ -79,6 +83,7 @@ function Bookmarks(props: BookmarksProps) {
           interactions={props.scheduleInteractions}
           sideCard={props.sideCard}
           alert={props.alert}
+          openRatings={props.openRatings}
         />
       )}
     </div>

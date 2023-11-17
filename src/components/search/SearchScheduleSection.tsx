@@ -10,6 +10,7 @@ import {
 import { SideCard } from '../../types/SideCardTypes';
 import { openInfo } from '../schedule/ScheduleSectionInfo';
 import Utility from '../../utility/Utility';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface SearchScheduleSectionProps {
   section: ScheduleSection;
@@ -19,6 +20,7 @@ interface SearchScheduleSectionProps {
   alreadyAdded: boolean;
   sideCard: SideCard;
   alert: Alert;
+  openRatings: OpenRatingsFn;
 }
 
 const variants = {
@@ -34,6 +36,7 @@ function SearchScheduleSection({
   alreadyAdded,
   sideCard,
   alert,
+  openRatings,
 }: SearchScheduleSectionProps) {
   let disabled =
     alreadyAdded ||
@@ -125,7 +128,7 @@ function SearchScheduleSection({
           className="absolute bottom-1 right-1"
           onClick={(e) => {
             e.stopPropagation();
-            openInfo(sideCard, alert, section, interactions);
+            openInfo(sideCard, alert, openRatings, section, interactions);
           }}
         >
           <InformationCircleIcon className="h-5 w-5 text-gray-600 opacity-60 hover:opacity-100 active:opacity-75 dark:text-gray-300" />

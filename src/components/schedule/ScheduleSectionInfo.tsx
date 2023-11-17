@@ -35,6 +35,8 @@ import {
 } from '../../types/SideCardTypes';
 import Utility from '../../utility/Utility';
 import { getTermName } from '../../DataManager';
+import RatingsTag from '../rating/RatingsTag';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 function getDetails(
   detail: string,
@@ -231,6 +233,7 @@ interface SectionModificationWithinInfo {
 export function openInfo(
   sideCard: SideCard,
   alert: Alert,
+  openRatings: OpenRatingsFn,
   section: ScheduleSection,
   interactions?: ScheduleInteractions,
   mod?: SectionModificationWithinInfo
@@ -329,6 +332,9 @@ export function openInfo(
     title: name,
     subtitle: section.title,
     message: course?.description ?? 'No course description available',
+    toolbar: !section.custom ? (
+      <RatingsTag course={name} alert={alert} openRatings={openRatings} />
+    ) : undefined,
     items: items.reduce<SideCardItemData[]>((filtered, item) => {
       const [icon, value] =
         getDetails(item, section, course, alert, interactions) ?? [];

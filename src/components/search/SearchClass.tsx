@@ -16,6 +16,7 @@ import PlanManager from '../../PlanManager';
 import { SideCard } from '../../types/SideCardTypes';
 import { Alert } from '../../types/AlertTypes';
 import { openInfo } from '../plan/CourseInfo';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 const PLACEHOLDER_MESSAGE = `Don't know which specific class to take from a certain requirement category? Use a placeholder! Search for 'placeholder' to view all.`;
 
@@ -29,6 +30,7 @@ interface SearchClassProps {
   selected: boolean;
   sideCard: SideCard;
   alert: Alert;
+  openRatings: OpenRatingsFn;
 }
 
 function SearchClass(props: SearchClassProps) {
@@ -159,7 +161,13 @@ function SearchClass(props: SearchClassProps) {
             className="mx-auto my-2 flex items-center text-xs font-bold text-gray-400 hover:text-gray-500 active:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400 dark:active:text-gray-300"
             onClick={(e) => {
               e.stopPropagation();
-              openInfo(props.sideCard, props.alert, course, true);
+              openInfo(
+                props.sideCard,
+                props.alert,
+                props.openRatings,
+                course,
+                true
+              );
             }}
           >
             <span>VIEW MORE INFO</span>

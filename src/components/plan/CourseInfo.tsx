@@ -23,6 +23,7 @@ import Utility from '../../utility/Utility';
 import { ReactNode } from 'react';
 import { Alert } from '../../types/AlertTypes';
 import RatingsTag from '../rating/RatingsTag';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 function getDetails(
   detail: string,
@@ -96,6 +97,7 @@ interface PlanModificationWithinInfo {
 export function openInfo(
   sideCard: SideCard,
   alert: Alert,
+  openRatings: OpenRatingsFn,
   course: Course,
   fromSearch: boolean,
   mod?: PlanModificationWithinInfo
@@ -128,7 +130,9 @@ export function openInfo(
     message: placeholder
       ? `If you aren't sure which course to take to fulfill a certain requirement, you can use a placeholder! Search using 'placeholder' or by requirement category to find placeholders.`
       : course.description,
-    toolbar: !course.custom ? <RatingsTag /> : undefined,
+    toolbar: !course.custom ? (
+      <RatingsTag course={course.id} alert={alert} openRatings={openRatings} />
+    ) : undefined,
     items: items.reduce<SideCardItemData[]>((filtered, item) => {
       const [icon, value] = getDetails(item, course, alert) ?? [];
       if (value) {

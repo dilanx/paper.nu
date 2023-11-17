@@ -16,6 +16,7 @@ import Class from './Class';
 import QuarterUtilityButton from './QuarterUtilityButton';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { Alert } from '../../types/AlertTypes';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface QuarterProps {
   data: Course[];
@@ -24,6 +25,7 @@ interface QuarterProps {
   f: PlanModificationFunctions;
   sideCard: SideCard;
   alert: Alert;
+  openRatings: OpenRatingsFn;
   switches: UserOptions;
   title: string;
   color: Color;
@@ -74,6 +76,7 @@ function Quarter(props: QuarterProps) {
             bookmarks={props.bookmarks}
             sideCard={props.sideCard}
             alert={props.alert}
+            openRatings={props.openRatings}
             location={props.location}
             f={props.f}
             switches={props.switches}

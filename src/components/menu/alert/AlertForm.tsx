@@ -18,7 +18,7 @@ import TimeInput from '../../generic/TimeInput';
 
 export const getAlertForm = (
   values: AlertFormResponse,
-  setValue: (name: string, value: string) => void,
+  setValue: (name: string, value: string | undefined) => void,
   sections: AlertFormSection[]
 ) =>
   sections.map((section, i) => (
@@ -62,6 +62,7 @@ export const getAlertForm = (
               value={values[field.name]}
               setValue={(value) => setValue(field.name, value)}
               required={field.required}
+              rangeLabels={field.rangeLabels}
               key={`alert-form-field-${field.name}`}
             />
           );

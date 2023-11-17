@@ -57,6 +57,7 @@ import SearchButton from './SearchButton';
 import SearchClass from './SearchClass';
 import SearchFilterDisplay from './SearchFilterDisplay';
 import SearchScheduleClass from './SearchScheduleClass';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface SearchProps {
   data: PlanData;
@@ -67,6 +68,7 @@ interface SearchProps {
   scheduleInteractions: ScheduleInteractions;
   sideCard: SideCard;
   alert: Alert;
+  openRatings: OpenRatingsFn;
   defaults?: SearchDefaults;
   expandMap: () => void;
   loading?: boolean;
@@ -341,6 +343,7 @@ class Search extends React.Component<SearchProps, SearchState> {
             f={this.props.f}
             sideCard={this.props.sideCard}
             alert={this.props.alert}
+            openRatings={this.props.openRatings}
             key={course.id}
           />
         );
@@ -366,6 +369,7 @@ class Search extends React.Component<SearchProps, SearchState> {
             filter={filter}
             sideCard={this.props.sideCard}
             alert={this.props.alert}
+            openRatings={this.props.openRatings}
             key={`search-${course.course_id}-${course.subject}-${course.number}`}
           />
         );
