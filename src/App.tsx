@@ -43,7 +43,7 @@ import AccountPlans from './components/account/AccountPlans';
 import Bookmarks from './components/bookmarks/Bookmarks';
 import CampusMap from './components/map/CampusMap';
 import BannerNotice from './components/menu/BannerNotice';
-import ChangeLogPreview from './components/menu/ChangeLogPreview';
+import ChangeLogPreview from './components/changelog/ChangeLogPreview';
 import Info from './components/menu/Info';
 import ModeSwitch from './components/menu/ModeSwitch';
 import Notes from './components/menu/Notes';
@@ -659,7 +659,7 @@ class App extends React.Component<{}, AppState> implements AppType {
               />
             )}
 
-            {this.state.clp && clp.items.length > 0 && (
+            {this.state.clp && (
               <ChangeLogPreview
                 version={VERSION_NO_PATCH}
                 info={clp}

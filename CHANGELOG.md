@@ -16,12 +16,12 @@ _2023-XX-XX_
 - **PERSISTENT SHARE**
   - Share persistent links to your plans and schedules. When you update your plan or schedule, others can refresh to see the changes.
   - Easily access your friends' plans and schedules. When you use someone's persistent share link, their name and their document's name is saved to your Plans/Schedules tab so you can easily access it later.
-- **AUTOSAVE**
-  - Modified plans and schedules linked to your account will automatically be saved as you make changes.
 - **IMPROVED SEARCH**
   - Partial text matching is now supported. For example, searching something like "intro sociol" will match "introduction to sociology".
   - You can now search by section topic, making specific sections in special topics classes (like CS 396) easier to find.
   - You can now filter by all available schedule time.
+- **AUTOSAVE**
+  - Modified plans and schedules linked to your account will automatically be saved as you make changes.
 - **BUILT-IN FEEDBACK SUBMISSION**
   - The built-in feedback submission feature is back. Check it out in the "About" toolbar menu.
 - **REDESIGNED INTERNAL DATA SYSTEM**

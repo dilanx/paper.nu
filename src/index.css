@@ -94,4 +94,14 @@
       #a770ef
     ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   }
+
+  .text-gradient {
+    font-size: 196px;
+    font-weight: 700;
+    line-height: 1;
+    background: -webkit-linear-gradient(#4ade80, #c084fc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }
