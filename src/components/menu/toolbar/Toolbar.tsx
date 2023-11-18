@@ -96,7 +96,7 @@ function Toolbar({
           {activeItem.public && (
             <>
               <ToolbarDivider />
-              <div className="group relative flex items-center justify-center rounded-md p-0.5 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <div className="group relative flex cursor-default items-center justify-center rounded-md p-0.5 hover:bg-gray-100 dark:hover:bg-gray-700">
                 <UserGroupIcon className="group relative h-4 w-4" />
                 <Tooltip
                   mini
