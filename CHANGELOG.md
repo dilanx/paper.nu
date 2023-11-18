@@ -8,6 +8,9 @@ _2023-XX-XX_
   - Enhance your plan or schedule with custom courses and sections. This allows you to add things to your schedule that aren't in the course catalog.
   - With a new custom item creator menu, you can customize each element of the course or section, including the color, and make changes to it later.
   - Custom courses and sections are included when sharing or exporting a plan or schedule.
+- **PAPER RATINGS**
+  - View student-submitted overall course ratings, time commitment ratings, and grades for each course.
+  - Submit your own ratings for courses you've taken.
 - **MORE COURSE INFO**
   - You can now view when a course has been offered in the past (the earliest being 2020 Fall) in the plan view. This was one of the most requested features since 2021, and now it's here!
 - **PERSISTENT SHARE**
