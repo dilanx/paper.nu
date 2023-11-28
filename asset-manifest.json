@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.2764f3e0.css",
-    "main.js": "/static/js/main.d1da74d6.js",
+    "main.js": "/static/js/main.e78bce4b.js",
     "static/media/paper-full-white.png": "/static/media/paper-full-white.6a05307e489b15ae2a0b.png",
     "static/media/paper-full-vertical-white.png": "/static/media/paper-full-vertical-white.75985cb8122178fab1c1.png",
     "static/media/paper-full-vertical-black.png": "/static/media/paper-full-vertical-black.ac8b75399a52c154afeb.png",
@@ -12,6 +12,6 @@
   },
   "entrypoints": [
     "static/css/main.2764f3e0.css",
-    "static/js/main.d1da74d6.js"
+    "static/js/main.e78bce4b.js"
   ]
 }
