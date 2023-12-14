@@ -3,15 +3,14 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment, useState } from 'react';
 import {
   MapContainer,
+  Tooltip as MapTooltip,
   Marker,
   TileLayer,
-  Tooltip as MapTooltip,
 } from 'react-leaflet';
 import ScheduleManager from '../../ScheduleManager';
 import { Color, UserOptions } from '../../types/BaseTypes';
 import { ScheduleDataMap, ScheduleSection } from '../../types/ScheduleTypes';
-import Tooltip from '../generic/Tooltip';
-import { getMapMarkerIcon, MapFlyTo } from './MapUtility';
+import { MapFlyTo, getMapMarkerIcon } from './MapUtility';
 
 const DEFAULT_POSITION: [number, number] = [42.055909, -87.675709];
 const DEFAULT_ZOOM = 16;
@@ -138,8 +137,8 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
                   ))}
                   <MapFlyTo position={flyPosition || DEFAULT_POSITION} />
                 </MapContainer>
-                <div className="absolute top-0 right-0 z-[500] flex flex-col items-center gap-1 rounded-lg bg-white p-2 dark:bg-gray-700">
-                  <div className="flex items-center gap-8">
+                <div className="absolute right-0 top-0 z-[500] flex flex-col items-center gap-1 rounded-lg bg-white p-2 dark:bg-gray-700">
+                  <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-bold tracking-wider text-gray-600 dark:text-gray-300">
                         MINIMAP
@@ -163,16 +162,13 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
                         />
                       </Switch>
                     </div>
-
+                    <div className="h-6 w-0.5 rounded-sm bg-gray-300 dark:bg-gray-500" />
                     <button className="group relative">
                       <XMarkIcon
-                        className="h-8 w-8 text-gray-600 hover:text-red-400
-                      active:text-red-500 dark:text-gray-500 dark:hover:text-red-400 dark:active:text-red-300"
+                        className="h-8 w-8 rounded-md p-0.5 text-gray-600 hover:bg-gray-100 active:bg-gray-200
+                        dark:text-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
                         onClick={() => setOpen(false)}
                       />
-                      <Tooltip color="red" className="-bottom-9 right-0">
-                        Close map
-                      </Tooltip>
                     </button>
                   </div>
                   <p className="block w-40 text-xs text-gray-500 hsm:hidden">
@@ -180,7 +176,7 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
                   </p>
                 </div>
                 {locations.length > 0 && (
-                  <div className="absolute right-2 bottom-8 z-[500] flex flex-col rounded-l-lg bg-white/50 p-2 backdrop-blur-md dark:bg-gray-700/50 dark:bg-opacity-50 md:bottom-1/2 md:translate-y-1/2">
+                  <div className="absolute bottom-8 right-2 z-[500] flex flex-col rounded-l-lg bg-white/50 p-2 backdrop-blur-md dark:bg-gray-700/50 dark:bg-opacity-50 md:bottom-1/2 md:translate-y-1/2">
                     <p className="text-xs font-bold italic text-gray-600 dark:text-gray-200">
                       Hover to find class
                     </p>

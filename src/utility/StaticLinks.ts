@@ -3,10 +3,10 @@ const Links = {
   AUTH: 'https://api.dilanxd.com/auth',
   TOKEN: `https://api.dilanxd.com/auth/token`,
   ACCOUNT: 'https://auth.dilanxd.com/account',
-  FEEDBACK: 'https://api.dilanxd.com/paper/feedback',
 
   HOMEPAGE: 'https://www.dilanxd.com/paper',
   SUPPORT: 'https://support.dilanxd.com/paper/',
+  FEEDBACK: 'https://support.dilanxd.com/paper/feedback/',
   CHANGELOG: 'https://www.dilanxd.com/paper/changelog',
   FAQ: 'https://support.dilanxd.com/paper/faq/',
 

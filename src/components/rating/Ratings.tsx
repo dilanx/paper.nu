@@ -336,13 +336,10 @@ export default function Ratings({
                   </p>
                 </div>
                 <button
-                  className="absolute right-2 top-2"
+                  className="absolute right-2 top-2 rounded-md p-0.5 text-gray-600 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
                   onClick={() => setOpen(false)}
                 >
-                  <XMarkIcon
-                    className="h-8 w-8 text-gray-300 hover:text-black active:text-gray-600
-                    dark:text-gray-500 dark:hover:text-white dark:active:text-gray-300"
-                  />
+                  <XMarkIcon className="h-8 w-8" />
                 </button>
               </Dialog.Panel>
             </Transition.Child>

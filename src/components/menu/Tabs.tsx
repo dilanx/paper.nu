@@ -75,7 +75,9 @@ export function TabButton(props: TabBarButtonProps) {
         props.name === props.selected
           ? `bg-${color}-400 dark:bg-${color}-500 text-white`
           : `bg-white text-gray-500 dark:bg-gray-800 dark:text-gray-300
-                    hover:bg-${color}-100 hover:text-${color}-600 dark:hover:text-${color}-400
+          hover:bg-${color}-50 hover:text-${color}-500
+          active:bg-${color}-100 active:text-${color}-500
+          dark:hover:text-${color}-400 dark:active:text-${color}-300
                     ${props.name === 'Loading' ? 'cursor-not-allowed' : ''}`
       } group flex flex-col items-center justify-center`}
       onClick={() => {

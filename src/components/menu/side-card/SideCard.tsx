@@ -73,10 +73,10 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
                 >
                   {data.type}
                 </p>
-                <div className="flex items-center">
+                <div className="flex items-center gap-2">
                   {data.link && (
                     <button
-                      className="group relative flex items-center text-gray-600 hover:text-sky-400 active:text-sky-500 dark:text-gray-400 dark:hover:text-sky-400 dark:active:text-sky-300"
+                      className="group relative flex items-center rounded-md p-1.5 text-gray-600 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
                       onClick={() => {
                         if (data.link) {
                           navigator.clipboard.writeText(data.link);
@@ -85,11 +85,11 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
                       }}
                     >
                       {hasCopied ? (
-                        <CheckIcon className="h-6 w-6" />
+                        <CheckIcon className="h-5 w-5" />
                       ) : (
-                        <LinkIcon className="h-6 w-6" />
+                        <LinkIcon className="h-5 w-5" />
                       )}
-                      <Tooltip className="-bottom-9 right-0 w-36" color="sky">
+                      <Tooltip className="-bottom-9 right-0 w-36" color="gray">
                         {hasCopied
                           ? 'Copied to clipboard!'
                           : 'Copy link to section'}
@@ -97,11 +97,11 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
                     </button>
                   )}
                   <button
-                    className="group relative flex items-center text-gray-600 hover:text-red-400 active:text-red-500 dark:text-gray-400 dark:hover:text-red-400 dark:active:text-red-300"
+                    className="group relative flex items-center rounded-md p-0.5 text-gray-600 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
                     onClick={() => close()}
                   >
                     <XMarkIcon className="h-7 w-7" />
-                    <Tooltip className="-bottom-9 right-0" color="red">
+                    <Tooltip className="-bottom-9 right-0" color="gray">
                       Close
                     </Tooltip>
                   </button>

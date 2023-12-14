@@ -179,8 +179,8 @@ function About({ switches, onClose }: AboutProps) {
                   onClick={() => setOpen(false)}
                 >
                   <XMarkIcon
-                    className="h-8 w-8 text-gray-300 hover:text-black active:text-gray-600
-                    dark:text-gray-500 dark:hover:text-white dark:active:text-gray-300"
+                    className="h-8 w-8 rounded-md p-0.5 text-gray-400 hover:bg-gray-100 active:bg-gray-200 
+                    dark:text-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
                   />
                 </button>
               </Dialog.Panel>
