@@ -30,7 +30,7 @@ import UtilityButton from '../menu/UtilityButton';
 import Account from '../../Account';
 import { exportScheduleAsImage } from '../../utility/Image';
 import toast from 'react-hot-toast';
-import exportMenu from '../menu/toolbar/Export';
+import exportMenu from './Export';
 import { exportScheduleAsICS } from '../../utility/Calendar';
 import { OpenRatingsFn } from '../../types/RatingTypes';
 import ScheduleManager from '../../ScheduleManager';
