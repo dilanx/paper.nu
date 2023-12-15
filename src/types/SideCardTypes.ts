@@ -28,6 +28,8 @@ export interface SideCardButtonData {
   text: string;
   onClick: (close: () => void) => void;
   danger?: boolean;
+  disabled?: boolean;
+  disabledText?: string;
 }
 
 export interface ToggleableSideCardButtonData<T = any> {

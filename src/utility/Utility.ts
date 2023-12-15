@@ -533,14 +533,6 @@ let Utility = {
     return /^\d+$/.test(str);
   },
 
-  friendlyEasterEgg: (text: string) => {
-    if (text === 'naomi') {
-      return ['Hmm?', "Wait what's going on?"];
-    }
-
-    return null;
-  },
-
   shallowEqual: (obj1: any, obj2: any) => {
     return (
       Object.keys(obj1).length === Object.keys(obj2).length &&

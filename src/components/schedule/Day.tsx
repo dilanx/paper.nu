@@ -1,3 +1,4 @@
+import ScheduleManager from '../../ScheduleManager';
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import { OpenRatingsFn } from '../../types/RatingTypes';
@@ -5,6 +6,7 @@ import {
   ScheduleBookmarks,
   ScheduleInteractions,
   ScheduleModificationFunctions,
+  ScheduleSectionOverride,
   SectionWithValidMeetingPattern,
 } from '../../types/ScheduleTypes';
 import { SearchModificationFunctions } from '../../types/SearchTypes';
@@ -32,6 +34,7 @@ interface DayProps {
   end: number;
   sections?: SectionWithValidMeetingPattern[];
   bookmarks: ScheduleBookmarks;
+  overrides: ScheduleSectionOverride[];
   alert?: Alert;
   sideCard?: SideCard;
   openRatings?: OpenRatingsFn;
@@ -47,12 +50,24 @@ function Day(props: DayProps) {
     <Cell day={props.index} key={`day-${props.index}-x`} />,
   ];
 
-  const { hourAssignments, layoutMap } = getLayout(props.sections);
+  const { hourAssignments, layoutMap } = getLayout(
+    props.sections?.filter(
+      (s) =>
+        !ScheduleManager.isHiddenFromSchedule(
+          props.overrides,
+          s.section.section_id,
+          props.index,
+          s.start_time,
+          s.end_time
+        )
+    )
+  );
 
   for (let i = props.start + 1; i <= props.end; i++) {
     const children = hourAssignments[i - 1]?.map((swmp) => (
       <ScheduleClass
         swmp={swmp}
+        day={props.index}
         bookmarks={props.bookmarks}
         alert={props.alert}
         sideCard={props.sideCard}

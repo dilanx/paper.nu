@@ -9,10 +9,12 @@ import {
   UserOptions,
 } from './types/BaseTypes';
 import {
+  DayAndTime,
   ScheduleCourse,
   ScheduleData,
   ScheduleDataMap,
   ScheduleSection,
+  ScheduleSectionOverride,
   SerializedScheduleData,
   SerializedScheduleSection,
   Time,
@@ -56,6 +58,7 @@ async function loadData(
     termId: termId,
     schedule: {},
     bookmarks: [],
+    overrides: serializedData.overrides || [],
   };
 
   let customId = 1;
@@ -129,6 +132,7 @@ function saveData({
   termId,
   schedule,
   bookmarks,
+  overrides,
 }: ScheduleData): SerializedScheduleData {
   const serializedData = Object.values(schedule).map<SerializedScheduleSection>(
     (s) => {
@@ -159,6 +163,7 @@ function saveData({
     termId,
     schedule: serializedData,
     bookmarks: serializedBookmarks,
+    overrides,
   };
 }
 
@@ -293,8 +298,8 @@ const ScheduleManager = {
 
     if (filter.distros) {
       if (
-        !filter.distros.some((d) =>
-          section.distros?.includes(DistroMap[d].toString())
+        !filter.distros.some(
+          (d) => section.distros?.includes(DistroMap[d].toString())
         )
       ) {
         return false;
@@ -303,8 +308,8 @@ const ScheduleManager = {
 
     if (filter.disciplines) {
       if (
-        !filter.disciplines.some((d) =>
-          section.disciplines?.includes(DisciplineMap[d].toString())
+        !filter.disciplines.some(
+          (d) => section.disciplines?.includes(DisciplineMap[d].toString())
         )
       ) {
         return false;
@@ -320,8 +325,9 @@ const ScheduleManager = {
     if (filter.instructor) {
       if (
         !section.instructors ||
-        !section.instructors.some((instructor) =>
-          instructor.name?.toLowerCase().includes(filter.instructor!)
+        !section.instructors.some(
+          (instructor) =>
+            instructor.name?.toLowerCase().includes(filter.instructor!)
         )
       ) {
         return false;
@@ -331,8 +337,8 @@ const ScheduleManager = {
     if (filter.location) {
       if (
         !section.room ||
-        !section.room.every((room) =>
-          room?.toLowerCase().includes(filter.location!)
+        !section.room.every(
+          (room) => room?.toLowerCase().includes(filter.location!)
         )
       ) {
         return false;
@@ -397,14 +403,61 @@ const ScheduleManager = {
     }
   },
 
+  getAllSectionTimes: ({
+    meeting_days,
+    start_time,
+    end_time,
+  }: ScheduleSection) => {
+    const times: DayAndTime[] = [];
+    for (let i = 0; i < meeting_days.length; i++) {
+      const days = meeting_days[i];
+      const start = start_time[i];
+      const end = end_time[i];
+      if (!days || !start || !end) {
+        continue;
+      }
+
+      for (let i = 0; i < days.length; i++) {
+        times.push({
+          day: parseInt(days[i]),
+          start_time: start,
+          end_time: end,
+        });
+      }
+    }
+
+    return times;
+  },
+
+  isHiddenFromSchedule: (
+    overrides: ScheduleSectionOverride[],
+    sectionId: string,
+    day: number,
+    startTime: Time,
+    endTime: Time
+  ) => {
+    return overrides.some((override) => {
+      return (
+        override.section_id === sectionId &&
+        override.day === day &&
+        ScheduleManager.timeEquals(override.start_time, startTime) &&
+        ScheduleManager.timeEquals(override.end_time, endTime) &&
+        override.hide
+      );
+    });
+  },
+
+  timeEquals: (a: Time, b: Time) => {
+    return a.h === b.h && a.m === b.m;
+  },
+
   load: async (serializedData?: SerializedScheduleData) => {
     return await loadData(serializedData);
   },
 
   loadFromStorage: async () => {
-    const serializedData = await localforage.getItem<SerializedScheduleData>(
-      'data_schedule'
-    );
+    const serializedData =
+      await localforage.getItem<SerializedScheduleData>('data_schedule');
     return await loadData(serializedData || {});
   },
 

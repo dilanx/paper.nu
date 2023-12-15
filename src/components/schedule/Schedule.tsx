@@ -160,6 +160,7 @@ export default function Schedule(props: ScheduleProps) {
         end={end}
         sections={sections}
         bookmarks={props.schedule.bookmarks}
+        overrides={props.schedule.overrides}
         alert={props.alert}
         sideCard={props.sideCard}
         openRatings={props.openRatings}

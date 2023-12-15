@@ -164,6 +164,8 @@ export interface ContextMenuData {
   name: string;
   x: number;
   y: number;
+  mode?: 'left' | 'right';
+  sm?: boolean;
   topText?: string;
   items: ContextMenuItem[];
 }

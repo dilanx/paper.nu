@@ -25,6 +25,7 @@ import {
   ScheduleInteractions,
   ScheduleModificationFunctions,
   ScheduleSection,
+  ScheduleSectionBlock,
 } from '../../types/ScheduleTypes';
 import { SearchModificationFunctions } from '../../types/SearchTypes';
 import {
@@ -37,6 +38,7 @@ import Utility from '../../utility/Utility';
 import { getTermName } from '../../DataManager';
 import RatingsTag from '../rating/RatingsTag';
 import { OpenRatingsFn } from '../../types/RatingTypes';
+import { Days } from '../../utility/Constants';
 
 function getDetails(
   detail: string,
@@ -234,7 +236,7 @@ export function openInfo(
   sideCard: SideCard,
   alert: Alert,
   openRatings: OpenRatingsFn,
-  section: ScheduleSection,
+  { section, day, start_time, end_time }: ScheduleSectionBlock,
   interactions?: ScheduleInteractions,
   mod?: SectionModificationWithinInfo
 ) {
@@ -265,6 +267,7 @@ export function openInfo(
 
   let sideCardButtons: AnySideCardButtonData[] | undefined = undefined;
 
+  // TODO organize this messy logic, it's 1:30 AM and I'm a bit tired rn
   if (mod) {
     sideCardButtons = [];
     if (section.custom && mod.sf) {
@@ -276,16 +279,8 @@ export function openInfo(
         },
       });
     } else {
-      sideCardButtons.push({
-        text: mod.sf ? 'Show all sections' : 'Show sections in current term',
-        onClick: (close) => {
-          mod.ff.set(name, scheduleCourse?.course_id);
-          close();
-        },
-      });
-
       if (scheduleCourse && mod.bookmarks && mod.sf) {
-        sideCardButtons.splice(1, 0, {
+        sideCardButtons.push({
           toggle: true,
           data: mod.bookmarks,
           key: scheduleCourse,
@@ -307,6 +302,47 @@ export function openInfo(
     }
 
     if (mod.sf) {
+      if (!section.custom) {
+        const overrides = mod.sf.checkOverrides(section);
+
+        if (day !== undefined && start_time && end_time) {
+          const disabled =
+            overrides.timesRemaining && overrides.timesRemaining.length <= 1;
+          sideCardButtons.push({
+            text: `Hide ${Days[day]} ${Utility.convertTime(
+              start_time,
+              true
+            )} - ${Utility.convertTime(end_time, true)}`,
+            disabled,
+            disabledText: disabled
+              ? 'All other times for this section are hidden.'
+              : undefined,
+            onClick: (close) => {
+              mod.sf!.addOverride({
+                section_id: section.section_id,
+                day,
+                start_time,
+                end_time,
+                hide: true,
+              });
+              close();
+            },
+          });
+        }
+
+        sideCardButtons.push({
+          text: 'Show all hidden times',
+          disabled: !overrides.anyOverride,
+          disabledText: !overrides.anyOverride
+            ? 'None of the times for this section are hidden.'
+            : undefined,
+          onClick: (close) => {
+            mod.sf!.removeOverrides(section.section_id);
+            close();
+          },
+        });
+      }
+
       sideCardButtons.push({
         text: 'Remove section',
         danger: true,
@@ -315,6 +351,18 @@ export function openInfo(
           close();
         },
       });
+
+      if (!section.custom || !mod.sf) {
+        sideCardButtons.push({
+          text: mod.sf
+            ? `Show all sections of ${name}`
+            : `Show sections of ${name} in current term`,
+          onClick: (close) => {
+            mod.ff.set(name, scheduleCourse?.course_id);
+            close();
+          },
+        });
+      }
     }
   }
 

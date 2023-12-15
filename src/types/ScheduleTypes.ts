@@ -9,12 +9,14 @@ export interface ScheduleData {
   termId?: string;
   schedule: ScheduleDataMap;
   bookmarks: ScheduleBookmarks;
+  overrides: ScheduleSectionOverride[];
 }
 
 export interface SerializedScheduleData {
   termId?: string;
   schedule?: SerializedScheduleSection[];
   bookmarks?: string[];
+  overrides?: ScheduleSectionOverride[];
 }
 
 export function isSerializedScheduleData(
@@ -110,6 +112,27 @@ export interface ScheduleSection {
   termId?: string;
 }
 
+export interface ScheduleSectionBlock {
+  section: ScheduleSection;
+  day?: number;
+  start_time?: Time;
+  end_time?: Time;
+}
+
+export interface DayAndTime {
+  day: number;
+  start_time: Time;
+  end_time: Time;
+}
+
+export interface ScheduleSectionOverride {
+  section_id: string;
+  day: number;
+  start_time: Time;
+  end_time: Time;
+  hide?: boolean;
+}
+
 export interface ValidScheduleSection extends ScheduleSection {
   start_date: string;
   end_date: string;
@@ -177,6 +200,12 @@ export interface ScheduleInteractions {
 export interface ScheduleModificationFunctions {
   addSection: (section: ScheduleSection) => void;
   removeSection: (section: ScheduleSection) => void;
+  addOverride: (override: ScheduleSectionOverride) => void;
+  checkOverrides: (section: ScheduleSection) => {
+    anyOverride: boolean;
+    timesRemaining?: DayAndTime[];
+  };
+  removeOverrides: (sectionId: string) => void;
   addScheduleBookmark: (course: ScheduleCourse) => void;
   removeScheduleBookmark: (course: ScheduleCourse) => void;
   putCustomSection: (sectionToEdit?: ScheduleSection) => void;

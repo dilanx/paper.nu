@@ -128,7 +128,7 @@ function SearchScheduleSection({
           className="absolute bottom-1 right-1"
           onClick={(e) => {
             e.stopPropagation();
-            openInfo(sideCard, alert, openRatings, section, interactions);
+            openInfo(sideCard, alert, openRatings, { section }, interactions);
           }}
         >
           <InformationCircleIcon className="h-5 w-5 text-gray-600 opacity-60 hover:opacity-100 active:opacity-75 dark:text-gray-300" />

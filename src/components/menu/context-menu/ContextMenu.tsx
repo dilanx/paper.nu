@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { ContextMenuData, UserOptions } from '../../../types/BaseTypes';
 import ContextMenuButton from './ContextMenuButton';
 
@@ -11,6 +11,28 @@ interface ContextMenuProps {
 
 function ContextMenu({ data, switches, onClose }: ContextMenuProps) {
   const [isOpen, setIsOpen] = useState(true);
+
+  const ref = useRef<HTMLDivElement>(null);
+  const mode = data.mode || 'right';
+
+  useEffect(() => {
+    if (ref.current) {
+      const { x, y, width, height } = ref.current.getBoundingClientRect();
+      if (mode === 'left') {
+        if (x + width > window.innerWidth) {
+          ref.current.style.left = `${window.innerWidth - width - 16}px`;
+        }
+      } else {
+        if (x < 0) {
+          ref.current.style.right = `${window.innerWidth - width - 16}px`;
+        }
+      }
+
+      if (y + height > window.innerHeight) {
+        ref.current.style.top = `${window.innerHeight - height - 16}px`;
+      }
+    }
+  }, [ref, mode]);
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -31,7 +53,12 @@ function ContextMenu({ data, switches, onClose }: ContextMenuProps) {
           afterLeave={() => onClose()}
         >
           <Dialog.Panel
-            style={{ right: `calc(100vw - ${data.x}px)`, top: data.y }}
+            ref={ref}
+            style={{
+              left: mode === 'left' ? `${data.x}px` : undefined,
+              right: mode === 'right' ? `calc(100vw - ${data.x}px)` : undefined,
+              top: data.y,
+            }}
             className="fixed z-30 overflow-hidden rounded-lg bg-gray-50 shadow-lg dark:bg-gray-700"
           >
             {data.topText && (
@@ -43,6 +70,7 @@ function ContextMenu({ data, switches, onClose }: ContextMenuProps) {
               <ContextMenuButton
                 data={item}
                 close={() => setIsOpen(false)}
+                sm={data.sm}
                 key={`context-menu-item-${i}`}
               />
             ))}

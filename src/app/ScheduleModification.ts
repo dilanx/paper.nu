@@ -7,7 +7,11 @@ import {
 import debug from 'debug';
 import ScheduleManager from '../ScheduleManager';
 import { AppType, Color } from '../types/BaseTypes';
-import { ScheduleCourse, ScheduleSection } from '../types/ScheduleTypes';
+import {
+  ScheduleCourse,
+  ScheduleSection,
+  ScheduleSectionOverride,
+} from '../types/ScheduleTypes';
 import { toast } from 'react-hot-toast';
 import { customSectionForm } from '../utility/Forms';
 import { DayMap, Days } from '../utility/Constants';
@@ -59,6 +63,58 @@ function courseConfirmationPrompts(
   confirmationCallback();
 }
 
+export function addOverride(app: AppType, override: ScheduleSectionOverride) {
+  const schedule = app.state.schedule;
+  schedule.overrides.push(override);
+
+  d('schedule override added: %s', override.section_id);
+  app.setState({
+    schedule,
+    saveState: ScheduleManager.save(schedule, app.state.switches),
+  });
+}
+
+export function checkOverrides(app: AppType, section: ScheduleSection) {
+  let times = ScheduleManager.getAllSectionTimes(section);
+  const len = times.length;
+  for (const override of app.state.schedule.overrides) {
+    if (override.section_id !== section.section_id) {
+      continue;
+    }
+
+    times = times.filter(
+      (time) =>
+        override.day !== time.day ||
+        !ScheduleManager.timeEquals(time.start_time, override.start_time) ||
+        !ScheduleManager.timeEquals(time.end_time, override.end_time)
+    );
+  }
+
+  if (times.length === len) {
+    return {
+      anyOverride: false,
+    };
+  }
+
+  return {
+    anyOverride: true,
+    timesRemaining: times,
+  };
+}
+
+export function removeOverrides(app: AppType, sectionId: string) {
+  const schedule = app.state.schedule;
+  schedule.overrides = schedule.overrides.filter(
+    (override) => override.section_id !== sectionId
+  );
+
+  d('schedule overrides removed: %s', sectionId);
+  app.setState({
+    schedule,
+    saveState: ScheduleManager.save(schedule, app.state.switches),
+  });
+}
+
 export function addSection(app: AppType, section: ScheduleSection) {
   courseConfirmationPrompts(app, section, () => {
     delete section.preview;
@@ -76,6 +132,9 @@ export function addSection(app: AppType, section: ScheduleSection) {
 export function removeSection(app: AppType, section: ScheduleSection) {
   const schedule = app.state.schedule;
   delete schedule.schedule[section.section_id];
+  schedule.overrides = schedule.overrides.filter(
+    (override) => override.section_id !== section.section_id
+  );
   d('schedule section removed: %s', section.section_id);
   app.setState({
     schedule,
@@ -248,6 +307,7 @@ export function clearSchedule(app: AppType) {
       const schedule = {
         schedule: {},
         bookmarks: [],
+        overrides: [],
         termId: app.state.schedule.termId,
       };
       toast.success(`Schedule cleared`, {

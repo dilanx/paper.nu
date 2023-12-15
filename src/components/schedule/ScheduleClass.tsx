@@ -2,6 +2,7 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import ScheduleManager from '../../ScheduleManager';
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 import {
   ScheduleBookmarks,
   ScheduleInteractions,
@@ -10,12 +11,12 @@ import {
 } from '../../types/ScheduleTypes';
 import { SearchModificationFunctions } from '../../types/SearchTypes';
 import { SideCard } from '../../types/SideCardTypes';
-import { openInfo } from './ScheduleSectionInfo';
 import Utility from '../../utility/Utility';
-import { OpenRatingsFn } from '../../types/RatingTypes';
+import { openInfo } from './ScheduleSectionInfo';
 
 interface ScheduleClassProps {
   swmp: SectionWithValidMeetingPattern;
+  day: number;
   bookmarks: ScheduleBookmarks;
   alert?: Alert;
   sideCard?: SideCard;
@@ -107,7 +108,12 @@ function ScheduleClass(props: ScheduleClassProps) {
           props.sideCard,
           props.alert,
           props.openRatings,
-          section,
+          {
+            section,
+            day: props.day,
+            start_time: swmp.start_time,
+            end_time: swmp.end_time,
+          },
           interactions,
           {
             bookmarks: props.bookmarks,

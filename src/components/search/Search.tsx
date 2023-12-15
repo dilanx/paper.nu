@@ -207,10 +207,15 @@ class Search extends React.Component<SearchProps, SearchState> {
         ? searchPlan(query, filter)
         : searchSchedule(query, this.props.schedule, filter);
 
-    const easterEgg = Utility.friendlyEasterEgg(query.toLowerCase());
-    if (easterEgg) {
+    if (query === 'angela') {
       return {
-        placeholder: [this.searchMessage(easterEgg[0], easterEgg[1])],
+        placeholder: [
+          <div className="flex justify-center">
+            <button className="rounded-md bg-pink-500 px-2 py-1 font-bold text-white shadow-sm hover:bg-pink-400 active:bg-pink-300">
+              ANGELA
+            </button>
+          </div>,
+        ],
       };
     }
 
@@ -469,14 +474,6 @@ class Search extends React.Component<SearchProps, SearchState> {
                       ? 'for classes...'
                       : this.props.term?.name + '...'
                   }`}
-                  onKeyDown={(e) => {
-                    if (
-                      e.key === 'Enter' &&
-                      this.state.search.toLowerCase() === 'naomi'
-                    ) {
-                      window.open('https://nawu1552.github.io', '_blank');
-                    }
-                  }}
                   onChange={(event) => {
                     this.setState({
                       scheduleCurrent: undefined,

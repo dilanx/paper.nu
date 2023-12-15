@@ -32,10 +32,13 @@ import {
   removeYear,
 } from './app/PlanModification';
 import {
+  addOverride,
   addScheduleBookmark,
   addSection,
   clearSchedule,
+  checkOverrides,
   putCustomSection,
+  removeOverrides,
   removeScheduleBookmark,
   removeSection,
 } from './app/ScheduleModification';
@@ -171,6 +174,9 @@ class App extends React.Component<{}, AppState> implements AppType {
     const sf: ScheduleModificationFunctions = {
       addSection: (section) => addSection(app, section),
       removeSection: (section) => removeSection(app, section),
+      addOverride: (override) => addOverride(app, override),
+      checkOverrides: (section) => checkOverrides(app, section),
+      removeOverrides: (sectionId) => removeOverrides(app, sectionId),
       addScheduleBookmark: (course) => addScheduleBookmark(app, course),
       removeScheduleBookmark: (course) => removeScheduleBookmark(app, course),
       putCustomSection: (sectionToEdit) => putCustomSection(app, sectionToEdit),
@@ -216,6 +222,7 @@ class App extends React.Component<{}, AppState> implements AppType {
       schedule: {
         schedule: {},
         bookmarks: [],
+        overrides: [],
       },
       switches: defaultSwitches,
       f,
@@ -353,7 +360,7 @@ class App extends React.Component<{}, AppState> implements AppType {
               (data) => this.showSideCard(data),
               (data) => this.showAlert(data),
               (data) => this.openRatingsView(data),
-              sharedSection,
+              { section: sharedSection },
               undefined,
               {
                 ff: this.state.ff,
