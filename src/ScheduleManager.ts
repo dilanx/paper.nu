@@ -436,7 +436,6 @@ const ScheduleManager = {
     startTime: Time,
     endTime: Time
   ) => {
-    console.log('TETS');
     return overrides.some((override) => {
       return (
         override.section_id === sectionId &&

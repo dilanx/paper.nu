@@ -66,14 +66,18 @@ export default function Alert({
   const [context, setContext] = useState(data.custom?.initialContext || {});
 
   useEffect(() => {
-    if (data.form) {
-      const [valid, error] = formIsValid(formValues, data.form);
-      setBadInput(!valid);
+    const [valid, error] = data.form
+      ? formIsValid(formValues, data.form)
+      : [true, null];
+    if (!valid) {
+      setBadInput(true);
       setErrorMessage(error);
-    }
-    if (context.error) {
-      setBadInput(!!context.error);
-      setErrorMessage(context.error || null);
+    } else if (context.error) {
+      setBadInput(true);
+      setErrorMessage(context.error);
+    } else {
+      setBadInput(false);
+      setErrorMessage(null);
     }
   }, [data.form, formValues, context.error]);
 
