@@ -11,8 +11,6 @@ _2023-XX-XX_
 - **PAPER RATINGS**
   - View student-submitted overall course ratings, time commitment ratings, and grades for each course.
   - Submit your own ratings for courses you've taken.
-- **MORE COURSE INFO**
-  - You can now view when a course has been offered in the past (the earliest being 2020 Fall) in the plan view. This was one of the most requested features since 2021, and now it's here!
 - **PERSISTENT SHARE**
   - Share persistent links to your plans and schedules. When you update your plan or schedule, others can refresh to see the changes.
   - Easily access your friends' plans and schedules. When you use someone's persistent share link, their name and their document's name is saved to your Plans/Schedules tab so you can easily access it later.
@@ -22,8 +20,10 @@ _2023-XX-XX_
   - You can now filter by all available schedule time.
 - **AUTOSAVE**
   - Modified plans and schedules linked to your account will automatically be saved as you make changes.
-- **BUILT-IN FEEDBACK SUBMISSION**
-  - The built-in feedback submission feature is back. Check it out in the "About" toolbar menu.
+- **MORE COURSE INFO**
+  - You can now view when a course has been offered in the past (the earliest being 2020 Fall) in the plan view. This was one of the most requested features since 2021, and now it's here!
+- **BETTER SECTION MANAGEMENT**
+  - You can now hide specific times from a single section as needed. This is useful if a course has exams, concerts, or other one-time events that show as weekly events on the schedule.
 - **REDESIGNED INTERNAL DATA SYSTEM**
   - Developers working with Paper APIs will have a better time.
   - This doesn't really affect the end user, but the custom courses and sections feature is possible because of this change.
