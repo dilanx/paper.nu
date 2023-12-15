@@ -1,4 +1,3 @@
-import ScheduleManager from '../../ScheduleManager';
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import { OpenRatingsFn } from '../../types/RatingTypes';
@@ -50,18 +49,7 @@ function Day(props: DayProps) {
     <Cell day={props.index} key={`day-${props.index}-x`} />,
   ];
 
-  const { hourAssignments, layoutMap } = getLayout(
-    props.sections?.filter(
-      (s) =>
-        !ScheduleManager.isHiddenFromSchedule(
-          props.overrides,
-          s.section.section_id,
-          props.index,
-          s.start_time,
-          s.end_time
-        )
-    )
-  );
+  const { hourAssignments, layoutMap } = getLayout(props.sections);
 
   for (let i = props.start + 1; i <= props.end; i++) {
     const children = hourAssignments[i - 1]?.map((swmp) => (

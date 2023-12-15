@@ -150,13 +150,20 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
               )}
               {data.buttons && (
                 <div className="m-4 mt-8">
-                  {data.buttons.map((button, i) => (
-                    <SideCardButton
-                      key={`side-card-button-${i}`}
-                      data={button}
-                      close={close}
-                    />
-                  ))}
+                  {data.buttons.map((button, i) =>
+                    button === 'divider' ? (
+                      <div
+                        className="m-2 h-0.5 rounded-sm bg-gray-100"
+                        key={`side-card-button-${i}`}
+                      />
+                    ) : (
+                      <SideCardButton
+                        key={`side-card-button-${i}`}
+                        data={button}
+                        close={close}
+                      />
+                    )
+                  )}
                 </div>
               )}
             </Dialog.Panel>

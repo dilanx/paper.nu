@@ -33,6 +33,7 @@ import toast from 'react-hot-toast';
 import exportMenu from '../menu/toolbar/Export';
 import { exportScheduleAsICS } from '../../utility/Calendar';
 import { OpenRatingsFn } from '../../types/RatingTypes';
+import ScheduleManager from '../../ScheduleManager';
 
 interface DayMeetingPatterns {
   [day: number]: SectionWithValidMeetingPattern[];
@@ -106,16 +107,32 @@ export default function Schedule(props: ScheduleProps) {
         if (!isSectionWithValidMeetingPattern(swmp)) {
           continue;
         }
-        //if (!Utility.sectionMeetingPatternIsValid())
+
         const dayPattern = swmp.meeting_days;
+        let shouldFitHours = false;
         for (let j = 0; j < dayPattern.length; j++) {
-          sectionDays[parseInt(dayPattern[j])].push(swmp);
+          const day = parseInt(dayPattern[j]);
+          if (
+            ScheduleManager.isHiddenFromSchedule(
+              props.schedule.overrides,
+              swmp.section.section_id,
+              day,
+              swmp.start_time,
+              swmp.end_time
+            )
+          ) {
+            continue;
+          }
+          sectionDays[day].push(swmp);
+          shouldFitHours = true;
         }
 
         // invariant: Paper data management system ensures
         // meeting_days, start_time, and end_time are all the same length
-        start = Utility.fitHours(swmp.start_time, start, false);
-        end = Utility.fitHours(swmp.end_time, end, true);
+        if (shouldFitHours) {
+          start = Utility.fitHours(swmp.start_time, start, false);
+          end = Utility.fitHours(swmp.end_time, end, true);
+        }
       }
     }
   }

@@ -35,7 +35,7 @@ function SideCardButton({ data, close }: SideCardButtonProps) {
   return (
     <button
       disabled={info.disabled}
-      className={`my-2 w-full bg-gray-100 p-2 font-medium dark:bg-gray-800 ${
+      className={`my-1 w-full bg-gray-100 p-2 font-medium dark:bg-gray-800 ${
         info.danger
           ? `text-red-500 dark:text-red-500 ${
               info.disabled

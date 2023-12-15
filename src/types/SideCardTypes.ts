@@ -14,7 +14,7 @@ export interface SideCardData {
   message?: string;
   toolbar?: ReactNode;
   items?: SideCardItemData[];
-  buttons?: (SideCardButtonData | ToggleableSideCardButtonData)[];
+  buttons?: AnySideCardButtonData[];
   link?: string;
 }
 
@@ -43,7 +43,8 @@ export interface ToggleableSideCardButtonData<T = any> {
 
 export type AnySideCardButtonData =
   | SideCardButtonData
-  | ToggleableSideCardButtonData;
+  | ToggleableSideCardButtonData
+  | 'divider';
 
 export function sideCardButtonIsToggleable(
   button: SideCardButtonData | ToggleableSideCardButtonData

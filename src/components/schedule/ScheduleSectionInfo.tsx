@@ -302,7 +302,18 @@ export function openInfo(
     }
 
     if (mod.sf) {
+      sideCardButtons.push({
+        text: 'Remove section',
+        danger: true,
+        onClick: (close) => {
+          mod.sf!.removeSection(section);
+          close();
+        },
+      });
+
       if (!section.custom) {
+        sideCardButtons.push('divider');
+
         const overrides = mod.sf.checkOverrides(section);
 
         if (day !== undefined && start_time && end_time) {
@@ -315,7 +326,7 @@ export function openInfo(
             )} - ${Utility.convertTime(end_time, true)}`,
             disabled,
             disabledText: disabled
-              ? 'All other times for this section are hidden.'
+              ? 'This is the only visible time.'
               : undefined,
             onClick: (close) => {
               mod.sf!.addOverride({
@@ -330,39 +341,33 @@ export function openInfo(
           });
         }
 
-        sideCardButtons.push({
-          text: 'Show all hidden times',
-          disabled: !overrides.anyOverride,
-          disabledText: !overrides.anyOverride
-            ? 'None of the times for this section are hidden.'
-            : undefined,
-          onClick: (close) => {
-            mod.sf!.removeOverrides(section.section_id);
-            close();
+        sideCardButtons.push(
+          {
+            text: 'Show all hidden times',
+            disabled: !overrides.anyOverride,
+            disabledText: !overrides.anyOverride
+              ? 'None of the times for this section are hidden.'
+              : undefined,
+            onClick: (close) => {
+              mod.sf!.removeOverrides(section.section_id);
+              close();
+            },
           },
-        });
+          'divider'
+        );
       }
+    }
 
+    if (!section.custom || !mod.sf) {
       sideCardButtons.push({
-        text: 'Remove section',
-        danger: true,
+        text: mod.sf
+          ? `Show all sections of ${name}`
+          : `Show sections of ${name} in current term`,
         onClick: (close) => {
-          mod.sf!.removeSection(section);
+          mod.ff.set(name, scheduleCourse?.course_id);
           close();
         },
       });
-
-      if (!section.custom || !mod.sf) {
-        sideCardButtons.push({
-          text: mod.sf
-            ? `Show all sections of ${name}`
-            : `Show sections of ${name} in current term`,
-          onClick: (close) => {
-            mod.ff.set(name, scheduleCourse?.course_id);
-            close();
-          },
-        });
-      }
     }
   }
 

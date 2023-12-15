@@ -93,6 +93,7 @@ export function checkOverrides(app: AppType, section: ScheduleSection) {
   if (times.length === len) {
     return {
       anyOverride: false,
+      timesRemaining: times,
     };
   }
 
