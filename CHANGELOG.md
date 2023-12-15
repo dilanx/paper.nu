@@ -23,7 +23,7 @@ _2023-XX-XX_
 - **MORE COURSE INFO**
   - You can now view when a course has been offered in the past (the earliest being 2020 Fall) in the plan view. This was one of the most requested features since 2021, and now it's here!
 - **BETTER SECTION MANAGEMENT**
-  - You can now hide specific times from a single section as needed. This is useful if a course has exams, concerts, or other one-time events that show as weekly events on the schedule.
+  - You can now hide specific times from a single section as needed. This is useful if a course section has exams, performances, or other one-time events that show as weekly events on the schedule.
 - **REDESIGNED INTERNAL DATA SYSTEM**
   - Developers working with Paper APIs will have a better time.
   - This doesn't really affect the end user, but the custom courses and sections feature is possible because of this change.
