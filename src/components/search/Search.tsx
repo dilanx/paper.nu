@@ -658,6 +658,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                   expand={this.props.expandMap}
                   location={this.props.scheduleInteractions.hoverLocation.get}
                   section={mapSection}
+                  switches={this.props.switches}
                 />
 
                 <AnimatePresence>

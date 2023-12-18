@@ -2,6 +2,7 @@ import {
   AcademicCapIcon,
   BuildingLibraryIcon,
   CalendarDaysIcon,
+  ChevronRightIcon,
   ClockIcon,
   DocumentCheckIcon,
   HashtagIcon,
@@ -9,6 +10,7 @@ import {
   ListBulletIcon,
   MapPinIcon,
   PuzzlePieceIcon,
+  Squares2X2Icon,
   TagIcon,
   UserIcon,
   UsersIcon,
@@ -47,6 +49,9 @@ function getDetails(
   alert?: Alert,
   interactions?: ScheduleInteractions
 ): [IconElement, ReactNode] | undefined {
+  const offerings = course
+    ? PlanManager.getOfferings(course).slice(0, 8)
+    : undefined;
   switch (detail) {
     case 'TOPIC':
       return [TagIcon, section.topic];
@@ -184,6 +189,41 @@ function getDetails(
           ? `${section.start_date} to ${section.end_date}`
           : undefined,
       ];
+    case 'RECENT OFFERINGS':
+      return [
+        Squares2X2Icon,
+        offerings ? (
+          <>
+            <p className="text-sm">
+              {offerings.length > 0
+                ? offerings.join(', ')
+                : 'Not offered recently'}
+            </p>
+            <button
+              className="inline-flex items-center text-xs font-bold text-gray-400 hover:text-purple-500 active:text-purple-600 dark:text-gray-500 dark:hover:text-purple-300 dark:active:text-purple-200"
+              onClick={() => {
+                alert?.({
+                  icon: Squares2X2Icon,
+                  title: 'Historic Offerings',
+                  subtitle: course?.id,
+                  message: `All offerings for ${course?.id} since 2020 Fall.`,
+                  color: 'purple',
+                  cancelButton: 'Close',
+                  extras: course
+                    ? Utility.objAsAlertExtras(
+                        PlanManager.getOfferingsOrganized(course),
+                        (a, b) => b.localeCompare(a)
+                      )
+                    : undefined,
+                });
+              }}
+            >
+              <span>VIEW ALL OFFERINGS</span>
+              <ChevronRightIcon className="h-4 w-4 stroke-2" />
+            </button>
+          </>
+        ) : undefined,
+      ];
     case 'PREREQUISITES':
       return [ListBulletIcon, course?.prereqs];
     case 'FOUNDATIONAL DISCIPLINES':
@@ -243,7 +283,7 @@ export function openInfo(
   const name = `${section.subject}${
     section.number ? ` ${section.number}` : ''
   }`;
-  const course = PlanManager.getCourse(name);
+  const course = !section.custom ? PlanManager.getCourse(name) : undefined;
   const scheduleCourse = ScheduleManager.getCourseById(
     section.section_id.split('-')[0]
   );
@@ -256,6 +296,7 @@ export function openInfo(
     'INSTRUCTOR',
     'LOCATION',
     'START/END DATES',
+    'RECENT OFFERINGS',
     'PREREQUISITES',
     'FOUNDATIONAL DISCIPLINES',
     'DISTRIBUTION AREAS',

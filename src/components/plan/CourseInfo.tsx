@@ -2,11 +2,13 @@ import {
   AcademicCapIcon,
   ArrowPathIcon,
   BuildingLibraryIcon,
-  CalendarDaysIcon,
   ChevronRightIcon,
   ListBulletIcon,
+  Squares2X2Icon,
 } from '@heroicons/react/24/outline';
+import { ReactNode } from 'react';
 import PlanManager from '../../PlanManager';
+import { Alert } from '../../types/AlertTypes';
 import { IconElement } from '../../types/BaseTypes';
 import {
   BookmarksData,
@@ -14,16 +16,14 @@ import {
   CourseLocation,
   PlanModificationFunctions,
 } from '../../types/PlanTypes';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 import {
   SideCard,
   SideCardData,
   SideCardItemData,
 } from '../../types/SideCardTypes';
 import Utility from '../../utility/Utility';
-import { ReactNode } from 'react';
-import { Alert } from '../../types/AlertTypes';
 import RatingsTag from '../rating/RatingsTag';
-import { OpenRatingsFn } from '../../types/RatingTypes';
 
 function getDetails(
   detail: string,
@@ -34,7 +34,7 @@ function getDetails(
   switch (detail) {
     case 'RECENT OFFERINGS':
       return [
-        CalendarDaysIcon,
+        Squares2X2Icon,
         course.custom ? undefined : (
           <>
             <p className="text-sm">
@@ -46,7 +46,7 @@ function getDetails(
               className="inline-flex items-center text-xs font-bold text-gray-400 hover:text-purple-500 active:text-purple-600 dark:text-gray-500 dark:hover:text-purple-300 dark:active:text-purple-200"
               onClick={() => {
                 alert({
-                  icon: CalendarDaysIcon,
+                  icon: Squares2X2Icon,
                   title: 'Historic Offerings',
                   subtitle: course.id,
                   message: `All offerings for ${course.id} since 2020 Fall.`,

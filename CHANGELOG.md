@@ -11,7 +11,7 @@ _2023-XX-XX_
 - **PAPER RATINGS**
   - View student-submitted overall course ratings, time commitment ratings, and grades for each course.
   - Submit your own ratings for courses you've taken.
-- **PERSISTENT SHARE**
+- **PERSISTENT SHARING**
   - Share persistent links to your plans and schedules. When you update your plan or schedule, others can refresh to see the changes.
   - Easily access your friends' plans and schedules. When you use someone's persistent share link, their name and their document's name is saved to your Plans/Schedules tab so you can easily access it later.
 - **IMPROVED SEARCH**
@@ -21,7 +21,7 @@ _2023-XX-XX_
 - **AUTOSAVE**
   - Modified plans and schedules linked to your account will automatically be saved as you make changes.
 - **MORE COURSE INFO**
-  - You can now view when a course has been offered in the past (the earliest being 2020 Fall) in the plan view. This was one of the most requested features since 2021, and now it's here!
+  - You can now view when a course has been offered in the past (the earliest being 2020 Fall). This was one of the most requested features since 2021, and now it's here!
 - **BETTER SECTION MANAGEMENT**
   - You can now hide specific times from a single section as needed. This is useful if a course section has exams, performances, or other one-time events that show as weekly events on the schedule.
 - **REDESIGNED INTERNAL DATA SYSTEM**
@@ -34,12 +34,12 @@ _2023-XX-XX_
   - Open a course's info menu in plan view right from search by pressing the "view more info" button after selecting a class in your search results.
   - Actions for a given year on the plan view have been moved into a context menu (press the three lines at the top right of a year to open).
   - Subjects with missing colors now have a color.
-  - Northwestern's new foundational disciplines are now supported.
+  - Weinberg's new foundational disciplines are now supported.
   - The browse menu in the search box now shows more schools and subjects.
   - The design of the appearance toggle has been refreshed. (Did you know Paper has a light AND dark mode? Check the settings!)
   - Fixed a bug where the Paper logo would sometimes not appear on schedules that are exported as an image.
-  - Sections that add their midterms to their section's meeting times now don't have their midterms displayed on their weekly schedule. Hopefully. I'm not completely sure but I tried.
   - UI elements on the map now look nicer.
+  - Hopefully fixed a bug where the map would not load properly when switching between sidebar tabs.
   - Legacy plan and schedule URLs are completely discontinued. You can no longer load them from settings.
   - The Plan Northwestern and salad.nu bubbles in the about menu have been removed. This information is in the project attributions, which is now linked in the menu instead.
   - A bunch of other UI updates, bug fixes, and other small changes to improve functionality, accessibility and user experience.

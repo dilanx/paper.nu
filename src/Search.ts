@@ -244,7 +244,7 @@ export function searchSchedule(
   }
 
   courseIdResults.sort((a, b) => fullId(a).localeCompare(fullId(b)));
-  courseNameResults.sort((a, b) => a.title.localeCompare(b.title));
+  courseNameResults.sort((a, b) => fullId(a).localeCompare(fullId(b)));
 
   return {
     results: courseIdResults.concat(courseNameResults),
