@@ -243,7 +243,7 @@ export default function Ratings({
                               chartId="overall"
                               title="OVERALL RATING"
                               Icon={StarIcon}
-                              description={`The overall student rating of the course taught by this instructor this quarter. ${chooseOverallRatingSummary(
+                              description={`The overall student rating of the course. ${chooseOverallRatingSummary(
                                 ratings.ratings.overall
                               )}`}
                               values={overallRatings}

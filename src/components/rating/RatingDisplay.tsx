@@ -23,6 +23,8 @@ export default function RatingDisplay({
 }: RatingDisplayProps) {
   const isHorizontal = mode === 'horizontal';
 
+  const sum = values.reduce((acc, curr) => acc + curr.value, 0);
+
   return (
     <div
       className={`flex flex-col gap-4 text-center text-black dark:text-white ${
@@ -39,6 +41,9 @@ export default function RatingDisplay({
           <p className="text-2xl font-bold tracking-wide">{title}</p>
         </div>
         {description && <p className="text-xs">{description}</p>}
+        <p className="mt-2 text-xs font-bold text-gray-400 dark:text-gray-500">
+          {sum} TOTAL RATING{sum === 1 ? '' : 'S'}
+        </p>
       </div>
       <div className={isHorizontal ? 'my-2' : 'flex-[60%]'}>
         <BarChart
