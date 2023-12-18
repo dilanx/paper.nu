@@ -23,6 +23,7 @@ import {
   CourseRating,
   OverallRating,
   RatingInfo,
+  RatingsObject,
   RatingsViewData,
 } from '../../types/RatingTypes';
 import {
@@ -35,6 +36,7 @@ import { PaperError } from '../../utility/PaperError';
 import {
   chooseCommitmentRatingSummary,
   chooseOverallRatingSummary,
+  ratingAverage,
 } from '../../utility/RatingMessages';
 import Utility from '../../utility/Utility';
 import RatingDisplay from './RatingDisplay';
@@ -99,26 +101,34 @@ export default function Ratings({
     update(false);
   }, [update]);
 
-  const overallRatings: BarChartValue[] = [];
-  const commitmentRatings: BarChartValue[] = [];
-  const gradeRatings: BarChartValue[] = [];
+  const barChartValues: RatingsObject<BarChartValue[]> = {
+    overall: [],
+    commitment: [],
+    grade: [],
+  };
 
   if (ratings) {
     for (let i = 1; i <= 5; i++) {
-      overallRatings.push({
+      const overallVal =
+        ratings.ratings.overall?.[i as keyof OverallRating] || 0;
+      barChartValues.overall.push({
         label: `${i}`,
-        value: ratings.ratings.overall?.[i as keyof OverallRating] || 0,
+        value: overallVal,
       });
-      commitmentRatings.push({
+
+      const commitmentVal =
+        ratings.ratings.commitment?.[i as keyof OverallRating] || 0;
+      barChartValues.commitment.push({
         label: TIME_COMMITMENT_LEVELS[i - 1],
-        value: ratings.ratings.commitment?.[i as keyof OverallRating] || 0,
+        value: commitmentVal,
       });
     }
 
     for (let i = 1; i <= 16; i++) {
-      gradeRatings.push({
+      const gradeVal = ratings.ratings.grade?.[i as keyof OverallRating] || 0;
+      barChartValues.grade.push({
         label: GRADE_LEVELS[i - 1],
-        value: ratings.ratings.grade?.[i as keyof OverallRating] || 0,
+        value: gradeVal,
       });
     }
   }
@@ -246,7 +256,10 @@ export default function Ratings({
                               description={`The overall student rating of the course. ${chooseOverallRatingSummary(
                                 ratings.ratings.overall
                               )}`}
-                              values={overallRatings}
+                              values={barChartValues.overall}
+                              calculations={ratingAverage(
+                                ratings.ratings.overall
+                              )}
                               labelClassName="w-12"
                             />
                             <RatingDisplay
@@ -256,7 +269,10 @@ export default function Ratings({
                               description={`The approximate time, in hours, that students spent working on classwork outside of class. ${chooseCommitmentRatingSummary(
                                 ratings.ratings.commitment
                               )}`}
-                              values={commitmentRatings}
+                              values={barChartValues.commitment}
+                              calculations={ratingAverage(
+                                ratings.ratings.commitment
+                              )}
                               labelClassName="w-12"
                             />
                             <RatingDisplay
@@ -265,7 +281,10 @@ export default function Ratings({
                               title="GRADES"
                               Icon={AcademicCapIcon}
                               description="The distribution of grades received by students in this course."
-                              values={gradeRatings}
+                              values={barChartValues.grade}
+                              calculations={ratingAverage(
+                                ratings.ratings.grade
+                              )}
                             />
                           </>
                         ) : (

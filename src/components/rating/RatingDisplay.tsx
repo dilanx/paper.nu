@@ -1,5 +1,6 @@
 import { IconElement } from '../../types/BaseTypes';
 import { BarChartMode, BarChartValue } from '../../types/GenericMenuTypes';
+import { RatingCalculations } from '../../types/RatingTypes';
 import BarChart from '../generic/BarChart';
 
 interface RatingDisplayProps {
@@ -9,6 +10,7 @@ interface RatingDisplayProps {
   chartId: string;
   description?: string;
   values: BarChartValue[];
+  calculations: RatingCalculations;
   labelClassName?: string;
 }
 
@@ -19,11 +21,10 @@ export default function RatingDisplay({
   chartId,
   description,
   values,
+  calculations,
   labelClassName,
 }: RatingDisplayProps) {
   const isHorizontal = mode === 'horizontal';
-
-  const sum = values.reduce((acc, curr) => acc + curr.value, 0);
 
   return (
     <div
@@ -41,9 +42,11 @@ export default function RatingDisplay({
           <p className="text-2xl font-bold tracking-wide">{title}</p>
         </div>
         {description && <p className="text-xs">{description}</p>}
-        <p className="mt-2 text-xs font-bold text-gray-400 dark:text-gray-500">
-          {sum} TOTAL RATING{sum === 1 ? '' : 'S'}
-        </p>
+        <div className="mt-2 flex gap-1 text-xs font-bold text-gray-400">
+          <p>{calculations[0].toFixed(1)} AVERAGE</p>
+          <div className="h-full w-[1px] rounded-sm bg-gray-300 dark:bg-gray-500" />
+          <p>{calculations[1]} TOTAL</p>
+        </div>
       </div>
       <div className={isHorizontal ? 'my-2' : 'flex-[60%]'}>
         <BarChart

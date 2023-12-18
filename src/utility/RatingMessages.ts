@@ -2,9 +2,15 @@ import {
   CommitmentRating,
   InstructorRating,
   OverallRating,
+  RatingCalculations,
 } from '../types/RatingTypes';
 
-function average(scores: OverallRating | CommitmentRating | InstructorRating) {
+export function ratingAverage(
+  scores?: OverallRating | CommitmentRating | InstructorRating
+): RatingCalculations {
+  if (!scores) {
+    return [0, 0];
+  }
   let avg = 0;
   let total = 0;
   for (const key in scores) {
@@ -19,7 +25,7 @@ export function chooseOverallRatingSummary(scores?: OverallRating) {
   if (!scores) {
     return 'There are no ratings yet.';
   }
-  const [avg, total] = average(scores);
+  const [avg, total] = ratingAverage(scores);
   if (!total) {
     return 'There are no ratings yet.';
   }
@@ -40,7 +46,7 @@ export function chooseCommitmentRatingSummary(scores?: CommitmentRating) {
   if (!scores) {
     return 'There are no ratings yet.';
   }
-  const [avg, total] = average(scores);
+  const [avg, total] = ratingAverage(scores);
   if (!total) {
     return 'There are no ratings yet.';
   }
@@ -61,7 +67,7 @@ export function chooseInstructorRatingSummary(scores?: InstructorRating) {
   if (!scores) {
     return 'There are no ratings yet.';
   }
-  const [avg, total] = average(scores);
+  const [avg, total] = ratingAverage(scores);
   if (!total) {
     return 'There are no ratings yet.';
   }

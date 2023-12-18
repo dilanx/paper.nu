@@ -87,3 +87,12 @@ export interface CachedRatings {
 }
 
 export type OpenRatingsFn = (ratingsData: RatingsViewData) => void;
+
+export interface RatingsObject<T> {
+  overall: T;
+  commitment: T;
+  grade: T;
+}
+
+/** [average, total] */
+export type RatingCalculations = [number, number];
