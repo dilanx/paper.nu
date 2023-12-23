@@ -331,15 +331,15 @@ export default function Ratings({
                           <p className="max-w-sm text-center text-sm text-gray-500 dark:text-gray-400">
                             Paper Ratings allow you to see what students think
                             of a course, like {data.course}. Check out a
-                            course's overall rating, time commitment, and
-                            instructor rating, alongside a distribution of
-                            student-submitted grades, right from here!
+                            course's overall rating and time commitment,
+                            alongside a distribution of student-submitted
+                            grades, right from here!
                           </p>
                           <button
-                            className="m-2 rounded-lg bg-black p-2 text-white shadow-lg hover:opacity-75 active:opacity-60 dark:bg-white dark:text-black"
+                            className="m-2 rounded-lg bg-black px-4 py-2 text-sm font-bold text-white shadow-lg hover:opacity-75 active:opacity-60 dark:bg-white dark:text-black"
                             onClick={() => Account.logIn()}
                           >
-                            Sign in to continue
+                            SIGN IN TO CONTINUE
                           </button>
                         </>
                       )}

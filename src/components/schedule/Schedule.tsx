@@ -1,39 +1,38 @@
+import {
+  ArrowTopRightOnSquareIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import ScheduleManager from '../../ScheduleManager';
+import paperBlack from '../../assets/paper-full-black.png';
+import paperWhite from '../../assets/paper-full-white.png';
 import { Alert } from '../../types/AlertTypes';
 import {
   ContextMenu,
   ContextMenuData,
   UserOptions,
 } from '../../types/BaseTypes';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 import {
-  isSectionWithValidMeetingPattern,
-  isValidScheduleSection,
   ScheduleData,
   ScheduleInteractions,
   ScheduleModificationFunctions,
   SectionWithValidMeetingPattern,
+  isSectionWithValidMeetingPattern,
+  isValidScheduleSection,
 } from '../../types/ScheduleTypes';
 import { SearchModificationFunctions } from '../../types/SearchTypes';
 import { SideCard } from '../../types/SideCardTypes';
-import Utility from '../../utility/Utility';
-import Day from './Day';
-import HoursColumn from './HoursColumn';
-import paperBlack from '../../assets/paper-full-black.png';
-import paperWhite from '../../assets/paper-full-white.png';
-import {
-  ArrowTopRightOnSquareIcon,
-  PlusIcon,
-  TrashIcon,
-} from '@heroicons/react/24/outline';
-import UtilityButton from '../menu/UtilityButton';
-import Account from '../../Account';
-import { exportScheduleAsImage } from '../../utility/Image';
-import toast from 'react-hot-toast';
-import exportMenu from './Export';
 import { exportScheduleAsICS } from '../../utility/Calendar';
-import { OpenRatingsFn } from '../../types/RatingTypes';
-import ScheduleManager from '../../ScheduleManager';
+import { exportScheduleAsImage } from '../../utility/Image';
+import Utility from '../../utility/Utility';
+import UtilityButton from '../menu/UtilityButton';
+import Day from './Day';
+import exportMenu from './Export';
+import HoursColumn from './HoursColumn';
 
 interface DayMeetingPatterns {
   [day: number]: SectionWithValidMeetingPattern[];
@@ -54,18 +53,7 @@ interface ScheduleProps {
 }
 
 export default function Schedule(props: ScheduleProps) {
-  const [enableCustom, setEnableCustom] = useState(false);
   const [takeImage, setTakeImage] = useState(false);
-  useEffect(() => {
-    if (Account.isLoggedIn()) {
-      const activeId = props.switches.get.active_schedule_id;
-      if (activeId && activeId !== 'None') {
-        setEnableCustom(true);
-        return;
-      }
-    }
-    setEnableCustom(false);
-  }, [props.switches.get.active_schedule_id]);
 
   useEffect(() => {
     if (takeImage) {
@@ -221,22 +209,7 @@ export default function Schedule(props: ScheduleProps) {
             <UtilityButton
               Icon={PlusIcon}
               onClick={() => {
-                if (enableCustom) {
-                  props.sf.putCustomSection();
-                } else {
-                  props.alert({
-                    title: 'Add custom sections to your schedule.',
-                    message:
-                      "Keep your entire school schedule, including things other than classes, in one place by adding custom sections to your schedule! You'll need to be logged in and have a schedule activated to do this.",
-                    color: 'green',
-                    icon: PlusIcon,
-                    cancelButton: 'Close',
-                    confirmButton: 'Go to schedules',
-                    action: () => {
-                      props.switches.set('tab', 'Plans');
-                    },
-                  });
-                }
+                props.sf.putCustomSection();
               }}
             >
               CUSTOM
