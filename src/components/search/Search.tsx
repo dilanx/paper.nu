@@ -463,10 +463,10 @@ class Search extends React.Component<SearchProps, SearchState> {
           <>
             <div className="mb-2 rounded-lg bg-white p-2 dark:bg-gray-800">
               <label className="relative mx-auto mb-2 mt-4 block w-11/12">
-                <MagnifyingGlassIcon className="peer absolute left-2.5 top-1/2 h-5 w-5 -translate-y-1/2 stroke-2 text-gray-400" />
+                <MagnifyingGlassIcon className="peer absolute left-2.5 top-1/2 h-5 w-5 -translate-y-1/2 cursor-text stroke-2 text-gray-400" />
                 <input
-                  className="w-full rounded-lg border-2 border-gray-300 bg-white p-2 px-4 pl-8
-                     text-black shadow-sm outline-none transition-all duration-150 placeholder:text-gray-400 hover:border-gray-500 focus:border-black peer-hover:border-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:border-gray-500 dark:focus:border-white"
+                  className="important-focus w-full rounded-lg border-2 border-gray-300 bg-white p-2 px-4
+                     pl-8 text-black shadow-sm outline-none transition-all duration-150 placeholder:text-gray-400 hover:border-gray-500 peer-hover:border-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:border-gray-500 dark:focus:border-white"
                   ref={this.searchFieldRef}
                   value={search}
                   placeholder={`Search ${

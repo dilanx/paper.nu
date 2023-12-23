@@ -104,4 +104,8 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+
+  .important-focus:focus {
+    border-color: #000000 !important;
+  }
 }
