@@ -137,7 +137,7 @@ function Quarter(props: QuarterProps) {
               props.f.putCustomCourse(props.location);
             }}
           >
-            Custom
+            CUSTOM
           </QuarterUtilityButton>
         </div>
       </div>

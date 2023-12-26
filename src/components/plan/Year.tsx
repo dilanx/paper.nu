@@ -155,7 +155,7 @@ class Year extends React.Component<YearProps, YearState> {
                 });
               }}
             >
-              {this.state.hidden ? 'Show' : 'Hide'}
+              {this.state.hidden ? 'SHOW' : 'HIDE'}
             </UtilityButton>
             <UtilityButton
               Icon={Bars3Icon}
@@ -172,7 +172,7 @@ class Year extends React.Component<YearProps, YearState> {
                 });
               }}
             >
-              Menu
+              MENU
             </UtilityButton>
           </div>
           {/* <div className="absolute right-1 top-1 text-gray-300 dark:text-gray-500">
