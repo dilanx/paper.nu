@@ -28,9 +28,9 @@ function ContextMenuButton({ data, sm: xs, close }: ContextMenuButtonProps) {
         close();
       }}
     >
-      <div className="flex w-full items-center justify-end gap-4">
-        <p className="flex-1 whitespace-nowrap text-left">{data.text}</p>
+      <div className="flex w-full items-center justify-end gap-2">
         <data.icon className="h-4 w-4 stroke-2" />
+        <p className="flex-1 whitespace-nowrap text-left">{data.text}</p>
       </div>
       {data.description && (
         <p className="max-w-[160px] text-left text-xs text-gray-400 sm:max-w-[240px]">

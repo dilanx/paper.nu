@@ -31,8 +31,8 @@ export default function UtilityButton({
           : 'hover:bg-gray-100 active:bg-gray-200  dark:hover:bg-gray-700 dark:active:bg-gray-600'
       }`}
     >
-      <p>{children}</p>
       {Icon && <Icon className="h-4 w-4 stroke-2" />}
+      <p>{children}</p>
     </button>
   );
 }

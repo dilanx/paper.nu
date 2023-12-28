@@ -89,10 +89,10 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
                       ) : (
                         <LinkIcon className="h-5 w-5" />
                       )}
-                      <Tooltip className="-bottom-9 right-0 w-36" color="gray">
+                      <Tooltip className="-bottom-9 right-0 w-40" color="gray">
                         {hasCopied
                           ? 'Copied to clipboard!'
-                          : 'Copy link to section'}
+                          : 'Copy link to information'}
                       </Tooltip>
                     </button>
                   )}

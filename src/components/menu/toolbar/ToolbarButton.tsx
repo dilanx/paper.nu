@@ -38,8 +38,8 @@ function ToolbarButton({
             `
       }`}
     >
-      <p className="hidden md:block">{children}</p>
       <Icon className="h-5 w-5 stroke-2 md:h-4 md:w-4" />
+      <p className="hidden md:block">{children}</p>
     </button>
   );
 }

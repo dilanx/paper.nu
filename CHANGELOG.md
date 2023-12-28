@@ -22,6 +22,7 @@ _2023-XX-XX_
   - Modified plans and schedules linked to your account will automatically be saved as you make changes.
 - **MORE COURSE INFO**
   - You can now view when a course has been offered in the past (the earliest being 2020 Fall). This was one of the most requested features since 2021, and now it's here!
+  - You can share a link directly to the information of any course or section.
 - **BETTER SECTION MANAGEMENT**
   - You can now hide specific times from a single section as needed. This is useful if a course section has exams, performances, or other one-time events that show as weekly events on the schedule.
 - **REDESIGNED INTERNAL DATA SYSTEM**
@@ -29,7 +30,6 @@ _2023-XX-XX_
   - This doesn't really affect the end user, but the custom courses and sections feature is possible because of this change.
 - **A TON OF OTHER THINGS**
   - The schedule is now gray instead of green so it blends in well with the rest of the UI.
-  - Share a link directly to any course or section.
   - The term selection menu (selecting year and quarter) was completely redesigned to be easier to use as the number of terms Paper supports grows.
   - Open a course's info menu in plan view right from search by pressing the "view more info" button after selecting a class in your search results.
   - Actions for a given year on the plan view have been moved into a context menu (press the three lines at the top right of a year to open).
