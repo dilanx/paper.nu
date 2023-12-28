@@ -30,6 +30,7 @@ _2023-XX-XX_
   - This doesn't really affect the end user, but the custom courses and sections feature is possible because of this change.
 - **A TON OF OTHER THINGS**
   - The schedule is now gray instead of green so it blends in well with the rest of the UI.
+  - The mode switcher (buttons that switch between the plan view and the schedule view) has been given a new look, along with new transitions and animations.
   - The term selection menu (selecting year and quarter) was completely redesigned to be easier to use as the number of terms Paper supports grows.
   - Open a course's info menu in plan view right from search by pressing the "view more info" button after selecting a class in your search results.
   - Actions for a given year on the plan view have been moved into a context menu (press the three lines at the top right of a year to open).
