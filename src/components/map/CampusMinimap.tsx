@@ -95,7 +95,7 @@ function CampusMinimap({
           ))}
       </MapContainer>
       <button
-        className="absolute right-2 top-2 z-20 text-gray-500 hover:text-emerald-500 active:text-emerald-600"
+        className="absolute right-2 top-2 z-20 rounded-md p-0.5 text-gray-500 hover:bg-gray-100/20 active:bg-gray-100/40 dark:hover:bg-gray-600/20 dark:active:bg-gray-600/40"
         onClick={() => expand()}
       >
         <ArrowsPointingOutIcon className="h-6 w-6" />
