@@ -36,7 +36,7 @@ function ModeSwitchButton({
       </div>
       {active && (
         <motion.div
-          className={`absolute left-0 top-0 z-0 h-full w-full rounded-md shadow-sm bg-${color}-600 dark:bg-${color}-400`}
+          className={`absolute left-0 top-0 z-0 h-full w-full rounded-md shadow-md bg-${color}-600 dark:bg-${color}-400`}
           layoutId="mode-switch"
           animate={{
             backgroundColor: transition,
