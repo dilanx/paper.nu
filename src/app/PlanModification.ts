@@ -16,6 +16,12 @@ import Utility from '../utility/Utility';
 import { customCourseForm } from '../utility/Forms';
 const d = debug('app:plan-mod');
 
+function sortCourses(a: Course, b: Course) {
+  if (a.placeholder) return 1;
+  if (b.placeholder) return -1;
+  return a.id.localeCompare(b.id);
+}
+
 function courseConfirmationPrompts(
   app: AppType,
   course: Course,
@@ -98,11 +104,7 @@ export function addCourse(
     const data = app.state.data;
     const { year, quarter } = location;
     data.courses[year][quarter].push(course);
-    data.courses[year][quarter].sort((a, b) => {
-      if (a.placeholder) return 1;
-      if (b.placeholder) return -1;
-      return a.id.localeCompare(b.id);
-    });
+    data.courses[year][quarter].sort(sortCourses);
 
     d('course added: %s (y%dq%d)', course.id, year, quarter);
     app.setState({
@@ -161,11 +163,7 @@ export function moveCourse(
       }
       const data = app.state.data;
       data.courses[ny][nq].push(course);
-      data.courses[ny][nq].sort((a, b) => {
-        if (a.placeholder) return 1;
-        if (b.placeholder) return -1;
-        return a.id.localeCompare(b.id);
-      });
+      data.courses[ny][nq].sort(sortCourses);
 
       d('course moved: %s (y%dq%d) -> (y%dq%d)', course.id, oy, oq, ny, nq);
       app.setState({
@@ -191,6 +189,7 @@ export function editCourse(
     1,
     newCourse
   );
+  data.courses[year][quarter].sort(sortCourses);
   d(
     'course edited: %s -> %s (y%dq%d)',
     oldCourse.id,
