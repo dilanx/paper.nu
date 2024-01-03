@@ -147,7 +147,7 @@ function SearchFilterBadge({
         {value}
       </p>
       <p
-        className={`absolute top-0 left-0 h-full w-full text-white bg-${color}-400
+        className={`absolute left-0 top-0 h-full w-full text-white bg-${color}-400
                     hidden items-center justify-center rounded-lg bg-opacity-80 group-hover:flex group-active:bg-opacity-100`}
       >
         <XMarkIcon className="h-4 w-4" />

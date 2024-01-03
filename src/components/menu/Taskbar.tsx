@@ -25,7 +25,7 @@ function Taskbar(props: TaskBarProps) {
   const switches = props.switches;
   const isSchedule = switches.get.mode === Mode.SCHEDULE;
   return (
-    <div className="mx-auto mt-2 mb-4 w-full gap-2">
+    <div className="mx-auto mb-4 mt-2 w-full gap-2">
       <Tabs
         switches={props.switches}
         switchName="tab"
