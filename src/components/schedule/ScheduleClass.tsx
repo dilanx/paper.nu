@@ -2,6 +2,7 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import ScheduleManager from '../../ScheduleManager';
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 import {
   ScheduleBookmarks,
   ScheduleInteractions,
@@ -10,14 +11,16 @@ import {
 } from '../../types/ScheduleTypes';
 import { SearchModificationFunctions } from '../../types/SearchTypes';
 import { SideCard } from '../../types/SideCardTypes';
-import { openInfo } from '../../utility/ScheduleSectionInfo';
 import Utility from '../../utility/Utility';
+import { openInfo } from './ScheduleSectionInfo';
 
 interface ScheduleClassProps {
   swmp: SectionWithValidMeetingPattern;
+  day: number;
   bookmarks: ScheduleBookmarks;
   alert?: Alert;
   sideCard?: SideCard;
+  openRatings?: OpenRatingsFn;
   interactions?: ScheduleInteractions;
   sf: ScheduleModificationFunctions;
   ff: SearchModificationFunctions;
@@ -29,8 +32,17 @@ interface ScheduleClassProps {
 function ScheduleClass(props: ScheduleClassProps) {
   const { swmp, interactions, sf, ff, switches, imageMode, split } = props;
   const { section, start_time, end_time } = swmp;
-  const { subject, number, title, topic, instructors } = section;
-  const color = ScheduleManager.getCourseColor(subject);
+  const {
+    subject,
+    number,
+    title,
+    topic,
+    instructors,
+    custom,
+    color: customColor,
+    preview,
+  } = section;
+  const color = customColor || ScheduleManager.getCourseColor(subject);
 
   const startDif = start_time.m / 60;
   const length =
@@ -69,11 +81,11 @@ function ScheduleClass(props: ScheduleClassProps) {
     <div
       className={`absolute z-10 rounded-lg bg-opacity-60
                 bg-${color}-100 border-2 border-l-4 dark:bg-gray-800 border-${color}-400 group
-                cursor-default overflow-visible transition duration-300 ease-in-out ${
+                cursor-pointer overflow-visible transition duration-300 ease-in-out active:opacity-50 ${
                   interactions?.hoverSection.get === section.section_id
                     ? '-translate-y-2 shadow-lg'
                     : ''
-                } ${section.preview ? 'opacity-60' : ''}`}
+                } ${preview ? 'opacity-60' : ''}`}
       style={{
         top: `${startDif * 100}%`,
         left,
@@ -81,6 +93,8 @@ function ScheduleClass(props: ScheduleClassProps) {
         height: `calc(${endDif * 100}% + ${
           2 * (end_time!.h - start_time!.h)
         }px)`,
+        borderStyle: custom ? 'dashed' : 'solid',
+        borderLeftStyle: 'solid',
       }}
       onMouseEnter={() => {
         interactions?.hoverSection.set(section.section_id);
@@ -89,12 +103,24 @@ function ScheduleClass(props: ScheduleClassProps) {
         interactions?.multiClear(['hoverSection', 'hoverDelete']);
       }}
       onClick={() => {
-        if (!props.sideCard || !props.alert) return;
-        openInfo(props.sideCard, props.alert, section, interactions, {
-          bookmarks: props.bookmarks,
-          sf,
-          ff,
-        });
+        if (!props.sideCard || !props.alert || !props.openRatings) return;
+        openInfo(
+          props.sideCard,
+          props.alert,
+          props.openRatings,
+          {
+            section,
+            day: props.day,
+            start_time: swmp.start_time,
+            end_time: swmp.end_time,
+          },
+          interactions,
+          {
+            bookmarks: props.bookmarks,
+            sf,
+            ff,
+          }
+        );
       }}
     >
       <div className="relative h-full w-full">
@@ -109,7 +135,7 @@ function ScheduleClass(props: ScheduleClassProps) {
             } m-0 p-0 text-black dark:text-white`}
           >
             {subject} {number}
-            {section.component !== 'LEC' && (
+            {section.component !== 'LEC' && section.component !== 'CUS' && (
               <>
                 {' '}
                 <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
@@ -136,7 +162,7 @@ function ScheduleClass(props: ScheduleClassProps) {
         )}
       </div>
       <button
-        className={`absolute -top-2 -right-2 rounded-full p-0.5
+        className={`absolute -right-2 -top-2 rounded-full p-0.5
                     ${
                       interactions?.hoverSection.get === section.section_id &&
                       interactions?.hoverDelete.get

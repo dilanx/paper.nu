@@ -1,10 +1,11 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
-import { Fragment, useRef, useState } from 'react';
+import { CheckIcon, LinkIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { UserOptions } from '../../../types/BaseTypes';
 import { SideCardData } from '../../../types/SideCardTypes';
 import SideCardButton from './SideCardButton';
 import SideCardItem from './SideCardItem';
+import Tooltip from '../../generic/Tooltip';
 
 interface SideCardProps {
   data: SideCardData;
@@ -14,8 +15,19 @@ interface SideCardProps {
 
 function SideCard({ data, switches, onClose }: SideCardProps) {
   const [isOpen, setIsOpen] = useState(true);
+  const [hasCopied, setHasCopied] = useState(false);
 
   const initialFocus = useRef(null);
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      setHasCopied(false);
+    }, 2000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [hasCopied]);
 
   function close() {
     setIsOpen(false);
@@ -41,7 +53,7 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
         >
           <div className="fixed inset-0 bg-black bg-opacity-10" />
         </Transition.Child>
-        <div className="fixed top-0 right-0 h-screen w-screen px-4 py-8 md:max-w-md">
+        <div className="fixed right-0 top-0 h-screen w-screen px-4 py-8 md:max-w-md">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-200"
@@ -54,19 +66,44 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
             <Dialog.Panel className="no-scrollbar h-full w-full overflow-y-scroll rounded-xl bg-white p-4 shadow-xl dark:bg-gray-700">
               <div
                 ref={initialFocus}
-                className="mb-8 flex w-full items-center gap-2"
+                className="mb-6 flex w-full items-center gap-2"
               >
                 <p
-                  className={`text-${data.themeColor}-400 flex-grow text-sm font-bold tracking-wider`}
+                  className={`flex-grow text-sm font-bold tracking-wider text-gray-600 dark:text-gray-400`}
                 >
                   {data.type}
                 </p>
-                <div>
+                <div className="flex items-center gap-2">
+                  {data.link && (
+                    <button
+                      className="group relative flex items-center rounded-md p-1.5 text-gray-600 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
+                      onClick={() => {
+                        if (data.link) {
+                          navigator.clipboard.writeText(data.link);
+                          setHasCopied(true);
+                        }
+                      }}
+                    >
+                      {hasCopied ? (
+                        <CheckIcon className="h-5 w-5" />
+                      ) : (
+                        <LinkIcon className="h-5 w-5" />
+                      )}
+                      <Tooltip className="-bottom-9 right-0 w-40" color="gray">
+                        {hasCopied
+                          ? 'Copied to clipboard!'
+                          : 'Copy link to information'}
+                      </Tooltip>
+                    </button>
+                  )}
                   <button
-                    className="flex items-center text-gray-600 hover:text-red-400 active:text-red-500 dark:text-gray-500 dark:hover:text-red-400 dark:active:text-red-300"
+                    className="group relative flex items-center rounded-md p-0.5 text-gray-600 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
                     onClick={() => close()}
                   >
                     <XMarkIcon className="h-7 w-7" />
+                    <Tooltip className="-bottom-9 right-0" color="gray">
+                      Close
+                    </Tooltip>
                   </button>
                 </div>
               </div>
@@ -77,9 +114,12 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
                   </p>
                 </div>
               )}
-              <p
-                className={`text-center text-2xl font-bold text-gray-800 dark:text-gray-50 sm:text-left`}
-              >
+              {data.tag && (
+                <p className={`text-xs font-bold text-${data.tag.color}-400`}>
+                  {data.tag.text}
+                </p>
+              )}
+              <p className="text-center text-2xl font-bold text-gray-800 dark:text-gray-50 sm:text-left">
                 {data.title}
               </p>
               {data.subtitle && (
@@ -92,8 +132,13 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
                   {data.message}
                 </p>
               )}
+              {data.toolbar && (
+                <div className="my-2 flex items-center justify-end">
+                  {data.toolbar}
+                </div>
+              )}
               {data.items && (
-                <div className="mt-4">
+                <div className="my-4">
                   {data.items.map((item, i) => (
                     <SideCardItem
                       key={`side-card-item-${i}`}
@@ -105,13 +150,20 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
               )}
               {data.buttons && (
                 <div className="m-4 mt-8">
-                  {data.buttons.map((button, i) => (
-                    <SideCardButton
-                      key={`side-card-button-${i}`}
-                      data={button}
-                      close={close}
-                    />
-                  ))}
+                  {data.buttons.map((button, i) =>
+                    button === 'divider' ? (
+                      <div
+                        className="m-2 h-0.5 rounded-sm bg-gray-100"
+                        key={`side-card-button-${i}`}
+                      />
+                    ) : (
+                      <SideCardButton
+                        key={`side-card-button-${i}`}
+                        data={button}
+                        close={close}
+                      />
+                    )
+                  )}
                 </div>
               )}
             </Dialog.Panel>

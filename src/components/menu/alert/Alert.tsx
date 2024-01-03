@@ -5,10 +5,11 @@ import {
   AlertActionData,
   AlertData,
   AlertFormResponse,
+  AlertNextFn,
 } from '../../../types/AlertTypes';
 import { UserOptions } from '../../../types/BaseTypes';
 import { formIsValid } from '../../../utility/AlertFormInputValidation';
-import SelectMenu from '../../generic/SelectMenu';
+import ScrollSelectMenu from '../../generic/ScrollSelectMenu';
 import { TabButton, Tabs } from '../Tabs';
 import { getAlertEditButtons } from './AlertEditButtons';
 import { getAlertExtras } from './AlertExtras';
@@ -20,7 +21,7 @@ interface AlertProps {
   data: AlertData;
   switches: UserOptions;
   onConfirm: (data: AlertActionData) => void;
-  onSwitch: (next: AlertData) => void;
+  onSwitch: AlertNextFn;
   onClose: () => void;
 }
 
@@ -42,6 +43,7 @@ export default function Alert({
     [string | undefined, TextViewStatus]
   >([data.textView?.text, 'none']);
   const [badInput, setBadInput] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (data.textInput?.match) {
@@ -61,11 +63,23 @@ export default function Alert({
   const [formValues, setFormValues] =
     useState<AlertFormResponse>(defaultFormValues);
 
+  const [context, setContext] = useState(data.custom?.initialContext || {});
+
   useEffect(() => {
-    if (data.form) {
-      setBadInput(!formIsValid(formValues, data.form.sections));
+    const [valid, error] = data.form
+      ? formIsValid(formValues, data.form)
+      : [true, null];
+    if (!valid) {
+      setBadInput(true);
+      setErrorMessage(error);
+    } else if (context.error) {
+      setBadInput(true);
+      setErrorMessage(context.error);
+    } else {
+      setBadInput(false);
+      setErrorMessage(null);
     }
-  }, [data.form, formValues]);
+  }, [data.form, formValues, context.error]);
 
   const initialFocus = useRef(null);
   const confirmButton = useRef(null);
@@ -76,7 +90,7 @@ export default function Alert({
 
   function confirm() {
     setIsOpen(false);
-    onConfirm({ inputText: textValue, textViewValue: textViewData });
+    onConfirm({ inputText: textValue, textViewValue: textViewData, context });
   }
 
   const extraList = getAlertExtras(data.extras);
@@ -154,7 +168,7 @@ export default function Alert({
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all dark:bg-gray-700 sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
-                <div className="bg-white px-4 pt-5 pb-4 dark:bg-gray-700 sm:p-6 sm:pb-4">
+                <div className="bg-white px-4 pb-4 pt-5 dark:bg-gray-700 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
                     <div
                       ref={initialFocus}
@@ -165,7 +179,7 @@ export default function Alert({
                         aria-hidden="true"
                       />
                     </div>
-                    <div className="mt-3 flex-1 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <div className="mt-3 flex-1 text-center sm:ml-4 sm:mt-0 sm:text-left">
                       <Dialog.Title
                         as="h3"
                         className="text-lg font-medium leading-6 text-black dark:text-white"
@@ -290,7 +304,7 @@ export default function Alert({
                                 </p>
                                 {textViewStatus === 'loading' && (
                                   <SpinnerCircularFixed
-                                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
                                     size={20}
                                     thickness={160}
                                     speed={200}
@@ -311,13 +325,28 @@ export default function Alert({
                           )}
                         </div>
                       )}
+
                       {data.selectMenu && (
-                        <SelectMenu
-                          options={data.selectMenu.options}
-                          value={textValue}
-                          setValue={(value) => setTextValue(value)}
-                          color={data.color}
-                        />
+                        // <SelectMenuLegacy
+                        //   options={data.selectMenu.options}
+                        //   value={textValue}
+                        //   setValue={(value) => setTextValue(value)}
+                        //   color={data.color}
+                        // />
+                        // <SelectMenu />
+                        <div className="my-2 flex gap-4">
+                          <ScrollSelectMenu
+                            className="flex-1"
+                            options={[
+                              { value: '1' },
+                              { value: '2' },
+                              { value: '3' },
+                            ]}
+                            selectedValue={'3'}
+                            setSelectedValue={() => {}}
+                          />
+                          {/* <ScrollSelectMenu className="flex-1" /> */}
+                        </div>
                       )}
                       {data.notice && getAlertNotice(data.notice)}
                       {data.disableConfirmButton && (
@@ -329,10 +358,16 @@ export default function Alert({
                   </div>
                 </div>
 
+                {data.custom && (
+                  <div className="px-8 py-4">
+                    {data.custom.content(context, (c) => setContext(c))}
+                  </div>
+                )}
+
                 {optionList.length > 0 && optionList}
 
                 {data.form && (
-                  <div className="m-4 sm:grid sm:grid-cols-2 sm:gap-2">
+                  <div className="m-4 sm:grid sm:grid-cols-4 sm:gap-2">
                     {getAlertForm(
                       formValues,
                       (name, value) => {
@@ -344,48 +379,55 @@ export default function Alert({
                 )}
 
                 {(editButtonList.length > 0 || tabBar) && (
-                  <div className="absolute top-4 right-5 flex flex-row gap-1">
+                  <div className="absolute right-5 top-4 flex flex-row gap-1">
                     {tabBar}
                     {editButtonList.length > 0 && editButtonList}
                   </div>
                 )}
 
-                <div className="bg-gray-50 px-4 py-3 dark:bg-gray-800 sm:flex sm:flex-row-reverse sm:px-6">
-                  {data.confirmButton && (
-                    <button
-                      type="button"
-                      ref={confirmButton}
-                      className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 shadow-sm 
+                <div className="bg-gray-50 px-4 py-1 dark:bg-gray-800 sm:px-6">
+                  {errorMessage && (
+                    <p className="text-right text-xs font-medium text-red-500">
+                      {errorMessage}
+                    </p>
+                  )}
+                  <div className="py-2 sm:flex sm:flex-row-reverse">
+                    {data.confirmButton && (
+                      <button
+                        type="button"
+                        ref={confirmButton}
+                        className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 shadow-sm 
                         bg-${data.color}-500
                         opacity-100 hover:bg-${data.color}-600 active:bg-${data.color}-700
                         text-base font-medium
                         text-white outline-none disabled:cursor-not-allowed disabled:opacity-30 sm:ml-3 sm:w-auto sm:text-sm`}
-                      disabled={
-                        badInput || data.disableConfirmButton !== undefined
-                      }
-                      onClick={() => {
-                        if (data.form) {
-                          data.form.onSubmit(formValues);
+                        disabled={
+                          badInput || data.disableConfirmButton !== undefined
                         }
-                        confirm();
-                      }}
-                    >
-                      {data.confirmButton}
-                    </button>
-                  )}
-                  {data.cancelButton && (
-                    <button
-                      type="button"
-                      className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2
+                        onClick={() => {
+                          if (data.form) {
+                            data.form.onSubmit(formValues, context, onSwitch);
+                          }
+                          confirm();
+                        }}
+                      >
+                        {data.confirmButton}
+                      </button>
+                    )}
+                    {data.cancelButton && (
+                      <button
+                        type="button"
+                        className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2
                                 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-100 active:bg-gray-200 active:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600
-                                dark:active:bg-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                      onClick={() => {
-                        close();
-                      }}
-                    >
-                      {data.cancelButton}
-                    </button>
-                  )}
+                                dark:active:bg-gray-500 sm:ml-3 sm:mt-0 sm:w-auto sm:text-sm"
+                        onClick={() => {
+                          close();
+                        }}
+                      >
+                        {data.cancelButton}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

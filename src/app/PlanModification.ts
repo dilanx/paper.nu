@@ -1,15 +1,26 @@
 import {
+  BookmarkSlashIcon,
   ExclamationTriangleIcon,
+  MinusIcon,
+  PencilIcon,
   PlusIcon,
+  SunIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import PlanManager from '../PlanManager';
-import { AppType } from '../types/BaseTypes';
-import { Course, CourseLocation } from '../types/PlanTypes';
-import Utility from '../utility/Utility';
 import debug from 'debug';
 import toast from 'react-hot-toast';
+import PlanManager from '../PlanManager';
+import { AppType, Color } from '../types/BaseTypes';
+import { Course, CourseLocation } from '../types/PlanTypes';
+import Utility from '../utility/Utility';
+import { customCourseForm } from '../utility/Forms';
 const d = debug('app:plan-mod');
+
+function sortCourses(a: Course, b: Course) {
+  if (a.placeholder) return 1;
+  if (b.placeholder) return -1;
+  return a.id.localeCompare(b.id);
+}
 
 function courseConfirmationPrompts(
   app: AppType,
@@ -21,6 +32,23 @@ function courseConfirmationPrompts(
   const data = app.state.data;
   const isPlaceholder = course.placeholder;
   const repeatable = course.repeatable;
+
+  const numCourses = data.courses[year][quarter].length;
+  if (numCourses >= 32) {
+    app.showAlert({
+      title: 'Too many courses',
+      message: 'Plans cannot have more than 32 courses in a single quarter.',
+      notice: {
+        type: 'tip',
+        message:
+          'If you want to test out multiple potential plans, create multiple plans using the "Plans" tab!',
+      },
+      cancelButton: 'Close',
+      color: 'red',
+      icon: ExclamationTriangleIcon,
+    });
+    return;
+  }
 
   const exists = PlanManager.duplicateCourse(course, data);
 
@@ -51,8 +79,8 @@ function courseConfirmationPrompts(
 
   if (unitCount > 5.5) {
     app.showAlert({
-      title: 'Too many classes',
-      message: `With app course, you'll have ${unitCount} units worth of classes app quarter, which is over Northwestern's maximum of 5.5 units.`,
+      title: 'Too many courses',
+      message: `With this course, you'll have ${unitCount} units worth of courses this quarter, which is over Northwestern's maximum of 5.5 units.`,
       cancelButton: 'Go back',
       confirmButton: 'Add anyway',
       color: 'red',
@@ -76,20 +104,12 @@ export function addCourse(
     const data = app.state.data;
     const { year, quarter } = location;
     data.courses[year][quarter].push(course);
-    data.courses[year][quarter].sort((a, b) => {
-      if (a.placeholder) return 1;
-      if (b.placeholder) return -1;
-      return a.id.localeCompare(b.id);
-    });
+    data.courses[year][quarter].sort(sortCourses);
 
     d('course added: %s (y%dq%d)', course.id, year, quarter);
     app.setState({
       data,
-      unsavedChanges: PlanManager.save(
-        data,
-        app.state.switches,
-        app.state.originalDataString
-      ),
+      saveState: PlanManager.save(data, app.state.switches),
     });
   });
 }
@@ -105,17 +125,15 @@ export function removeCourse(
   }
   const data = app.state.data;
   data.courses[year][quarter].splice(
-    data.courses[year][quarter].indexOf(course),
+    data.courses[year][quarter].findIndex((c) =>
+      Utility.shallowEqual(c, course)
+    ),
     1
   );
   d('course removed: %s (y%dq%d)', course.id, year, quarter);
   app.setState({
     data,
-    unsavedChanges: PlanManager.save(
-      data,
-      app.state.switches,
-      app.state.originalDataString
-    ),
+    saveState: PlanManager.save(data, app.state.switches),
   });
 }
 
@@ -136,32 +154,87 @@ export function moveCourse(
     () => {
       if (oy >= 0) {
         const data = app.state.data;
-        data.courses[oy][oq].splice(data.courses[oy][oq].indexOf(course), 1);
+        data.courses[oy][oq].splice(
+          data.courses[oy][oq].findIndex((c) =>
+            Utility.shallowEqual(c, course)
+          ),
+          1
+        );
       }
       const data = app.state.data;
       data.courses[ny][nq].push(course);
-      data.courses[ny][nq].sort((a, b) => {
-        if (a.placeholder) return 1;
-        if (b.placeholder) return -1;
-        return a.id.localeCompare(b.id);
-      });
+      data.courses[ny][nq].sort(sortCourses);
 
       d('course moved: %s (y%dq%d) -> (y%dq%d)', course.id, oy, oq, ny, nq);
       app.setState({
         data,
-        unsavedChanges: PlanManager.save(
-          data,
-          app.state.switches,
-          app.state.originalDataString
-        ),
+        saveState: PlanManager.save(data, app.state.switches),
       });
     },
     true
   );
 }
 
+export function editCourse(
+  app: AppType,
+  oldCourse: Course,
+  newCourse: Course,
+  { year, quarter }: CourseLocation
+) {
+  const data = app.state.data;
+  data.courses[year][quarter].splice(
+    data.courses[year][quarter].findIndex((c) =>
+      Utility.shallowEqual(c, oldCourse)
+    ),
+    1,
+    newCourse
+  );
+  data.courses[year][quarter].sort(sortCourses);
+  d(
+    'course edited: %s -> %s (y%dq%d)',
+    oldCourse.id,
+    newCourse.id,
+    year,
+    quarter
+  );
+  app.setState({
+    data,
+    saveState: PlanManager.save(data, app.state.switches),
+  });
+}
+
 export function addBookmark(app: AppType, course: Course, forCredit: boolean) {
+  if (course.custom) {
+    app.showAlert({
+      title: "Custom courses can't be bookmarked",
+      message:
+        'Only built-in courses can be bookmarked. Custom courses cannot.',
+      color: 'red',
+      icon: BookmarkSlashIcon,
+      cancelButton: 'Close',
+    });
+    return;
+  }
+
   const bookmarks = app.state.data.bookmarks;
+  if (
+    (forCredit && bookmarks.forCredit.size >= 64) ||
+    (!forCredit && bookmarks.noCredit.size >= 64)
+  ) {
+    app.showAlert({
+      title: 'Too many bookmarks',
+      message:
+        'Plans cannot have more than 64 courses in each bookmark list in a single quarter.',
+      notice: {
+        type: 'tip',
+        message:
+          'If you want to test out multiple potential plans, create multiple plans using the "Plans" tab!',
+      },
+      cancelButton: 'Close',
+      color: 'red',
+      icon: ExclamationTriangleIcon,
+    });
+  }
   if (forCredit) {
     bookmarks.forCredit.add(course);
   } else {
@@ -176,11 +249,7 @@ export function addBookmark(app: AppType, course: Course, forCredit: boolean) {
     };
     return {
       data,
-      unsavedChanges: PlanManager.save(
-        data,
-        app.state.switches,
-        prevState.originalDataString
-      ),
+      saveState: PlanManager.save(data, app.state.switches),
     };
   });
 }
@@ -205,11 +274,7 @@ export function removeBookmark(
     };
     return {
       data,
-      unsavedChanges: PlanManager.save(
-        data,
-        prevState.switches,
-        prevState.originalDataString
-      ),
+      saveState: PlanManager.save(data, prevState.switches),
     };
   });
 }
@@ -223,7 +288,7 @@ export function addSummerQuarter(app: AppType, year: number) {
     confirmButton: 'Add quarter',
     cancelButton: 'Close',
     color: 'yellow',
-    icon: PlusIcon,
+    icon: SunIcon,
     action: () => {
       const data = app.state.data;
       data.courses[year].push([]);
@@ -242,17 +307,13 @@ export function removeSummerQuarter(app: AppType, year: number) {
     confirmButton: 'Remove quarter',
     cancelButton: 'Close',
     color: 'yellow',
-    icon: PlusIcon,
+    icon: SunIcon,
     action: () => {
       const data = app.state.data;
       data.courses[year].pop();
       app.setState({
         data: data,
-        unsavedChanges: PlanManager.save(
-          data,
-          app.state.switches,
-          app.state.originalDataString
-        ),
+        saveState: PlanManager.save(data, app.state.switches),
       });
       d('summer quarter removed: y%d', year);
     },
@@ -264,6 +325,83 @@ export function addYear(app: AppType) {
   data.courses.push([[], [], []]);
   app.setState({ data: data });
   d('year added: y%d', data.courses.length);
+}
+
+export function removeYear(app: AppType, year: number) {
+  if (year < 4) {
+    return;
+  }
+
+  const yearText = Utility.convertYear(year).toLowerCase();
+  app.showAlert({
+    title: `Remove ${yearText}?`,
+    message: `All of the courses in your ${yearText} will be removed and the year will disappear from your plan.`,
+    color: 'red',
+    icon: MinusIcon,
+    confirmButton: 'Remove',
+    cancelButton: 'Cancel',
+    action: () => {
+      const data = app.state.data;
+      data.courses.splice(year, 1);
+      app.setState({
+        data: data,
+        saveState: PlanManager.save(data, app.state.switches),
+      });
+      d('year removed: y%d', year);
+    },
+  });
+}
+
+export function putCustomCourse(
+  app: AppType,
+  location: CourseLocation,
+  courseToEdit?: Course
+) {
+  app.showAlert({
+    title: courseToEdit ? 'Edit custom course' : 'Add custom course',
+    message:
+      'Keep your entire school schedule, including things other than classes, in one place by adding custom sections to your schedule!',
+    color: 'green',
+    icon: courseToEdit ? PencilIcon : PlusIcon,
+    form: {
+      sections: customCourseForm(
+        courseToEdit
+          ? {
+              title: courseToEdit.id,
+              subtitle: courseToEdit.name,
+              units: courseToEdit.units,
+              color: courseToEdit.color,
+            }
+          : undefined
+      ),
+      timeConstraints: [
+        {
+          minKey: 'start',
+          maxKey: 'end',
+          error: 'The start time must be earlier than the end time',
+        },
+      ],
+      onSubmit: (res) => {
+        const course: Course = {
+          id: res.title!,
+          name: res.subtitle || '',
+          units: res.units || '0',
+          color: res.color as Color,
+          custom: true,
+          repeatable: true,
+          description: 'Custom course',
+        };
+
+        if (courseToEdit) {
+          editCourse(app, courseToEdit, course, location);
+        } else {
+          addCourse(app, course, location);
+        }
+      },
+    },
+    cancelButton: 'Cancel',
+    confirmButton: courseToEdit ? 'Save' : 'Add',
+  });
 }
 
 export function clearData(app: AppType, year?: number) {
@@ -284,16 +422,12 @@ export function clearData(app: AppType, year?: number) {
     d('plan cleared');
     app.setState({
       data,
-      unsavedChanges: PlanManager.save(
-        data,
-        app.state.switches,
-        app.state.originalDataString
-      ),
+      saveState: PlanManager.save(data, app.state.switches),
     });
   } else {
     const yearText = Utility.convertYear(year).toLowerCase();
     app.showAlert({
-      title: 'Clear app year?',
+      title: `Clear ${yearText}?`,
       message: `All of the courses in your ${yearText} will be removed.`,
       cancelButton: 'Cancel',
       confirmButton: 'Clear',
@@ -313,11 +447,7 @@ export function clearData(app: AppType, year?: number) {
         });
         app.setState({
           data,
-          unsavedChanges: PlanManager.save(
-            data,
-            app.state.switches,
-            app.state.originalDataString
-          ),
+          saveState: PlanManager.save(data, app.state.switches),
         });
       },
     });

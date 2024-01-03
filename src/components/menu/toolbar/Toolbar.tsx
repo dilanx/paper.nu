@@ -1,36 +1,41 @@
 import {
   ArrowRightOnRectangleIcon,
-  ArrowTopRightOnSquareIcon,
+  CheckCircleIcon,
   Cog6ToothIcon,
   InboxArrowDownIcon,
   InformationCircleIcon,
   MapIcon,
+  NewspaperIcon,
   PencilSquareIcon,
   QuestionMarkCircleIcon,
   UserCircleIcon,
+  UserGroupIcon,
+  XCircleIcon,
 } from '@heroicons/react/24/outline';
 import { CalendarIcon, RectangleStackIcon } from '@heroicons/react/24/solid';
-import { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
+import { SpinnerCircularFixed } from 'spinners-react';
 import Account from '../../../Account';
 import { discardNotesChanges } from '../../../app/AccountModification';
 import { Alert } from '../../../types/AlertTypes';
 import {
   ContextMenu,
   ContextMenuData,
-  LoadLegacyUrlFunction,
+  SaveState,
   UserOptions,
 } from '../../../types/BaseTypes';
 import { PlanData } from '../../../types/PlanTypes';
 import { ScheduleData } from '../../../types/ScheduleTypes';
-import { exportScheduleAsICS } from '../../../utility/Calendar';
 import { Mode } from '../../../utility/Constants';
-import { exportScheduleAsImage } from '../../../utility/Image';
-import Schedule from '../../schedule/Schedule';
-import exportMenu from './Export';
+import Links from '../../../utility/StaticLinks';
+import Tooltip from '../../generic/Tooltip';
 import settingsMenu from './Settings';
+import { shareMenu } from './Share';
 import ToolbarAccount from './ToolbarAccount';
 import ToolbarButton from './ToolbarButton';
+
+function ToolbarDivider() {
+  return <div className="h-4 w-[1px] bg-gray-300 dark:bg-gray-500" />;
+}
 
 interface ToolbarProps {
   alert: Alert;
@@ -42,7 +47,8 @@ interface ToolbarProps {
   switches: UserOptions;
   loading: boolean;
   openAboutMenu: () => void;
-  loadLegacyUrl: LoadLegacyUrlFunction;
+  openChangeLogPreview: () => void;
+  saveState: SaveState;
 }
 
 function Toolbar({
@@ -55,47 +61,89 @@ function Toolbar({
   switches,
   loading,
   openAboutMenu,
-  loadLegacyUrl,
+  openChangeLogPreview,
+  saveState,
 }: ToolbarProps) {
-  const [takeImage, setTakeImage] = useState(false);
-
   const isSchedule = switches.get.mode === Mode.SCHEDULE;
-
-  const theme = isSchedule ? 'green' : 'purple';
+  const darkMode = switches.get.dark;
 
   const activeItem = isSchedule
     ? switches.get.active_schedule_id
-      ? Account.getScheduleName(switches.get.active_schedule_id)
+      ? Account.getSchedule(switches.get.active_schedule_id)
       : undefined
     : switches.get.active_plan_id
-    ? Account.getPlanName(switches.get.active_plan_id)
+    ? Account.getPlan(switches.get.active_plan_id)
     : undefined;
-
-  useEffect(() => {
-    if (takeImage) {
-      exportScheduleAsImage(switches.get.dark).finally(() => {
-        setTakeImage(false);
-        toast.success('Exported schedule as image');
-      });
-    }
-  }, [takeImage, switches]);
 
   return (
     <div
-      className={`sticky top-0 z-30 flex w-full flex-col items-center justify-center gap-1 bg-white px-4 pt-4 pb-2 dark:bg-gray-800 md:flex-row lg:justify-end ${
+      className={`sticky top-0 z-30 flex w-full flex-col items-center justify-center gap-1 bg-white px-4 pb-1 pt-4 dark:bg-gray-800 md:flex-row lg:justify-end ${
         !isSchedule ? 'border-b-2 border-gray-200 dark:border-gray-700' : ''
       }`}
     >
-      {activeItem && activeItem !== 'None' && (
-        <div className="flex flex-1 items-center gap-2 overflow-hidden font-semibold text-gray-400">
-          {isSchedule ? (
-            <CalendarIcon className="h-5 w-5" />
-          ) : (
-            <RectangleStackIcon className="h-5 w-5" />
+      {activeItem && (
+        <div className="flex flex-1 items-center gap-2 font-semibold text-gray-400">
+          <div className="group relative flex cursor-default items-center gap-2 rounded-sm p-0.5 hover:bg-gray-100 dark:hover:bg-gray-700">
+            {isSchedule ? (
+              <CalendarIcon className="h-4 min-h-[1rem] w-4 min-w-[1rem]" />
+            ) : (
+              <RectangleStackIcon className="h-4 min-h-[1rem] w-4 min-w-[1rem]" />
+            )}
+            <p className="overflow-hidden text-ellipsis whitespace-nowrap text-xs">
+              {activeItem.name || '-'}
+            </p>
+            <Tooltip mini color="gray" className="-bottom-6 left-0 z-40">
+              ID: {activeItem.id}
+            </Tooltip>
+          </div>
+          {activeItem.public && (
+            <>
+              <ToolbarDivider />
+              <div className="group relative flex cursor-default items-center justify-center rounded-sm p-0.5 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <UserGroupIcon className="group relative h-4 w-4" />
+                <Tooltip mini color="sky" className="-bottom-6 left-0 z-40">
+                  Accessible by link
+                </Tooltip>
+              </div>
+            </>
           )}
-          <p className="overflow-hidden text-ellipsis whitespace-nowrap text-sm">
-            {activeItem}
-          </p>
+          <ToolbarDivider />
+          <div className="group relative flex cursor-default items-center gap-1 rounded-sm p-0.5 text-xs font-normal text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+            {saveState === 'idle' && (
+              <>
+                <CheckCircleIcon className="h-4 w-4" />
+                <p>saved!</p>
+              </>
+            )}
+            {(saveState === 'start' ||
+              saveState === 'wait' ||
+              saveState === 'save') && (
+              <>
+                <SpinnerCircularFixed
+                  size={14}
+                  thickness={160}
+                  speed={200}
+                  color="#a1a1aa"
+                  secondaryColor={darkMode ? '#404040' : '#f5f5f5'}
+                />
+                <p>saving...</p>
+              </>
+            )}
+            {saveState === 'error' && (
+              <>
+                <XCircleIcon className="h-4 w-4 text-red-500" />
+                <p className="text-red-500">error when saving.</p>
+              </>
+            )}
+            <Tooltip mini color="green" className="-bottom-6 left-0 z-40">
+              {saveState === 'idle' && 'All changes saved'}
+              {(saveState === 'start' || saveState === 'wait') &&
+                'Preparing to save...'}
+              {saveState === 'save' && 'Saving...'}
+              {saveState === 'error' &&
+                'An error occurred when saving. Try again later.'}
+            </Tooltip>
+          </div>
         </div>
       )}
       <div className="flex gap-1">
@@ -107,7 +155,6 @@ function Toolbar({
               name: 'about',
               x,
               y,
-              theme,
               items: [
                 {
                   text: 'About',
@@ -115,20 +162,22 @@ function Toolbar({
                   onClick: () => openAboutMenu(),
                 },
                 {
+                  text: "What's new",
+                  icon: NewspaperIcon,
+                  onClick: () => openChangeLogPreview(),
+                },
+                {
                   text: 'Help',
                   icon: QuestionMarkCircleIcon,
                   onClick: () => {
-                    window.open('https://kb.dilanxd.com/paper', '_blank');
+                    window.open(Links.SUPPORT, '_blank');
                   },
                 },
                 {
                   text: 'Feedback',
                   icon: InboxArrowDownIcon,
                   onClick: () => {
-                    window.open(
-                      'https://kb.dilanxd.com/paper/feedback',
-                      '_blank'
-                    );
+                    window.open(Links.FEEDBACK, '_blank');
                   },
                 },
               ],
@@ -166,49 +215,17 @@ function Toolbar({
           Notes
         </ToolbarButton>
         <ToolbarButton
-          icon={ArrowTopRightOnSquareIcon}
-          active={contextMenuData?.name === 'export'}
+          active={contextMenuData?.name === 'share'}
+          icon={UserGroupIcon}
           onClick={(x, y) => {
-            contextMenu(
-              exportMenu({
-                x,
-                y,
-                theme,
-                plan: isSchedule ? undefined : plan,
-                schedule: isSchedule ? schedule : undefined,
-                alert,
-                actions: {
-                  link(text) {
-                    if (!text) {
-                      toast.error('Unable to copy URL');
-                      return;
-                    }
-                    navigator.clipboard.writeText(text);
-                    toast.success('URL copied to clipboard');
-                  },
-                  image() {
-                    setTakeImage(true);
-                  },
-                  calendar(validSections) {
-                    toast.promise(exportScheduleAsICS(validSections), {
-                      loading: 'Exporting schedule...',
-                      success: 'Exported schedule',
-                      error: (res) => {
-                        console.error(res);
-                        return 'Failed to export schedule';
-                      },
-                    });
-                  },
-                },
-              })
-            );
+            contextMenu(shareMenu({ x, y, plan, schedule, alert, switches }));
           }}
         >
-          Export
+          Share
         </ToolbarButton>
         <ToolbarButton
           icon={Cog6ToothIcon}
-          onClick={() => alert(settingsMenu(loadLegacyUrl))}
+          onClick={() => alert(settingsMenu())}
         >
           Settings
         </ToolbarButton>
@@ -225,7 +242,6 @@ function Toolbar({
             name: 'account',
             x,
             y,
-            theme,
             items: [
               {
                 text: isSchedule ? 'Schedules' : 'Plans',
@@ -238,7 +254,7 @@ function Toolbar({
                 text: 'Manage account',
                 icon: UserCircleIcon,
                 onClick: () => {
-                  window.open('https://auth.dilanxd.com/account', '_blank');
+                  window.open(Links.ACCOUNT, '_blank');
                 },
               },
               {
@@ -262,18 +278,6 @@ function Toolbar({
           });
         }}
       />
-      {takeImage && (
-        <div className="relative">
-          <Schedule
-            schedule={schedule}
-            alert={alert}
-            switches={switches}
-            sf={undefined as any}
-            ff={undefined as any}
-            imageMode={true}
-          />
-        </div>
-      )}
     </div>
   );
 }

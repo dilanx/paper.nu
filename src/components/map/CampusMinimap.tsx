@@ -1,14 +1,16 @@
 import { ArrowsPointingOutIcon } from '@heroicons/react/24/outline';
-import { Fragment } from 'react';
+import { Fragment, useEffect, useRef } from 'react';
 import { MapContainer, Marker, TileLayer, Tooltip } from 'react-leaflet';
 import ScheduleManager from '../../ScheduleManager';
-import { Color } from '../../types/BaseTypes';
+import { Color, UserOptions } from '../../types/BaseTypes';
 import { ScheduleSection } from '../../types/ScheduleTypes';
 import {
+  MapFlyTo,
   getMapMarkerIcon,
   getUnknownMapMarkerIcon,
-  MapFlyTo,
 } from './MapUtility';
+import { Mode } from '../../utility/Constants';
+import { Map } from 'leaflet';
 
 const DEFAULT_POSITION: [number, number] = [42.055909, -87.672709];
 const DEFAULT_ZOOM = 14.2;
@@ -17,10 +19,17 @@ interface CampusMinimapProps {
   expand: () => void;
   location?: [string | null, Color];
   section?: ScheduleSection;
+  switches: UserOptions;
 }
 
-function CampusMinimap({ expand, location, section }: CampusMinimapProps) {
+function CampusMinimap({
+  expand,
+  location,
+  section,
+  switches,
+}: CampusMinimapProps) {
   const rooms = location ? [location[0]] : section?.room || [];
+  const ref = useRef<Map | null>(null);
 
   const positions: ([number, number] | null)[] | undefined = rooms.map(
     (room) => {
@@ -29,10 +38,20 @@ function CampusMinimap({ expand, location, section }: CampusMinimapProps) {
     }
   );
 
+  useEffect(() => {
+    if (switches.get.mode === Mode.SCHEDULE && switches.get.tab === 'Search') {
+      if (ref.current) {
+        ref.current.invalidateSize();
+      }
+    }
+  }, [switches.get.mode, switches.get.tab]);
+
   const firstPosition = positions?.[0] || DEFAULT_POSITION;
   return (
     <div className="relative h-full w-full">
       <MapContainer
+        id="minimap"
+        ref={ref}
         center={DEFAULT_POSITION}
         zoom={DEFAULT_ZOOM}
         zoomControl={false}
@@ -54,7 +73,8 @@ function CampusMinimap({ expand, location, section }: CampusMinimapProps) {
                   icon={
                     section
                       ? getMapMarkerIcon(
-                          ScheduleManager.getCourseColor(section.subject)
+                          section.color ||
+                            ScheduleManager.getCourseColor(section.subject)
                         )
                       : getMapMarkerIcon(location![1])
                   }
@@ -75,7 +95,7 @@ function CampusMinimap({ expand, location, section }: CampusMinimapProps) {
           ))}
       </MapContainer>
       <button
-        className="absolute top-2 right-2 z-20 text-gray-500 hover:text-emerald-500 active:text-emerald-600"
+        className="absolute right-2 top-2 z-20 rounded-md p-0.5 text-gray-500 hover:bg-gray-100/20 active:bg-gray-100/40 dark:hover:bg-gray-600/20 dark:active:bg-gray-600/40"
         onClick={() => expand()}
       >
         <ArrowsPointingOutIcon className="h-6 w-6" />

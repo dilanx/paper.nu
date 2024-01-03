@@ -13,6 +13,8 @@ import Account from '../../Account';
 import {
   AccountModificationFunctions,
   Document,
+  RecentShareItem,
+  RecentShareModificationFunctions,
 } from '../../types/AccountTypes';
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
@@ -21,12 +23,15 @@ import { PaperError } from '../../utility/PaperError';
 import Utility from '../../utility/Utility';
 import AccountPlan from './AccountPlan';
 import AccountPlanMessage from './AccountPlanMessage';
+import RecentSharePlan from './RecentSharePlan';
 
 const PLAN_LIMIT = 5;
 const SCHEDULE_LIMIT = 20;
 
 interface AccountPlansProps {
   switches: UserOptions;
+  recentShare?: RecentShareItem[];
+  rf: RecentShareModificationFunctions;
   alert: Alert;
   activatePlan: (planId: string) => void;
   activateSchedule: (scheduleId: string) => void;
@@ -268,7 +273,7 @@ class AccountPlans extends React.Component<
         self.setState({ loading: true });
         toast.promise(
           Account.create(isSchedule ? 'schedules' : 'plans', name, {
-            content: doc.content,
+            data: doc.data,
             notes: doc.notes,
           }),
           {
@@ -414,6 +419,18 @@ class AccountPlans extends React.Component<
           }) || [];
     }
 
+    const recentShare =
+      this.props.recentShare &&
+      this.props.recentShare
+        .filter((share) => share.type === (isSchedule ? 2 : 1))
+        .map((share, i) => (
+          <RecentSharePlan
+            data={share}
+            rf={this.props.rf}
+            key={`recent-share-${i}`}
+          />
+        ));
+
     return (
       <motion.div
         initial="hidden"
@@ -428,7 +445,7 @@ class AccountPlans extends React.Component<
           <AccountPlanMessage
             icon={<CloudIcon className="h-12 w-12" />}
             title="Save your stuff"
-            description="By creating an account, you can save up to 5 plans and 10 schedules. You can access them from any device at any time. It's super simple."
+            description="By creating an account, you can save up to 5 plans and 20 schedules. You can access them from any device at any time. It's super simple."
             primaryButton={{
               text: 'Log in',
               action: () => {
@@ -452,7 +469,7 @@ class AccountPlans extends React.Component<
           />
         ) : (
           <>
-            <p className="mx-8 text-center text-sm text-gray-500">
+            <p className="mx-4 text-center text-xs text-gray-500">
               {items.length === 0
                 ? `It looks like you don't have any ${t}s yet. When you create one, it'll appear here.`
                 : `Select a ${t} to activate it, and again to deactivate it. Activating empty ${t}s won't overwrite current ${t} data.`}
@@ -461,13 +478,23 @@ class AccountPlans extends React.Component<
             {items.length < (isSchedule ? SCHEDULE_LIMIT : PLAN_LIMIT) && (
               <button
                 className="mx-auto my-4 block rounded-lg bg-rose-300 px-4 py-1 text-sm text-white
-                                shadow-sm hover:bg-rose-400 dark:bg-rose-600 dark:hover:bg-rose-500"
+                                shadow-sm hover:bg-rose-400 active:bg-rose-500
+                                dark:bg-rose-600 dark:hover:bg-rose-500 dark:active:bg-rose-400"
                 onClick={() => {
                   this.create(isSchedule);
                 }}
               >
                 Create {t}
               </button>
+            )}
+            {(recentShare?.length || 0) > 0 && (
+              <>
+                <hr className="mx-12 my-8 border-gray-200 dark:border-gray-600" />
+                <p className="my-4 text-center text-xs font-bold text-gray-400 dark:text-gray-500">
+                  RECENTLY VIEWED SHARED {t.toUpperCase()}S
+                </p>
+                <div className="m-4 block">{recentShare}</div>
+              </>
             )}
           </>
         )}

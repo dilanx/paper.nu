@@ -1,3 +1,4 @@
+import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
 import { Color } from '../../types/BaseTypes';
 import { SearchFilter } from '../../types/SearchTypes';
@@ -36,10 +37,10 @@ function SearchBrowse({ filter, school, setSchool }: SearchBrowseProps) {
   return (
     <div className="m-4 flex flex-col gap-3">
       {!school &&
-        ScheduleManager.getAllSchoolSymbols().map((s, i) => (
+        PlanManager.getAllSchoolSymbols().map((s, i) => (
           <BrowseButton
             symbol={s}
-            name={ScheduleManager.getSchoolName(s)}
+            name={PlanManager.getSchoolName(s)}
             action={() => setSchool(s)}
             key={`browse-school-${i}`}
           />
@@ -49,10 +50,10 @@ function SearchBrowse({ filter, school, setSchool }: SearchBrowseProps) {
           <div className="text-center">
             <p className="text-2xl font-medium text-gray-400">{school}</p>
             <p className="text-sm text-gray-400">
-              {ScheduleManager.getSchoolName(school)}
+              {PlanManager.getSchoolName(school)}
             </p>
           </div>
-          {ScheduleManager.getSchoolSubjects(school).map((s, i) => (
+          {PlanManager.getSchoolSubjects(school).map((s, i) => (
             <BrowseButton
               symbol={s.symbol}
               name={s.name}

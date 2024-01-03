@@ -1,15 +1,15 @@
-import { motion } from 'framer-motion';
 import {
   DocumentDuplicateIcon,
   PencilIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
+import { motion } from 'framer-motion';
+import { getTermName } from '../../DataManager';
 import {
   AccountModificationFunctions,
   Document,
 } from '../../types/AccountTypes';
-import ScheduleManager from '../../ScheduleManager';
-import { getTermName } from '../../DataManager';
+import { SerializedScheduleData } from '../../types/ScheduleTypes';
 
 interface AccountPlanProps {
   id: string;
@@ -24,9 +24,8 @@ const variants = {
 };
 
 function AccountPlan(props: AccountPlanProps) {
-  let id = props.id;
-  let plan = props.plan;
-  const termId = ScheduleManager.getTermFromDataString(plan.content);
+  const { id, plan } = props;
+  const termId = (plan.data as SerializedScheduleData)?.termId;
   const termName = termId ? getTermName(termId) : undefined;
 
   return (
@@ -35,9 +34,9 @@ function AccountPlan(props: AccountPlanProps) {
         tabIndex={0}
         className={`block border-2 ${
           props.active ? 'border-emerald-400 ' : 'border-rose-400'
-        }  group my-4 w-full transform cursor-default rounded-lg px-4 py-2
+        } group my-4 w-full transform cursor-pointer rounded-lg px-4 py-1
             text-left text-black transition duration-300 ease-in-out hover:-translate-y-1
-            hover:shadow-md active:opacity-50 dark:bg-gray-800`}
+            hover:shadow-md active:opacity-50`}
         onClick={() => {
           if (props.active) {
             props.fa.deactivate();
@@ -46,17 +45,16 @@ function AccountPlan(props: AccountPlanProps) {
           }
         }}
       >
-        <p className="text-lg font-semibold text-black dark:text-white">
+        <p className="text-base font-semibold text-black dark:text-white">
           {plan.name}
         </p>
-        <p className="text-xs font-medium text-gray-600 dark:text-gray-300">
-          {termId ? (termName ? termName : 'unknown term') + ' • ' : ''}last
-          updated{' '}
+        <p className="text-xs text-gray-600 dark:text-gray-300">
+          {termId ? (termName ? termName : 'unknown term') + ' • ' : ''}updated{' '}
           {plan.lastUpdated
             ? new Date(plan.lastUpdated).toLocaleDateString()
             : 'N/A'}
         </p>
-        <div className="absolute -top-2 -right-2 flex overflow-hidden rounded-lg">
+        <div className="absolute -right-2 -top-2 flex overflow-hidden rounded-lg">
           <button
             title="Rename"
             className="z-20 hidden bg-gray-200 px-1 py-0.5
@@ -99,7 +97,7 @@ function AccountPlan(props: AccountPlanProps) {
             ACTIVE
           </p>
         ) : (
-          !plan.content && (
+          !plan.data && (
             <p className="absolute -bottom-2 right-2 rounded-md bg-white px-1 text-xs font-bold text-rose-400 transition-all duration-150 group-hover:shadow-sm dark:bg-gray-800">
               EMPTY
             </p>

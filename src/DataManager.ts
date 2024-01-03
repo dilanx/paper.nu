@@ -1,9 +1,19 @@
-import { DataMapInformation } from './types/BaseTypes';
-import localforage from 'localforage';
 import debug from 'debug';
+import localforage from 'localforage';
+import {
+  DataMapInformation,
+  OrganizedTerms,
+  SubjectDataCache,
+  SubjectsAndSchools,
+} from './types/BaseTypes';
 import { PlanDataCache, RawCourseData } from './types/PlanTypes';
-import { ScheduleCourse, ScheduleDataCache } from './types/ScheduleTypes';
-import { plan, schedule } from './utility/DataMap';
+import {
+  ScheduleCourse,
+  ScheduleDataCache,
+  TermInfo,
+} from './types/ScheduleTypes';
+import { plan, schedule, subjectsAndSchools } from './utility/DataMap';
+import Links from './utility/StaticLinks';
 const d = debug('data-manager');
 
 let info: DataMapInformation | undefined = undefined;
@@ -13,23 +23,60 @@ localforage.config({
   driver: [localforage.INDEXEDDB, localforage.LOCALSTORAGE],
 });
 
+export const QUARTERS: { [quarter: string]: number } = {
+  Winter: 0,
+  Spring: 1,
+  Summer: 2,
+  Fall: 3,
+};
+
+export function getLatestTermId() {
+  return info?.latest;
+}
+
 export function getTermName(termId: string) {
   return info?.terms[termId]?.name;
 }
 
-export function getTerms() {
+export function getTerms(): TermInfo[] | undefined {
   if (!info) return;
   return Object.keys(info.terms).map((termId) => ({
-    value: termId,
-    label: info?.terms[termId].name,
+    id: termId,
+    name: info?.terms[termId].name,
   }));
 }
 
-export function getTermInfo(termId: string) {
+export function getOrganizedTerms(): OrganizedTerms | undefined {
   if (!info) return;
+  const organizedTerms: OrganizedTerms = {};
+
+  const termIds = Object.keys(info.terms);
+  for (const termId of termIds) {
+    const termInfo = info.terms[termId];
+    const [year, quarter] = termInfo.name.split(' ');
+    if (!organizedTerms[year]) {
+      organizedTerms[year] = {
+        Winter: null,
+        Spring: null,
+        Summer: null,
+        Fall: null,
+      };
+    }
+
+    organizedTerms[year][quarter] = termId;
+  }
+
+  return organizedTerms;
+}
+
+export function getTermInfo(termId?: string) {
+  if (!info || !termId) return;
+  const termInfo = info.terms[termId];
   return {
     value: termId,
-    label: info.terms[termId].name,
+    label: termInfo.name,
+    start: termInfo.start,
+    end: termInfo.end,
   };
 }
 
@@ -41,11 +88,39 @@ export async function getDataMapInformation() {
   }
 
   d('data map information: cache miss, fetching data');
-  const res = await fetch('https://api.dilanxd.com/paper/data');
+  const res = await fetch(`${Links.SERVER}/paper/data`);
   const json = await res.json();
 
   info = json as DataMapInformation;
   return info;
+}
+
+export async function getSubjectData(): Promise<SubjectsAndSchools> {
+  d('subject data: get');
+  const info = await getDataMapInformation();
+  const data = await localforage.getItem<SubjectDataCache>('subjects');
+  if (data) {
+    if (data.updated === info.subjects) {
+      d('subject data: cache hit');
+      return subjectsAndSchools(data.data);
+    } else {
+      d('subject data: cache out of date, fetching data');
+    }
+  } else {
+    d('subject data: cache miss, fetching data');
+  }
+
+  const res = await fetch('https://api.dilanxd.com/paper/subjects');
+  const json = await res.json();
+
+  await localforage.setItem('subjects', {
+    updated: info.subjects,
+    data: json.subjects,
+  });
+
+  d('subject data: data fetched and stored in cache subjects');
+
+  return subjectsAndSchools(json.subjects);
 }
 
 export async function getPlanData(): Promise<RawCourseData> {
@@ -71,11 +146,14 @@ export async function getPlanData(): Promise<RawCourseData> {
     data: json,
   });
 
+  d('plan data: data fetched and stored in cache plan');
+
   return plan(json);
 }
 
 export async function getScheduleData(
-  termId?: string
+  termId?: string,
+  lockedTermId?: string
 ): Promise<{ termId: string; data: ScheduleCourse[] } | undefined> {
   d('schedule data: get');
   const info = await getDataMapInformation();
@@ -102,6 +180,18 @@ export async function getScheduleData(
     const data = await localforage.getItem<ScheduleDataCache>(loc);
     if (data) {
       if (oldestCache < 0 || data.cacheUpdated < oldestTime) {
+        if (
+          lockedTermId &&
+          data.termId === lockedTermId &&
+          data.termId !== termId
+        ) {
+          d(
+            'schedule data: cache is for locked term %s, skipping (%s)',
+            lockedTermId,
+            cacheLocations[i]
+          );
+          continue;
+        }
         oldestTime = data.cacheUpdated;
         oldestCache = i;
       }
@@ -111,7 +201,15 @@ export async function getScheduleData(
           d('schedule data: cache hit');
           return {
             termId,
-            data: schedule(data.data),
+            data: schedule(data.data, termId),
+          };
+        } else if (lockedTermId && data.termId === lockedTermId) {
+          d(
+            'schedule data: cache hit, requires update but is locked, skipping update'
+          );
+          return {
+            termId,
+            data: schedule(data.data, termId),
           };
         } else {
           d('schedule data: cache out of date, fetching data');
@@ -165,13 +263,32 @@ export async function getScheduleData(
   );
   return {
     termId,
-    data: schedule(json),
+    data: schedule(json, termId),
   };
 }
 
 export async function clearCache() {
-  const cacheLocations = ['plan', 'schedule0', 'schedule1', 'schedule2'];
+  d('clearing course data cache');
+  const cacheLocations = [
+    'subjects',
+    'plan',
+    'schedule0',
+    'schedule1',
+    'schedule2',
+  ];
   for (const loc of cacheLocations) {
     await localforage.removeItem(loc);
   }
+  d('course data cache cleared');
+}
+
+export async function clearRatingsCache() {
+  d('clearing ratings cache');
+  const keys = await localforage.keys();
+  for (const key of keys) {
+    if (key.startsWith('ratings.')) {
+      await localforage.removeItem(key);
+    }
+  }
+  d('ratings cache cleared');
 }

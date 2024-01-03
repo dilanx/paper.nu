@@ -84,7 +84,9 @@ export async function exportScheduleAsICS(validSections: ValidScheduleDataMap) {
         end,
         startOutputType: 'local',
         endOutputType: 'local',
-        title: `${section.subject} ${section.number}${
+        title: `${section.subject}${
+          section.number ? ` ${section.number}` : ''
+        }${
           section.component !== 'LEC'
             ? ` (${Utility.convertSectionComponent(section.component)})`
             : ''

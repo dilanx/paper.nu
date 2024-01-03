@@ -49,8 +49,8 @@ function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
             }
             setLoading(false);
           })
-          .catch((e) => {
-            alert(Utility.errorAlert('notes_get_documents', e.message));
+          .catch((err) => {
+            alert(Utility.errorAlert('notes_get_documents', err));
           });
         return;
       }
@@ -80,7 +80,7 @@ function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
         scale: 0.75,
         opacity: 0,
       }}
-      className="fixed top-12 right-0 z-40 box-border h-64 w-full p-4 md:h-96 md:w-96"
+      className="fixed right-0 top-12 z-40 box-border h-64 w-full p-4 md:h-96 md:w-96"
     >
       <div className="flex h-full flex-col overflow-hidden rounded-xl border-2 border-black bg-white shadow-xl dark:border-white dark:bg-gray-800">
         <div
@@ -126,9 +126,7 @@ function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
                     },
                     error: (err) => {
                       setSaveLoading(false);
-                      alert(
-                        Utility.errorAlert('notes_update_document', err.message)
-                      );
+                      alert(Utility.errorAlert('notes_update_document', err));
                       return 'Something went wrong';
                     },
                   });
@@ -151,8 +149,8 @@ function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
             )}
           </AnimatePresence>
           <button
-            className="text-gray-600 hover:text-red-400 active:text-red-500
-            dark:text-gray-500 dark:hover:text-red-400 dark:active:text-red-300"
+            className="p-0.1 rounded-md text-gray-600 hover:bg-gray-100 active:bg-gray-200
+            dark:text-gray-400 dark:hover:bg-gray-700 dark:active:bg-gray-600"
             onClick={() => {
               discardNotesChanges(switches, alert, onClose);
             }}

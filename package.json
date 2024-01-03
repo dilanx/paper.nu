@@ -1,6 +1,6 @@
 {
   "name": "paper.nu",
-  "version": "2.6.2",
+  "version": "3.0.0",
   "private": true,
   "homepage": "https://www.paper.nu",
   "dependencies": {
@@ -11,18 +11,20 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
     "debug": "^4.3.4",
+    "fireworks-js": "^2.10.7",
     "framer-motion": "^7.3.5",
-    "gh-pages": "^4.0.0",
     "html-to-image": "^1.10.8",
     "ics": "^2.40.0",
     "leaflet": "^1.9.2",
     "localforage": "^1.10.0",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.0",
     "react-leaflet": "^4.1.0",
+    "react-select": "^5.7.7",
     "spinners-react": "^1.0.7",
     "web-vitals": "^3.0.2"
   },
@@ -31,19 +33,22 @@
     "@types/debug": "^4.1.7",
     "@types/leaflet": "^1.9.0",
     "autoprefixer": "^10.4.11",
+    "gh-pages": "^6.0.0",
     "postcss": "^8.4.16",
-    "prettier": "2.7.1",
-    "prettier-plugin-tailwindcss": "^0.3.0",
+    "prettier": "^3.0.3",
+    "prettier-plugin-tailwindcss": "^0.5.4",
     "react-scripts": "^5.0.1",
     "source-map-loader": "^4.0.0",
-    "tailwindcss": "^3.1.8",
+    "tailwindcss": "^3.3.3",
     "typescript": "^4.8.3"
   },
   "scripts": {
-    "dev": "GENERATE_SOURCEMAP=false REACT_APP_COMMIT=\"$(git rev-parse --short HEAD)\" react-scripts start",
+    "dev": "GENERATE_SOURCEMAP=false REACT_APP_COMMIT=\"$(git rev-parse --short HEAD)\" BROWSER=none react-scripts start",
     "build": "GENERATE_SOURCEMAP=false REACT_APP_COMMIT=\"$(git rev-parse --short HEAD)\" react-scripts build",
     "postbuild": "bash -c \"$(curl -fsSL dilanxd.com/preperror.sh)\"",
-    "lint:prettier": "prettier --list-different src"
+    "lint:prettier": "prettier --list-different src",
+    "predeploy:beta": "npm run build",
+    "deploy:beta": "gh-pages -d build -b beta-build"
   },
   "eslintConfig": {
     "extends": [

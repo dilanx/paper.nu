@@ -1,5 +1,7 @@
 import { Color, ColorMap, IconElement, ReadUserOptions } from './BaseTypes';
 
+export type AlertNextFn = (nextAlert: AlertData) => void;
+
 export interface AlertDataExtra {
   title: string;
   content: string;
@@ -8,9 +10,10 @@ export interface AlertDataExtra {
 export interface AlertDataOption {
   switch?: keyof ReadUserOptions;
   title: string;
-  description: string;
+  description?: string;
   saveToStorage?: boolean;
-  action?: (newSwitch: boolean, next: (nextAlert: AlertData) => void) => void;
+  action?: (newSwitch: boolean, next: AlertNextFn) => void;
+  appearanceToggle?: boolean;
 }
 
 export interface AlertConfirmationState {
@@ -57,13 +60,18 @@ export function editButtonIsToggleable(
 }
 
 export interface AlertFormSection {
-  title: string;
+  title?: string;
   description?: string;
-  fullRow?: boolean;
+  totalRowItems?: 1 | 2 | 4;
   fields: AlertFormField[];
 }
 
-type AlertFormFieldType = 'text' | 'time' | 'single-select' | 'multi-select';
+type AlertFormFieldType =
+  | 'text'
+  | 'time'
+  | 'single-select'
+  | 'multi-select'
+  | 'color-select';
 
 export interface AlertFormField {
   name: string;
@@ -88,11 +96,17 @@ export interface AlertFormFieldTime extends AlertFormField {
 export interface AlertFormFieldSingleSelect extends AlertFormField {
   type: 'single-select';
   options: string[];
+  rangeLabels?: string[];
 }
 
 export interface AlertFormFieldMultiSelect extends AlertFormField {
   type: 'multi-select';
   options: string[];
+}
+
+export interface AlertFormFieldColorSelect extends AlertFormField {
+  type: 'color-select';
+  defaultValue?: Color;
 }
 
 export function formFieldIs<T extends AlertFormField>(
@@ -102,8 +116,29 @@ export function formFieldIs<T extends AlertFormField>(
   return field.type === type;
 }
 
+export interface TimeInputConstraint {
+  minKey: string;
+  maxKey: string;
+  error: string;
+}
+
+export interface AlertFormData {
+  sections: AlertFormSection[];
+  timeConstraints?: TimeInputConstraint[];
+  onSubmit: (
+    response: AlertFormResponse,
+    context: AlertContext,
+    next: AlertNextFn
+  ) => void;
+}
+
 export interface AlertFormResponse {
-  [field: string]: string;
+  [field: string]: string | undefined;
+}
+
+export interface AlertNotice {
+  type: 'note' | 'tip'; // add other options if necessary
+  message: string;
 }
 
 export interface SelectMenuOption {
@@ -111,9 +146,34 @@ export interface SelectMenuOption {
   label?: string;
 }
 
+// export type AlertScrollSelectMenuFn = (selected: {
+//   [name: string]: string;
+// }) => AlertScrollSelectMenu;
+
+// export interface AlertScrollSelectMenu {
+//   name: string;
+//   options: SelectMenuOption[];
+//   defaultValue?: string;
+// }
+
+// export interface AlertScrollSelectMenuSelected {
+//   [name: string]: string;
+// }
+
+/**
+ * error key indicates error
+ */
+export type AlertContext = {
+  error?: string | null;
+  [key: string]: any;
+};
+
+export type AlertContextFn = (context: AlertContext) => void;
+
 export interface AlertActionData {
   inputText?: string;
   textViewValue?: string;
+  context?: any;
 }
 
 export interface AlertData {
@@ -147,10 +207,7 @@ export interface AlertData {
     defaultValue?: string;
   };
   textHTML?: JSX.Element;
-  form?: {
-    sections: AlertFormSection[];
-    onSubmit: (response: AlertFormResponse) => void;
-  };
+  form?: AlertFormData;
   selectMenu?: {
     options: SelectMenuOption[];
     defaultValue?: string;
@@ -159,7 +216,11 @@ export interface AlertData {
   disableConfirmButton?: string;
   color: Color;
   cancelButton?: string;
-  notice?: string;
+  notice?: AlertNotice;
+  custom?: {
+    content: (context: AlertContext, setContext: AlertContextFn) => JSX.Element;
+    initialContext?: AlertContext;
+  };
   action?: (data: AlertActionData) => void;
 }
 

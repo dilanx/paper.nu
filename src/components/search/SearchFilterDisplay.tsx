@@ -7,7 +7,13 @@ import {
   FilterOptions,
   SearchFilter,
 } from '../../types/SearchTypes';
-import { ComponentMap, DayMap, DistroMap, Mode } from '../../utility/Constants';
+import {
+  ComponentMap,
+  DayMap,
+  DisciplineMap,
+  DistroMap,
+  Mode,
+} from '../../utility/Constants';
 import Utility from '../../utility/Utility';
 
 const display = (
@@ -17,15 +23,17 @@ const display = (
 
 function filtersAsStrings({
   subject,
+  meetingDays,
   startAfter,
   startBefore,
   endAfter,
   endBefore,
-  meetingDays,
+  allAvailability,
   components,
   instructor,
   location,
   distros,
+  disciplines,
   unitGeq,
   unitLeq,
   include,
@@ -34,6 +42,13 @@ function filtersAsStrings({
 
   if (subject) {
     filters['subject'] = display(subject, 'subject');
+  }
+
+  if (meetingDays) {
+    filters['meeting days'] = display(
+      meetingDays.sort((a, b) => DayMap[a] - DayMap[b]).join(''),
+      'meetingDays'
+    );
   }
 
   if (startAfter || startBefore) {
@@ -58,11 +73,8 @@ function filtersAsStrings({
     filters['end'] = display(`${after} - ${before}`, 'endAfter', 'endBefore');
   }
 
-  if (meetingDays) {
-    filters['meeting days'] = display(
-      meetingDays.sort((a, b) => DayMap[a] - DayMap[b]).join(''),
-      'meetingDays'
-    );
+  if (allAvailability) {
+    filters['time slots'] = display('all available', 'allAvailability');
   }
 
   if (components) {
@@ -84,6 +96,15 @@ function filtersAsStrings({
     filters['distros'] = display(
       distros.sort((a, b) => DistroMap[a] - DistroMap[b]).join(', '),
       'distros'
+    );
+  }
+
+  if (disciplines) {
+    filters['fd'] = display(
+      disciplines
+        .sort((a, b) => DisciplineMap[a] - DisciplineMap[b])
+        .join(', '),
+      'disciplines'
     );
   }
 

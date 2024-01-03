@@ -1,9 +1,11 @@
 import { Alert } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 import {
   ScheduleBookmarks,
   ScheduleInteractions,
   ScheduleModificationFunctions,
+  ScheduleSectionOverride,
   SectionWithValidMeetingPattern,
 } from '../../types/ScheduleTypes';
 import { SearchModificationFunctions } from '../../types/SearchTypes';
@@ -31,8 +33,10 @@ interface DayProps {
   end: number;
   sections?: SectionWithValidMeetingPattern[];
   bookmarks: ScheduleBookmarks;
+  overrides: ScheduleSectionOverride[];
   alert?: Alert;
   sideCard?: SideCard;
+  openRatings?: OpenRatingsFn;
   interactions?: ScheduleInteractions;
   sf: ScheduleModificationFunctions;
   ff: SearchModificationFunctions;
@@ -51,9 +55,11 @@ function Day(props: DayProps) {
     const children = hourAssignments[i - 1]?.map((swmp) => (
       <ScheduleClass
         swmp={swmp}
+        day={props.index}
         bookmarks={props.bookmarks}
         alert={props.alert}
         sideCard={props.sideCard}
+        openRatings={props.openRatings}
         interactions={props.interactions}
         sf={props.sf}
         ff={props.ff}

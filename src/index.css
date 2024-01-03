@@ -2,11 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
+/* @layer base {
   button {
     cursor: default;
   }
-}
+} */
 
 @layer utilities {
   /* Chrome, Safari and Opera */
@@ -93,5 +93,19 @@
       #cf8bf3,
       #a770ef
     ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  }
+
+  .text-gradient {
+    font-size: 196px;
+    font-weight: 900;
+    line-height: 1;
+    background: -webkit-linear-gradient(#c084fc, #4ade80);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .important-focus:focus {
+    border-color: #000000 !important;
   }
 }

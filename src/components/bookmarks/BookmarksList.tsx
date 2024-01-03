@@ -9,11 +9,15 @@ import {
 } from '../../types/PlanTypes';
 import { SideCard } from '../../types/SideCardTypes';
 import Class from '../plan/Class';
+import { Alert } from '../../types/AlertTypes';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface BookmarksListProps {
   credit: boolean;
   bookmarks: BookmarksData;
   sideCard: SideCard;
+  alert: Alert;
+  openRatings: OpenRatingsFn;
   f: PlanModificationFunctions;
   switches: UserOptions;
 }
@@ -53,6 +57,8 @@ function BookmarksList(props: BookmarksListProps) {
           course={classData}
           bookmarks={props.bookmarks}
           sideCard={props.sideCard}
+          alert={props.alert}
+          openRatings={props.openRatings}
           location={{ year: -1, quarter: props.credit ? 1 : 0 }}
           f={props.f}
           switches={props.switches}
@@ -63,7 +69,7 @@ function BookmarksList(props: BookmarksListProps) {
   } else {
     classes = (
       <div className={`overflow-hidden whitespace-normal text-center`}>
-        <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+        <p className="px-2 text-sm font-light text-gray-500 dark:text-gray-400">
           {props.credit
             ? `Classes here are counted towards total credit (like classes you've received AP/IB credit for).`
             : `Find a class you're interested in but don't have a spot for it on your schedule yet? Bookmark it for later by dragging it here.`}
@@ -83,7 +89,7 @@ function BookmarksList(props: BookmarksListProps) {
     <motion.div initial="hidden" animate="visible" variants={variants}>
       <div
         ref={drop}
-        className={`compact-mode relative m-4 rounded-lg border-2 px-4 pt-4 pb-8
+        className={`compact-mode relative m-4 rounded-lg border-2 px-4 pb-8 pt-4
                     ${
                       isOver
                         ? 'border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50'

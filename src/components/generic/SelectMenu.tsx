@@ -1,34 +1,38 @@
-import { SelectMenuOption } from '../../types/AlertTypes';
-import { Color } from '../../types/BaseTypes';
+import Select, { StylesConfig } from 'react-select';
 
-interface SelectMenuProps {
-  options: SelectMenuOption[];
-  value?: string;
-  setValue: (value: string) => void;
-  color: Color;
-}
+const lightStyles: StylesConfig = {
+  control: (styles, props) => ({
+    ...styles,
+    backgroundColor: '#f5f5f5', // bg-gray-200
+    borderWidth: '2px', // border-2
+    borderRadius: '0.375rem', // rounded-md
+    outline: 'none', // outline-none
+    ':hover': {
+      borderColor: props.isFocused ? '#8b5cf6' : '#a3a3a3', // hover:border-gray-400
+    },
+    borderColor: props.isFocused ? '#8b5cf6' : '#f5f5f5', // focus:border-purple-500
+    boxShadow: 'none',
+  }),
+  dropdownIndicator: (styles, props) => ({
+    ...styles,
+    color: props.isFocused ? '#8b5cf6' : styles.color, // text-violet-500
+  }),
+  menu: (styles) => ({
+    ...styles,
+    zIndex: 200,
+  }),
+};
 
-function SelectMenu({ options, value, setValue, color }: SelectMenuProps) {
+export default function SelectMenu() {
   return (
-    <div className="m-2 flex flex-wrap gap-2">
-      {options.map((option, i) => (
-        <button
-          className={`rounded-xl px-4 py-1 text-sm font-medium
-          ${
-            option.value === value
-              ? `bg-${color}-500 text-white`
-              : `bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-400
-                 hover:bg-${color}-100 hover:text-${color}-700 dark:hover:bg-${color}-700 dark:hover:text-gray-100
-                 active:bg-${color}-500 active:text-white dark:active:bg-${color}-500 dark:active:text-white`
-          }`}
-          onClick={() => setValue(option.value)}
-          key={`sm-option-${i}`}
-        >
-          {option.label}
-        </button>
-      ))}
-    </div>
+    <Select
+      styles={lightStyles}
+      options={[
+        { value: 'chocolate', label: 'Chocolate' },
+        { value: 'strawberry', label: 'Strawberry' },
+        { value: 'vanilla', label: 'Vanilla' },
+      ]}
+      menuPosition="fixed"
+    />
   );
 }
-
-export default SelectMenu;

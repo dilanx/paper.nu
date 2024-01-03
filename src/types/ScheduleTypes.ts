@@ -9,6 +9,50 @@ export interface ScheduleData {
   termId?: string;
   schedule: ScheduleDataMap;
   bookmarks: ScheduleBookmarks;
+  overrides: ScheduleSectionOverride[];
+}
+
+export interface SerializedScheduleData {
+  termId?: string;
+  schedule?: SerializedScheduleSection[];
+  bookmarks?: string[];
+  overrides?: ScheduleSectionOverride[];
+}
+
+export function isSerializedScheduleData(
+  data: any
+): data is SerializedScheduleData {
+  if (!data) {
+    return false;
+  }
+
+  return (
+    Object.keys(data).length === 0 ||
+    data.termId ||
+    data.schedule ||
+    (data.bookmarks && Array.isArray(data.bookmarks))
+  );
+}
+
+export type SerializedScheduleSection =
+  | string
+  | SerializedCustomScheduleSection;
+
+export interface SerializedCustomScheduleSection {
+  title: string;
+  subtitle?: string;
+  meeting_days: string;
+  start_time: Time;
+  end_time: Time;
+  location?: SerializedCustomLocation;
+  instructor?: string;
+  color?: Color;
+}
+
+export interface SerializedCustomLocation {
+  name: string;
+  lat?: number;
+  lon?: number;
 }
 
 export interface ScheduleDataMap {
@@ -48,7 +92,7 @@ export interface ScheduleSection {
   title: string;
   topic?: string;
   subject: string;
-  number: string;
+  number?: string;
   section: string;
   meeting_days: (string | null)[];
   start_time: (Time | null)[];
@@ -61,7 +105,32 @@ export interface ScheduleSection {
   enrl_req?: string;
   descs?: ScheduleSectionDescription[];
   distros?: string;
+  disciplines?: string;
   preview?: boolean;
+  custom?: boolean;
+  color?: Color;
+  termId?: string;
+}
+
+export interface ScheduleSectionBlock {
+  section: ScheduleSection;
+  day?: number;
+  start_time?: Time;
+  end_time?: Time;
+}
+
+export interface DayAndTime {
+  day: number;
+  start_time: Time;
+  end_time: Time;
+}
+
+export interface ScheduleSectionOverride {
+  section_id: string;
+  day: number;
+  start_time: Time;
+  end_time: Time;
+  hide?: boolean;
 }
 
 export interface ValidScheduleSection extends ScheduleSection {
@@ -94,34 +163,6 @@ export function isSectionWithValidMeetingPattern(
   swmp: SectionWithMeetingPattern | undefined
 ): swmp is SectionWithValidMeetingPattern {
   return !!swmp && !!swmp.start_time && !!swmp.end_time && !!swmp.meeting_days;
-}
-
-export interface RawSchoolData {
-  locations: ScheduleLocations;
-  schools: UniversitySchools;
-}
-
-export interface UniversitySchools {
-  [symbol: string]: UniversitySchool;
-}
-
-export interface UniversitySchool {
-  name: string;
-  subjects: UniversitySubject[];
-}
-
-export interface UniversitySubject {
-  symbol: string;
-  name: string;
-}
-
-export interface ScheduleLocations {
-  [building: string]: ScheduleLocation | null;
-}
-
-export interface ScheduleLocation {
-  lat: number;
-  lon: number;
 }
 
 export interface ScheduleDate {
@@ -159,8 +200,16 @@ export interface ScheduleInteractions {
 export interface ScheduleModificationFunctions {
   addSection: (section: ScheduleSection) => void;
   removeSection: (section: ScheduleSection) => void;
+  addOverride: (override: ScheduleSectionOverride) => void;
+  checkOverrides: (section: ScheduleSection) => {
+    anyOverride: boolean;
+    timesRemaining?: DayAndTime[];
+  };
+  removeOverrides: (sectionId: string) => void;
   addScheduleBookmark: (course: ScheduleCourse) => void;
   removeScheduleBookmark: (course: ScheduleCourse) => void;
+  putCustomSection: (sectionToEdit?: ScheduleSection) => void;
+  clear: () => void;
 }
 
 export interface ScheduleDataCache {
@@ -172,5 +221,5 @@ export interface ScheduleDataCache {
 
 export interface TermInfo {
   id: string;
-  name: string;
+  name?: string;
 }

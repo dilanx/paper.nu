@@ -36,3 +36,44 @@ export const DistroMap: { [key: string]: number } = {
   LFA: 6,
   IS: 7,
 };
+
+export const Disciplines = [
+  'FD-NS',
+  'FD-EDR',
+  'FD-SBS',
+  'FD-HS',
+  'FD-EET',
+  'FD-LA',
+  'FD-I',
+];
+export const DisciplineMap: { [key: string]: number } = {
+  'FD-NS': 1,
+  'FD-EDR': 2,
+  'FD-SBS': 3,
+  'FD-HS': 4,
+  'FD-EET': 5,
+  'FD-LA': 6,
+  'FD-I': 7,
+};
+
+export const RATINGS_CACHE_EXPIRE_TIME = 60 * 60 * 1000; // 1 hour
+export const OVERALL_LEVELS = ['1', '2', '3', '4', '5'];
+export const TIME_COMMITMENT_LEVELS = ['0-3', '4-8', '9-14', '14-20', '20+'];
+export const GRADE_LEVELS = [
+  'A',
+  'A-',
+  'B+',
+  'B',
+  'B-',
+  'C+',
+  'C',
+  'C-',
+  'D+',
+  'D',
+  'D-',
+  'F',
+  'P',
+  'NP',
+  'S',
+  'U',
+];

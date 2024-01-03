@@ -1,7 +1,12 @@
 import { Component, ComponentProps } from 'react';
 import { Mode } from '../utility/Constants';
+import {
+  RecentShareItem,
+  RecentShareModificationFunctions,
+} from './AccountTypes';
 import { AlertData } from './AlertTypes';
 import {
+  Course,
   PlanData,
   PlanModificationFunctions,
   PlanSpecialFunctions,
@@ -10,9 +15,11 @@ import {
   ScheduleData,
   ScheduleInteractions,
   ScheduleModificationFunctions,
+  ScheduleSection,
 } from './ScheduleTypes';
 import { SearchDefaults, SearchModificationFunctions } from './SearchTypes';
 import { SideCardData } from './SideCardTypes';
+import { RatingsViewData } from './RatingTypes';
 
 export interface AppState {
   data: PlanData;
@@ -24,17 +31,20 @@ export interface AppState {
   f2: PlanSpecialFunctions;
   sf: ScheduleModificationFunctions;
   ff: SearchModificationFunctions;
+  rf: RecentShareModificationFunctions;
   loadingLogin: boolean;
-  unsavedChanges: boolean;
-  originalDataString: string;
+  saveState: SaveState;
+  saveTimeoutId?: number;
   scheduleInteractions: ScheduleInteractions;
   searchDefaults?: SearchDefaults;
   about?: boolean;
   banner?: boolean;
   clp?: boolean;
   map?: boolean;
+  ratings?: RatingsViewData;
   latestTermId?: string;
   contextMenuData?: ContextMenuData;
+  recentShare?: RecentShareItem[];
 }
 
 export interface ReadUserOptions {
@@ -75,9 +85,15 @@ export interface LoadResponse<T> {
   mode: Mode;
   data: T | 'malformed' | 'empty';
   activeId?: string;
-  originalDataString: string;
   method: LoadMethods;
   latestTermId: string;
+  error?: string;
+  sharedCourse?: Course;
+  sharedSection?: ScheduleSection;
+
+  // RecentShareItem if loaded
+  // string of share code if not failed to load
+  recentShare?: RecentShareItem | string;
 }
 
 export type Color =
@@ -113,6 +129,7 @@ export type StringMap = { [key: string]: string };
 export interface AppType extends Component<{}, AppState> {
   closeSideCard(): void;
   showAlert(alertData: AlertData): void;
+  initialize(callback: () => void, options?: SaveDataOptions): void;
   appRef: React.RefObject<HTMLDivElement>;
 }
 
@@ -120,11 +137,14 @@ export type TextValidator = (value: string) => boolean;
 
 export interface DataMapInformation {
   latest: string;
+  subjects: string;
   plan: string;
   terms: {
     [term: string]: {
       name: string;
       updated: string;
+      start: string;
+      end: string;
     };
   };
 }
@@ -144,7 +164,9 @@ export interface ContextMenuData {
   name: string;
   x: number;
   y: number;
-  theme: Color;
+  mode?: 'left' | 'right';
+  sm?: boolean;
+  topText?: string;
   items: ContextMenuItem[];
 }
 
@@ -152,6 +174,10 @@ export interface ContextMenuItem {
   text: string;
   icon: IconElement;
   onClick: () => void;
+  description?: string;
+  disabled?: boolean;
+  disabledReason?: string;
+  danger?: boolean;
 }
 
 export interface ContextMenu {
@@ -162,7 +188,71 @@ export type InfoSetValFn = () => Promise<string>;
 export type InfoSetItem<T> = [string, T];
 export type InfoSetData<T = string | InfoSetValFn> = InfoSetItem<T>[];
 
-export type LoadLegacyUrlFunction = (url: URL) => void;
+export interface SaveDataOptions {
+  hash?: string;
+  changeTerm?: string;
+  showCourse?: string | null;
+  showSection?: string | null;
+}
+
+export type UniversityQuarter = 'Fall' | 'Winter' | 'Spring' | 'Summer';
+
+export interface UniversitySchools {
+  [symbol: string]: UniversitySchool;
+}
+
+export interface UniversitySchool {
+  name?: string;
+  subjects: UniversitySubject[];
+}
+
+export interface UniversitySubject {
+  symbol: string;
+  name: string;
+}
+
+export interface UniversityLocations {
+  [building: string]: UniversityLocation | null;
+}
+
+export interface UniversityLocation {
+  lat: number;
+  lon: number;
+}
+
+export interface OrganizedTerms {
+  [year: string]: {
+    [quarter: string]: string | null;
+  };
+}
+
+/**
+ * The state of auto save
+ * - idle: no changes have been made
+ * - start: changes were just made
+ * - wait: grace period before saving to batch changes
+ * - save: saving changes
+ * - error: error occurred while saving
+ */
+export type SaveState = 'idle' | 'start' | 'wait' | 'save' | 'error';
+
+export interface SubjectData {
+  [subject: string]: {
+    color?: Color;
+    display?: string;
+    schools?: string[];
+  };
+}
+
+export interface SubjectDataCache {
+  updated: string;
+  data: SubjectData;
+}
+
+export interface SubjectsAndSchools {
+  subjects: SubjectData;
+  schools: UniversitySchools;
+}
 
 export interface BannerData {
   id: string;

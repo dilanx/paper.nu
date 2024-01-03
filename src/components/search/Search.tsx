@@ -16,9 +16,10 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';
-import { getTerms } from '../../DataManager';
+import { getOrganizedTerms, getTermName } from '../../DataManager';
 import PlanManager from '../../PlanManager';
 import ScheduleManager from '../../ScheduleManager';
+import { filterExists, searchPlan, searchSchedule } from '../../Search';
 import { Alert, AlertData } from '../../types/AlertTypes';
 import { UserOptions } from '../../types/BaseTypes';
 import {
@@ -26,6 +27,7 @@ import {
   PlanData,
   PlanModificationFunctions,
 } from '../../types/PlanTypes';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 import {
   ScheduleCourse,
   ScheduleData,
@@ -49,13 +51,13 @@ import {
 } from '../../utility/Forms';
 import Utility from '../../utility/Utility';
 import CampusMinimap from '../map/CampusMinimap';
+import ChangeTerm from '../menu/ChangeTerm';
 import MiniContentBlock from './MiniContentBlock';
 import SearchBrowse from './SearchBrowse';
 import SearchButton from './SearchButton';
 import SearchClass from './SearchClass';
 import SearchFilterDisplay from './SearchFilterDisplay';
 import SearchScheduleClass from './SearchScheduleClass';
-import SearchBoxNotice from './SearchBoxNotice';
 
 interface SearchProps {
   data: PlanData;
@@ -66,6 +68,7 @@ interface SearchProps {
   scheduleInteractions: ScheduleInteractions;
   sideCard: SideCard;
   alert: Alert;
+  openRatings: OpenRatingsFn;
   defaults?: SearchDefaults;
   expandMap: () => void;
   loading?: boolean;
@@ -89,20 +92,40 @@ export function switchTermAlert(
   switchTerm: (termId: string) => void,
   currentTermId?: string
 ): AlertData {
+  const terms = getOrganizedTerms();
+  const [year, quarter] =
+    (currentTermId && getTermName(currentTermId)?.split(' ')) || [];
+
   return {
     title: 'Change term',
     icon: CalendarDaysIcon,
     message:
       'Switching terms will allow you to create a schedule for a different quarter. This will clear everything on your current schedule.',
     color: 'violet',
-    selectMenu: {
-      options:
-        getTerms()?.sort((a, b) => parseInt(b.value) - parseInt(a.value)) || [],
-      defaultValue: currentTermId,
-    },
+    textHTML: !terms ? (
+      <span className="text-red-500">
+        Something went wrong when trying to load terms.
+      </span>
+    ) : undefined,
+    custom: terms
+      ? {
+          content: (context, setContext) => (
+            <ChangeTerm
+              terms={terms}
+              context={context}
+              setContext={setContext}
+            />
+          ),
+          initialContext: {
+            year,
+            quarter,
+          },
+        }
+      : undefined,
     confirmButton: 'Change',
     cancelButton: 'Cancel',
-    action: ({ inputText: termId }) => {
+    action: ({ context }) => {
+      const termId = terms?.[context.year][context.quarter];
       if (termId) {
         switchTerm(termId);
       }
@@ -181,13 +204,18 @@ class Search extends React.Component<SearchProps, SearchState> {
   ): SearchResultsElements {
     let results =
       appMode === Mode.PLAN
-        ? PlanManager.search(query, filter)
-        : ScheduleManager.search(query, filter);
+        ? searchPlan(query, filter)
+        : searchSchedule(query, this.props.schedule, filter);
 
-    const easterEgg = Utility.friendlyEasterEgg(query.toLowerCase());
-    if (easterEgg) {
+    if (query === 'angela') {
       return {
-        placeholder: [this.searchMessage(easterEgg[0], easterEgg[1])],
+        placeholder: [
+          <div className="flex justify-center">
+            <button className="rounded-md bg-pink-500 px-2 py-1 font-bold text-white shadow-sm hover:bg-pink-400 active:bg-pink-300">
+              ANGELA
+            </button>
+          </div>,
+        ],
       };
     }
 
@@ -200,37 +228,6 @@ class Search extends React.Component<SearchProps, SearchState> {
           appMode === Mode.PLAN
             ? [
                 <div key="no-query">
-                  <SearchBoxNotice
-                    id="plan-updates-1"
-                    alert={this.props.alert}
-                    switches={this.props.switches}
-                  >
-                    Paper plan data will be getting some updates through fall
-                    2023. Until all updates are complete, you may notice the
-                    following:
-                    <ul className="my-2 list-disc pl-4">
-                      <li>
-                        Some courses in plan view, particularly newer ones, may
-                        be missing. This will cause certain new courses in the
-                        schedule view to be missing descriptions.
-                      </li>
-                      <li>
-                        Students in Weinberg starting after Spring 2023 (like
-                        the freshmen class of 2027) follow the new{' '}
-                        <a
-                          href="https://weinberg.northwestern.edu/undergraduate/degree/post-spring-2023-degree/foundational-disciplines/index.html"
-                          target="_blank"
-                          rel="noreferrer"
-                          className="font-medium text-purple-500 hover:underline dark:text-purple-300"
-                        >
-                          Foundational Disciplines requirement
-                        </a>{' '}
-                        instead of the Distribution requirement. Foundational
-                        discipline information may not appear on all applicable
-                        courses until the updates are complete.
-                      </li>
-                    </ul>
-                  </SearchBoxNotice>
                   <MiniContentBlock icon={MagnifyingGlassIcon} title="Search">
                     Search across every course at Northwestern and view detailed
                     information for each one using the{' '}
@@ -309,7 +306,14 @@ class Search extends React.Component<SearchProps, SearchState> {
     if (results === 'no_results') {
       return {
         placeholder: [
-          this.searchMessage('Aw, no results.', `Try refining your search.`),
+          this.searchMessage(
+            'Aw, no results.',
+            `Try refining your search.${
+              filterExists(filter, appMode)
+                ? ' Note that omitted course results could be because of your active filters.'
+                : ''
+            }`
+          ),
         ],
       };
     }
@@ -342,6 +346,9 @@ class Search extends React.Component<SearchProps, SearchState> {
             selected={this.state.planCurrent === course.id}
             bookmarks={this.props.data.bookmarks}
             f={this.props.f}
+            sideCard={this.props.sideCard}
+            alert={this.props.alert}
+            openRatings={this.props.openRatings}
             key={course.id}
           />
         );
@@ -367,6 +374,7 @@ class Search extends React.Component<SearchProps, SearchState> {
             filter={filter}
             sideCard={this.props.sideCard}
             alert={this.props.alert}
+            openRatings={this.props.openRatings}
             key={`search-${course.course_id}-${course.subject}-${course.number}`}
           />
         );
@@ -422,8 +430,8 @@ class Search extends React.Component<SearchProps, SearchState> {
       this.props.schedule.schedule[
         this.props.scheduleInteractions.hoverSection.get || ''
       ];
-    const roomFinderAvailable = mapSection?.room?.some((r) =>
-      r?.toLowerCase().includes('tech')
+    const roomFinderAvailable = mapSection?.room?.some(
+      (r) => r?.toLowerCase().includes('tech')
     );
     const isBrowsing = searchMode === SearchMode.BROWSE || filter.get.subject;
     const isBrowsingDeep =
@@ -454,11 +462,11 @@ class Search extends React.Component<SearchProps, SearchState> {
         ) : (
           <>
             <div className="mb-2 rounded-lg bg-white p-2 dark:bg-gray-800">
-              <div className="relative mx-auto mt-4 mb-2 block w-11/12">
+              <label className="relative mx-auto mb-2 mt-4 block w-11/12">
+                <MagnifyingGlassIcon className="peer absolute left-2.5 top-1/2 h-5 w-5 -translate-y-1/2 cursor-text stroke-2 text-gray-400" />
                 <input
-                  className="w-full rounded-lg border-2 border-gray-300 bg-white p-2 px-4
-                    text-lg text-black shadow-sm outline-none transition-all duration-150 hover:border-gray-500 focus:border-black dark:border-gray-700
-                    dark:bg-gray-800 dark:text-white dark:hover:border-gray-400 dark:focus:border-white"
+                  className="important-focus w-full rounded-lg border-2 border-gray-300 bg-white p-2 px-4
+                     pl-8 text-black shadow-sm outline-none transition-all duration-150 placeholder:text-gray-400 hover:border-gray-500 peer-hover:border-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:border-gray-500 dark:focus:border-white"
                   ref={this.searchFieldRef}
                   value={search}
                   placeholder={`Search ${
@@ -466,14 +474,6 @@ class Search extends React.Component<SearchProps, SearchState> {
                       ? 'for classes...'
                       : this.props.term?.name + '...'
                   }`}
-                  onKeyDown={(e) => {
-                    if (
-                      e.key === 'Enter' &&
-                      this.state.search.toLowerCase() === 'naomi'
-                    ) {
-                      window.open('https://nawu1552.github.io', '_blank');
-                    }
-                  }}
                   onChange={(event) => {
                     this.setState({
                       scheduleCurrent: undefined,
@@ -483,7 +483,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                 />
                 {!queryEmpty && (
                   <button
-                    className="absolute right-4 top-0 bottom-0 my-2 block text-gray-300 transition-colors duration-150 
+                    className="absolute bottom-0 right-4 top-0 my-2 block text-gray-300 transition-colors duration-150 
                                             hover:text-red-400 active:text-red-300 dark:text-gray-600 dark:hover:text-red-400 dark:active:text-red-500"
                     onClick={() => {
                       this.setState({ search: '' });
@@ -493,7 +493,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                     <XCircleIcon className="h-5 w-5" />
                   </button>
                 )}
-              </div>
+              </label>
               {shortcut && (
                 <p className="m-1 p-0 text-center text-xs text-gray-500 dark:text-gray-400">
                   replacing{' '}
@@ -523,8 +523,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                         filter.set({ subject: undefined });
                         this.setState({
                           mode: SearchMode.BROWSE,
-                          browseSchool:
-                            ScheduleManager.getSchoolOfSubject(subj),
+                          browseSchool: PlanManager.getSchoolOfSubject(subj),
                         });
                         return;
                       }
@@ -573,33 +572,39 @@ class Search extends React.Component<SearchProps, SearchState> {
                               : scheduleSearchFilterForm(filter.get),
                           onSubmit: ({
                             subject,
+                            meetingDays,
                             startAfter,
                             startBefore,
                             endAfter,
                             endBefore,
-                            meetingDays,
+                            allAvailability,
                             components,
                             instructor,
                             location,
                             distros,
+                            disciplines,
                             unitGeq,
                             unitLeq,
                             include,
                           }) => {
                             filter.set({
                               subject: Utility.safe(subject)?.toUpperCase(),
+                              meetingDays:
+                                Utility.safeArrayCommaSplit(meetingDays),
                               startAfter: Utility.parseTime(startAfter),
                               startBefore: Utility.parseTime(startBefore),
                               endAfter: Utility.parseTime(endAfter),
                               endBefore: Utility.parseTime(endBefore),
-                              meetingDays:
-                                Utility.safeArrayCommaSplit(meetingDays),
+                              allAvailability:
+                                Utility.safeArrayCommaSplit(allAvailability),
                               components:
                                 Utility.safeArrayCommaSplit(components),
                               instructor:
                                 Utility.safe(instructor)?.toLowerCase(),
                               location: Utility.safe(location)?.toLowerCase(),
                               distros: Utility.safeArrayCommaSplit(distros),
+                              disciplines:
+                                Utility.safeArrayCommaSplit(disciplines),
                               unitGeq: Utility.safeNumber(unitGeq),
                               unitLeq: Utility.safeNumber(unitLeq),
                               include: Utility.safeArrayCommaSplit(include),
@@ -653,6 +658,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                   expand={this.props.expandMap}
                   location={this.props.scheduleInteractions.hoverLocation.get}
                   section={mapSection}
+                  switches={this.props.switches}
                 />
 
                 <AnimatePresence>
@@ -664,7 +670,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                       transition={{ delay: 0.25, duration: 0.2 }}
                       className="absolute bottom-1 left-1/2 z-20 w-full -translate-x-1/2 px-2"
                     >
-                      <p className="rounded-lg bg-gray-400 px-1 py-0.5 text-center text-xs font-medium text-white dark:bg-gray-500">
+                      <p className="rounded-lg bg-gray-400/50 px-1 py-0.5 text-center text-xs font-medium text-white backdrop-blur-md dark:bg-gray-700/50">
                         ROOM FINDER AVAILABLE FROM COURSE INFO MENU
                       </p>
                     </motion.div>

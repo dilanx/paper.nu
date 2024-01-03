@@ -1,7 +1,8 @@
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
-import { AlertData } from '../types/AlertTypes';
-import { Color, InfoSetData } from '../types/BaseTypes';
+import Account from '../Account';
+import { AlertData, AlertDataExtra } from '../types/AlertTypes';
+import { Color, InfoSetData, UniversityQuarter } from '../types/BaseTypes';
 import { PlanErrorLocation } from '../types/ErrorTypes';
 import {
   ScheduleDataMap,
@@ -9,10 +10,8 @@ import {
   SectionWithMeetingPattern,
   Time,
 } from '../types/ScheduleTypes';
-import { FilterBadgeName, FilterOptions } from '../types/SearchTypes';
-import { Mode } from './Constants';
+import { FilterBadgeName } from '../types/SearchTypes';
 import { PaperError, PaperExpectedAuthError } from './PaperError';
-import Account from '../Account';
 
 let Utility = {
   BACKGROUND_LIGHT: '#FFFFFF',
@@ -54,6 +53,45 @@ let Utility = {
           break;
         case 7:
           strings.push('Interdisciplinary Studies');
+          break;
+        default:
+          strings.push('Unknown');
+          break;
+      }
+    }
+
+    return strings;
+  },
+
+  convertDisciplines: (disciplines: string | undefined) => {
+    let strings: string[] = [];
+
+    if (!disciplines) return strings;
+
+    for (let i = 0; i < disciplines.length; i++) {
+      let d = parseInt(disciplines[i]);
+
+      switch (d) {
+        case 1:
+          strings.push('Natural Sciences');
+          break;
+        case 2:
+          strings.push('Empirical and Deductive Reasoning');
+          break;
+        case 3:
+          strings.push('Social and Behavioral Sciences');
+          break;
+        case 4:
+          strings.push('Historical Studies');
+          break;
+        case 5:
+          strings.push('Ethical and Evaluative Thinking');
+          break;
+        case 6:
+          strings.push('Literature and Arts');
+          break;
+        case 7:
+          strings.push('Interdisciplinary');
           break;
         default:
           strings.push('Unknown');
@@ -174,7 +212,9 @@ let Utility = {
       pm = true;
       h -= 12;
     }
-    if (h === 12) {
+    if (h === 0) {
+      h = 12;
+    } else if (h === 12) {
       pm = true;
     }
 
@@ -199,6 +239,8 @@ let Utility = {
         return 'seminar';
       case 'PED':
         return 'performance';
+      case 'CUS':
+        return 'custom';
       default:
         return component;
     }
@@ -256,7 +298,10 @@ let Utility = {
 
   formatSections: (schedule: ScheduleDataMap) =>
     Object.values(schedule)
-      .map((section) => `${section.subject} ${section.number}`)
+      .map(
+        (section) =>
+          `${section.subject}${section.number ? ` ${section.number}` : ''}`
+      )
       .join(', '),
 
   errorAlert: (from: PlanErrorLocation, error: PaperError): AlertData => {
@@ -293,7 +338,7 @@ let Utility = {
       },
       action: () => {
         window.open(
-          `https://kb.dilanxd.com/paper/troubleshooting?e=${encodeURIComponent(
+          `https://support.dilanxd.com/paper/troubleshooting?e=${encodeURIComponent(
             errorText
           )}`,
           '_blank'
@@ -318,41 +363,20 @@ let Utility = {
     return text.charAt(0).toUpperCase() + text.slice(1);
   },
 
-  filterBelongsTo: (option: keyof FilterOptions, mode: Mode) => {
-    switch (option) {
-      case 'subject':
-      case 'distros':
-        return true;
-      case 'unitGeq':
-      case 'unitLeq':
-      case 'include':
-        return mode === Mode.PLAN;
-      case 'startAfter':
-      case 'startBefore':
-      case 'endAfter':
-      case 'endBefore':
-      case 'meetingDays':
-      case 'components':
-      case 'instructor':
-      case 'location':
-        return mode === Mode.SCHEDULE;
-      default:
-        return false;
-    }
-  },
-
   getFilterBadgeInfo: (
     filterBadgeName: FilterBadgeName
   ): [Color, 'p' | 's' | 'b'] => {
     switch (filterBadgeName) {
       case 'subject':
         return ['blue', 'b'];
+      case 'meeting days':
+        return ['fuchsia', 's'];
       case 'start':
         return ['green', 's'];
       case 'end':
         return ['red', 's'];
-      case 'meeting days':
-        return ['fuchsia', 's'];
+      case 'time slots':
+        return ['pink', 's'];
       case 'components':
         return ['amber', 's'];
       case 'instructor':
@@ -360,6 +384,8 @@ let Utility = {
       case 'location':
         return ['lime', 's'];
       case 'distros':
+        return ['teal', 'b'];
+      case 'fd':
         return ['teal', 'b'];
       case 'units':
         return ['purple', 'p'];
@@ -373,7 +399,7 @@ let Utility = {
   parseTime: (text?: string): Time | undefined => {
     if (!text) return;
     let timeString = text.toLowerCase();
-    const timeRegex = /^\d{1,2}:\d{1,2} ?(a|am|p|pm)?$/i;
+    const timeRegex = /^\d{1,2}(:\d{1,2})? ?(a|am|p|pm)?$/i;
 
     if (!timeRegex.test(timeString)) {
       return undefined;
@@ -384,6 +410,9 @@ let Utility = {
       .replace(/[ apm]/gi, '')
       .split(':')
       .map((p) => parseInt(p));
+    if (!m) {
+      m = 0;
+    }
     if (isNaN(h) || isNaN(m)) {
       return undefined;
     }
@@ -481,20 +510,18 @@ let Utility = {
     return newData;
   },
 
-  formatCacheVersion: (time: number | string, termId?: string) => {
+  formatCacheVersion: (time: number | string, prefix: string) => {
     let t = new Date(typeof time === 'string' ? parseInt(time) : time);
-    const d = t.getDate();
-    const m = t.getMonth() + 1;
-    const y = t.getFullYear();
-    const h = t.getHours();
-    const min = t.getMinutes();
-    const s = t.getSeconds();
+    const d = t.getUTCDate();
+    const m = t.getUTCMonth() + 1;
+    const y = t.getUTCFullYear();
+    const h = t.getUTCHours();
+    const min = t.getUTCMinutes();
+    const s = t.getUTCSeconds();
 
     const p = (n: number) => (n < 10 ? `0${n}` : `${n}`);
 
-    return `${termId ? `${termId}-` : ''}${y}.${p(m)}.${p(d)}-${p(h)}${p(
-      min
-    )}${p(s)}`;
+    return `${prefix}.${y}.${p(m)}.${p(d)}.${p(h)}.${p(min)}.${p(s)}`;
   },
 
   sectionMeetingPatternIsValid: (swmp: SectionWithMeetingPattern) => {
@@ -506,12 +533,44 @@ let Utility = {
     return /^\d+$/.test(str);
   },
 
-  friendlyEasterEgg: (text: string) => {
-    if (text === 'naomi') {
-      return ['Hmm?', "Wait what's going on?"];
-    }
+  shallowEqual: (obj1: any, obj2: any) => {
+    return (
+      Object.keys(obj1).length === Object.keys(obj2).length &&
+      Object.keys(obj1).every(
+        (key) =>
+          Object.prototype.hasOwnProperty.call(obj2, key) &&
+          obj1[key] === obj2[key]
+      )
+    );
+  },
 
-    return null;
+  getAcadYear: (year: number, quarter: UniversityQuarter) => {
+    switch (quarter) {
+      case 'Fall':
+        return `${year}-${year + 1}`;
+      case 'Winter':
+      case 'Spring':
+      case 'Summer':
+        return `${year - 1}-${year}`;
+    }
+  },
+
+  objAsAlertExtras: (
+    obj: {
+      [key: string]: string | string[];
+    },
+    sortFn: (a: string, b: string) => number = (a, b) => a.localeCompare(b)
+  ): AlertDataExtra[] => {
+    const extras: AlertDataExtra[] = [];
+    const keys = Object.keys(obj).sort(sortFn);
+    for (const title of keys) {
+      const content = obj[title];
+      extras.push({
+        title,
+        content: typeof content === 'string' ? content : content.join(', '),
+      });
+    }
+    return extras;
   },
 };
 

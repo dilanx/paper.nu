@@ -4,12 +4,18 @@ import { Color, IconElement } from './BaseTypes';
 export interface SideCardData {
   type: string;
   themeColor: Color;
+  tag?: {
+    text: string;
+    color: Color;
+  };
   title: string;
   subtitle?: string;
   alertMessage?: string;
   message?: string;
+  toolbar?: ReactNode;
   items?: SideCardItemData[];
-  buttons?: (SideCardButtonData | ToggleableSideCardButtonData)[];
+  buttons?: AnySideCardButtonData[];
+  link?: string;
 }
 
 export interface SideCardItemData {
@@ -22,6 +28,8 @@ export interface SideCardButtonData {
   text: string;
   onClick: (close: () => void) => void;
   danger?: boolean;
+  disabled?: boolean;
+  disabledText?: string;
 }
 
 export interface ToggleableSideCardButtonData<T = any> {
@@ -35,7 +43,8 @@ export interface ToggleableSideCardButtonData<T = any> {
 
 export type AnySideCardButtonData =
   | SideCardButtonData
-  | ToggleableSideCardButtonData;
+  | ToggleableSideCardButtonData
+  | 'divider';
 
 export function sideCardButtonIsToggleable(
   button: SideCardButtonData | ToggleableSideCardButtonData

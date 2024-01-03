@@ -1,21 +1,18 @@
 import {
+  ArrowPathIcon,
   CalendarIcon,
   Cog6ToothIcon,
-  RectangleStackIcon,
   EllipsisHorizontalIcon,
-  ArrowPathIcon,
-  LinkIcon,
+  RectangleStackIcon,
 } from '@heroicons/react/24/outline';
 import debugModule from 'debug';
-import { clearCache } from '../../../DataManager';
+import { clearCache, clearRatingsCache } from '../../../DataManager';
 import { AlertData } from '../../../types/AlertTypes';
 import Utility from '../../../utility/Utility';
-import { LoadLegacyUrlFunction } from '../../../types/BaseTypes';
-import { toast } from 'react-hot-toast';
 
-const settingsMenu = (loadLegacyUrl: LoadLegacyUrlFunction): AlertData => ({
+const settingsMenu = (): AlertData => ({
   title: 'Settings',
-  message: `Customize your Paper experience! These settings are saved in your browser and not in the URL.`,
+  message: `Customize your Paper experience!`,
   cancelButton: 'Close',
   color: 'orange',
   icon: Cog6ToothIcon,
@@ -34,9 +31,9 @@ const settingsMenu = (loadLegacyUrl: LoadLegacyUrlFunction): AlertData => ({
         options: [
           {
             switch: 'dark',
-            title: 'Dark mode',
-            description: `Become one with the night.`,
+            title: 'Appearance',
             saveToStorage: true,
+            appearanceToggle: true,
             action: (newSwitch) => {
               let color = newSwitch
                 ? Utility.BACKGROUND_DARK
@@ -69,36 +66,20 @@ const settingsMenu = (loadLegacyUrl: LoadLegacyUrlFunction): AlertData => ({
             },
           },
           {
-            title: 'Load legacy URL',
+            title: 'Clear local ratings cache',
             description:
-              'Load old Paper plan and schedule URLs (or Plan Northwestern plan URLs).',
+              'This clears all of the ratings data stored in your browser without deleting any plans or schedules.',
             action: (_, next) => {
               next({
-                title: 'Load legacy URL',
-                color: 'purple',
-                icon: LinkIcon,
-                message: 'Enter the legacy plan or schedule URL below.',
-                textInput: {
-                  focusByDefault: true,
-                  placeholder: 'https://www.paper.nu/?...',
-                  match:
-                    /https?:\/\/(?:www\.)?(?:paper\.nu|plan-nu\.com)\/?\?[^#]+$/,
-                  matchError: 'Invalid legacy plan or schedule URL',
-                },
+                title: 'Clear local ratings cache?',
+                message:
+                  'All of the ratings data stored in your browser will be erased. Any plans or schedules will not be affected, including ones saved in your browser.',
+                color: 'red',
+                icon: ArrowPathIcon,
                 cancelButton: 'Cancel',
-                confirmButton: 'Load',
-                action: ({ inputText }) => {
-                  if (!inputText) {
-                    return;
-                  }
-
-                  try {
-                    const url = new URL(inputText);
-                    loadLegacyUrl(url);
-                  } catch (e) {
-                    console.error(e);
-                    toast.error('Invalid legacy plan or schedule URL');
-                  }
+                confirmButton: 'Clear',
+                action: () => {
+                  clearRatingsCache();
                 },
               });
             },

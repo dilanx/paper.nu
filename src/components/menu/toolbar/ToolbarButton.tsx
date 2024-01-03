@@ -24,7 +24,7 @@ function ToolbarButton({
           onClick(x + width, y + height + 10);
         }
       }}
-      className={`z-30 flex items-center gap-1 whitespace-nowrap rounded-lg px-3 py-1
+      className={`z-30 flex items-center gap-1 whitespace-nowrap rounded-lg px-3 py-1 text-sm
       font-medium ${
         active
           ? 'bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-gray-100'
@@ -38,8 +38,8 @@ function ToolbarButton({
             `
       }`}
     >
+      <Icon className="h-5 w-5 stroke-2 md:h-4 md:w-4" />
       <p className="hidden md:block">{children}</p>
-      <Icon className="h-5 w-5 stroke-2 md:h-5 md:w-5" />
     </button>
   );
 }

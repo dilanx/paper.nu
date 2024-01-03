@@ -1,11 +1,13 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useRef, useState } from 'react';
+import paperBlack from '../../assets/paper-full-black.png';
+import paperWhite from '../../assets/paper-full-white.png';
 import {
   ChangeLogPreviewInformation,
   UserOptions,
 } from '../../types/BaseTypes';
-import paperBlack from '../../assets/paper-full-black.png';
-import paperWhite from '../../assets/paper-full-white.png';
+import Links from '../../utility/StaticLinks';
+import FeatureChangeLogView from './FeatureChangeLogView';
 
 interface ChangeLogPreviewProps {
   version: string;
@@ -64,20 +66,8 @@ function ChangeLogPreview({
                     className="h-[64px]"
                     ref={initialFocus}
                   />
-                  <p className="my-4 text-center text-lg font-light text-gray-600 dark:text-gray-300">
-                    the ultimate Northwestern course planning tool
-                  </p>
-                  <p className="text-center text-sm font-bold tracking-wide">
-                    WHAT'S NEW IN VERSION {version}
-                  </p>
-                  <ul className="w-full list-disc">
-                    {info.items.map(({ title, description }, i) => (
-                      <li className="my-4" key={`clp-item-${i}`}>
-                        <p className="font-bold">{title}</p>
-                        <p className="text-sm font-normal">{description}</p>
-                      </li>
-                    ))}
-                  </ul>
+                  <FeatureChangeLogView />
+                  {/* <GenericChangeLogList version={version} info={info} /> */}
                 </div>
 
                 <div className="bg-gray-50 px-4 py-3 dark:bg-gray-800 sm:flex sm:flex-row-reverse sm:px-6">
@@ -85,7 +75,7 @@ function ChangeLogPreview({
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2
                                 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-100 active:bg-gray-200 active:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600
-                                dark:active:bg-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                                dark:active:bg-gray-500 sm:ml-3 sm:mt-0 sm:w-auto sm:text-sm"
                     onClick={() => setOpen(false)}
                   >
                     Close
@@ -94,16 +84,13 @@ function ChangeLogPreview({
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2
                                 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-100 active:bg-gray-200 active:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600
-                                dark:active:bg-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                                dark:active:bg-gray-500 sm:ml-3 sm:mt-0 sm:w-auto sm:text-sm"
                     onClick={() => {
                       if (info.link) {
                         window.open(info.link.url, '_blank');
                         return;
                       }
-                      window.open(
-                        'https://www.dilanxd.com/paper/changelog',
-                        '_blank'
-                      );
+                      window.open(Links.CHANGELOG, '_blank');
                     }}
                   >
                     {info.link

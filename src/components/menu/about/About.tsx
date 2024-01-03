@@ -1,73 +1,16 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment, useState } from 'react';
-import planImage from '../../../assets/plan.svg';
-import saladImage from '../../../assets/salad.png';
+import discordLogo from '../../../assets/discord.svg';
+import instagramLogo from '../../../assets/instagram.svg';
 import paperBlack from '../../../assets/paper-full-vertical-black.png';
 import paperWhite from '../../../assets/paper-full-vertical-white.png';
-import { InfoSetData, UserOptions } from '../../../types/BaseTypes';
+import { UserOptions } from '../../../types/BaseTypes';
+import { INFO_VERSIONS } from '../../../utility/InfoSets';
+import Links from '../../../utility/StaticLinks';
+import AboutBanner from './AboutBanner';
 import AboutButton from './AboutButton';
 import InfoSet from './InfoSet';
-import Account from '../../../Account';
-import localforage from 'localforage';
-import { PlanDataCache } from '../../../types/PlanTypes';
-import Utility from '../../../utility/Utility';
-import { ScheduleDataCache } from '../../../types/ScheduleTypes';
-
-function getLocalTime<T>(location: string, key: keyof T) {
-  return async () => {
-    const data: any = await localforage.getItem<T>(location);
-    if (!data) {
-      return 'unused';
-    }
-    return Utility.formatCacheVersion(
-      data[key] as string | number,
-      'termId' in data ? (data['termId'] as string) : undefined
-    );
-  };
-}
-
-const versions: InfoSetData = [
-  [
-    'App Version',
-    `${process.env.REACT_APP_VERSION || 'unknown'}-${
-      process.env.REACT_APP_COMMIT || 'unknown'
-    }`,
-  ],
-  [
-    'API Version',
-    async () => {
-      const response = await fetch(Account.SERVER);
-      const data = await response.json();
-      return data.version;
-    },
-  ],
-  ['Plan Cache Data Version', getLocalTime<PlanDataCache>('plan', 'updated')],
-  [
-    'Schedule Cache 0 Storage Version',
-    getLocalTime<ScheduleDataCache>('schedule0', 'cacheUpdated'),
-  ],
-  [
-    'Schedule Cache 0 Data Version',
-    getLocalTime<ScheduleDataCache>('schedule0', 'dataUpdated'),
-  ],
-  [
-    'Schedule Cache 1 Storage Version',
-    getLocalTime<ScheduleDataCache>('schedule1', 'cacheUpdated'),
-  ],
-  [
-    'Schedule Cache 1 Data Version',
-    getLocalTime<ScheduleDataCache>('schedule1', 'dataUpdated'),
-  ],
-  [
-    'Schedule Cache 2 Storage Version',
-    getLocalTime<ScheduleDataCache>('schedule2', 'cacheUpdated'),
-  ],
-  [
-    'Schedule Cache 2 Data Version',
-    getLocalTime<ScheduleDataCache>('schedule2', 'dataUpdated'),
-  ],
-];
 
 interface AboutProps {
   switches: UserOptions;
@@ -118,30 +61,44 @@ function About({ switches, onClose }: AboutProps) {
                   <p className="text-center font-light">
                     the ultimate Northwestern course planning tool
                   </p>
-                  <p className="text-center text-sm font-bold text-gray-600 dark:text-gray-400">
-                    VERSION {process.env.REACT_APP_VERSION}
+                  <p className="text-center text-lg font-bold text-gray-600 dark:text-gray-400">
+                    version {process.env.REACT_APP_VERSION}
                   </p>
                 </div>
                 <div className="my-8 flex w-full flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4">
-                  <AboutButton href="https://www.dilanxd.com/paper">
-                    Learn More
-                  </AboutButton>
-                  <AboutButton href="https://kb.dilanxd.com/paper">
-                    Help Center
-                  </AboutButton>
-                  <AboutButton href="https://www.dilanxd.com/paper/changelog">
-                    Change Log
-                  </AboutButton>
-                  <AboutButton href="https://github.com/dilanx/paper.nu">
+                  <AboutButton href={Links.HOMEPAGE}>Learn More</AboutButton>
+                  <AboutButton href={Links.SUPPORT}>Help Center</AboutButton>
+                  <AboutButton href={Links.CHANGELOG}>Change Log</AboutButton>
+                  <AboutButton href={Links.SOURCE_CODE}>
                     Source Code
                   </AboutButton>
                 </div>
+                <div className="m-8 flex flex-col items-center justify-center gap-2">
+                  <AboutBanner
+                    href="https://www.instagram.com/paper.nu"
+                    color="#ff0069"
+                    img={instagramLogo}
+                    alt="Instagram"
+                  >
+                    Follow <span className="font-bold">paper.nu</span> on
+                    Instagram.
+                  </AboutBanner>
+                  <AboutBanner
+                    href="https://discord.com/servers/northwestern-655629737888055317"
+                    color="#5865f2"
+                    img={discordLogo}
+                    alt="Discord"
+                  >
+                    Join the <span className="font-bold">Northwestern</span>{' '}
+                    Discord server.
+                  </AboutBanner>
+                </div>
                 <div className="my-8 flex flex-col items-center gap-2 text-center text-sm font-light">
                   <p>designed and developed by</p>
-                  <p className="text-lg font-medium">
+                  <p className="text-2xl font-medium">
                     <a
                       className="text-black underline-offset-2 hover:underline dark:text-white"
-                      href="https://www.dilanxd.com"
+                      href={Links.DEVELOPER}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -152,7 +109,7 @@ function About({ switches, onClose }: AboutProps) {
                   <p className="text-md font-medium">
                     <a
                       className="text-black underline-offset-2 hover:underline dark:text-white"
-                      href="https://www.mccormick.northwestern.edu/computer-science/"
+                      href={Links.NU_CS}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -162,7 +119,7 @@ function About({ switches, onClose }: AboutProps) {
                   <p className="text-md font-medium">
                     <a
                       className="text-black underline-offset-2 hover:underline dark:text-white"
-                      href="https://www.registrar.northwestern.edu"
+                      href={Links.NU_REGISTRAR}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -172,7 +129,7 @@ function About({ switches, onClose }: AboutProps) {
                   <p className="text-md font-medium">
                     <a
                       className="text-black underline-offset-2 hover:underline dark:text-white"
-                      href="https://www.it.northwestern.edu"
+                      href={Links.NU_IT}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -180,61 +137,14 @@ function About({ switches, onClose }: AboutProps) {
                     </a>
                   </p>
                 </div>
-                <div className="my-8 flex flex-col items-center gap-2 text-sm font-light">
-                  <p>the future of</p>
-                  <div className="flex w-full flex-col gap-2 dark:text-black sm:flex-row">
-                    <div className="flex flex-1 items-center gap-2 rounded-xl bg-purple-50 p-4 dark:bg-purple-300">
-                      <img
-                        className="h-8 w-8"
-                        src={planImage}
-                        alt="Plan Northwestern logo"
-                      />
-                      <div className="flex-grow text-center">
-                        <p className="font-medium">Plan Northwestern</p>
-                        <p>
-                          by{' '}
-                          <a
-                            className="underline underline-offset-4 hover:opacity-75"
-                            href="https://www.dilanxd.com"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Dilan Nair
-                          </a>
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex flex-1 items-center gap-2 rounded-lg bg-green-50 p-4 dark:bg-green-300">
-                      <img
-                        className="h-8 w-8"
-                        src={saladImage}
-                        alt="salad.nu logo"
-                      />
-                      <div className="flex-grow text-center">
-                        <p className="font-medium">salad.nu</p>
-                        <p>
-                          by{' '}
-                          <a
-                            className="underline underline-offset-4 hover:opacity-75"
-                            href="https://github.com/Everthings"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Andy Xu
-                          </a>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="my-4">
-                  <p className="text-center text-xs font-light">
+                <div className="my-4 text-center text-xs font-light">
+                  <p className="my-2">
                     Because all user data connected to Paper is managed by a
                     student and not the university itself, privacy rights
                     afforded to students through{' '}
                     <a
                       className="underline underline-offset-2 hover:opacity-75"
-                      href="https://www.registrar.northwestern.edu/records/student-information-privacy/privacy-policy-ferpa.html"
+                      href={Links.FERPA}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -244,7 +154,7 @@ function About({ switches, onClose }: AboutProps) {
                     way with your official student records. See the{' '}
                     <a
                       className="underline underline-offset-2 hover:opacity-75"
-                      href="https://www.dilanxd.com/privacy/"
+                      href={Links.PRIVACY}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -252,15 +162,25 @@ function About({ switches, onClose }: AboutProps) {
                     </a>{' '}
                     to learn how your data is used.
                   </p>
+                  <p className="my-2">
+                    <a
+                      className="underline underline-offset-2 hover:opacity-75"
+                      href={Links.ATTRIBUTIONS}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      View project attributions
+                    </a>
+                  </p>
                 </div>
-                <InfoSet title="more information" data={versions} />
+                <InfoSet title="more information" data={INFO_VERSIONS} />
                 <button
-                  className="absolute top-2 right-2"
+                  className="absolute right-2 top-2"
                   onClick={() => setOpen(false)}
                 >
                   <XMarkIcon
-                    className="h-8 w-8 text-gray-300 hover:text-black active:text-gray-600
-                    dark:text-gray-500 dark:hover:text-white dark:active:text-gray-300"
+                    className="h-8 w-8 rounded-md p-0.5 text-gray-400 hover:bg-gray-100 active:bg-gray-200 
+                    dark:text-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
                   />
                 </button>
               </Dialog.Panel>

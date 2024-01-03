@@ -1,7 +1,7 @@
 import {
+  AlertFormData,
   AlertFormField,
   AlertFormResponse,
-  AlertFormSection,
 } from '../types/AlertTypes';
 import { TextValidator } from '../types/BaseTypes';
 import Utility from './Utility';
@@ -16,18 +16,30 @@ function hasValidator(field: AlertFormField): field is FieldWithValidator {
 
 export function formIsValid(
   response: AlertFormResponse,
-  sections: AlertFormSection[]
-) {
+  { sections, timeConstraints = [] }: AlertFormData
+): [boolean, string | null] {
   for (const section of sections) {
     for (const field of section.fields) {
-      if (field.required && !response[field.name]) return false;
+      if (field.required && !response[field.name])
+        return [false, 'Missing required field'];
       if (hasValidator(field) && response[field.name]) {
-        if (!field.validator(response[field.name])) return false;
+        if (!field.validator(response[field.name] || ''))
+          return [false, 'Invalid input'];
       }
       if (field.type === 'time' && response[field.name]) {
-        if (Utility.parseTime(response[field.name]) === undefined) return false;
+        if (Utility.parseTime(response[field.name]) === undefined)
+          return [false, 'Invalid time'];
       }
     }
   }
-  return true;
+
+  for (const tc of timeConstraints) {
+    const min = Utility.parseTime(response[tc.minKey]);
+    const max = Utility.parseTime(response[tc.maxKey]);
+    if (min && max && Utility.timeCompare(max, min) <= 0) {
+      return [false, tc.error];
+    }
+  }
+
+  return [true, null];
 }

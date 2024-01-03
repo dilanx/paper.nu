@@ -11,6 +11,7 @@ import { PlanData } from '../types/PlanTypes';
 import { ScheduleData } from '../types/ScheduleTypes';
 import { PaperError } from '../utility/PaperError';
 import Utility from '../utility/Utility';
+import { Mode } from '../utility/Constants';
 const d = debug('app:account-mod');
 
 function activate(
@@ -45,46 +46,37 @@ function activate(
         return;
       }
 
-      if (!item.content) {
+      if (!item.data) {
         callback(item, 'empty');
         return;
       }
 
-      let confirmNonAccountOverwrite =
-        app.state.switches.get[
-          `active_${isSchedule ? 'schedule' : 'plan'}_id`
-        ] === 'None' && window.location.search.length > 0;
+      discardChanges(app, () => {
+        discardNotesChanges(
+          app.state.switches,
+          (alertData) => app.showAlert(alertData),
+          () => {
+            app.state.switches.set('notes', false);
+            app.state.switches.set('unsaved_notes', false);
+            app.setState({ loadingLogin: true });
+            (isSchedule ? ScheduleManager : PlanManager)
+              .load(item.data as any)
+              .then((data) => {
+                if (data === 'malformed') {
+                  app.showAlert(
+                    Utility.errorAlert(
+                      `account_activate_${errText}`,
+                      new PaperError('Malformed Data')
+                    )
+                  );
+                  return;
+                }
 
-      discardChanges(
-        app,
-        () => {
-          discardNotesChanges(
-            app.state.switches,
-            (alertData) => app.showAlert(alertData),
-            () => {
-              app.state.switches.set('notes', false);
-              app.state.switches.set('unsaved_notes', false);
-              app.setState({ loadingLogin: true });
-              (isSchedule ? ScheduleManager : PlanManager)
-                .loadFromString(item.content)
-                .then((data) => {
-                  if (data === 'malformed') {
-                    app.showAlert(
-                      Utility.errorAlert(
-                        `account_activate_${errText}`,
-                        new PaperError('Malformed Data')
-                      )
-                    );
-                    return;
-                  }
-
-                  callback(item, data);
-                });
-            }
-          );
-        },
-        confirmNonAccountOverwrite
-      );
+                callback(item, data);
+              });
+          }
+        );
+      });
     })
     .catch((error: PaperError) => {
       app.showAlert(Utility.errorAlert(`account_activate_${errText}`, error));
@@ -99,8 +91,8 @@ export function activateAccountPlan(app: AppType, planId: string) {
       app.state.switches.set('notes', false);
       app.state.switches.set('unsaved_notes', false);
       app.setState({
-        originalDataString: item.content,
-        unsavedChanges: window.location.search.length > 0,
+        saveState: 'start',
+        loadingLogin: false,
       });
       toast.success('Activated plan: ' + Account.getPlanName(planId));
       d('plan activated: %s (empty)', planId);
@@ -111,7 +103,6 @@ export function activateAccountPlan(app: AppType, planId: string) {
     app.setState(
       {
         data: data as PlanData,
-        originalDataString: item.content,
         loadingLogin: false,
       },
       () => {
@@ -129,8 +120,7 @@ export function activateAccountSchedule(app: AppType, scheduleId: string) {
     if (data === 'empty') {
       app.state.switches.set('active_schedule_id', scheduleId, true);
       app.setState({
-        originalDataString: item.content,
-        unsavedChanges: window.location.search.length > 0,
+        saveState: 'start',
         loadingLogin: false,
       });
       toast.success(
@@ -144,7 +134,6 @@ export function activateAccountSchedule(app: AppType, scheduleId: string) {
     app.setState(
       {
         schedule: data as ScheduleData,
-        originalDataString: item.content,
         loadingLogin: false,
       },
       () => {
@@ -158,8 +147,8 @@ export function activateAccountSchedule(app: AppType, scheduleId: string) {
   });
 }
 
-export function deactivate(app: AppType, isSchedule: boolean) {
-  const t = isSchedule ? 'schedule' : 'plan';
+export function deactivate(app: AppType) {
+  const t = app.state.switches.get.mode === Mode.SCHEDULE ? 'schedule' : 'plan';
   discardChanges(app, () => {
     discardNotesChanges(
       app.state.switches,
@@ -194,58 +183,39 @@ export function update(app: AppType, isSchedule: boolean) {
     return;
   }
 
-  const dataStr = isSchedule
-    ? ScheduleManager.getDataString(app.state.schedule)
-    : PlanManager.getDataString(app.state.data);
-  app.setState({ unsavedChanges: false });
+  const sData = isSchedule
+    ? ScheduleManager.serialize(app.state.schedule)
+    : PlanManager.serialize(app.state.data);
+  app.setState({ saveState: 'save' });
 
-  toast.promise(
-    Account.update(isSchedule ? 'schedules' : 'plans', activeId as string, {
-      content: dataStr,
-    }),
-    {
-      loading: 'Saving...',
-      success: () => {
-        app.setState({
-          originalDataString: dataStr,
-        });
-        return (
-          'Saved ' +
-          (isSchedule ? Account.getScheduleName : Account.getPlanName)(
-            activeId as string
-          )
-        );
-      },
-      error: (err: PaperError) => {
-        app.setState({
-          unsavedChanges: true,
-        });
-        app.showAlert(Utility.errorAlert(`account_update_${t}`, err));
-        return 'Something went wrong';
-      },
-    }
-  );
+  Account.update(isSchedule ? 'schedules' : 'plans', activeId as string, {
+    data: sData,
+  })
+    .then(() => {
+      app.setState({
+        saveState: 'idle',
+      });
+    })
+    .catch((err: PaperError) => {
+      app.setState({
+        saveState: 'error',
+      });
+      app.showAlert(Utility.errorAlert(`account_update_${t}`, err));
+    });
 }
 
-export function discardChanges(
-  app: AppType,
-  action: () => void,
-  confirmNonAccountOverwrite: boolean = false
-) {
-  let message = confirmNonAccountOverwrite
-    ? 'Activating this will overwrite any data currently in use. Are you sure?'
-    : 'It looks like you have some unsaved changes. Navigating away will cause them not to be saved to your account. Are you sure?';
-
-  if (confirmNonAccountOverwrite || app.state.unsavedChanges) {
+export function discardChanges(app: AppType, action: () => void) {
+  if (app.state.saveState !== 'idle') {
     app.showAlert({
       title: 'Hold on...',
-      message,
+      message:
+        'It looks like you have some unsaved changes. Navigating away will cause them not to be saved to your account. Are you sure?',
       confirmButton: 'Yes, continue',
       cancelButton: 'Go back',
       color: 'red',
       icon: ExclamationTriangleIcon,
       action: () => {
-        app.setState({ unsavedChanges: false });
+        app.setState({ saveState: 'idle' });
         action();
       },
     });

@@ -1,7 +1,10 @@
 export class PaperError extends Error {
-  constructor(message: string) {
+  status: number | undefined;
+
+  constructor(message: string, status?: number) {
     super(message);
     this.name = 'PaperError';
+    this.status = status;
   }
 }
 

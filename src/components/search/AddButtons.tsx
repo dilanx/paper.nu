@@ -12,7 +12,7 @@ function AddButton(props: AddButtonProps) {
   return (
     <button
       className={`text-center bg-${props.color}-400 block flex-1 rounded-md
-        px-1 py-2 text-sm font-medium text-white opacity-100 shadow-sm hover:opacity-75 active:opacity-50`}
+        p-1 py-1.5 text-xs font-medium text-white opacity-100 shadow-sm hover:opacity-75 active:opacity-50`}
       onClick={(e) => {
         e.stopPropagation();
         props.action();
@@ -31,8 +31,8 @@ interface AddButtonSectionProps {
 
 function AddButtonSection(props: AddButtonSectionProps) {
   return (
-    <div className="py-2 px-1">
-      <p className="p-2 text-center text-sm font-bold text-gray-500">
+    <div className="px-1 py-2">
+      <p className="text-center text-xs font-bold text-gray-500">
         {props.title}
       </p>
       <div className="flex gap-2">

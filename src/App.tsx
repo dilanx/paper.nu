@@ -1,14 +1,13 @@
-import {
-  ArrowDownTrayIcon,
-  ExclamationTriangleIcon,
-} from '@heroicons/react/24/outline';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import debug from 'debug';
-import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
+import { AnimatePresence, MotionConfig } from 'framer-motion';
 import React from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import toast, { Toaster } from 'react-hot-toast';
 import Account from './Account';
+import { getTermName } from './DataManager';
+import SaveDataManager from './SaveDataManager';
 import {
   activateAccountPlan,
   activateAccountSchedule,
@@ -17,6 +16,8 @@ import {
   discardNotesChanges,
   update,
 } from './app/AccountModification';
+import bn from './app/BannerNotice';
+import clp from './app/ChangeLogPreview';
 import {
   addBookmark,
   addCourse,
@@ -24,34 +25,47 @@ import {
   addYear,
   clearData,
   moveCourse,
+  putCustomCourse,
   removeBookmark,
   removeCourse,
   removeSummerQuarter,
+  removeYear,
 } from './app/PlanModification';
 import {
+  addOverride,
   addScheduleBookmark,
   addSection,
+  clearSchedule,
+  checkOverrides,
+  putCustomSection,
+  removeOverrides,
   removeScheduleBookmark,
   removeSection,
 } from './app/ScheduleModification';
 import AccountPlans from './components/account/AccountPlans';
 import Bookmarks from './components/bookmarks/Bookmarks';
-import Alert from './components/menu/alert/Alert';
+import CampusMap from './components/map/CampusMap';
+import BannerNotice from './components/menu/BannerNotice';
+import ChangeLogPreview from './components/changelog/ChangeLogPreview';
 import Info from './components/menu/Info';
 import ModeSwitch from './components/menu/ModeSwitch';
-import SideCard from './components/menu/side-card/SideCard';
+import Notes from './components/menu/Notes';
 import Taskbar from './components/menu/Taskbar';
+import About from './components/menu/about/About';
+import Alert from './components/menu/alert/Alert';
+import ContextMenu from './components/menu/context-menu/ContextMenu';
+import SideCard from './components/menu/side-card/SideCard';
+import Toolbar from './components/menu/toolbar/Toolbar';
 import Content from './components/plan/Content';
-import CampusMap from './components/map/CampusMap';
 import Schedule from './components/schedule/Schedule';
 import Search from './components/search/Search';
-import SaveDataManager from './SaveDataManager';
 import { AlertData } from './types/AlertTypes';
 import {
-  AppType,
   AppState,
-  ReadUserOptions,
+  AppType,
   ContextMenuData,
+  ReadUserOptions,
+  SaveDataOptions,
 } from './types/BaseTypes';
 import {
   Course,
@@ -67,21 +81,29 @@ import {
 import { SearchModificationFunctions } from './types/SearchTypes';
 import { SideCardData } from './types/SideCardTypes';
 import { Mode } from './utility/Constants';
+import { openInfo as planOpenInfo } from './components/plan/CourseInfo';
 import { PaperError } from './utility/PaperError';
+import { openInfo as scheduleOpenInfo } from './components/schedule/ScheduleSectionInfo';
 import Utility from './utility/Utility';
-import About from './components/menu/about/About';
-import { getTermName } from './DataManager';
-import ChangeLogPreview from './components/menu/ChangeLogPreview';
-import clp from './app/ChangeLogPreview';
-import Toolbar from './components/menu/toolbar/Toolbar';
-import ContextMenu from './components/menu/context-menu/ContextMenu';
-import Notes from './components/menu/Notes';
-import BannerNotice from './components/menu/BannerNotice';
-import bn from './app/BannerNotice';
+import {
+  activateRecentShare,
+  getRecentShare,
+  removeRecentShareHistory,
+  updateRecentShare,
+} from './app/RecentShare';
+import { RecentShareModificationFunctions } from './types/AccountTypes';
+import Ratings from './components/rating/Ratings';
+import { RatingsViewData } from './types/RatingTypes';
 const d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
 const VERSION_NO_PATCH = VERSION.split('.').slice(0, 2).join('.');
+
+/*
+
+TODO use context instead of passing down props for things like alert, side card, context menu, etc.
+
+*/
 
 class App extends React.Component<{}, AppState> implements AppType {
   appRef;
@@ -127,6 +149,8 @@ class App extends React.Component<{}, AppState> implements AppType {
       removeBookmark: (course, forCredit) => {
         removeBookmark(app, course, forCredit);
       },
+      putCustomCourse: (location, courseToEdit) =>
+        putCustomCourse(app, location, courseToEdit),
     };
 
     const f2: PlanSpecialFunctions = {
@@ -139,6 +163,9 @@ class App extends React.Component<{}, AppState> implements AppType {
       addYear: () => {
         addYear(app);
       },
+      removeYear: (year) => {
+        removeYear(app, year);
+      },
       clearData: (year?: number) => {
         clearData(app, year);
       },
@@ -147,8 +174,13 @@ class App extends React.Component<{}, AppState> implements AppType {
     const sf: ScheduleModificationFunctions = {
       addSection: (section) => addSection(app, section),
       removeSection: (section) => removeSection(app, section),
+      addOverride: (override) => addOverride(app, override),
+      checkOverrides: (section) => checkOverrides(app, section),
+      removeOverrides: (sectionId) => removeOverrides(app, sectionId),
       addScheduleBookmark: (course) => addScheduleBookmark(app, course),
       removeScheduleBookmark: (course) => removeScheduleBookmark(app, course),
+      putCustomSection: (sectionToEdit) => putCustomSection(app, sectionToEdit),
+      clear: () => clearSchedule(app),
     };
 
     const ff: SearchModificationFunctions = {
@@ -162,6 +194,11 @@ class App extends React.Component<{}, AppState> implements AppType {
           },
         });
       },
+    };
+
+    const rf: RecentShareModificationFunctions = {
+      open: (shortCode) => activateRecentShare(app, shortCode),
+      remove: (shortCode) => removeRecentShareHistory(app, shortCode),
     };
 
     if (defaultSwitches.get.dark) {
@@ -185,17 +222,18 @@ class App extends React.Component<{}, AppState> implements AppType {
       schedule: {
         schedule: {},
         bookmarks: [],
+        overrides: [],
       },
       switches: defaultSwitches,
       f,
       f2,
       sf,
       ff,
+      rf,
       clp: !lastVersion || lastVersion !== VERSION_NO_PATCH,
-      banner: !bannerNoticeId || bannerNoticeId !== bn.id,
+      banner: !!bn && (!bannerNoticeId || bannerNoticeId !== bn.id),
       loadingLogin: false,
-      unsavedChanges: false,
-      originalDataString: '',
+      saveState: 'idle',
       scheduleInteractions: {
         hoverSection: {
           set: (id) => this.interactionUpdate('hoverSection', id),
@@ -215,6 +253,7 @@ class App extends React.Component<{}, AppState> implements AppType {
         },
         multiClear: (interactions) => this.interactionMultiClear(interactions),
       },
+      recentShare: getRecentShare(),
     };
   }
 
@@ -224,13 +263,11 @@ class App extends React.Component<{}, AppState> implements AppType {
     const hash = window.location.hash;
 
     const code = params.get('code');
-    params.delete('code');
     const state = params.get('state');
-    params.delete('state');
     const action = params.get('action');
-    params.delete('action');
     const search = params.get('fs');
-    params.delete('fs');
+    const showCourse = params.get('c');
+    const showSection = params.get('s');
 
     window.history.replaceState({}, '', window.location.pathname);
 
@@ -274,30 +311,79 @@ class App extends React.Component<{}, AppState> implements AppType {
           this.setSwitch('tab', 'Plans');
           this.setSwitch('active_plan_id', 'None', true);
         }
-        this.initialize(() => {
-          this.setState({ loadingLogin: false });
-        }, hash);
+        this.initialize(
+          () => {
+            this.setState({ loadingLogin: false });
+          },
+          { hash, showCourse, showSection }
+        );
       });
     } else {
-      this.initialize(() => {
-        this.setState({ loadingLogin: false });
-      }, hash);
+      this.initialize(
+        () => {
+          this.setState({ loadingLogin: false });
+        },
+        { hash, showCourse, showSection }
+      );
     }
   }
 
-  initialize(callback: () => void, hash?: string, params?: URLSearchParams) {
+  initialize(callback: () => void, options?: SaveDataOptions) {
     d('initializing');
-    SaveDataManager.load(this.state.switches, hash, params)
+    SaveDataManager.load(this.state.switches, options)
       .then(
         ({
           mode,
           data,
           activeId,
-          originalDataString,
           method,
+          error,
           latestTermId,
+          sharedCourse,
+          sharedSection,
+          recentShare,
         }) => {
           const modeStr = mode === Mode.PLAN ? 'plan' : 'schedule';
+
+          if (sharedCourse) {
+            planOpenInfo(
+              (data) => this.showSideCard(data),
+              (data) => this.showAlert(data),
+              (data) => this.openRatingsView(data),
+              sharedCourse,
+              false
+            );
+          }
+
+          if (sharedSection) {
+            scheduleOpenInfo(
+              (data) => this.showSideCard(data),
+              (data) => this.showAlert(data),
+              (data) => this.openRatingsView(data),
+              { section: sharedSection },
+              undefined,
+              {
+                ff: this.state.ff,
+              }
+            );
+          }
+
+          if (recentShare) {
+            if (typeof recentShare === 'string') {
+              this.setState({
+                recentShare: updateRecentShare(recentShare),
+              });
+            } else {
+              this.setState({
+                recentShare: updateRecentShare(
+                  recentShare.shortCode,
+                  recentShare
+                ),
+              });
+              mode = recentShare.type === 1 ? Mode.PLAN : Mode.SCHEDULE;
+            }
+          }
+
           if (data === 'malformed') {
             this.setState({
               schedule: {
@@ -307,9 +393,11 @@ class App extends React.Component<{}, AppState> implements AppType {
               latestTermId,
             });
             this.showAlert({
-              title: `Unable to load ${modeStr}.`,
-              message: `The ${modeStr} you're trying to access is not valid. If you're loading it through a URL, ensure that it hasn't been manually modified.`,
-              confirmButton: 'What a shame.',
+              title: `Nothing to load.`,
+              message:
+                error ||
+                `Something problematic happened when trying to load stuff.`,
+              cancelButton: 'Close',
               color: 'red',
               icon: ExclamationTriangleIcon,
             });
@@ -322,8 +410,7 @@ class App extends React.Component<{}, AppState> implements AppType {
             true
           );
           this.setState({
-            originalDataString,
-            unsavedChanges: false,
+            saveState: 'idle',
             latestTermId,
           });
           if (data === 'empty') {
@@ -350,7 +437,13 @@ class App extends React.Component<{}, AppState> implements AppType {
 
           switch (method) {
             case 'URL':
-              toast.success(`Loaded ${modeStr} from URL`);
+              toast.success(
+                `Loaded shared ${modeStr}${
+                  recentShare && typeof recentShare !== 'string'
+                    ? `: ${recentShare.name}`
+                    : ''
+                }`
+              );
               break;
             case 'Account':
               toast.success(
@@ -386,16 +479,38 @@ class App extends React.Component<{}, AppState> implements AppType {
   }
 
   componentDidUpdate(_: Readonly<{}>, prevState: Readonly<AppState>) {
-    if (prevState.unsavedChanges !== this.state.unsavedChanges) {
-      if (this.state.unsavedChanges) {
-        d('there are now unsaved changes');
-        window.onbeforeunload = () => {
-          return true;
-        };
-      } else {
-        d('there are no longer unsaved changes');
-        window.onbeforeunload = null;
-      }
+    if (prevState.saveState !== 'start' && this.state.saveState === 'start') {
+      d(
+        'save timer reset (prev %s), waiting grace period before saving',
+        this.state.saveTimeoutId
+      );
+      window.onbeforeunload = () => {
+        return true;
+      };
+
+      const app = this;
+      window.clearTimeout(this.state.saveTimeoutId);
+
+      const activeIdKey =
+        this.state.switches.get.mode === Mode.PLAN
+          ? 'active_plan_id'
+          : 'active_schedule_id';
+      const activeId = this.state.switches.get[activeIdKey];
+      const timeoutId = window.setTimeout(() => {
+        const nowActiveId = this.state.switches.get[activeIdKey];
+        if (nowActiveId !== activeId) {
+          d('active id changed, aborting save');
+          return;
+        }
+        d('saving now');
+        update(app, this.state.switches.get.mode === Mode.SCHEDULE);
+      }, 1500);
+      this.setState({ saveState: 'wait', saveTimeoutId: timeoutId });
+    }
+
+    if (prevState.saveState !== 'idle' && this.state.saveState === 'idle') {
+      d('there are no longer unsaved changes');
+      window.onbeforeunload = null;
     }
   }
 
@@ -406,7 +521,7 @@ class App extends React.Component<{}, AppState> implements AppType {
       val === 'None' &&
       switches.get[key] !== val
     ) {
-      this.setState({ unsavedChanges: false });
+      this.setState({ saveState: 'idle' });
     }
     switches.get[key] = val;
     this.setState({ switches: switches });
@@ -420,6 +535,10 @@ class App extends React.Component<{}, AppState> implements AppType {
     this.setState({ alertData });
   }
 
+  postShowAlert() {
+    this.setState({ alertData: undefined });
+  }
+
   showSideCard(sideCardData: SideCardData) {
     this.setState({ sideCardData });
   }
@@ -428,16 +547,20 @@ class App extends React.Component<{}, AppState> implements AppType {
     this.setState({ sideCardData: undefined });
   }
 
-  postShowAlert() {
-    this.setState({ alertData: undefined });
-  }
-
   showContextMenu(contextMenuData: ContextMenuData) {
     this.setState({ contextMenuData });
   }
 
   closeContextMenu() {
     this.setState({ contextMenuData: undefined });
+  }
+
+  openRatingsView(ratingsData: RatingsViewData) {
+    this.setState({ ratings: ratingsData });
+  }
+
+  closeRatingsView() {
+    this.setState({ ratings: undefined });
   }
 
   interactionUpdate(interaction: keyof ScheduleInteractions, value?: any) {
@@ -467,19 +590,7 @@ class App extends React.Component<{}, AppState> implements AppType {
       () => {
         this.setState({ loadingLogin: false });
       },
-      undefined,
-      new URLSearchParams({ t: termId })
-    );
-  }
-
-  loadLegacyUrl(url: URL) {
-    this.setState({ loadingLogin: true });
-    this.initialize(
-      () => {
-        this.setState({ loadingLogin: false });
-      },
-      undefined,
-      new URLSearchParams(url.search)
+      { changeTerm: termId }
     );
   }
 
@@ -519,12 +630,12 @@ class App extends React.Component<{}, AppState> implements AppType {
             className={`${darkMode ? 'dark' : ''} relative`}
             ref={this.appRef}
           >
-            {this.state.banner && (
+            {bn && this.state.banner && (
               <BannerNotice
                 data={bn}
                 alert={(alertData) => this.showAlert(alertData)}
                 dismiss={() => {
-                  localStorage.setItem('bn_id', bn.id);
+                  localStorage.setItem('bn_id', bn!.id);
                   this.setState({ banner: false });
                 }}
               />
@@ -555,7 +666,7 @@ class App extends React.Component<{}, AppState> implements AppType {
               />
             )}
 
-            {this.state.clp && clp.items.length > 0 && (
+            {this.state.clp && (
               <ChangeLogPreview
                 version={VERSION_NO_PATCH}
                 info={clp}
@@ -564,6 +675,17 @@ class App extends React.Component<{}, AppState> implements AppType {
                   localStorage.setItem('v', VERSION_NO_PATCH);
                   this.setState({ clp: false });
                 }}
+              />
+            )}
+
+            {this.state.ratings && (
+              <Ratings
+                data={this.state.ratings}
+                alert={(alertData) => {
+                  this.showAlert(alertData);
+                }}
+                switches={switches}
+                onClose={() => this.setState({ ratings: undefined })}
               />
             )}
 
@@ -655,6 +777,9 @@ class App extends React.Component<{}, AppState> implements AppType {
                   alert={(alertData) => {
                     this.showAlert(alertData);
                   }}
+                  openRatings={(ratingsData) => {
+                    this.openRatingsView(ratingsData);
+                  }}
                   defaults={this.state.searchDefaults}
                   expandMap={() => this.setState({ map: true })}
                   loading={this.state.loadingLogin}
@@ -681,6 +806,9 @@ class App extends React.Component<{}, AppState> implements AppType {
                     alert={(alertData) => {
                       this.showAlert(alertData);
                     }}
+                    openRatings={(ratingsData) => {
+                      this.openRatingsView(ratingsData);
+                    }}
                     f={this.state.f}
                     sf={this.state.sf}
                     scheduleInteractions={this.state.scheduleInteractions}
@@ -691,6 +819,8 @@ class App extends React.Component<{}, AppState> implements AppType {
                 {tab === 'Plans' && (
                   <AccountPlans
                     switches={this.state.switches}
+                    recentShare={this.state.recentShare}
+                    rf={this.state.rf}
                     alert={(alertData) => {
                       this.showAlert(alertData);
                     }}
@@ -701,7 +831,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                       activateAccountSchedule(this, id);
                     }}
                     deactivate={() => {
-                      deactivate(this, isSchedule);
+                      deactivate(this);
                     }}
                     activeId={
                       switches.get[
@@ -743,7 +873,8 @@ class App extends React.Component<{}, AppState> implements AppType {
                   switches={switches}
                   loading={this.state.loadingLogin}
                   openAboutMenu={() => this.setState({ about: true })}
-                  loadLegacyUrl={(url) => this.loadLegacyUrl(url)}
+                  openChangeLogPreview={() => this.setState({ clp: true })}
+                  saveState={this.state.saveState}
                 />
                 <AnimatePresence mode="wait">
                   {switches.get.mode === Mode.PLAN ? (
@@ -757,6 +888,13 @@ class App extends React.Component<{}, AppState> implements AppType {
                       sideCard={(sideCardData) => {
                         this.showSideCard(sideCardData);
                       }}
+                      contextMenuData={this.state.contextMenuData}
+                      contextMenu={(contextMenuData) => {
+                        this.showContextMenu(contextMenuData);
+                      }}
+                      openRatings={(ratingsData) => {
+                        this.openRatingsView(ratingsData);
+                      }}
                       switches={switches}
                       key="plan"
                     />
@@ -769,6 +907,13 @@ class App extends React.Component<{}, AppState> implements AppType {
                       sideCard={(sideCardData) => {
                         this.showSideCard(sideCardData);
                       }}
+                      openRatings={(ratingsData) => {
+                        this.openRatingsView(ratingsData);
+                      }}
+                      contextMenuData={this.state.contextMenuData}
+                      contextMenu={(contextMenuData) => {
+                        this.showContextMenu(contextMenuData);
+                      }}
                       interactions={this.state.scheduleInteractions}
                       sf={this.state.sf}
                       ff={this.state.ff}
@@ -780,7 +925,7 @@ class App extends React.Component<{}, AppState> implements AppType {
               </div>
             </div>
             <AnimatePresence>
-              {this.state.unsavedChanges && (
+              {/* {this.state.unsavedChanges && (
                 <motion.div
                   initial={{ x: 20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
@@ -804,7 +949,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                     </>
                   </button>
                 </motion.div>
-              )}
+              )} */}
             </AnimatePresence>
           </div>
         </MotionConfig>

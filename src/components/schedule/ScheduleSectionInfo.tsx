@@ -2,6 +2,7 @@ import {
   AcademicCapIcon,
   BuildingLibraryIcon,
   CalendarDaysIcon,
+  ChevronRightIcon,
   ClockIcon,
   DocumentCheckIcon,
   HashtagIcon,
@@ -9,31 +10,37 @@ import {
   ListBulletIcon,
   MapPinIcon,
   PuzzlePieceIcon,
+  Squares2X2Icon,
   TagIcon,
   UserIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
 import { MapIcon } from '@heroicons/react/24/solid';
 import { ReactNode } from 'react';
-import PlanManager from '../PlanManager';
-import ScheduleManager from '../ScheduleManager';
-import { Alert } from '../types/AlertTypes';
-import { IconElement } from '../types/BaseTypes';
-import { Course } from '../types/PlanTypes';
+import PlanManager from '../../PlanManager';
+import ScheduleManager from '../../ScheduleManager';
+import { Alert } from '../../types/AlertTypes';
+import { IconElement } from '../../types/BaseTypes';
+import { Course } from '../../types/PlanTypes';
 import {
   ScheduleBookmarks,
   ScheduleInteractions,
   ScheduleModificationFunctions,
   ScheduleSection,
-} from '../types/ScheduleTypes';
-import { SearchModificationFunctions } from '../types/SearchTypes';
+  ScheduleSectionBlock,
+} from '../../types/ScheduleTypes';
+import { SearchModificationFunctions } from '../../types/SearchTypes';
 import {
   AnySideCardButtonData,
   SideCard,
   SideCardData,
   SideCardItemData,
-} from '../types/SideCardTypes';
-import Utility from './Utility';
+} from '../../types/SideCardTypes';
+import Utility from '../../utility/Utility';
+import { getTermName } from '../../DataManager';
+import RatingsTag from '../rating/RatingsTag';
+import { OpenRatingsFn } from '../../types/RatingTypes';
+import { Days } from '../../utility/Constants';
 
 function getDetails(
   detail: string,
@@ -42,6 +49,9 @@ function getDetails(
   alert?: Alert,
   interactions?: ScheduleInteractions
 ): [IconElement, ReactNode] | undefined {
+  const offerings = course
+    ? PlanManager.getOfferings(course).slice(0, 8)
+    : undefined;
   switch (detail) {
     case 'TOPIC':
       return [TagIcon, section.topic];
@@ -72,15 +82,17 @@ function getDetails(
         UserIcon,
         section.instructors?.map((instructor, i) => (
           <button
-            className="my-1 underline underline-offset-4
-              hover:text-rose-500 active:text-rose-600
-              dark:hover:text-rose-300 dark:active:text-rose-200"
+            className="m-1 underline
+              underline-offset-4 hover:text-rose-500
+              active:text-rose-600 dark:hover:text-rose-300 dark:active:text-rose-200"
             key={`section-info-instructor-${i}`}
             onClick={() => {
               alert?.({
                 icon: UserIcon,
                 title: instructor.name ?? 'No name',
-                subtitle: `${section.subject} ${section.number} (section ${section.section})`,
+                subtitle: `${section.subject}${
+                  section.number ? ` ${section.number}` : ''
+                }${section.section ? ` (section ${section.section})` : ''}`,
                 color: 'rose',
                 cancelButton: 'Close',
                 extras: [
@@ -118,6 +130,7 @@ function getDetails(
         MapPinIcon,
         <>
           {section.room.map((room, i) => {
+            room = room || 'None';
             let roomFinderLink: string | null = null;
             if (room) {
               roomFinderLink = ScheduleManager.getRoomFinderLink(room);
@@ -128,14 +141,15 @@ function getDetails(
               <button
                 className={`my-1 inline-flex items-center justify-center gap-1 underline underline-offset-4 ${
                   roomFinderLink
-                    ? 'hover:text-emerald-500 active:text-emerald-600 dark:hover:text-emerald-300 dark:active:text-emerald-200'
-                    : 'decoration-dotted hover:text-emerald-800 dark:hover:text-emerald-100'
+                    ? 'cursor-pointer hover:text-emerald-500 active:text-emerald-600 dark:hover:text-emerald-300 dark:active:text-emerald-200'
+                    : 'cursor-default decoration-dotted hover:text-emerald-800 dark:hover:text-emerald-100'
                 }`}
                 onMouseEnter={() => {
                   if (interactions)
                     interactions.hoverLocation.set([
                       room,
-                      ScheduleManager.getCourseColor(section.subject),
+                      section.color ||
+                        ScheduleManager.getCourseColor(section.subject),
                     ]);
                 }}
                 onMouseLeave={() => {
@@ -175,8 +189,50 @@ function getDetails(
           ? `${section.start_date} to ${section.end_date}`
           : undefined,
       ];
+    case 'RECENT OFFERINGS':
+      return [
+        Squares2X2Icon,
+        offerings ? (
+          <>
+            <p className="text-sm">
+              {offerings.length > 0
+                ? offerings.join(', ')
+                : 'Not offered recently'}
+            </p>
+            <button
+              className="inline-flex items-center text-xs font-bold text-gray-400 hover:text-purple-500 active:text-purple-600 dark:text-gray-500 dark:hover:text-purple-300 dark:active:text-purple-200"
+              onClick={() => {
+                alert?.({
+                  icon: Squares2X2Icon,
+                  title: 'Historic Offerings',
+                  subtitle: course?.id,
+                  message: `All offerings for ${course?.id} since 2020 Fall.`,
+                  color: 'purple',
+                  cancelButton: 'Close',
+                  extras: course
+                    ? Utility.objAsAlertExtras(
+                        PlanManager.getOfferingsOrganized(course),
+                        (a, b) => b.localeCompare(a)
+                      )
+                    : undefined,
+                });
+              }}
+            >
+              <span>VIEW ALL OFFERINGS</span>
+              <ChevronRightIcon className="h-4 w-4 stroke-2" />
+            </button>
+          </>
+        ) : undefined,
+      ];
     case 'PREREQUISITES':
       return [ListBulletIcon, course?.prereqs];
+    case 'FOUNDATIONAL DISCIPLINES':
+      return [
+        BuildingLibraryIcon,
+        section?.disciplines
+          ? Utility.convertDisciplines(section.disciplines).join(', ')
+          : undefined,
+      ];
     case 'DISTRIBUTION AREAS':
       return [
         BuildingLibraryIcon,
@@ -211,20 +267,23 @@ function getDetails(
 }
 
 interface SectionModificationWithinInfo {
-  bookmarks: ScheduleBookmarks;
-  sf: ScheduleModificationFunctions;
+  bookmarks?: ScheduleBookmarks;
+  sf?: ScheduleModificationFunctions;
   ff: SearchModificationFunctions;
 }
 
 export function openInfo(
   sideCard: SideCard,
   alert: Alert,
-  section: ScheduleSection,
+  openRatings: OpenRatingsFn,
+  { section, day, start_time, end_time }: ScheduleSectionBlock,
   interactions?: ScheduleInteractions,
   mod?: SectionModificationWithinInfo
 ) {
-  const name = section.subject + ' ' + section.number;
-  const course = PlanManager.getCourse(name);
+  const name = `${section.subject}${
+    section.number ? ` ${section.number}` : ''
+  }`;
+  const course = !section.custom ? PlanManager.getCourse(name) : undefined;
   const scheduleCourse = ScheduleManager.getCourseById(
     section.section_id.split('-')[0]
   );
@@ -237,7 +296,9 @@ export function openInfo(
     'INSTRUCTOR',
     'LOCATION',
     'START/END DATES',
+    'RECENT OFFERINGS',
     'PREREQUISITES',
+    'FOUNDATIONAL DISCIPLINES',
     'DISTRIBUTION AREAS',
     'UNITS',
     'CAPACITY',
@@ -245,55 +306,129 @@ export function openInfo(
     'DESCRIPTIONS',
   ];
 
-  let sideCardButtons: AnySideCardButtonData[] | undefined;
+  let sideCardButtons: AnySideCardButtonData[] | undefined = undefined;
 
+  // TODO organize this messy logic, it's 1:30 AM and I'm a bit tired rn
   if (mod) {
-    sideCardButtons = [
-      {
-        text: 'Show all sections',
+    sideCardButtons = [];
+    if (section.custom && mod.sf) {
+      sideCardButtons.push({
+        text: 'Edit custom section',
         onClick: (close) => {
-          mod.ff.set(name, scheduleCourse?.course_id);
+          mod.sf!.putCustomSection(section);
           close();
         },
-      },
-      {
+      });
+    } else {
+      if (scheduleCourse && mod.bookmarks && mod.sf) {
+        sideCardButtons.push({
+          toggle: true,
+          data: mod.bookmarks,
+          key: scheduleCourse,
+          indexProperty: 'course_id',
+          enabled: {
+            text: 'Remove from bookmarks',
+            onClick: () => {
+              mod.sf!.removeScheduleBookmark(scheduleCourse);
+            },
+          },
+          disabled: {
+            text: 'Add to bookmarks',
+            onClick: () => {
+              mod.sf!.addScheduleBookmark(scheduleCourse);
+            },
+          },
+        });
+      }
+    }
+
+    if (mod.sf) {
+      sideCardButtons.push({
         text: 'Remove section',
         danger: true,
         onClick: (close) => {
-          mod.sf.removeSection(section);
+          mod.sf!.removeSection(section);
           close();
         },
-      },
-    ];
+      });
 
-    if (scheduleCourse) {
-      sideCardButtons.splice(1, 0, {
-        toggle: true,
-        data: mod.bookmarks,
-        key: scheduleCourse,
-        indexProperty: 'course_id',
-        enabled: {
-          text: 'Remove from bookmarks',
-          onClick: () => {
-            mod.sf.removeScheduleBookmark(scheduleCourse);
+      if (!section.custom) {
+        sideCardButtons.push('divider');
+
+        const overrides = mod.sf.checkOverrides(section);
+
+        if (day !== undefined && start_time && end_time) {
+          const disabled =
+            overrides.timesRemaining && overrides.timesRemaining.length <= 1;
+          sideCardButtons.push({
+            text: `Hide ${Days[day]} ${Utility.convertTime(
+              start_time,
+              true
+            )} - ${Utility.convertTime(end_time, true)}`,
+            disabled,
+            disabledText: disabled
+              ? 'This is the only visible time.'
+              : undefined,
+            onClick: (close) => {
+              mod.sf!.addOverride({
+                section_id: section.section_id,
+                day,
+                start_time,
+                end_time,
+                hide: true,
+              });
+              close();
+            },
+          });
+        }
+
+        sideCardButtons.push(
+          {
+            text: 'Show all hidden times',
+            disabled: !overrides.anyOverride,
+            disabledText: !overrides.anyOverride
+              ? 'None of the times for this section are hidden.'
+              : undefined,
+            onClick: (close) => {
+              mod.sf!.removeOverrides(section.section_id);
+              close();
+            },
           },
-        },
-        disabled: {
-          text: 'Add to bookmarks',
-          onClick: () => {
-            mod.sf.addScheduleBookmark(scheduleCourse);
-          },
+          'divider'
+        );
+      }
+    }
+
+    if (!section.custom || !mod.sf) {
+      sideCardButtons.push({
+        text: mod.sf
+          ? `Show all sections of ${name}`
+          : `Show sections of ${name} in current term`,
+        onClick: (close) => {
+          mod.ff.set(name, scheduleCourse?.course_id);
+          close();
         },
       });
     }
   }
 
+  const termName = section.termId && getTermName(section.termId);
+
   const sideCardData: SideCardData = {
-    type: mod ? 'SECTION INFO' : 'SECTION INFO (SEARCH)',
+    type: section.custom
+      ? 'SECTION INFO (CUSTOM)'
+      : mod
+      ? mod.sf
+        ? 'SECTION INFO'
+        : 'SECTION INFO (SHARE)'
+      : 'SECTION INFO (SEARCH)',
     themeColor: PlanManager.getCourseColor(name),
     title: name,
     subtitle: section.title,
     message: course?.description ?? 'No course description available',
+    toolbar: !section.custom ? (
+      <RatingsTag course={name} alert={alert} openRatings={openRatings} />
+    ) : undefined,
     items: items.reduce<SideCardItemData[]>((filtered, item) => {
       const [icon, value] =
         getDetails(item, section, course, alert, interactions) ?? [];
@@ -307,6 +442,16 @@ export function openInfo(
       return filtered;
     }, []),
     buttons: sideCardButtons,
+    link:
+      !section.custom && section.termId
+        ? `${window.location.origin}?s=${section.termId}-${section.section_id}`
+        : undefined,
+    tag: termName
+      ? {
+          text: termName.toUpperCase(),
+          color: Utility.getTermColor(termName),
+        }
+      : undefined,
   };
 
   sideCard(sideCardData);

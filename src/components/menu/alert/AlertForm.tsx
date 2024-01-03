@@ -1,4 +1,5 @@
 import {
+  AlertFormFieldColorSelect,
   AlertFormFieldMultiSelect,
   AlertFormFieldSingleSelect,
   AlertFormFieldText,
@@ -7,6 +8,8 @@ import {
   AlertFormSection,
   formFieldIs,
 } from '../../../types/AlertTypes';
+import { Color } from '../../../types/BaseTypes';
+import ColorSelectInput from '../../generic/ColorSelectInput';
 import MultiSelectInput from '../../generic/MultiSelectInput';
 import Section from '../../generic/Section';
 import SingleSelectInput from '../../generic/SingleSelectInput';
@@ -15,21 +18,21 @@ import TimeInput from '../../generic/TimeInput';
 
 export const getAlertForm = (
   values: AlertFormResponse,
-  setValue: (name: string, value: string) => void,
+  setValue: (name: string, value: string | undefined) => void,
   sections: AlertFormSection[]
 ) =>
-  sections.map((section) => (
+  sections.map((section, i) => (
     <Section
       title={section.title}
       description={section.description}
-      fullRow={section.fullRow}
-      key={`alert-form-section-${section.title}`}
+      totalRowItems={section.totalRowItems}
+      key={`alert-form-section-${i}`}
     >
       {section.fields.map((field) => {
         if (formFieldIs<AlertFormFieldText>(field, 'text')) {
           return (
             <TextInput
-              value={values[field.name]}
+              value={values[field.name] || ''}
               setValue={(value) => setValue(field.name, value)}
               placeholder={field.placeholder}
               validator={field.validator}
@@ -43,7 +46,7 @@ export const getAlertForm = (
         if (formFieldIs<AlertFormFieldTime>(field, 'time')) {
           return (
             <TimeInput
-              value={values[field.name]}
+              value={values[field.name] || ''}
               setValue={(value) => setValue(field.name, value)}
               placeholder={field.placeholder}
               required={field.required}
@@ -59,6 +62,7 @@ export const getAlertForm = (
               value={values[field.name]}
               setValue={(value) => setValue(field.name, value)}
               required={field.required}
+              rangeLabels={field.rangeLabels}
               key={`alert-form-field-${field.name}`}
             />
           );
@@ -68,8 +72,21 @@ export const getAlertForm = (
             <MultiSelectInput
               title={field.name}
               options={field.options}
-              value={values[field.name] ? values[field.name].split(',') : []}
+              value={
+                values[field.name] ? values[field.name]?.split(',') || [] : []
+              }
               setValue={(selected) => setValue(field.name, selected.join(','))}
+              required={field.required}
+              key={`alert-form-field-${field.name}`}
+            />
+          );
+        }
+        if (formFieldIs<AlertFormFieldColorSelect>(field, 'color-select')) {
+          return (
+            <ColorSelectInput
+              title={field.name}
+              value={values[field.name] as Color}
+              setValue={(value) => setValue(field.name, value)}
               required={field.required}
               key={`alert-form-field-${field.name}`}
             />

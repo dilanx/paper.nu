@@ -1,26 +1,38 @@
-import { PaperError, PaperExpectedAuthError } from './utility/PaperError';
+import debug from 'debug';
+import localforage from 'localforage';
 import {
-  Document,
   AuthenticationResponseToken,
   ConnectionResponse,
-  UserInformation,
-  GetResponse,
   CreateResponse,
+  DeleteResponse,
+  Document,
   DocumentCache,
   DocumentType,
+  GetResponse,
+  OperationOptions,
+  SharePostResponse,
   UpdateResponse,
-  DeleteResponse,
+  UserInformation,
 } from './types/AccountTypes';
+import { AlertFormResponse } from './types/AlertTypes';
+import {
+  CachedRatings,
+  CourseRating,
+  RateResponse,
+  RatingInfo,
+  SummaryRatingResponse,
+} from './types/RatingTypes';
+import { RATINGS_CACHE_EXPIRE_TIME } from './utility/Constants';
+import { INFO_VERSIONS } from './utility/InfoSets';
+import { PaperError, PaperExpectedAuthError } from './utility/PaperError';
+import Links from './utility/StaticLinks';
 import Utility from './utility/Utility';
-import debug from 'debug';
 const da = debug('account:auth');
 const dh = debug('account:http');
 const dp = debug('account:op');
+const ds = debug('account:storage-cache');
 
-const TOKEN_URL = 'https://api.dilanxd.com/auth/token';
-const SERVER = 'https://api.dilanxd.com';
-
-const cache: DocumentCache = {};
+const memoryCache: DocumentCache = {};
 
 function getTypeId(type: DocumentType) {
   switch (type) {
@@ -46,7 +58,8 @@ async function authLogin(
     localStorage.setItem('t_s', state);
     da('no auth code in query, new access token required, redirecting');
     window.open(
-      'https://api.dilanxd.com/auth?client_id=' +
+      Links.AUTH +
+        '?client_id=' +
         process.env.REACT_APP_PUBLIC_CLIENT_ID +
         '&redirect_uri=' +
         encodeURIComponent(url.toString()) +
@@ -80,7 +93,7 @@ async function obtainAccessToken(
 ): Promise<AuthenticationResponseToken> {
   try {
     dh('POST token');
-    const response = await fetch(TOKEN_URL, {
+    const response = await fetch(Links.TOKEN, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -105,7 +118,7 @@ async function authLogout(): Promise<ConnectionResponse> {
   let url = new URL(window.location.href);
   url.searchParams.set('action', 'logout');
   window.open(
-    `https://api.dilanxd.com/auth/logout?redirect_uri=${encodeURIComponent(
+    `${Links.AUTH}/logout?redirect_uri=${encodeURIComponent(
       url.toString()
     )}&action=logout`,
     '_self'
@@ -116,17 +129,20 @@ async function authLogout(): Promise<ConnectionResponse> {
 async function operation<T>(
   endpoint: string,
   method: string,
-  body?: object,
-  autoAuth = true
+  { body, useAuth = true, autoAuth = true }: OperationOptions = {}
 ): Promise<T | undefined> {
   dh('%s %s (body: %o)', method, endpoint, body);
   try {
-    const response = await fetch(SERVER + endpoint, {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+    if (useAuth) {
+      headers['Authorization'] = `Bearer ${localStorage.getItem('t')}`;
+    }
+
+    const response = await fetch(Links.SERVER + endpoint, {
       method: method,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('t')}`,
-      },
+      headers,
       body: body ? JSON.stringify(body) : undefined,
     });
 
@@ -143,7 +159,7 @@ async function operation<T>(
 
     let res = await response.json();
     if (!response.ok) {
-      throw new PaperError(res.error as string);
+      throw new PaperError(res.error as string, response.status);
     }
 
     return res as T;
@@ -156,8 +172,20 @@ async function operation<T>(
   }
 }
 
+async function updateCache(type: DocumentType, data?: Document) {
+  if (!memoryCache[type])
+    memoryCache[type] = await Account.get(type, true, false);
+  if (data) {
+    memoryCache[type] = memoryCache[type]?.map((doc) => {
+      if (doc.id === data.id) return data;
+      return doc;
+    });
+  }
+
+  return memoryCache[type];
+}
+
 let Account = {
-  SERVER,
   isLoggedIn: () => {
     return !!localStorage.getItem('t');
   },
@@ -175,18 +203,15 @@ let Account = {
   },
   getUser: async () => {
     dp('user: get');
-    if (cache.user) {
+    if (memoryCache.user) {
       dp('user: cache hit');
-      return Promise.resolve(cache.user);
+      return Promise.resolve(memoryCache.user);
     }
     dp('user: cache miss');
-    const res = await operation<UserInformation>(
-      '/user',
-      'GET',
-      undefined,
-      false
-    );
-    if (res) cache.user = res;
+    const res = await operation<UserInformation>('/user', 'GET', {
+      autoAuth: false,
+    });
+    if (res) memoryCache.user = res;
     return res;
   },
   get: async (
@@ -196,18 +221,22 @@ let Account = {
     autoAuth = true
   ) => {
     dp(`${type}: get`);
-    if (cache[type] && !reload) {
+    if (memoryCache[type] && !reload) {
       dp(`${type}: cache hit`);
-      return cache[type];
+      return memoryCache[type];
     }
+
+    if (reload) {
+      dp(`${type}: ignoring cache and reloading`);
+    }
+
     dp(`${type}: cache miss`);
     const res = await operation<GetResponse>(
       `/paper/documents?type=${getTypeId(type)}`,
       'GET',
-      undefined,
-      autoAuth
+      { autoAuth }
     );
-    if (updateCache && res) cache[type] = res.documents;
+    if (updateCache && res) memoryCache[type] = res.documents;
     return res?.documents;
   },
   create: async (
@@ -217,34 +246,30 @@ let Account = {
   ) => {
     dp(`${type}: ${body ? 'duplicate' : 'create'}`);
     const res = await operation<CreateResponse>('/paper/documents', 'POST', {
-      type: getTypeId(type),
-      name,
-      ...(body || {}),
+      body: {
+        type: getTypeId(type),
+        name,
+        ...(body || {}),
+      },
     });
 
-    if (!cache[type]) cache[type] = await Account.get(type, true, false);
+    if (!memoryCache[type])
+      memoryCache[type] = await Account.get(type, true, false);
     if (res) {
-      cache[type]?.push(res.document);
+      memoryCache[type]?.push(res.document);
     }
 
-    return cache[type];
+    return memoryCache[type];
   },
   update: async (type: DocumentType, id: string, body: Partial<Document>) => {
     dp(`${type}: update`);
     const res = await operation<UpdateResponse>(
       `/paper/documents/${id}`,
       'PATCH',
-      body
+      { body: { ...body, type: type === 'plans' ? 1 : 2 } }
     );
-    if (!cache[type]) cache[type] = await Account.get(type, true, false);
-    if (res) {
-      cache[type] = cache[type]?.map((doc) => {
-        if (doc.id === id) return res.document;
-        return doc;
-      });
-    }
 
-    return cache[type];
+    return await updateCache(type, res?.document);
   },
   delete: async (type: DocumentType, id: string) => {
     dp(`${type}: delete`);
@@ -252,16 +277,22 @@ let Account = {
       `/paper/documents/${id}`,
       'DELETE'
     );
-    if (!cache[type]) cache[type] = await Account.get(type, true, false);
+    if (!memoryCache[type])
+      memoryCache[type] = await Account.get(type, true, false);
     if (res) {
-      cache[type] = cache[type]?.filter((doc) => doc.id !== id);
+      memoryCache[type] = memoryCache[type]?.filter((doc) => doc.id !== id);
     }
 
-    return cache[type];
+    return memoryCache[type];
+  },
+  feedback: async (data: AlertFormResponse) => {
+    dp(`feedback`);
+    const versions = await Utility.initializeInfoSet(INFO_VERSIONS);
+    await operation(`/paper/feedback`, 'POST', { body: { ...data, versions } });
   },
   getPlanName: (planId: string) => {
     if (planId === 'None') return 'None';
-    const plan = cache.plans?.find((plan) => plan.id === planId);
+    const plan = memoryCache.plans?.find((plan) => plan.id === planId);
     if (!plan) {
       return '-';
     }
@@ -269,13 +300,122 @@ let Account = {
   },
   getScheduleName: (scheduleId: string) => {
     if (scheduleId === 'None') return 'None';
-    const schedule = cache.schedules?.find(
+    const schedule = memoryCache.schedules?.find(
       (schedule) => schedule.id === scheduleId
     );
     if (!schedule) {
       return '-';
     }
     return schedule.name;
+  },
+  sharePersistent: async (type: DocumentType, id: string) => {
+    dp(`${type}: share persistent`);
+    const response = await operation<SharePostResponse>(
+      `/paper/share/${id}`,
+      'POST'
+    );
+    await updateCache(type, response?.document);
+    return response;
+  },
+  revokePersistent: async (type: DocumentType, id: string) => {
+    dp(`${type}: revoke persistent`);
+    const response = await operation<SharePostResponse>(
+      `/paper/share/${id}`,
+      'DELETE'
+    );
+    await updateCache(type, response?.document);
+    return response;
+  },
+  getPlan: (planId: string) => {
+    if (!planId || planId === 'None') return undefined;
+    return memoryCache.plans?.find((plan) => plan.id === planId);
+  },
+  getSchedule: (scheduleId: string) => {
+    if (!scheduleId || scheduleId === 'None') return undefined;
+    return memoryCache.schedules?.find(
+      (schedule) => schedule.id === scheduleId
+    );
+  },
+  getBasicRating: async (course: string) => {
+    dp(`rating: get basic for %s`, course);
+
+    const cacheKey = `ratings.${course.replace(' ', '_')}.overview`;
+
+    const cached = await localforage.getItem<CachedRatings>(cacheKey);
+
+    if (cached?.summary) {
+      if (cached.timestamp + RATINGS_CACHE_EXPIRE_TIME > Date.now()) {
+        ds(`rating: cache hit for %s`, course);
+        return cached.summary;
+      }
+      ds(`rating: cache expired for %s`, course);
+    } else {
+      ds(`rating: cache miss for %s`, course);
+    }
+
+    const response = await operation<SummaryRatingResponse>(
+      `/paper/ratings/basic?course=${encodeURIComponent(course)}`,
+      'GET',
+      { useAuth: false }
+    );
+
+    if (response?.overall) {
+      ds(`rating: cache set for %s`, course);
+      await localforage.setItem<CachedRatings>(cacheKey, {
+        timestamp: Date.now(),
+        summary: response.overall,
+      });
+    }
+
+    return response?.overall;
+  },
+  getDetailedRatings: async (course: string, reload = false) => {
+    dp(`rating: get detailed for %s`, course);
+
+    const cacheKey = `ratings.${course.replace(' ', '_')}.detailed`;
+
+    const cached = await localforage.getItem<CachedRatings>(cacheKey);
+
+    if (cached?.data && !reload) {
+      if (cached.timestamp + RATINGS_CACHE_EXPIRE_TIME > Date.now()) {
+        ds(`rating: cache hit for %s`, course);
+        return cached.data;
+      }
+      ds(`rating: cache expired for %s`, course);
+    } else {
+      if (reload) {
+        ds(`rating: ignoring cache and reloading for %s`, course);
+      }
+
+      ds(`rating: cache miss for %s`, course);
+    }
+
+    const response = await operation<RatingInfo>(
+      `/paper/ratings/detailed?course=${encodeURIComponent(course)}`,
+      'GET',
+      { autoAuth: false }
+    );
+
+    if (response) {
+      ds(`rating: cache set for %s`, course);
+      await localforage.setItem<CachedRatings>(cacheKey, {
+        timestamp: Date.now(),
+        data: response,
+      });
+    }
+
+    return response;
+  },
+  rate: async (course: string, ratings: CourseRating) => {
+    dp(`rating: rate %s`, course);
+    const response = await operation<RateResponse>(`/paper/ratings`, 'POST', {
+      body: {
+        course,
+        ratings,
+      },
+    });
+
+    return response;
   },
 };
 

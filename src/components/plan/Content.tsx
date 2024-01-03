@@ -2,7 +2,11 @@ import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import PlanManager from '../../PlanManager';
 import { Alert } from '../../types/AlertTypes';
-import { UserOptions } from '../../types/BaseTypes';
+import {
+  ContextMenu,
+  ContextMenuData,
+  UserOptions,
+} from '../../types/BaseTypes';
 import {
   PlanData,
   PlanModificationFunctions,
@@ -13,6 +17,7 @@ import Year from './Year';
 import { motion } from 'framer-motion';
 import { SideCard } from '../../types/SideCardTypes';
 import PlanTaskbarButton from './PlanTaskbarButton';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface ContentProps {
   data: PlanData;
@@ -20,6 +25,9 @@ interface ContentProps {
   f2: PlanSpecialFunctions;
   alert: Alert;
   sideCard: SideCard;
+  openRatings: OpenRatingsFn;
+  contextMenuData?: ContextMenuData;
+  contextMenu: ContextMenu;
   switches: UserOptions;
 }
 class Content extends React.Component<ContentProps> {
@@ -36,6 +44,10 @@ class Content extends React.Component<ContentProps> {
             f={this.props.f}
             f2={this.props.f2}
             sideCard={this.props.sideCard}
+            alert={this.props.alert}
+            openRatings={this.props.openRatings}
+            contextMenuData={this.props.contextMenuData}
+            contextMenu={this.props.contextMenu}
             switches={this.props.switches}
             title={Utility.convertYear(index)}
             key={index}
@@ -73,7 +85,7 @@ class Content extends React.Component<ContentProps> {
                   this.props.alert({
                     title: 'Add a year?',
                     message:
-                      'This will add another year to your plan. You can remove it by removing all classes from that year and refreshing the page.',
+                      'This will add another year to your plan. You can remove it by opening the year\'s menu and clicking "Delete year".',
                     confirmButton: 'Add year',
                     cancelButton: 'Close',
                     color: 'cyan',

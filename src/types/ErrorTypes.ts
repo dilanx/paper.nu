@@ -16,4 +16,7 @@ export type PlanErrorLocation =
   | 'account_activate_schedule'
   | 'account_update_schedule'
   | 'notes_get_documents'
-  | 'notes_update_document';
+  | 'notes_update_document'
+  | 'ratings_get_basic'
+  | 'ratings_get_detailed'
+  | 'ratings_submit';

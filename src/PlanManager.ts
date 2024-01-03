@@ -1,175 +1,189 @@
 import debug from 'debug';
-import { getPlanData } from './DataManager';
-import { UserOptions } from './types/BaseTypes';
-import { Course, PlanData, RawCourseData } from './types/PlanTypes';
+import localforage from 'localforage';
+import { getPlanData, getSubjectData, getTermName } from './DataManager';
 import {
-  FilterOptions,
-  SearchError,
-  SearchResults,
-  SearchShortcut,
-} from './types/SearchTypes';
-import { DistroMap, Mode } from './utility/Constants';
+  SaveState,
+  SubjectData,
+  UniversityQuarter,
+  UniversitySchools,
+  UserOptions,
+} from './types/BaseTypes';
+import {
+  Course,
+  PlanData,
+  RawCourseData,
+  SerializedPlanCourse,
+  SerializedPlanData,
+} from './types/PlanTypes';
+import { FilterOptions } from './types/SearchTypes';
+import { DisciplineMap, DistroMap } from './utility/Constants';
 import Utility from './utility/Utility';
 const ds = debug('plan-manager:ser');
 
+let subjectData: SubjectData | undefined = undefined;
+let schoolData: UniversitySchools | undefined = undefined;
 let courseData: RawCourseData | undefined = undefined;
-const SEARCH_RESULT_LIMIT = 100;
 
 async function loadCourseData() {
-  if (!courseData) {
+  if (!subjectData || !schoolData || !courseData) {
+    const subjectsAndSchools = await getSubjectData();
+    subjectData = subjectsAndSchools.subjects;
+    schoolData = subjectsAndSchools.schools;
     courseData = await getPlanData();
   }
 }
 
+function basePlanArrays<T = Course>(data: any[][][] | undefined): T[][][] {
+  if (!data) {
+    return [
+      [[], [], []],
+      [[], [], []],
+      [[], [], []],
+    ];
+  }
+
+  while (data.length < 3) {
+    data.push([[], [], []]);
+  }
+
+  for (let y = 0; y < data.length; y++) {
+    while (data[y].length < 3) {
+      data[y].push([]);
+    }
+  }
+
+  return data;
+}
+
 async function loadData(
-  params: URLSearchParams
+  serializedData?: SerializedPlanData
 ): Promise<PlanData | 'malformed' | 'empty'> {
   await loadCourseData();
 
-  if (!courseData) {
+  if (!subjectData || !courseData) {
     return 'malformed';
   }
 
-  let allCourseData: Course[][][] = [
-    [[], [], []],
-    [[], [], []],
-    [[], [], []],
-    [[], [], []],
-  ];
-
-  let bookmarksNoCredit = new Set<Course>();
-  let bookmarksForCredit = new Set<Course>();
-
   let loadedSomething = false;
+  let malformed = false;
 
   try {
-    for (const [key, value] of params) {
-      if (key.startsWith('y')) {
-        loadedSomething = true;
+    const data = basePlanArrays(
+      serializedData?.courses?.map((year, y) =>
+        year.map((quarter, q) =>
+          quarter
+            .map<Course | null>((c) => {
+              loadedSomething = true;
+              if (typeof c === 'string') {
+                const course = PlanManager.getCourse(c);
+                if (course) {
+                  ds('course loaded: %s (y%dq%d)', c, y, q);
+                  return course;
+                } else {
+                  ds('course not found: %s (y%dq%d)', c, y, q);
+                  malformed = true;
+                  return null;
+                }
+              } else {
+                ds('custom course loaded: %s (y%dq%d)', c.title, y, q);
+                return {
+                  id: c.title,
+                  name: c.subtitle || '',
+                  units: c.units || '',
+                  repeatable: true,
+                  description: 'Custom course',
+                  color: c.color,
+                  custom: true,
+                };
+              }
+            })
+            .sort((a, b) => (a?.id || '').localeCompare(b?.id || ''))
+        )
+      )
+    );
 
-        let year = parseInt(key.substring(1).split('q')[0]);
-        let quarter = parseInt(key.split('q')[1]);
-        let classes = value.split(',');
-        let classData: Course[] = [];
+    if (malformed) return 'malformed';
 
-        for (let id of classes) {
-          let sp = id.split('_');
-          let subjId = sp[0];
-          let num = sp[1];
-          let subj = courseData.major_ids[subjId];
-          let courseId = subj + ' ' + num;
-
-          let course = PlanManager.getCourse(courseId);
-          if (!course) return 'malformed';
-          classData.push(course);
-          ds('course loaded: %s (y%dq%d)', courseId, year, quarter);
-        }
-
-        classData.sort((a, b) => {
-          return a.id.localeCompare(b.id);
-        });
-
-        while (allCourseData.length < year + 1) {
-          allCourseData.push([[], [], []]);
-        }
-
-        while (allCourseData[year].length < quarter + 1) {
-          allCourseData[year].push([]);
-        }
-
-        allCourseData[year][quarter] = classData;
-      }
-
-      if (key.startsWith('f')) {
-        loadedSomething = true;
-
-        let classesLists = value.split(';');
-        for (let i = 0; i < classesLists.length; i++) {
-          let classes = classesLists[i].split(',');
-          for (let id of classes) {
-            if (id === '') continue;
-            let sp = id.split('_');
-            let subjId = sp[0];
-            let num = sp[1];
-            let subj = courseData.major_ids[subjId];
-            let courseId = subj + ' ' + num;
-
-            let course = PlanManager.getCourse(courseId);
-            if (!course) return 'malformed';
-            if (i === 0) {
-              bookmarksNoCredit.add(course);
-              ds('plan bookmark added: %s (credit = false)', courseId);
-            } else {
-              bookmarksForCredit.add(course);
-              ds('plan bookmark added: %s (credit = true)', courseId);
-            }
+    const deserializeBookmarks = (
+      type: 'for credit' | 'no credit',
+      bookmarks?: string[]
+    ) =>
+      new Set(
+        bookmarks?.map((c) => {
+          loadedSomething = true;
+          const course = PlanManager.getCourse(c);
+          if (course) {
+            ds('plan bookmark %s loaded: %s', type, c);
+            return course;
+          } else {
+            ds('plan bookmark %s not found: %s', type, c);
+            malformed = true;
+            return null;
           }
-        }
-      }
+        }) || []
+      );
+
+    const bookmarksNoCredit = deserializeBookmarks(
+      'no credit',
+      serializedData?.bookmarks?.noCredit
+    );
+    const bookmarksForCredit = deserializeBookmarks(
+      'for credit',
+      serializedData?.bookmarks?.forCredit
+    );
+
+    if (malformed) {
+      return 'malformed';
     }
+
+    if (!loadedSomething) {
+      return 'empty';
+    }
+
+    return {
+      courses: data,
+      bookmarks: {
+        noCredit: bookmarksNoCredit as Set<Course>,
+        forCredit: bookmarksForCredit as Set<Course>,
+      },
+    };
   } catch (e) {
     return 'malformed';
   }
-
-  if (!loadedSomething) return 'empty';
-
-  return {
-    courses: allCourseData,
-    bookmarks: {
-      noCredit: bookmarksNoCredit,
-      forCredit: bookmarksForCredit,
-    },
-  };
 }
 
-function saveData({ courses, bookmarks }: PlanData) {
-  let params = new URLSearchParams();
-
+function saveData({ courses, bookmarks }: PlanData): SerializedPlanData {
   if (!courseData) {
     ds('course data is not loaded');
-    return params;
+    return {};
   }
 
-  for (let y = 0; y < courses.length; y++) {
-    for (let q = 0; q < courses[y].length; q++) {
-      let str = '';
-      for (let course of courses[y][q]) {
-        let sp = course.id.split(' ');
-        let subj = sp[0];
-        let num = sp[1];
-        let subjId = courseData?.majors[subj].id;
-        str += `${subjId}_${num},`;
-      }
-      if (str.length > 0) {
-        params.set(`y${y}q${q}`, str.substring(0, str.length - 1));
-      }
-    }
-  }
+  const serializedData = courses.map((year) =>
+    year.map((quarter) =>
+      quarter.map<SerializedPlanCourse>((c) => {
+        if (c.custom) {
+          return {
+            title: c.id,
+            subtitle: c.name,
+            units: c.units,
+            color: c.color,
+          };
+        } else {
+          return c.id;
+        }
+      })
+    )
+  );
 
-  let bookmarksNoCredit = Array.from(bookmarks.noCredit);
-  let bookmarksForCredit = Array.from(bookmarks.forCredit);
+  const serializedBookmarks = {
+    noCredit: Array.from(bookmarks.noCredit).map((c) => c.id),
+    forCredit: Array.from(bookmarks.forCredit).map((c) => c.id),
+  };
 
-  if (bookmarksNoCredit.length > 0 || bookmarksForCredit.length > 0) {
-    let conv = (course: Course) => {
-      let courseId = course.id;
-      let sp = courseId.split(' ');
-      let subj = sp[0];
-      let num = sp[1];
-      let subjId = courseData?.majors[subj].id;
-      return subjId + '_' + num;
-    };
-
-    params.set(
-      'f',
-      bookmarksNoCredit.map(conv).join(',') +
-        ';' +
-        bookmarksForCredit.map(conv).join(',')
-    );
-  }
-
-  ds('course data saved');
-
-  return params;
+  return {
+    courses: serializedData,
+    bookmarks: serializedBookmarks,
+  };
 }
 
 function countCourseUnitsInHundreds(courseList: Course[] | Set<Course>) {
@@ -187,123 +201,7 @@ const PlanManager = {
   isPlanDataLoaded: () => !!courseData,
   loadPlanData: async () => await loadCourseData(),
 
-  prepareQuery: (query: string) => {
-    query = query.toLowerCase().replace(/-|_/g, ' ');
-    let terms = [query];
-
-    let firstWord = query.split(' ')[0];
-    let shortcut: SearchShortcut | undefined;
-    if (courseData?.shortcuts[firstWord]) {
-      let shortcuts = courseData.shortcuts[firstWord];
-      let remainder = query.substring(firstWord.length + 1);
-      terms = shortcuts.map(
-        (shortcut) =>
-          shortcut.toLowerCase().replace(/-|_/g, ' ') + ' ' + remainder
-      );
-      shortcut = {
-        replacing: firstWord.toUpperCase(),
-        with: shortcuts.join(', '),
-      };
-    }
-
-    // TODO remove this eventually lol
-    if (query === 'elena') {
-      terms = ['comp sci 446'];
-    }
-
-    return {
-      terms,
-      shortcut,
-    };
-  },
-
-  search: (
-    query: string,
-    filter?: FilterOptions
-  ): SearchResults<Course> | SearchError => {
-    let { terms, shortcut } = PlanManager.prepareQuery(query);
-
-    const filterExists =
-      filter &&
-      Object.keys(filter).filter(
-        (f) =>
-          f !== 'include' &&
-          Utility.filterBelongsTo(f as keyof FilterOptions, Mode.PLAN)
-      ).length > 0;
-
-    if (!courseData) {
-      if (query.length === 0) {
-        return 'no_query';
-      }
-
-      return 'not_loaded';
-    }
-
-    if (!filterExists) {
-      for (let term of terms) {
-        if (term.length === 0) {
-          return 'no_query';
-        }
-
-        if (term.length < 3) {
-          return 'too_short';
-        }
-      }
-    }
-
-    let courseIdResults: Course[] = [];
-    let courseNameResults: Course[] = [];
-
-    const checkCourse = (course: Course) => {
-      if (filterExists && !PlanManager.courseMatchesFilter(course, filter)) {
-        return;
-      }
-
-      for (let term of terms) {
-        if (course.id.toLowerCase().replace(/-|_/g, ' ').includes(term)) {
-          courseIdResults.push(course);
-        } else if (
-          course.name.toLowerCase().replace(/-|_/g, ' ').includes(term)
-        ) {
-          courseNameResults.push(course);
-        }
-      }
-    };
-
-    courseData.courses.forEach(checkCourse);
-
-    if (filter?.include?.includes('Legacy Courses')) {
-      courseData.legacy.forEach(checkCourse);
-    }
-
-    let total = courseIdResults.length + courseNameResults.length;
-    if (total === 0) return 'no_results';
-
-    let limitExceeded = false;
-    if (total > SEARCH_RESULT_LIMIT) {
-      limitExceeded = true;
-      if (courseIdResults.length > SEARCH_RESULT_LIMIT) {
-        courseIdResults = courseIdResults.slice(0, SEARCH_RESULT_LIMIT);
-        courseNameResults = [];
-      } else {
-        courseNameResults = courseNameResults.slice(
-          0,
-          SEARCH_RESULT_LIMIT - courseIdResults.length
-        );
-      }
-    }
-
-    courseIdResults.sort((a, b) => a.id.localeCompare(b.id));
-    courseNameResults.sort((a, b) => a.name.localeCompare(b.name));
-
-    let filtered = courseIdResults.concat(courseNameResults);
-
-    return {
-      results: filtered,
-      shortcut: shortcut,
-      limitExceeded: limitExceeded ? total - SEARCH_RESULT_LIMIT : undefined,
-    };
-  },
+  getPlanCourseData: () => courseData,
 
   courseMatchesFilter: (course: Course, filter?: FilterOptions): boolean => {
     if (!filter) return true;
@@ -311,8 +209,17 @@ const PlanManager = {
       return false;
     if (filter.distros) {
       if (
-        !filter.distros.some((d) =>
-          course.distros?.includes(DistroMap[d].toString())
+        !filter.distros.some(
+          (d) => course.distros?.includes(DistroMap[d].toString())
+        )
+      ) {
+        return false;
+      }
+    }
+    if (filter.disciplines) {
+      if (
+        !filter.disciplines.some(
+          (d) => course.disciplines?.includes(DisciplineMap[d].toString())
         )
       ) {
         return false;
@@ -385,51 +292,103 @@ const PlanManager = {
   },
 
   getCourseColor: (courseId: string) => {
-    if (!courseData) return 'gray';
+    if (!subjectData) return 'gray';
     let subj = courseId.split(' ')[0];
-    return courseData.majors[subj]?.color ?? 'gray';
+    return subjectData[subj]?.color ?? 'gray';
   },
 
   isValidSubject: (subject: string) => {
-    if (!courseData) return false;
-    return !!courseData.majors[subject];
+    if (!subjectData) return false;
+    return !!subjectData[subject];
   },
 
-  loadFromURL: async (params: URLSearchParams) => {
-    return await loadData(params);
+  getAllSchoolSymbols: () => {
+    return Object.keys(schoolData ?? {}).sort();
+  },
+
+  getSchoolName: (symbol: string) => {
+    return schoolData?.[symbol]?.name ?? 'Unknown';
+  },
+
+  isSchoolSubject: (symbol: string) => {
+    for (const s in schoolData ?? {}) {
+      if (
+        schoolData?.[s].subjects.some((subject) => subject.symbol === symbol)
+      ) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  getSchoolSubjects: (symbol: string) => {
+    return schoolData?.[symbol]?.subjects ?? [];
+  },
+
+  getSchoolOfSubject: (subject: string) => {
+    for (const s in schoolData ?? {}) {
+      if (schoolData?.[s].subjects.some((s) => s.symbol === subject)) {
+        return s;
+      }
+    }
+  },
+
+  getOfferings: (course: Course, sortByOldest = false) => {
+    return (
+      course.terms
+        ?.sort((a, b) =>
+          sortByOldest ? a.localeCompare(b) : b.localeCompare(a)
+        )
+        .map((term) => getTermName(term) || 'Unknown Term') ?? []
+    );
+  },
+
+  getOfferingsOrganized: (course: Course) => {
+    const offerings = PlanManager.getOfferings(course, true);
+    const organized: { [acadYear: string]: string[] } = {};
+    for (const offering of offerings) {
+      const [year, quarter] = offering.split(' ');
+      const acadYear = Utility.getAcadYear(
+        parseInt(year),
+        quarter as UniversityQuarter
+      );
+      if (!organized[acadYear]) organized[acadYear] = [];
+      organized[acadYear].push(offering);
+    }
+
+    return organized;
+  },
+
+  load: async (serializedData?: SerializedPlanData) => {
+    return await loadData(serializedData);
   },
 
   loadFromStorage: async () => {
-    let dataStr = localStorage.getItem('data');
-    let params = new URLSearchParams(dataStr || undefined);
-    return await loadData(params);
+    const serializedData =
+      await localforage.getItem<SerializedPlanData>('data_plan');
+    return await loadData(serializedData || {});
   },
 
-  loadFromString: async (dataStr?: string) => {
-    return await loadData(new URLSearchParams(dataStr || 'undefined'));
+  serialize: (data: PlanData) => {
+    const sData = saveData(data);
+    ds('serialized plan data');
+    return sData;
   },
 
-  getDataString: (data: PlanData) => {
-    return saveData(data).toString();
-  },
+  save: (data: PlanData, switches: UserOptions): SaveState => {
+    const serializedData = saveData(data);
+    ds('serialized plan data and preparing to save');
+    localforage
+      .setItem('data_plan', serializedData)
+      .then(() => {
+        ds('plan data saved locally');
+      })
+      .catch(() => {
+        ds('plan data failed to save locally');
+      });
 
-  save: (
-    data: PlanData,
-    switches: UserOptions,
-    compareAgainstDataString?: string
-  ) => {
-    let params = saveData(data);
-    let paramsStr = params.toString();
-
-    localStorage.setItem('data', paramsStr);
-
-    let activePlanId = switches?.get.active_plan_id as string | undefined;
-
-    if (activePlanId && activePlanId !== 'None') {
-      return paramsStr !== compareAgainstDataString;
-    }
-
-    return false;
+    const activeId = switches.get.active_plan_id;
+    return !!activeId && activeId !== 'None' ? 'start' : 'idle';
   },
 };
 

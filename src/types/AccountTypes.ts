@@ -1,3 +1,6 @@
+import { SerializedPlanData } from './PlanTypes';
+import { SerializedScheduleData } from './ScheduleTypes';
+
 /**
  * Invariant for now:
  * - If `success` is true, `data` can be anything
@@ -11,6 +14,12 @@ export interface ConnectionResponse {
 export interface AuthenticationResponseToken {
   access_token?: string;
   error?: string;
+}
+
+export interface OperationOptions {
+  body?: object;
+  useAuth?: boolean;
+  autoAuth?: boolean;
 }
 
 export interface GetResponse {
@@ -33,13 +42,21 @@ export interface DeleteResponse {
   id: string;
 }
 
+export interface SharePostResponse {
+  success: boolean;
+  reuse: boolean;
+  shortCode: string;
+  document?: Document;
+}
+
 export interface Document {
   id: string;
   name: string;
   createdAt: number;
-  content: string;
+  data?: SerializedPlanData | SerializedScheduleData;
   lastUpdated?: number;
   notes?: string;
+  public?: boolean;
 }
 
 export interface DocumentCache {
@@ -63,4 +80,23 @@ export interface UserInformation {
   lastName: string;
   email: string;
   color: string;
+}
+
+export interface RecentShareOwner {
+  firstName?: string;
+  lastName?: string;
+  color?: string;
+}
+
+export interface RecentShareItem {
+  shortCode: string;
+  type: 1 | 2;
+  name: string;
+  owner?: RecentShareOwner;
+  termId?: string;
+}
+
+export interface RecentShareModificationFunctions {
+  open: (shortCode: string) => void;
+  remove: (shortCode: string) => void;
 }

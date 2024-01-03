@@ -1,15 +1,25 @@
 import PlanManager from '../PlanManager';
-import ScheduleManager from '../ScheduleManager';
 import {
+  AlertFormFieldColorSelect,
   AlertFormFieldMultiSelect,
+  AlertFormFieldSingleSelect,
   AlertFormFieldText,
   AlertFormFieldTime,
+  AlertFormResponse,
   AlertFormSection,
 } from '../types/AlertTypes';
-import { TextValidator } from '../types/BaseTypes';
+import { Color, TextValidator } from '../types/BaseTypes';
 import { Time } from '../types/ScheduleTypes';
 import { FilterOptions } from '../types/SearchTypes';
-import { Components, Days, Distros } from './Constants';
+import {
+  Components,
+  Days,
+  Disciplines,
+  Distros,
+  GRADE_LEVELS,
+  OVERALL_LEVELS,
+  TIME_COMMITMENT_LEVELS,
+} from './Constants';
 import Utility from './Utility';
 
 export function scheduleSearchFilterForm(
@@ -51,12 +61,17 @@ export function scheduleSearchFilterForm(
   return [
     {
       title: 'SUBJECT',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [
         text('subject', 'ex. COMP_SCI', filter.subject, (value) =>
-          ScheduleManager.isSchoolSubject(value.toUpperCase())
+          PlanManager.isSchoolSubject(value.toUpperCase())
         ),
       ],
+    },
+    {
+      title: 'MEETING DAYS',
+      totalRowItems: 1,
+      fields: [sel('meetingDays', Days, filter.meetingDays)],
     },
     {
       title: 'START AFTER',
@@ -75,28 +90,38 @@ export function scheduleSearchFilterForm(
       fields: [time('endBefore', 'ex. 4:00 pm', filter.endBefore)],
     },
     {
-      title: 'MEETING DAYS',
-      fullRow: true,
-      fields: [sel('meetingDays', Days, filter.meetingDays)],
+      totalRowItems: 1,
+      fields: [
+        sel(
+          'allAvailability',
+          ['Filter by all available times on schedule'],
+          filter.allAvailability
+        ),
+      ],
+    },
+    {
+      title: 'FOUNDATIONAL DISCIPLINES',
+      totalRowItems: 1,
+      fields: [sel('disciplines', Disciplines, filter.disciplines)],
     },
     {
       title: 'DISTRIBUTION AREAS',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [sel('distros', Distros, filter.distros)],
     },
     {
       title: 'COMPONENTS',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [sel('components', Components, filter.components)],
     },
     {
       title: 'INSTRUCTOR',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [text('instructor', 'ex. John Doe', filter.instructor)],
     },
     {
       title: 'LOCATION',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [
         text('location', 'ex. Technological Institute', filter.location),
       ],
@@ -133,7 +158,7 @@ export function planSearchFilterForm(
   return [
     {
       title: 'SUBJECT',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [
         text('subject', 'ex. COMP_SCI', filter.subject, (value) =>
           PlanManager.isValidSubject(value.toUpperCase())
@@ -141,12 +166,18 @@ export function planSearchFilterForm(
       ],
     },
     {
+      title: 'FOUNDATIONAL DISCIPLINES',
+      totalRowItems: 1,
+      fields: [sel('disciplines', Disciplines, filter.disciplines)],
+    },
+    {
       title: 'DISTRIBUTION AREAS',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [sel('distros', Distros, filter.distros)],
     },
     {
       title: 'UNITS AT LEAST',
+      totalRowItems: 2,
       fields: [
         text('unitGeq', '', filter.unitGeq?.toString(), (v) => {
           const value = parseFloat(v);
@@ -156,6 +187,7 @@ export function planSearchFilterForm(
     },
     {
       title: 'UNITS AT MOST',
+      totalRowItems: 2,
       fields: [
         text('unitLeq', '', filter.unitLeq?.toString(), (v) => {
           const value = parseFloat(v);
@@ -165,64 +197,234 @@ export function planSearchFilterForm(
     },
     {
       title: 'INCLUDE',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [sel('include', ['Legacy Courses'], filter.include)],
     },
   ];
 }
 
-export function customSectionForm(): AlertFormSection[] {
-  const text = (name: string): AlertFormFieldText => ({
+export function customCourseForm(
+  defaults: AlertFormResponse = {}
+): AlertFormSection[] {
+  const text = (name: string, required = false): AlertFormFieldText => ({
     name,
     type: 'text',
     maxLength: 100,
+    required,
+    defaultValue: defaults[name],
+  });
+  const units: AlertFormFieldText = {
+    name: 'units',
+    type: 'text',
+    maxLength: 10,
+    required: false,
+    defaultValue: defaults['units'],
+    validator: (value) => {
+      const val = parseFloat(value);
+      return !isNaN(val) && val >= 0 && val <= 99;
+    },
+  };
+  const col: AlertFormFieldColorSelect = {
+    name: 'color',
+    type: 'color-select',
+    defaultValue: (defaults['color'] as Color) || 'gray',
+  };
+
+  return [
+    {
+      title: 'TITLE',
+      totalRowItems: 1,
+      fields: [text('title', true)],
+    },
+    {
+      title: 'SUBTITLE',
+      totalRowItems: 1,
+      fields: [text('subtitle')],
+    },
+    {
+      title: 'UNITS',
+      totalRowItems: 1,
+      fields: [units],
+    },
+    {
+      title: 'COLOR',
+      totalRowItems: 1,
+      fields: [col],
+    },
+  ];
+}
+
+export function customSectionForm(
+  defaults: AlertFormResponse = {}
+): AlertFormSection[] {
+  const text = (name: string, required = false): AlertFormFieldText => ({
+    name,
+    type: 'text',
+    maxLength: 100,
+    required,
+    defaultValue: defaults[name],
   });
   const time = (name: string): AlertFormFieldTime => ({
     name,
     type: 'time',
-    placeholder: 'hh:mm am/pm',
     required: true,
+    defaultValue: defaults[name],
   });
   const sel: AlertFormFieldMultiSelect = {
     name: 'meeting_days',
     type: 'multi-select',
     options: ['Mo', 'Tu', 'We', 'Th', 'Fr'],
     required: true,
+    defaultValue: defaults['meeting_days'],
+  };
+  const col: AlertFormFieldColorSelect = {
+    name: 'color',
+    type: 'color-select',
+    defaultValue: (defaults['color'] as Color) || 'gray',
   };
 
   return [
     {
-      title: 'SUBJECT AND NUMBER',
-      fullRow: true,
-      fields: [text('subject')],
+      title: 'TITLE',
+      totalRowItems: 1,
+      fields: [text('title', true)],
     },
     {
-      title: 'TITLE',
-      fullRow: true,
-      fields: [text('title')],
+      title: 'SUBTITLE',
+      totalRowItems: 1,
+      fields: [text('subtitle')],
     },
     {
       title: 'INSTRUCTOR',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [text('instructor')],
     },
     {
       title: 'LOCATION',
-      fullRow: true,
+      totalRowItems: 1,
       fields: [text('location')],
     },
     {
+      title: 'MEETING DAYS',
+      totalRowItems: 1,
+      fields: [sel],
+    },
+    {
       title: 'START',
+      totalRowItems: 2,
       fields: [time('start')],
     },
     {
       title: 'END',
+      totalRowItems: 2,
       fields: [time('end')],
     },
     {
-      title: 'MEETING DAYS',
-      fullRow: true,
-      fields: [sel],
+      title: 'COLOR',
+      totalRowItems: 1,
+      fields: [col],
+    },
+  ];
+}
+
+export function ratingsForm(): AlertFormSection[] {
+  const overall: AlertFormFieldSingleSelect = {
+    name: 'overall',
+    type: 'single-select',
+    options: OVERALL_LEVELS,
+    required: false,
+  };
+  const timeCommitment: AlertFormFieldSingleSelect = {
+    name: 'commitment',
+    type: 'single-select',
+    options: TIME_COMMITMENT_LEVELS,
+    required: false,
+  };
+  const grade: AlertFormFieldSingleSelect = {
+    name: 'grade',
+    type: 'single-select',
+    options: GRADE_LEVELS,
+    required: false,
+  };
+
+  return [
+    {
+      title: 'OVERALL',
+      description:
+        'How would you rate the course overall, with 1 being the lowest and 5 being the highest?',
+      totalRowItems: 1,
+      fields: [overall],
+    },
+    {
+      title: 'TIME COMMITMENT',
+      description:
+        'Approximately how long, in hours, did you spend per week outside of class for this course?',
+      totalRowItems: 1,
+      fields: [timeCommitment],
+    },
+    {
+      title: 'GRADE',
+      description: 'What grade did you receive in this course?',
+      totalRowItems: 1,
+      fields: [grade],
+    },
+  ];
+}
+
+export function feedbackForm(): AlertFormSection[] {
+  const type: AlertFormFieldSingleSelect = {
+    name: 'type',
+    type: 'single-select',
+    options: ['Bug', 'Feature Request', 'Course Data Error', 'Other'],
+    required: true,
+    defaultValue: 'Bug',
+  };
+  const title: AlertFormFieldText = {
+    name: 'title',
+    type: 'text',
+    maxLength: 70,
+    required: true,
+  };
+  const content: AlertFormFieldText = {
+    name: 'content',
+    type: 'text',
+    maxLength: 1000,
+    paragraph: true,
+    required: true,
+  };
+
+  const readFaq: AlertFormFieldMultiSelect = {
+    name: 'read_faq',
+    type: 'multi-select',
+    options: ['I have read the Paper FAQ'],
+    required: true,
+  };
+
+  return [
+    {
+      title: 'TYPE',
+      totalRowItems: 1,
+      fields: [type],
+    },
+    {
+      title: 'TITLE',
+      description: 'A brief summary of the feedback topic.',
+      totalRowItems: 1,
+      fields: [title],
+    },
+    {
+      title: 'MESSAGE',
+      description:
+        'If applicable, share details like the steps to reproduce the bug.',
+      totalRowItems: 1,
+      fields: [content],
+    },
+    {
+      title: 'BEFORE SUBMITTING...',
+      description:
+        'To prevent duplicate or unnecessary feedback, make sure you read the FAQ linked above.',
+      totalRowItems: 1,
+      fields: [readFaq],
     },
   ];
 }

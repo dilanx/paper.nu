@@ -13,6 +13,7 @@ import {
 import { FilterOptions } from '../../types/SearchTypes';
 import { SideCard } from '../../types/SideCardTypes';
 import SearchScheduleSection from './SearchScheduleSection';
+import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface SearchScheduleClassProps {
   course: ScheduleCourse;
@@ -26,6 +27,7 @@ interface SearchScheduleClassProps {
   filter?: FilterOptions;
   sideCard: SideCard;
   alert: Alert;
+  openRatings: OpenRatingsFn;
 }
 
 const variants = {
@@ -71,18 +73,20 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
       className={`relative rounded-lg border-2 bg-opacity-60 p-2 dark:bg-gray-800
             ${
               props.selected
-                ? `bg-white border-${props.color}-400 -translate-y-2 shadow-lg`
-                : `bg-${props.color}-100 border-${props.color}-300 border-opacity-60 hover:-translate-y-1 hover:shadow-md`
+                ? `bg-white border-${props.color}-400 -translate-y-2 cursor-default shadow-lg`
+                : `bg-${props.color}-100 border-${
+                    props.color
+                  }-300 border-opacity-60 hover:-translate-y-1 hover:shadow-md ${
+                    isDragging ? 'cursor-grabbing' : 'cursor-pointer'
+                  }`
             }
-            group m-4 transition duration-300 ease-in-out ${
-              isDragging ? 'cursor-grab ' : 'cursor-default'
-            }`}
+            group m-4 transition duration-300 ease-in-out`}
       onClick={() => {
         if (props.select) props.select();
       }}
     >
       <p className="text-lg font-bold text-black dark:text-gray-50">
-        {course.subject + ' ' + course.number}
+        {`${course.subject}${course.number ? ` ${course.number}` : ''}`}
       </p>
       <p className="text-sm text-black dark:text-gray-50">{course.title}</p>
 
@@ -109,6 +113,7 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
                 alreadyAdded={section.section_id in props.schedule.schedule}
                 sideCard={props.sideCard}
                 alert={props.alert}
+                openRatings={props.openRatings}
                 key={`search-${section.section_id}`}
               />
             );
@@ -123,7 +128,7 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
 
       {!props.selected && (
         <button
-          className="absolute -top-2 -right-2 z-20 hidden rounded-full bg-gray-200 p-1
+          className="absolute -right-2 -top-2 z-20 hidden rounded-full bg-gray-200 p-1
                         text-xs text-gray-500 opacity-80 transition-all duration-150 hover:bg-indigo-100 hover:text-indigo-400
                         hover:opacity-100 group-hover:block dark:bg-gray-700 dark:text-white dark:hover:text-indigo-400"
           onClick={(e) => {
