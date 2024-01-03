@@ -97,9 +97,9 @@
 
   .text-gradient {
     font-size: 196px;
-    font-weight: 700;
+    font-weight: 900;
     line-height: 1;
-    background: -webkit-linear-gradient(#4ade80, #c084fc);
+    background: -webkit-linear-gradient(#c084fc, #4ade80);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
