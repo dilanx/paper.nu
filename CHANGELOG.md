@@ -2,7 +2,7 @@
 
 ### 3.0.0
 
-_2023-XX-XX_
+_2024-01-02_
 
 - **CUSTOM COURSES AND SECTIONS**
   - Enhance your plan or schedule with custom courses and sections. This allows you to add things to your schedule that aren't in the course catalog.
