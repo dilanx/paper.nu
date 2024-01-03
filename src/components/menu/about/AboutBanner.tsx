@@ -18,7 +18,7 @@ export default function AboutBanner({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="block flex items-center gap-2 rounded-md px-4 py-0.5 text-center text-sm text-white opacity-75 shadow-sm transition-all duration-150 hover:opacity-100"
+      className="flex items-center gap-2 rounded-md px-4 py-0.5 text-center text-sm text-white opacity-75 shadow-sm transition-all duration-150 hover:opacity-100"
       style={{
         backgroundColor: color,
       }}
