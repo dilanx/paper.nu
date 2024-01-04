@@ -10,6 +10,8 @@ const Links = {
   CHANGELOG: 'https://www.dilanxd.com/paper/changelog',
   FAQ: 'https://support.dilanxd.com/paper/faq/',
 
+  SUPPORT_RATINGS: 'https://support.dilanxd.com/paper/ratings/',
+
   SOURCE_CODE: 'https://github.com/dilanx/paper.nu',
   ISSUES: 'https://github.com/dilanx/paper.nu/issues',
 

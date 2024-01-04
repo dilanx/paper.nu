@@ -2,6 +2,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import {
   PencilSquareIcon,
   PlusIcon,
+  QuestionMarkCircleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import {
@@ -40,6 +41,9 @@ import {
 } from '../../utility/RatingMessages';
 import Utility from '../../utility/Utility';
 import RatingDisplay from './RatingDisplay';
+import ActionButton from '../generic/ActionButton';
+import Tooltip from '../generic/Tooltip';
+import Links from '../../utility/StaticLinks';
 
 interface RatingsProps {
   data: RatingsViewData;
@@ -350,16 +354,30 @@ export default function Ratings({
                   <p className="text-center text-xs text-gray-400 dark:text-gray-500">
                     Paper Ratings are not connected to nor intended to replace
                     CTECs. Make sure to complete your CTECs for access to
-                    detailed ratings and comments. All ratings and grades are
-                    submitted by students on Paper.
+                    detailed ratings and comments. Ratings and grades are not
+                    certified and are submitted by authenticated Paper users.
+                    Paper Ratings are not official course ratings.
                   </p>
                 </div>
-                <button
-                  className="absolute right-2 top-2 rounded-md p-0.5 text-gray-600 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
-                  onClick={() => setOpen(false)}
-                >
-                  <XMarkIcon className="h-8 w-8" />
-                </button>
+                <div className="absolute right-2 top-2 flex items-center gap-2">
+                  <ActionButton
+                    padding="large"
+                    onClick={() =>
+                      window.open(Links.SUPPORT_RATINGS, '_blank', 'noreferrer')
+                    }
+                  >
+                    <QuestionMarkCircleIcon className="h-6 w-6" />
+                    <Tooltip className="-bottom-9 right-0" color="gray">
+                      Help with Paper Ratings
+                    </Tooltip>
+                  </ActionButton>
+                  <ActionButton onClick={() => setOpen(false)}>
+                    <XMarkIcon className="h-8 w-8" />
+                    <Tooltip className="-bottom-9 right-0" color="gray">
+                      Close
+                    </Tooltip>
+                  </ActionButton>
+                </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
