@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.bba6a406.css",
-    "main.js": "/static/js/main.a5e16ec4.js",
+    "main.css": "/static/css/main.01586c9f.css",
+    "main.js": "/static/js/main.bfccc863.js",
     "static/media/paper-full-white.png": "/static/media/paper-full-white.6a05307e489b15ae2a0b.png",
     "static/media/paper-full-vertical-white.png": "/static/media/paper-full-vertical-white.75985cb8122178fab1c1.png",
     "static/media/paper-full-vertical-black.png": "/static/media/paper-full-vertical-black.ac8b75399a52c154afeb.png",
@@ -11,7 +11,7 @@
     "static/media/discord.svg": "/static/media/discord.a420227021864513c33f564d51c99590.svg"
   },
   "entrypoints": [
-    "static/css/main.bba6a406.css",
-    "static/js/main.a5e16ec4.js"
+    "static/css/main.01586c9f.css",
+    "static/js/main.bfccc863.js"
   ]
 }
