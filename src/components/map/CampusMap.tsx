@@ -11,6 +11,7 @@ import ScheduleManager from '../../ScheduleManager';
 import { Color, UserOptions } from '../../types/BaseTypes';
 import { ScheduleDataMap, ScheduleSection } from '../../types/ScheduleTypes';
 import { MapFlyTo, getMapMarkerIcon } from './MapUtility';
+import ActionButton from '../generic/ActionButton';
 
 const DEFAULT_POSITION: [number, number] = [42.055909, -87.675709];
 const DEFAULT_ZOOM = 16;
@@ -163,13 +164,16 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
                       </Switch>
                     </div>
                     <div className="h-6 w-0.5 rounded-sm bg-gray-300 dark:bg-gray-500" />
-                    <button className="group relative">
+                    <ActionButton onClick={() => setOpen(false)}>
+                      <XMarkIcon className="h-7 w-7" />
+                    </ActionButton>
+                    {/* <button className="group relative">
                       <XMarkIcon
                         className="h-8 w-8 rounded-md p-0.5 text-gray-600 hover:bg-gray-100 active:bg-gray-200
                         dark:text-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
                         onClick={() => setOpen(false)}
                       />
-                    </button>
+                    </button> */}
                   </div>
                   <p className="block w-40 text-xs text-gray-500 hsm:hidden">
                     Your window height is too small for the minimap.
