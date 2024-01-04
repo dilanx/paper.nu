@@ -6,6 +6,7 @@ import { SideCardData } from '../../../types/SideCardTypes';
 import SideCardButton from './SideCardButton';
 import SideCardItem from './SideCardItem';
 import Tooltip from '../../generic/Tooltip';
+import ActionButton from '../../generic/ActionButton';
 
 interface SideCardProps {
   data: SideCardData;
@@ -75,8 +76,8 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
                 </p>
                 <div className="flex items-center gap-2">
                   {data.link && (
-                    <button
-                      className="group relative flex items-center rounded-md p-1.5 text-gray-600 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
+                    <ActionButton
+                      padding="large"
                       onClick={() => {
                         if (data.link) {
                           navigator.clipboard.writeText(data.link);
@@ -94,17 +95,14 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
                           ? 'Copied to clipboard!'
                           : 'Copy link to information'}
                       </Tooltip>
-                    </button>
+                    </ActionButton>
                   )}
-                  <button
-                    className="group relative flex items-center rounded-md p-0.5 text-gray-600 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
-                    onClick={() => close()}
-                  >
+                  <ActionButton onClick={() => close()}>
                     <XMarkIcon className="h-7 w-7" />
                     <Tooltip className="-bottom-9 right-0" color="gray">
                       Close
                     </Tooltip>
-                  </button>
+                  </ActionButton>
                 </div>
               </div>
               {data.alertMessage && (

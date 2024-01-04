@@ -11,6 +11,7 @@ import Links from '../../../utility/StaticLinks';
 import AboutBanner from './AboutBanner';
 import AboutButton from './AboutButton';
 import InfoSet from './InfoSet';
+import ActionButton from '../../generic/ActionButton';
 
 interface AboutProps {
   switches: UserOptions;
@@ -174,15 +175,11 @@ function About({ switches, onClose }: AboutProps) {
                   </p>
                 </div>
                 <InfoSet title="more information" data={INFO_VERSIONS} />
-                <button
-                  className="absolute right-2 top-2"
-                  onClick={() => setOpen(false)}
-                >
-                  <XMarkIcon
-                    className="h-8 w-8 rounded-md p-0.5 text-gray-400 hover:bg-gray-100 active:bg-gray-200 
-                    dark:text-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
-                  />
-                </button>
+                <div className="absolute right-2 top-2">
+                  <ActionButton onClick={() => setOpen(false)}>
+                    <XMarkIcon className="h-7 w-7" />
+                  </ActionButton>
+                </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>

@@ -105,7 +105,11 @@
     -webkit-text-fill-color: transparent;
   }
 
-  .important-focus:focus {
+  .important-focus-black:focus {
     border-color: #000000 !important;
+  }
+
+  .important-focus-white:focus {
+    border-color: #ffffff !important;
   }
 }
