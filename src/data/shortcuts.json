@@ -9,5 +9,6 @@
   "me": ["MECH_ENG"],
   "ce": ["COMP_ENG"],
   "cive": ["CIV_ENV"],
-  "ie": ["IEMS"]
+  "ie": ["IEMS"],
+  "alc": ["ASIAN_LC"]
 }
