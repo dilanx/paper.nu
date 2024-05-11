@@ -666,7 +666,7 @@ class App extends React.Component<{}, AppState> implements AppType {
               />
             )}
 
-            {this.state.clp && (
+            {/* {this.state.clp && (
               <ChangeLogPreview
                 version={VERSION_NO_PATCH}
                 info={clp}
@@ -676,7 +676,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                   this.setState({ clp: false });
                 }}
               />
-            )}
+            )} */}
 
             {this.state.ratings && (
               <Ratings
