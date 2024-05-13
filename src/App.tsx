@@ -17,7 +17,6 @@ import {
   update,
 } from './app/AccountModification';
 import bn from './app/BannerNotice';
-import clp from './app/ChangeLogPreview';
 import {
   addBookmark,
   addCourse,
@@ -32,11 +31,17 @@ import {
   removeYear,
 } from './app/PlanModification';
 import {
+  activateRecentShare,
+  getRecentShare,
+  removeRecentShareHistory,
+  updateRecentShare,
+} from './app/RecentShare';
+import {
   addOverride,
   addScheduleBookmark,
   addSection,
-  clearSchedule,
   checkOverrides,
+  clearSchedule,
   putCustomSection,
   removeOverrides,
   removeScheduleBookmark,
@@ -46,7 +51,6 @@ import AccountPlans from './components/account/AccountPlans';
 import Bookmarks from './components/bookmarks/Bookmarks';
 import CampusMap from './components/map/CampusMap';
 import BannerNotice from './components/menu/BannerNotice';
-import ChangeLogPreview from './components/changelog/ChangeLogPreview';
 import Info from './components/menu/Info';
 import ModeSwitch from './components/menu/ModeSwitch';
 import Notes from './components/menu/Notes';
@@ -57,8 +61,12 @@ import ContextMenu from './components/menu/context-menu/ContextMenu';
 import SideCard from './components/menu/side-card/SideCard';
 import Toolbar from './components/menu/toolbar/Toolbar';
 import Content from './components/plan/Content';
+import { openInfo as planOpenInfo } from './components/plan/CourseInfo';
+import Ratings from './components/rating/Ratings';
 import Schedule from './components/schedule/Schedule';
+import { openInfo as scheduleOpenInfo } from './components/schedule/ScheduleSectionInfo';
 import Search from './components/search/Search';
+import { RecentShareModificationFunctions } from './types/AccountTypes';
 import { AlertData } from './types/AlertTypes';
 import {
   AppState,
@@ -73,6 +81,7 @@ import {
   PlanModificationFunctions,
   PlanSpecialFunctions,
 } from './types/PlanTypes';
+import { RatingsViewData } from './types/RatingTypes';
 import {
   ScheduleData,
   ScheduleInteractions,
@@ -81,19 +90,8 @@ import {
 import { SearchModificationFunctions } from './types/SearchTypes';
 import { SideCardData } from './types/SideCardTypes';
 import { Mode } from './utility/Constants';
-import { openInfo as planOpenInfo } from './components/plan/CourseInfo';
 import { PaperError } from './utility/PaperError';
-import { openInfo as scheduleOpenInfo } from './components/schedule/ScheduleSectionInfo';
 import Utility from './utility/Utility';
-import {
-  activateRecentShare,
-  getRecentShare,
-  removeRecentShareHistory,
-  updateRecentShare,
-} from './app/RecentShare';
-import { RecentShareModificationFunctions } from './types/AccountTypes';
-import Ratings from './components/rating/Ratings';
-import { RatingsViewData } from './types/RatingTypes';
 const d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
