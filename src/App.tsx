@@ -92,7 +92,6 @@ import { SideCardData } from './types/SideCardTypes';
 import { Mode } from './utility/Constants';
 import { PaperError } from './utility/PaperError';
 import Utility from './utility/Utility';
-import SiteNotice from './components/menu/SiteNotice';
 const d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
