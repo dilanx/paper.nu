@@ -6,7 +6,7 @@ const Links = {
 
   HOMEPAGE: 'https://www.dilanxd.com/paper',
   SUPPORT: 'https://support.dilanxd.com/paper/',
-  FEEDBACK: 'https://support.dilanxd.com/paper/feedback/',
+  FEEDBACK: 'https://forms.dilanxd.com/paper-support',
   CHANGELOG: 'https://www.dilanxd.com/paper/changelog',
   FAQ: 'https://support.dilanxd.com/paper/faq/',
 

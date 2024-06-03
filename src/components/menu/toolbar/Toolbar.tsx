@@ -38,6 +38,7 @@ function ToolbarDivider() {
 }
 
 interface ToolbarProps {
+  appVersion: string;
   alert: Alert;
   contextMenuData?: ContextMenuData;
   contextMenu: ContextMenu;
@@ -52,6 +53,7 @@ interface ToolbarProps {
 }
 
 function Toolbar({
+  appVersion,
   alert,
   contextMenuData,
   contextMenu,
@@ -164,7 +166,9 @@ function Toolbar({
                 {
                   text: "What's new",
                   icon: NewspaperIcon,
-                  onClick: () => openChangeLogPreview(),
+                  onClick: () => {
+                    window.open(Links.CHANGELOG, '_blank');
+                  },
                 },
                 {
                   text: 'Help',
@@ -177,7 +181,10 @@ function Toolbar({
                   text: 'Feedback',
                   icon: InboxArrowDownIcon,
                   onClick: () => {
-                    window.open(Links.FEEDBACK, '_blank');
+                    window.open(
+                      `${Links.FEEDBACK}?v=v${encodeURIComponent(appVersion)}`,
+                      '_blank'
+                    );
                   },
                 },
               ],

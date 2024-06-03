@@ -852,6 +852,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                 } lg:overflow-y-scroll`}
               >
                 <Toolbar
+                  appVersion={VERSION}
                   alert={(alertData) => {
                     this.showAlert(alertData);
                   }}
