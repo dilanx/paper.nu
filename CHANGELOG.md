@@ -1,5 +1,17 @@
 # Paper Change Log
 
+### 3.0.2
+
+_2024-06-03_
+
+- Updated the feedback button to use the new feedback system.
+
+### 3.0.1
+
+_2024-01-04_
+
+- Various UI updates, bug fixes, and other small changes.
+
 ### 3.0.0
 
 _2024-01-02_
