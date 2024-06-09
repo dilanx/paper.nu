@@ -138,7 +138,7 @@ export async function getPlanData(): Promise<RawCourseData> {
     d('plan data: cache miss, fetching data');
   }
 
-  const res = await fetch('https://cdn.dilanxd.net/paper-data/plan.json');
+  const res = await fetch('https://cdn.dil.sh/paper-data/plan.json');
   const json = await res.json();
 
   await localforage.setItem('plan', {
@@ -247,7 +247,7 @@ export async function getScheduleData(
     }
   }
 
-  const res = await fetch(`https://cdn.dilanxd.net/paper-data/${termId}.json`);
+  const res = await fetch(`https://cdn.dil.sh/paper-data/${termId}.json`);
   const json = await res.json();
 
   await localforage.setItem<ScheduleDataCache>(cacheLocations[saveToCache], {
