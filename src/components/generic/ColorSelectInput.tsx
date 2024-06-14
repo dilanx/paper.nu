@@ -1,5 +1,5 @@
 import { CheckIcon } from '@heroicons/react/24/outline';
-import { Color } from '../../types/BaseTypes';
+import { Color } from '@/types/BaseTypes';
 import Tooltip from './Tooltip';
 
 interface ColorSelectInputProps {

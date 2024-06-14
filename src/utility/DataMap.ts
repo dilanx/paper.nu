@@ -2,10 +2,10 @@ import {
   SubjectData,
   SubjectsAndSchools,
   UniversitySchools,
-} from '../types/BaseTypes';
-import { RawCourseData } from '../types/PlanTypes';
-import { ScheduleCourse } from '../types/ScheduleTypes';
-import SchoolsJson from '../data/schools.json';
+} from '@/types/BaseTypes';
+import { RawCourseData } from '@/types/PlanTypes';
+import { ScheduleCourse } from '@/types/ScheduleTypes';
+import SchoolsJson from '@/data/schools.json';
 
 const schoolsData = SchoolsJson as { [key: string]: string };
 

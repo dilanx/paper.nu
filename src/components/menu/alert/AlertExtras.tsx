@@ -1,4 +1,4 @@
-import { AlertDataExtra } from '../../../types/AlertTypes';
+import { AlertDataExtra } from '@/types/AlertTypes';
 
 export const getAlertExtras = (extras: AlertDataExtra[] | undefined) =>
   extras?.map((extra, i) => (

@@ -1,4 +1,4 @@
-import { ChangeLogPreviewInformation } from '../types/BaseTypes';
+import { ChangeLogPreviewInformation } from '@/types/BaseTypes';
 
 const clp: ChangeLogPreviewInformation = {
   items: [],

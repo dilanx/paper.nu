@@ -2,18 +2,18 @@ import { BookmarkIcon, MinusIcon } from '@heroicons/react/24/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import { motion } from 'framer-motion';
 import { useDrag } from 'react-dnd';
-import { Alert } from '../../types/AlertTypes';
-import { Color } from '../../types/BaseTypes';
+import { Alert } from '@/types/AlertTypes';
+import { Color } from '@/types/BaseTypes';
 import {
   ScheduleCourse,
   ScheduleData,
   ScheduleInteractions,
   ScheduleModificationFunctions,
-} from '../../types/ScheduleTypes';
-import { FilterOptions } from '../../types/SearchTypes';
-import { SideCard } from '../../types/SideCardTypes';
+} from '@/types/ScheduleTypes';
+import { FilterOptions } from '@/types/SearchTypes';
+import { SideCard } from '@/types/SideCardTypes';
 import SearchScheduleSection from './SearchScheduleSection';
-import { OpenRatingsFn } from '../../types/RatingTypes';
+import { OpenRatingsFn } from '@/types/RatingTypes';
 
 interface SearchScheduleClassProps {
   course: ScheduleCourse;
@@ -45,7 +45,7 @@ const variants = {
 function SearchScheduleClass(props: SearchScheduleClassProps) {
   const course = props.course;
 
-  let item = { course };
+  const item = { course };
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -65,7 +65,7 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
       return bookmarkCourse.course_id === course.course_id;
     });
 
-  let hidden = props.fromBookmarks ? 0 : course.hide_section_ids?.length ?? 0;
+  const hidden = props.fromBookmarks ? 0 : course.hide_section_ids?.length ?? 0;
 
   return (
     <div

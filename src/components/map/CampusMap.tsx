@@ -7,11 +7,12 @@ import {
   Marker,
   TileLayer,
 } from 'react-leaflet';
-import ScheduleManager from '../../ScheduleManager';
-import { Color, UserOptions } from '../../types/BaseTypes';
-import { ScheduleDataMap, ScheduleSection } from '../../types/ScheduleTypes';
+import { Color, UserOptions } from '@/types/BaseTypes';
+import { ScheduleDataMap, ScheduleSection } from '@/types/ScheduleTypes';
 import { MapFlyTo, getMapMarkerIcon } from './MapUtility';
-import ActionButton from '../generic/ActionButton';
+import ActionButton from '@/components/generic/ActionButton';
+import { getCourseColor } from '@/app/Plan';
+import { getLocation } from '@/app/Schedule';
 
 const DEFAULT_POSITION: [number, number] = [42.055909, -87.675709];
 const DEFAULT_ZOOM = 16;
@@ -40,7 +41,7 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
 
   for (const sectionId in schedule) {
     rooms: for (const room of schedule[sectionId].room || []) {
-      const { lat, lon } = ScheduleManager.getLocation(room) ?? {};
+      const { lat, lon } = getLocation(room) ?? {};
       if (!lat || !lon) continue;
 
       for (const loc of locations) {
@@ -58,7 +59,7 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
       locations.push({
         location: [lat, lon],
         sections: [schedule[sectionId]],
-        color: ScheduleManager.getCourseColor(schedule[sectionId].subject),
+        color: getCourseColor(schedule[sectionId].subject),
       });
     }
   }

@@ -4,9 +4,9 @@ import {
   MagnifyingGlassIcon,
   RectangleStackIcon,
 } from '@heroicons/react/24/solid';
-import { Alert } from '../../types/AlertTypes';
-import { ColorMap, UserOptions } from '../../types/BaseTypes';
-import { Mode } from '../../utility/Constants';
+import { Alert } from '@/types/AlertTypes';
+import { ColorMap, UserOptions } from '@/types/BaseTypes';
+import { Mode } from '@/utility/Constants';
 import { TabButton, Tabs } from './Tabs';
 
 const TabBarButtonColors: ColorMap = {

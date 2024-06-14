@@ -1,16 +1,16 @@
 import { motion } from 'framer-motion';
 import { useDrop } from 'react-dnd';
-import PlanManager from '../../PlanManager';
-import { UserOptions } from '../../types/BaseTypes';
+import { UserOptions } from '@/types/BaseTypes';
 import {
   BookmarksData,
   CourseDragItem,
   PlanModificationFunctions,
-} from '../../types/PlanTypes';
-import { SideCard } from '../../types/SideCardTypes';
+} from '@/types/PlanTypes';
+import { SideCard } from '@/types/SideCardTypes';
 import Class from '../plan/Class';
-import { Alert } from '../../types/AlertTypes';
-import { OpenRatingsFn } from '../../types/RatingTypes';
+import { Alert } from '@/types/AlertTypes';
+import { OpenRatingsFn } from '@/types/RatingTypes';
+import { getQuarterCredits } from '@/app/Plan';
 
 interface BookmarksListProps {
   credit: boolean;
@@ -46,7 +46,7 @@ function BookmarksList(props: BookmarksListProps) {
     collect: (monitor) => ({ isOver: monitor.isOver() }),
   }));
 
-  let content = props.credit
+  const content = props.credit
     ? Array.from(props.bookmarks.forCredit)
     : Array.from(props.bookmarks.noCredit);
   let classes: JSX.Element[] | JSX.Element = [];
@@ -78,7 +78,7 @@ function BookmarksList(props: BookmarksListProps) {
     );
   }
 
-  let units = PlanManager.getQuarterCredits(content);
+  const units = getQuarterCredits(content);
 
   let unitString = 'units';
   if (units === 1) {

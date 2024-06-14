@@ -6,16 +6,11 @@ import {
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import ScheduleManager from '../../ScheduleManager';
-import paperBlack from '../../assets/paper-full-black.png';
-import paperWhite from '../../assets/paper-full-white.png';
-import { Alert } from '../../types/AlertTypes';
-import {
-  ContextMenu,
-  ContextMenuData,
-  UserOptions,
-} from '../../types/BaseTypes';
-import { OpenRatingsFn } from '../../types/RatingTypes';
+import paperBlack from '@/assets/paper-full-black.png';
+import paperWhite from '@/assets/paper-full-white.png';
+import { Alert } from '@/types/AlertTypes';
+import { ContextMenu, ContextMenuData, UserOptions } from '@/types/BaseTypes';
+import { OpenRatingsFn } from '@/types/RatingTypes';
 import {
   ScheduleData,
   ScheduleInteractions,
@@ -23,16 +18,17 @@ import {
   SectionWithValidMeetingPattern,
   isSectionWithValidMeetingPattern,
   isValidScheduleSection,
-} from '../../types/ScheduleTypes';
-import { SearchModificationFunctions } from '../../types/SearchTypes';
-import { SideCard } from '../../types/SideCardTypes';
-import { exportScheduleAsICS } from '../../utility/Calendar';
-import { exportScheduleAsImage } from '../../utility/Image';
-import Utility from '../../utility/Utility';
+} from '@/types/ScheduleTypes';
+import { SearchModificationFunctions } from '@/types/SearchTypes';
+import { SideCard } from '@/types/SideCardTypes';
+import { exportScheduleAsICS } from '@/utility/Calendar';
+import { exportScheduleAsImage } from '@/utility/Image';
 import UtilityButton from '../menu/UtilityButton';
 import Day from './Day';
 import exportMenu from './Export';
 import HoursColumn from './HoursColumn';
+import { isHiddenFromSchedule } from '@/app/Schedule';
+import { fitHours, sectionMeetingPatternIsValid } from '@/utility/Utility';
 
 interface DayMeetingPatterns {
   [day: number]: SectionWithValidMeetingPattern[];
@@ -71,8 +67,8 @@ export default function Schedule(props: ScheduleProps) {
     }
   }, [takeImage, props.switches]);
 
-  let days: JSX.Element[] = [];
-  let sectionDays: DayMeetingPatterns = { 0: [], 1: [], 2: [], 3: [], 4: [] };
+  const days: JSX.Element[] = [];
+  const sectionDays: DayMeetingPatterns = { 0: [], 1: [], 2: [], 3: [], 4: [] };
 
   let start = 9;
   let end = 18;
@@ -81,8 +77,8 @@ export default function Schedule(props: ScheduleProps) {
   const imageMode = props.imageMode;
   const dark = props.switches.get.dark;
 
-  for (let section_id in schedule) {
-    let section = schedule[section_id];
+  for (const section_id in schedule) {
+    const section = schedule[section_id];
     if (isValidScheduleSection(section)) {
       for (let i = 0; i < section.meeting_days.length; i++) {
         const swmp = {
@@ -101,7 +97,7 @@ export default function Schedule(props: ScheduleProps) {
         for (let j = 0; j < dayPattern.length; j++) {
           const day = parseInt(dayPattern[j]);
           if (
-            ScheduleManager.isHiddenFromSchedule(
+            isHiddenFromSchedule(
               props.schedule.overrides,
               swmp.section.section_id,
               day,
@@ -118,8 +114,8 @@ export default function Schedule(props: ScheduleProps) {
         // invariant: Paper data management system ensures
         // meeting_days, start_time, and end_time are all the same length
         if (shouldFitHours) {
-          start = Utility.fitHours(swmp.start_time, start, false);
-          end = Utility.fitHours(swmp.end_time, end, true);
+          start = fitHours(swmp.start_time, start, false);
+          end = fitHours(swmp.end_time, end, true);
         }
       }
     }
@@ -144,16 +140,16 @@ export default function Schedule(props: ScheduleProps) {
       for (let j = 0; j < dayPattern.length; j++) {
         sectionDays[parseInt(dayPattern[j])].push(swmp);
       }
-      start = Utility.fitHours(swmp.start_time, start, false);
-      end = Utility.fitHours(swmp.end_time, end, true);
+      start = fitHours(swmp.start_time, start, false);
+      end = fitHours(swmp.end_time, end, true);
     }
   }
   for (let i = 0; i < 5; i++) {
-    let sections = [];
+    const sections = [];
 
     for (let j = 0; j < sectionDays[i].length; j++) {
       const section = sectionDays[i][j];
-      if (Utility.sectionMeetingPatternIsValid(section)) {
+      if (sectionMeetingPatternIsValid(section)) {
         sections.push(section);
       }
     }

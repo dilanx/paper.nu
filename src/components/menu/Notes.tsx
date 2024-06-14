@@ -3,12 +3,12 @@ import { AnimatePresence, motion, useDragControls } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { SpinnerCircularFixed } from 'spinners-react';
-import Account from '../../Account';
-import { discardNotesChanges } from '../../app/AccountModification';
-import { Alert } from '../../types/AlertTypes';
-import { UserOptions } from '../../types/BaseTypes';
-import { Mode } from '../../utility/Constants';
-import Utility from '../../utility/Utility';
+import { discardNotesChanges } from '@/app/AccountModification';
+import { Alert } from '@/types/AlertTypes';
+import { UserOptions } from '@/types/BaseTypes';
+import { Mode } from '@/utility/Constants';
+import { getDocument, isLoggedIn, updateDocument } from '@/app/Account';
+import { errorAlert } from '@/utility/Utility';
 
 interface NotesProps {
   constraintsRef: React.RefObject<HTMLDivElement>;
@@ -29,13 +29,13 @@ function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (Account.isLoggedIn()) {
+    if (isLoggedIn()) {
       const { active_plan_id, active_schedule_id } = switches.get;
       if (
         (!isSchedule && active_plan_id) ||
         (isSchedule && active_schedule_id)
       ) {
-        Account.get(isSchedule ? 'schedules' : 'plans')
+        getDocument(isSchedule ? 'schedules' : 'plans')
           .then((res) => {
             if (!res) return;
 
@@ -50,7 +50,7 @@ function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
             setLoading(false);
           })
           .catch((err) => {
-            alert(Utility.errorAlert('notes_get_documents', err));
+            alert(errorAlert('notes_get_documents', err));
           });
         return;
       }
@@ -116,7 +116,7 @@ function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
                   const newNotes = textAreaRef.current?.value || '';
 
                   setSaveLoading(true);
-                  toast.promise(Account.update(type, id, { notes: newNotes }), {
+                  toast.promise(updateDocument(type, id, { notes: newNotes }), {
                     loading: 'Saving notes...',
                     success: () => {
                       switches.set('unsaved_notes', false);
@@ -126,7 +126,7 @@ function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
                     },
                     error: (err) => {
                       setSaveLoading(false);
-                      alert(Utility.errorAlert('notes_update_document', err));
+                      alert(errorAlert('notes_update_document', err));
                       return 'Something went wrong';
                     },
                   });

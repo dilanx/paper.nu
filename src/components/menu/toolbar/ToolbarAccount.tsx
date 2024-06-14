@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import Account from '../../../Account';
-import { UserInformation } from '../../../types/AccountTypes';
+import { UserInformation } from '@/types/AccountTypes';
 import { Avatar } from '@dilanx/avatar';
+import { getUser, isLoggedIn } from '@/app/Account';
 
 interface ToolbarAccountProps {
   loading: boolean;
@@ -13,8 +13,8 @@ function ToolbarAccount({ loading, onClick, active }: ToolbarAccountProps) {
   const [info, setInfo] = useState<UserInformation>();
 
   useEffect(() => {
-    if (Account.isLoggedIn()) {
-      Account.getUser().then((user) => {
+    if (isLoggedIn()) {
+      getUser().then((user) => {
         if (!user) return;
         setInfo(user);
       });

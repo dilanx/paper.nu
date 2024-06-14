@@ -3,7 +3,7 @@ import {
   InstructorRating,
   OverallRating,
   RatingCalculations,
-} from '../types/RatingTypes';
+} from '@/types/RatingTypes';
 
 export function ratingAverage(
   scores?: OverallRating | CommitmentRating | InstructorRating

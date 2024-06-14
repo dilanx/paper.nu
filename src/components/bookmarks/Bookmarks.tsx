@@ -1,21 +1,18 @@
 import { SpinnerCircularFixed } from 'spinners-react';
-import { Alert } from '../../types/AlertTypes';
-import { UserOptions } from '../../types/BaseTypes';
-import {
-  BookmarksData,
-  PlanModificationFunctions,
-} from '../../types/PlanTypes';
+import { Alert } from '@/types/AlertTypes';
+import { UserOptions } from '@/types/BaseTypes';
+import { BookmarksData, PlanModificationFunctions } from '@/types/PlanTypes';
 import {
   ScheduleData,
   ScheduleInteractions,
   ScheduleModificationFunctions,
-} from '../../types/ScheduleTypes';
-import { SideCard } from '../../types/SideCardTypes';
-import { Mode } from '../../utility/Constants';
+} from '@/types/ScheduleTypes';
+import { SideCard } from '@/types/SideCardTypes';
+import { Mode } from '@/utility/Constants';
 import AccountPlanMessage from '../account/AccountPlanMessage';
 import BookmarksList from './BookmarksList';
 import ScheduleBookmarksList from './ScheduleBookmarksList';
-import { OpenRatingsFn } from '../../types/RatingTypes';
+import { OpenRatingsFn } from '@/types/RatingTypes';
 
 interface BookmarksProps {
   bookmarks: BookmarksData;

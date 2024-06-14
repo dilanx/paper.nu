@@ -4,12 +4,9 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
-import { getTermName } from '../../DataManager';
-import {
-  AccountModificationFunctions,
-  Document,
-} from '../../types/AccountTypes';
-import { SerializedScheduleData } from '../../types/ScheduleTypes';
+import { getTermName } from '@/app/Data';
+import { AccountModificationFunctions, Document } from '@/types/AccountTypes';
+import { SerializedScheduleData } from '@/types/ScheduleTypes';
 
 interface AccountPlanProps {
   id: string;

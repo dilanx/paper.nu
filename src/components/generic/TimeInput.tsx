@@ -1,4 +1,4 @@
-import Utility from '../../utility/Utility';
+import { convertTime, parseTime } from '@/utility/Utility';
 import TextInput from './TextInput';
 
 interface TimeInputProps {
@@ -16,9 +16,9 @@ function TimeInput(props: TimeInputProps) {
       onBlur={() => {
         const { value, setValue } = props;
         if (value) {
-          const time = Utility.parseTime(value);
+          const time = parseTime(value);
           if (time) {
-            setValue(Utility.convertTime(time, true));
+            setValue(convertTime(time, true));
           }
         }
       }}
@@ -27,7 +27,7 @@ function TimeInput(props: TimeInputProps) {
 }
 
 TimeInput.defaultProps = {
-  validator: (value: string) => Utility.parseTime(value) !== undefined,
+  validator: (value: string) => parseTime(value) !== undefined,
 };
 
 export default TimeInput;

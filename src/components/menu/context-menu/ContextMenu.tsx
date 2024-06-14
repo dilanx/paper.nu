@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useRef, useState } from 'react';
-import { ContextMenuData, UserOptions } from '../../../types/BaseTypes';
+import { ContextMenuData, UserOptions } from '@/types/BaseTypes';
 import ContextMenuButton from './ContextMenuButton';
 
 interface ContextMenuProps {

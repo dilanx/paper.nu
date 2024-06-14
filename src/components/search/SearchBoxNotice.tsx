@@ -1,6 +1,6 @@
 import { ExclamationCircleIcon, XMarkIcon } from '@heroicons/react/24/solid';
-import { UserOptions } from '../../types/BaseTypes';
-import { Alert } from '../../types/AlertTypes';
+import { UserOptions } from '@/types/BaseTypes';
+import { Alert } from '@/types/AlertTypes';
 
 interface SearchBoxNoticeProps {
   id: string;

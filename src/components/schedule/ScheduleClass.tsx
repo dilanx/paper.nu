@@ -1,18 +1,18 @@
 import { TrashIcon } from '@heroicons/react/24/outline';
-import ScheduleManager from '../../ScheduleManager';
-import { Alert } from '../../types/AlertTypes';
-import { UserOptions } from '../../types/BaseTypes';
-import { OpenRatingsFn } from '../../types/RatingTypes';
+import { Alert } from '@/types/AlertTypes';
+import { UserOptions } from '@/types/BaseTypes';
+import { OpenRatingsFn } from '@/types/RatingTypes';
 import {
   ScheduleBookmarks,
   ScheduleInteractions,
   ScheduleModificationFunctions,
   SectionWithValidMeetingPattern,
-} from '../../types/ScheduleTypes';
-import { SearchModificationFunctions } from '../../types/SearchTypes';
-import { SideCard } from '../../types/SideCardTypes';
-import Utility from '../../utility/Utility';
+} from '@/types/ScheduleTypes';
+import { SearchModificationFunctions } from '@/types/SearchTypes';
+import { SideCard } from '@/types/SideCardTypes';
 import { openInfo } from './ScheduleSectionInfo';
+import { getCourseColor } from '@/app/Plan';
+import { convertTime } from '@/utility/Utility';
 
 interface ScheduleClassProps {
   swmp: SectionWithValidMeetingPattern;
@@ -42,7 +42,7 @@ function ScheduleClass(props: ScheduleClassProps) {
     color: customColor,
     preview,
   } = section;
-  const color = customColor || ScheduleManager.getCourseColor(subject);
+  const color = customColor || getCourseColor(subject);
 
   const startDif = start_time.m / 60;
   const length =
@@ -155,9 +155,7 @@ function ScheduleClass(props: ScheduleClassProps) {
           <p
             className={`absolute bottom-1 right-1 m-0 text-right text-xs text-${color}-500 dark:text-${color}-300 font-semibold opacity-60 dark:opacity-90`}
           >
-            {Utility.convertTime(start_time!) +
-              ' - ' +
-              Utility.convertTime(end_time!)}
+            {convertTime(start_time!) + ' - ' + convertTime(end_time!)}
           </p>
         )}
       </div>

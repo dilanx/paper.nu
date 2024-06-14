@@ -1,7 +1,7 @@
 import { CalendarIcon, RectangleStackIcon } from '@heroicons/react/24/solid';
 import { motion } from 'framer-motion';
-import { Color, IconElement, UserOptions } from '../../types/BaseTypes';
-import { Mode } from '../../utility/Constants';
+import { Color, IconElement, UserOptions } from '@/types/BaseTypes';
+import { Mode } from '@/utility/Constants';
 
 interface ModeSwitchButtonProps {
   icon: IconElement;

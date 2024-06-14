@@ -7,30 +7,38 @@ import {
   Squares2X2Icon,
 } from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
-import PlanManager from '../../PlanManager';
-import { Alert } from '../../types/AlertTypes';
-import { IconElement } from '../../types/BaseTypes';
+import { Alert } from '@/types/AlertTypes';
+import { IconElement } from '@/types/BaseTypes';
 import {
   BookmarksData,
   Course,
   CourseLocation,
   PlanModificationFunctions,
-} from '../../types/PlanTypes';
-import { OpenRatingsFn } from '../../types/RatingTypes';
+} from '@/types/PlanTypes';
+import { OpenRatingsFn } from '@/types/RatingTypes';
 import {
   SideCard,
   SideCardData,
   SideCardItemData,
-} from '../../types/SideCardTypes';
-import Utility from '../../utility/Utility';
-import RatingsTag from '../rating/RatingsTag';
+} from '@/types/SideCardTypes';
+import RatingsTag from '@/components/rating/RatingsTag';
+import {
+  getCourseColor,
+  getOfferings,
+  getOfferingsOrganized,
+} from '@/app/Plan';
+import {
+  convertDisciplines,
+  convertDistros,
+  objAsAlertExtras,
+} from '@/utility/Utility';
 
 function getDetails(
   detail: string,
   course: Course,
   alert: Alert
 ): [IconElement, ReactNode] | undefined {
-  const offerings = PlanManager.getOfferings(course).slice(0, 8);
+  const offerings = getOfferings(course).slice(0, 8);
   switch (detail) {
     case 'RECENT OFFERINGS':
       return [
@@ -52,8 +60,8 @@ function getDetails(
                   message: `All offerings for ${course.id} since 2020 Fall.`,
                   color: 'purple',
                   cancelButton: 'Close',
-                  extras: Utility.objAsAlertExtras(
-                    PlanManager.getOfferingsOrganized(course),
+                  extras: objAsAlertExtras(
+                    getOfferingsOrganized(course),
                     (a, b) => b.localeCompare(a)
                   ),
                 });
@@ -71,15 +79,13 @@ function getDetails(
       return [
         BuildingLibraryIcon,
         course.disciplines
-          ? Utility.convertDisciplines(course.disciplines).join(', ')
+          ? convertDisciplines(course.disciplines).join(', ')
           : undefined,
       ];
     case 'DISTRIBUTION AREAS':
       return [
         BuildingLibraryIcon,
-        course.distros
-          ? Utility.convertDistros(course.distros).join(', ')
-          : undefined,
+        course.distros ? convertDistros(course.distros).join(', ') : undefined,
       ];
     case 'UNITS':
       return [AcademicCapIcon, parseFloat(course.units).toFixed(2).toString()];
@@ -121,7 +127,7 @@ export function openInfo(
       : fromSearch
       ? 'COURSE INFO (SEARCH)'
       : 'COURSE INFO (SHARE)',
-    themeColor: PlanManager.getCourseColor(course.id),
+    themeColor: getCourseColor(course.id),
     title: placeholder ? 'Placeholder' : course.id,
     subtitle: course.name,
     alertMessage: course.legacy

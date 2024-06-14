@@ -1,12 +1,12 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { CheckIcon, LinkIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment, useEffect, useRef, useState } from 'react';
-import { UserOptions } from '../../../types/BaseTypes';
-import { SideCardData } from '../../../types/SideCardTypes';
+import { UserOptions } from '@/types/BaseTypes';
+import { SideCardData } from '@/types/SideCardTypes';
 import SideCardButton from './SideCardButton';
 import SideCardItem from './SideCardItem';
-import Tooltip from '../../generic/Tooltip';
-import ActionButton from '../../generic/ActionButton';
+import Tooltip from '@/components/generic/Tooltip';
+import ActionButton from '@/components/generic/ActionButton';
 
 interface SideCardProps {
   data: SideCardData;

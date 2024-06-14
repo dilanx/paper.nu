@@ -1,8 +1,7 @@
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import { useDrag } from 'react-dnd';
-import PlanManager from '../../PlanManager';
-import { UserOptions } from '../../types/BaseTypes';
+import { UserOptions } from '@/types/BaseTypes';
 import {
   BookmarksData,
   Course,
@@ -11,13 +10,14 @@ import {
   CourseLocation,
   DragCollectProps,
   PlanModificationFunctions,
-} from '../../types/PlanTypes';
-import { SideCard } from '../../types/SideCardTypes';
+} from '@/types/PlanTypes';
+import { SideCard } from '@/types/SideCardTypes';
 import { openInfo } from './CourseInfo';
-import Utility from '../../utility/Utility';
 import ClassPropertyDisplay from './ClassPropertyDisplay';
-import { Alert } from '../../types/AlertTypes';
-import { OpenRatingsFn } from '../../types/RatingTypes';
+import { Alert } from '@/types/AlertTypes';
+import { OpenRatingsFn } from '@/types/RatingTypes';
+import { getCourseColor } from '@/app/Plan';
+import { convertDistros } from '@/utility/Utility';
 
 interface ClassProps {
   course: Course;
@@ -56,7 +56,7 @@ function Class(props: ClassProps) {
   }, [course]);
 
   const custom = course.custom;
-  const color = course.color || PlanManager.getCourseColor(course.id);
+  const color = course.color || getCourseColor(course.id);
   const showMoreInfo =
     props.switches.get.more_info && !props.switches.get.compact;
   const isPlaceholder = course.placeholder;
@@ -112,7 +112,7 @@ function Class(props: ClassProps) {
             {course.distros && (
               <ClassPropertyDisplay
                 title="DISTRIBUTION AREAS"
-                value={Utility.convertDistros(course.distros).join(', ')}
+                value={convertDistros(course.distros).join(', ')}
               />
             )}
             <div className="mt-1">

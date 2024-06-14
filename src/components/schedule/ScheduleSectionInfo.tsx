@@ -17,30 +17,45 @@ import {
 } from '@heroicons/react/24/outline';
 import { MapIcon } from '@heroicons/react/24/solid';
 import { ReactNode } from 'react';
-import PlanManager from '../../PlanManager';
-import ScheduleManager from '../../ScheduleManager';
-import { Alert } from '../../types/AlertTypes';
-import { IconElement } from '../../types/BaseTypes';
-import { Course } from '../../types/PlanTypes';
+import { Alert } from '@/types/AlertTypes';
+import { IconElement } from '@/types/BaseTypes';
+import { Course } from '@/types/PlanTypes';
 import {
   ScheduleBookmarks,
   ScheduleInteractions,
   ScheduleModificationFunctions,
   ScheduleSection,
   ScheduleSectionBlock,
-} from '../../types/ScheduleTypes';
-import { SearchModificationFunctions } from '../../types/SearchTypes';
+} from '@/types/ScheduleTypes';
+import { SearchModificationFunctions } from '@/types/SearchTypes';
 import {
   AnySideCardButtonData,
   SideCard,
   SideCardData,
   SideCardItemData,
-} from '../../types/SideCardTypes';
-import Utility from '../../utility/Utility';
-import { getTermName } from '../../DataManager';
+} from '@/types/SideCardTypes';
+import { getTermName } from '@/app/Data';
 import RatingsTag from '../rating/RatingsTag';
-import { OpenRatingsFn } from '../../types/RatingTypes';
-import { Days } from '../../utility/Constants';
+import { OpenRatingsFn } from '@/types/RatingTypes';
+import { Days } from '@/utility/Constants';
+import {
+  getCourse,
+  getCourseColor,
+  getOfferings,
+  getOfferingsOrganized,
+} from '@/app/Plan';
+import {
+  capitalizeFirstLetter,
+  cleanEnrollmentRequirements,
+  convertAllDaysToString,
+  convertDisciplines,
+  convertDistros,
+  convertSectionComponent,
+  convertTime,
+  getTermColor,
+  objAsAlertExtras,
+} from '@/utility/Utility';
+import { getCourseById, getRoomFinderLink } from '@/app/Schedule';
 
 function getDetails(
   detail: string,
@@ -49,35 +64,35 @@ function getDetails(
   alert?: Alert,
   interactions?: ScheduleInteractions
 ): [IconElement, ReactNode] | undefined {
-  const offerings = course
-    ? PlanManager.getOfferings(course).slice(0, 8)
-    : undefined;
+  const offerings = course ? getOfferings(course).slice(0, 8) : undefined;
   switch (detail) {
-    case 'TOPIC':
+    case 'TOPIC': {
       return [TagIcon, section.topic];
-    case 'SECTION NUMBER':
+    }
+    case 'SECTION NUMBER': {
       return [HashtagIcon, section.section];
-    case 'COMPONENT':
+    }
+    case 'COMPONENT': {
       return [
         PuzzlePieceIcon,
-        Utility.capitalizeFirstLetter(
-          Utility.convertSectionComponent(section.component)
-        ),
+        capitalizeFirstLetter(convertSectionComponent(section.component)),
       ];
-    case 'TIME SLOT':
+    }
+    case 'TIME SLOT': {
       return [
         ClockIcon,
         section.meeting_days.map((day, i) =>
           day && section.start_time[i] && section.end_time[i] ? (
             <p key={`section-info-time-${i}`}>
-              {Utility.convertAllDaysToString(day)}{' '}
-              {Utility.convertTime(section.start_time[i]!, true)} -{' '}
-              {Utility.convertTime(section.end_time[i]!, true)}
+              {convertAllDaysToString(day)}{' '}
+              {convertTime(section.start_time[i]!, true)} -{' '}
+              {convertTime(section.end_time[i]!, true)}
             </p>
           ) : undefined
         ),
       ];
-    case 'INSTRUCTOR':
+    }
+    case 'INSTRUCTOR': {
       return [
         UserIcon,
         section.instructors?.map((instructor, i) => (
@@ -124,7 +139,8 @@ function getDetails(
           </button>
         )),
       ];
-    case 'LOCATION':
+    }
+    case 'LOCATION': {
       let roomFinderLinkExists = false;
       return [
         MapPinIcon,
@@ -133,7 +149,7 @@ function getDetails(
             room = room || 'None';
             let roomFinderLink: string | null = null;
             if (room) {
-              roomFinderLink = ScheduleManager.getRoomFinderLink(room);
+              roomFinderLink = getRoomFinderLink(room);
               if (roomFinderLink) roomFinderLinkExists = true;
             }
 
@@ -148,8 +164,7 @@ function getDetails(
                   if (interactions)
                     interactions.hoverLocation.set([
                       room,
-                      section.color ||
-                        ScheduleManager.getCourseColor(section.subject),
+                      section.color || getCourseColor(section.subject),
                     ]);
                 }}
                 onMouseLeave={() => {
@@ -182,14 +197,16 @@ function getDetails(
           )}
         </>,
       ];
-    case 'START/END DATES':
+    }
+    case 'START/END DATES': {
       return [
         CalendarDaysIcon,
         section.start_date && section.end_date
           ? `${section.start_date} to ${section.end_date}`
           : undefined,
       ];
-    case 'RECENT OFFERINGS':
+    }
+    case 'RECENT OFFERINGS': {
       return [
         Squares2X2Icon,
         offerings ? (
@@ -210,9 +227,8 @@ function getDetails(
                   color: 'purple',
                   cancelButton: 'Close',
                   extras: course
-                    ? Utility.objAsAlertExtras(
-                        PlanManager.getOfferingsOrganized(course),
-                        (a, b) => b.localeCompare(a)
+                    ? objAsAlertExtras(getOfferingsOrganized(course), (a, b) =>
+                        b.localeCompare(a)
                       )
                     : undefined,
                 });
@@ -224,32 +240,36 @@ function getDetails(
           </>
         ) : undefined,
       ];
-    case 'PREREQUISITES':
+    }
+    case 'PREREQUISITES': {
       return [ListBulletIcon, course?.prereqs];
-    case 'FOUNDATIONAL DISCIPLINES':
+    }
+    case 'FOUNDATIONAL DISCIPLINES': {
       return [
         BuildingLibraryIcon,
         section?.disciplines
-          ? Utility.convertDisciplines(section.disciplines).join(', ')
+          ? convertDisciplines(section.disciplines).join(', ')
           : undefined,
       ];
-    case 'DISTRIBUTION AREAS':
+    }
+    case 'DISTRIBUTION AREAS': {
       return [
         BuildingLibraryIcon,
         section?.distros
-          ? Utility.convertDistros(section.distros).join(', ')
+          ? convertDistros(section.distros).join(', ')
           : undefined,
       ];
-    case 'UNITS':
+    }
+    case 'UNITS': {
       return [AcademicCapIcon, course?.units];
-    case 'CAPACITY':
+    }
+    case 'CAPACITY': {
       return [UsersIcon, section.capacity];
-    case 'ENROLLMENT REQUIREMENTS':
-      return [
-        DocumentCheckIcon,
-        Utility.cleanEnrollmentRequirements(section.enrl_req),
-      ];
-    case 'DESCRIPTIONS':
+    }
+    case 'ENROLLMENT REQUIREMENTS': {
+      return [DocumentCheckIcon, cleanEnrollmentRequirements(section.enrl_req)];
+    }
+    case 'DESCRIPTIONS': {
       return [
         InformationCircleIcon,
         section?.descs ? (
@@ -263,6 +283,7 @@ function getDetails(
           </div>
         ) : undefined,
       ];
+    }
   }
 }
 
@@ -283,10 +304,8 @@ export function openInfo(
   const name = `${section.subject}${
     section.number ? ` ${section.number}` : ''
   }`;
-  const course = !section.custom ? PlanManager.getCourse(name) : undefined;
-  const scheduleCourse = ScheduleManager.getCourseById(
-    section.section_id.split('-')[0]
-  );
+  const course = !section.custom ? getCourse(name) : undefined;
+  const scheduleCourse = getCourseById(section.section_id.split('-')[0]);
 
   const items = [
     'TOPIC',
@@ -361,10 +380,10 @@ export function openInfo(
           const disabled =
             overrides.timesRemaining && overrides.timesRemaining.length <= 1;
           sideCardButtons.push({
-            text: `Hide ${Days[day]} ${Utility.convertTime(
+            text: `Hide ${Days[day]} ${convertTime(
               start_time,
               true
-            )} - ${Utility.convertTime(end_time, true)}`,
+            )} - ${convertTime(end_time, true)}`,
             disabled,
             disabledText: disabled
               ? 'This is the only visible time.'
@@ -422,7 +441,7 @@ export function openInfo(
         ? 'SECTION INFO'
         : 'SECTION INFO (SHARE)'
       : 'SECTION INFO (SEARCH)',
-    themeColor: PlanManager.getCourseColor(name),
+    themeColor: getCourseColor(name),
     title: name,
     subtitle: section.title,
     message: course?.description ?? 'No course description available',
@@ -449,7 +468,7 @@ export function openInfo(
     tag: termName
       ? {
           text: termName.toUpperCase(),
-          color: Utility.getTermColor(termName),
+          color: getTermColor(termName),
         }
       : undefined,
   };

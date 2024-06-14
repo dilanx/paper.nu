@@ -14,24 +14,24 @@ import {
 } from '@heroicons/react/24/outline';
 import { CalendarIcon, RectangleStackIcon } from '@heroicons/react/24/solid';
 import { SpinnerCircularFixed } from 'spinners-react';
-import Account from '../../../Account';
-import { discardNotesChanges } from '../../../app/AccountModification';
-import { Alert } from '../../../types/AlertTypes';
+import { discardNotesChanges } from '@/app/AccountModification';
+import { Alert } from '@/types/AlertTypes';
 import {
   ContextMenu,
   ContextMenuData,
   SaveState,
   UserOptions,
-} from '../../../types/BaseTypes';
-import { PlanData } from '../../../types/PlanTypes';
-import { ScheduleData } from '../../../types/ScheduleTypes';
-import { Mode } from '../../../utility/Constants';
-import Links from '../../../utility/StaticLinks';
-import Tooltip from '../../generic/Tooltip';
+} from '@/types/BaseTypes';
+import { PlanData } from '@/types/PlanTypes';
+import { ScheduleData } from '@/types/ScheduleTypes';
+import { Mode } from '@/utility/Constants';
+import Links from '@/utility/StaticLinks';
+import Tooltip from '@/components/generic/Tooltip';
 import settingsMenu from './Settings';
 import { shareMenu } from './Share';
 import ToolbarAccount from './ToolbarAccount';
 import ToolbarButton from './ToolbarButton';
+import { getPlan, getSchedule, login, logout } from '@/app/Account';
 
 function ToolbarDivider() {
   return <div className="h-4 w-[1px] bg-gray-300 dark:bg-gray-500" />;
@@ -48,7 +48,6 @@ interface ToolbarProps {
   switches: UserOptions;
   loading: boolean;
   openAboutMenu: () => void;
-  openChangeLogPreview: () => void;
   saveState: SaveState;
 }
 
@@ -63,7 +62,6 @@ function Toolbar({
   switches,
   loading,
   openAboutMenu,
-  openChangeLogPreview,
   saveState,
 }: ToolbarProps) {
   const isSchedule = switches.get.mode === Mode.SCHEDULE;
@@ -71,10 +69,10 @@ function Toolbar({
 
   const activeItem = isSchedule
     ? switches.get.active_schedule_id
-      ? Account.getSchedule(switches.get.active_schedule_id)
+      ? getSchedule(switches.get.active_schedule_id)
       : undefined
     : switches.get.active_plan_id
-    ? Account.getPlan(switches.get.active_plan_id)
+    ? getPlan(switches.get.active_plan_id)
     : undefined;
 
   return (
@@ -242,7 +240,7 @@ function Toolbar({
         active={contextMenuData?.name === 'account'}
         onClick={(x, y, signedIn) => {
           if (!signedIn) {
-            Account.logIn();
+            login();
             return;
           }
           contextMenu({
@@ -276,7 +274,7 @@ function Toolbar({
                     color: 'rose',
                     icon: ArrowRightOnRectangleIcon,
                     action: () => {
-                      Account.logOut();
+                      logout();
                     },
                   });
                 },

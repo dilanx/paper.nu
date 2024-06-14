@@ -1,10 +1,10 @@
 import {
   RecentShareItem,
   RecentShareModificationFunctions,
-} from '../../types/AccountTypes';
+} from '@/types/AccountTypes';
 import { motion } from 'framer-motion';
 import { Avatar } from '@dilanx/avatar';
-import { getTermName } from '../../DataManager';
+import { getTermName } from '@/app/Data';
 import { CheckIcon, LinkIcon, MinusIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 

@@ -1,6 +1,6 @@
-import { Color } from '../../types/BaseTypes';
-import { Course } from '../../types/PlanTypes';
-import Utility from '../../utility/Utility';
+import { Color } from '@/types/BaseTypes';
+import { Course } from '@/types/PlanTypes';
+import { convertYear } from '@/utility/Utility';
 
 interface AddButtonProps {
   color: Color;
@@ -77,14 +77,14 @@ interface AddButtonsProps {
 }
 
 function AddButtons(props: AddButtonsProps) {
-  let courses = props.courses;
-  let years = courses.length;
+  const courses = props.courses;
+  const years = courses.length;
 
-  let sections = [];
+  const sections = [];
   for (let y = 0; y < years; y++) {
     sections.push(
       <AddButtonSection
-        title={Utility.convertYear(y)}
+        title={convertYear(y)}
         size={courses[y].length}
         action={(quarter) => {
           props.action(y, quarter);

@@ -1,17 +1,17 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment, useState } from 'react';
-import discordLogo from '../../../assets/discord.svg';
-import instagramLogo from '../../../assets/instagram.svg';
-import paperBlack from '../../../assets/paper-full-vertical-black.png';
-import paperWhite from '../../../assets/paper-full-vertical-white.png';
-import { UserOptions } from '../../../types/BaseTypes';
-import { INFO_VERSIONS } from '../../../utility/InfoSets';
-import Links from '../../../utility/StaticLinks';
+import discordLogo from '@/assets/discord.svg';
+import instagramLogo from '@/assets/instagram.svg';
+import paperBlack from '@/assets/paper-full-vertical-black.png';
+import paperWhite from '@/assets/paper-full-vertical-white.png';
+import { UserOptions } from '@/types/BaseTypes';
+import { INFO_VERSIONS } from '@/utility/InfoSets';
+import Links from '@/utility/StaticLinks';
 import AboutBanner from './AboutBanner';
 import AboutButton from './AboutButton';
 import InfoSet from './InfoSet';
-import ActionButton from '../../generic/ActionButton';
+import ActionButton from '@/components/generic/ActionButton';
 
 interface AboutProps {
   switches: UserOptions;

@@ -1,4 +1,4 @@
-import { Color } from '../../types/BaseTypes';
+import { Color } from '@/types/BaseTypes';
 
 interface TooltipProps {
   children: React.ReactNode;

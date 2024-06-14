@@ -1,8 +1,8 @@
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
-import paperBlack from '../../assets/paper-full-black.png';
-import paperWhite from '../../assets/paper-full-white.png';
-import { Alert } from '../../types/AlertTypes';
-import { switchTermAlert } from '../search/Search';
+import paperBlack from '@/assets/paper-full-black.png';
+import paperWhite from '@/assets/paper-full-white.png';
+import { Alert } from '@/types/AlertTypes';
+import { switchTermAlert } from '@/components/search/Search';
 
 interface InfoProps {
   dark?: boolean;

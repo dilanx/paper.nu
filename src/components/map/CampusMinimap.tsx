@@ -1,16 +1,17 @@
 import { ArrowsPointingOutIcon } from '@heroicons/react/24/outline';
 import { Fragment, useEffect, useRef } from 'react';
 import { MapContainer, Marker, TileLayer, Tooltip } from 'react-leaflet';
-import ScheduleManager from '../../ScheduleManager';
-import { Color, UserOptions } from '../../types/BaseTypes';
-import { ScheduleSection } from '../../types/ScheduleTypes';
+import { Color, UserOptions } from '@/types/BaseTypes';
+import { ScheduleSection } from '@/types/ScheduleTypes';
 import {
   MapFlyTo,
   getMapMarkerIcon,
   getUnknownMapMarkerIcon,
 } from './MapUtility';
-import { Mode } from '../../utility/Constants';
+import { Mode } from '@/utility/Constants';
 import { Map } from 'leaflet';
+import { getLocation } from '@/app/Schedule';
+import { getCourseColor } from '@/app/Plan';
 
 const DEFAULT_POSITION: [number, number] = [42.055909, -87.672709];
 const DEFAULT_ZOOM = 14.2;
@@ -33,7 +34,7 @@ function CampusMinimap({
 
   const positions: ([number, number] | null)[] | undefined = rooms.map(
     (room) => {
-      const loc = ScheduleManager.getLocation(room);
+      const loc = getLocation(room);
       return loc ? [loc.lat, loc.lon] : null;
     }
   );
@@ -73,8 +74,7 @@ function CampusMinimap({
                   icon={
                     section
                       ? getMapMarkerIcon(
-                          section.color ||
-                            ScheduleManager.getCourseColor(section.subject)
+                          section.color || getCourseColor(section.subject)
                         )
                       : getMapMarkerIcon(location![1])
                   }

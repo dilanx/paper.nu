@@ -1,12 +1,12 @@
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { StarIcon } from '@heroicons/react/24/solid';
-import { OpenRatingsFn } from '../../types/RatingTypes';
+import { OpenRatingsFn } from '@/types/RatingTypes';
 import { useEffect, useState } from 'react';
-import Account from '../../Account';
-import { PaperError } from '../../utility/PaperError';
-import { Alert } from '../../types/AlertTypes';
-import Utility from '../../utility/Utility';
+import { PaperError } from '@/utility/PaperError';
+import { Alert } from '@/types/AlertTypes';
 import { SpinnerCircularFixed } from 'spinners-react';
+import { errorAlert } from '@/utility/Utility';
+import { getBasicRating } from '@/app/Account';
 
 interface RatingsTagProps {
   course: string;
@@ -23,7 +23,7 @@ export default function RatingsTag({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Account.getBasicRating(course)
+    getBasicRating(course)
       .then((rating) => {
         if (rating) {
           let avgTotal = 0;
@@ -44,7 +44,7 @@ export default function RatingsTag({
           setLoading(false);
           return;
         }
-        alert(Utility.errorAlert('ratings_get_basic', error));
+        alert(errorAlert('ratings_get_basic', error));
       });
   }, [course, alert]);
 

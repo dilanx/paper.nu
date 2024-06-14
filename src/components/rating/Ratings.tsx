@@ -15,35 +15,35 @@ import {
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { SpinnerCircularFixed } from 'spinners-react';
-import Account from '../../Account';
-import PlanManager from '../../PlanManager';
-import { Alert } from '../../types/AlertTypes';
-import { UserOptions } from '../../types/BaseTypes';
-import { BarChartValue } from '../../types/GenericMenuTypes';
+import { Alert } from '@/types/AlertTypes';
+import { UserOptions } from '@/types/BaseTypes';
+import { BarChartValue } from '@/types/GenericMenuTypes';
 import {
   CourseRating,
   OverallRating,
   RatingInfo,
   RatingsObject,
   RatingsViewData,
-} from '../../types/RatingTypes';
+} from '@/types/RatingTypes';
 import {
   GRADE_LEVELS,
   OVERALL_LEVELS,
   TIME_COMMITMENT_LEVELS,
-} from '../../utility/Constants';
-import { ratingsForm } from '../../utility/Forms';
-import { PaperError } from '../../utility/PaperError';
+} from '@/utility/Constants';
+import { ratingsForm } from '@/utility/Forms';
+import { PaperError } from '@/utility/PaperError';
 import {
   chooseCommitmentRatingSummary,
   chooseOverallRatingSummary,
   ratingAverage,
-} from '../../utility/RatingMessages';
-import Utility from '../../utility/Utility';
+} from '@/utility/RatingMessages';
 import RatingDisplay from './RatingDisplay';
-import ActionButton from '../generic/ActionButton';
-import Tooltip from '../generic/Tooltip';
-import Links from '../../utility/StaticLinks';
+import ActionButton from '@/components/generic/ActionButton';
+import Tooltip from '@/components/generic/Tooltip';
+import Links from '@/utility/StaticLinks';
+import { getCourseColor } from '@/app/Plan';
+import { getDetailedRatings, isLoggedIn, login, rate } from '@/app/Account';
+import { errorAlert } from '@/utility/Utility';
 
 interface RatingsProps {
   data: RatingsViewData;
@@ -65,14 +65,14 @@ export default function Ratings({
   const [ratings, setRatings] = useState<RatingInfo | null>(null);
 
   const darkMode = switches.get.dark;
-  const color = PlanManager.getCourseColor(data.course);
+  const color = getCourseColor(data.course);
 
   const update = useCallback(
     (reload: boolean) => {
       setState('loading');
       setRatings(null);
-      if (Account.isLoggedIn()) {
-        Account.getDetailedRatings(data.course, reload)
+      if (isLoggedIn()) {
+        getDetailedRatings(data.course, reload)
           .then((ratings) => {
             if (!ratings) {
               setState('not-logged-in');
@@ -216,25 +216,19 @@ export default function Ratings({
                                       : undefined,
                                   };
 
-                                  toast.promise(
-                                    Account.rate(data.course, rating),
-                                    {
-                                      loading: `Submitting rating...`,
-                                      success: () => {
-                                        update(true);
-                                        return `Rating submitted for ${data.course}!`;
-                                      },
-                                      error: (error: PaperError) => {
-                                        alert(
-                                          Utility.errorAlert(
-                                            'ratings_submit',
-                                            error
-                                          )
-                                        );
-                                        return 'Something went wrong.';
-                                      },
-                                    }
-                                  );
+                                  toast.promise(rate(data.course, rating), {
+                                    loading: `Submitting rating...`,
+                                    success: () => {
+                                      update(true);
+                                      return `Rating submitted for ${data.course}!`;
+                                    },
+                                    error: (error: PaperError) => {
+                                      alert(
+                                        errorAlert('ratings_submit', error)
+                                      );
+                                      return 'Something went wrong.';
+                                    },
+                                  });
                                 },
                               },
                               confirmButton: 'Submit rating',
@@ -341,7 +335,7 @@ export default function Ratings({
                           </p>
                           <button
                             className="m-2 rounded-lg bg-black px-4 py-2 text-sm font-bold text-white shadow-lg hover:opacity-75 active:opacity-60 dark:bg-white dark:text-black"
-                            onClick={() => Account.logIn()}
+                            onClick={() => login()}
                           >
                             SIGN IN TO CONTINUE
                           </button>

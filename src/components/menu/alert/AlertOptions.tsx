@@ -1,6 +1,6 @@
 import { Switch } from '@headlessui/react';
-import { AlertData, AlertDataOption } from '../../../types/AlertTypes';
-import { UserOptions } from '../../../types/BaseTypes';
+import { AlertData, AlertDataOption } from '@/types/AlertTypes';
+import { UserOptions } from '@/types/BaseTypes';
 import { Fragment } from 'react';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 

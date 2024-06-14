@@ -16,18 +16,12 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';
-import { getOrganizedTerms, getTermName } from '../../DataManager';
-import PlanManager from '../../PlanManager';
-import ScheduleManager from '../../ScheduleManager';
-import { filterExists, searchPlan, searchSchedule } from '../../Search';
-import { Alert, AlertData } from '../../types/AlertTypes';
-import { UserOptions } from '../../types/BaseTypes';
-import {
-  Course,
-  PlanData,
-  PlanModificationFunctions,
-} from '../../types/PlanTypes';
-import { OpenRatingsFn } from '../../types/RatingTypes';
+import { getOrganizedTerms, getTermName } from '@/app/Data';
+import { filterExists, searchPlan, searchSchedule } from '@/app/Search';
+import { Alert, AlertData } from '@/types/AlertTypes';
+import { UserOptions } from '@/types/BaseTypes';
+import { Course, PlanData, PlanModificationFunctions } from '@/types/PlanTypes';
+import { OpenRatingsFn } from '@/types/RatingTypes';
 import {
   ScheduleCourse,
   ScheduleData,
@@ -35,29 +29,36 @@ import {
   ScheduleModificationFunctions,
   ScheduleSection,
   TermInfo,
-} from '../../types/ScheduleTypes';
+} from '@/types/ScheduleTypes';
 import {
   FilterOptions,
   SearchDefaults,
   SearchFilter,
   SearchResultsElements,
   SearchShortcut,
-} from '../../types/SearchTypes';
-import { SideCard } from '../../types/SideCardTypes';
-import { Mode, SearchMode } from '../../utility/Constants';
+} from '@/types/SearchTypes';
+import { SideCard } from '@/types/SideCardTypes';
+import { Mode, SearchMode } from '@/utility/Constants';
 import {
   planSearchFilterForm,
   scheduleSearchFilterForm,
-} from '../../utility/Forms';
-import Utility from '../../utility/Utility';
-import CampusMinimap from '../map/CampusMinimap';
-import ChangeTerm from '../menu/ChangeTerm';
+} from '@/utility/Forms';
+import CampusMinimap from '@/components/map/CampusMinimap';
+import ChangeTerm from '@/components/menu/ChangeTerm';
 import MiniContentBlock from './MiniContentBlock';
 import SearchBrowse from './SearchBrowse';
 import SearchButton from './SearchButton';
 import SearchClass from './SearchClass';
 import SearchFilterDisplay from './SearchFilterDisplay';
 import SearchScheduleClass from './SearchScheduleClass';
+import { getCourseColor, getSchoolOfSubject } from '@/app/Plan';
+import {
+  getTermColor,
+  parseTime,
+  safe,
+  safeArrayCommaSplit,
+  safeNumber,
+} from '@/utility/Utility';
 
 interface SearchProps {
   data: PlanData;
@@ -174,7 +175,7 @@ class Search extends React.Component<SearchProps, SearchState> {
   }
 
   removeFilter(filter: keyof FilterOptions) {
-    let newFilter = { ...this.state.filter.get };
+    const newFilter = { ...this.state.filter.get };
     delete newFilter[filter];
     this.setState({
       filter: {
@@ -202,7 +203,7 @@ class Search extends React.Component<SearchProps, SearchState> {
     appMode: Mode,
     searchMode: SearchMode
   ): SearchResultsElements {
-    let results =
+    const results =
       appMode === Mode.PLAN
         ? searchPlan(query, filter)
         : searchSchedule(query, this.props.schedule, filter);
@@ -329,14 +330,14 @@ class Search extends React.Component<SearchProps, SearchState> {
       };
     }
 
-    let courseList = [];
+    const courseList = [];
     if (appMode === Mode.PLAN) {
-      for (let course of results.results as Course[]) {
+      for (const course of results.results as Course[]) {
         courseList.push(
           <SearchClass
             courses={this.props.data.courses}
             course={course}
-            color={PlanManager.getCourseColor(course.id)}
+            color={getCourseColor(course.id)}
             select={(courseId) => {
               this.setState({
                 planCurrent:
@@ -354,11 +355,11 @@ class Search extends React.Component<SearchProps, SearchState> {
         );
       }
     } else {
-      for (let course of results.results as ScheduleCourse[]) {
+      for (const course of results.results as ScheduleCourse[]) {
         courseList.push(
           <SearchScheduleClass
             course={course}
-            color={ScheduleManager.getCourseColor(course.subject)}
+            color={getCourseColor(course.subject)}
             selected={this.state.scheduleCurrent === course.course_id}
             select={() => {
               this.setState({
@@ -416,7 +417,7 @@ class Search extends React.Component<SearchProps, SearchState> {
     const filter = this.state.filter;
     const darkMode = this.props.switches.get.dark;
 
-    let { results, placeholder, shortcut } = this.getResults(
+    const { results, placeholder, shortcut } = this.getResults(
       search,
       filter.get,
       appMode,
@@ -523,7 +524,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                         filter.set({ subject: undefined });
                         this.setState({
                           mode: SearchMode.BROWSE,
-                          browseSchool: PlanManager.getSchoolOfSubject(subj),
+                          browseSchool: getSchoolOfSubject(subj),
                         });
                         return;
                       }
@@ -588,26 +589,22 @@ class Search extends React.Component<SearchProps, SearchState> {
                             include,
                           }) => {
                             filter.set({
-                              subject: Utility.safe(subject)?.toUpperCase(),
-                              meetingDays:
-                                Utility.safeArrayCommaSplit(meetingDays),
-                              startAfter: Utility.parseTime(startAfter),
-                              startBefore: Utility.parseTime(startBefore),
-                              endAfter: Utility.parseTime(endAfter),
-                              endBefore: Utility.parseTime(endBefore),
+                              subject: safe(subject)?.toUpperCase(),
+                              meetingDays: safeArrayCommaSplit(meetingDays),
+                              startAfter: parseTime(startAfter),
+                              startBefore: parseTime(startBefore),
+                              endAfter: parseTime(endAfter),
+                              endBefore: parseTime(endBefore),
                               allAvailability:
-                                Utility.safeArrayCommaSplit(allAvailability),
-                              components:
-                                Utility.safeArrayCommaSplit(components),
-                              instructor:
-                                Utility.safe(instructor)?.toLowerCase(),
-                              location: Utility.safe(location)?.toLowerCase(),
-                              distros: Utility.safeArrayCommaSplit(distros),
-                              disciplines:
-                                Utility.safeArrayCommaSplit(disciplines),
-                              unitGeq: Utility.safeNumber(unitGeq),
-                              unitLeq: Utility.safeNumber(unitLeq),
-                              include: Utility.safeArrayCommaSplit(include),
+                                safeArrayCommaSplit(allAvailability),
+                              components: safeArrayCommaSplit(components),
+                              instructor: safe(instructor)?.toLowerCase(),
+                              location: safe(location)?.toLowerCase(),
+                              distros: safeArrayCommaSplit(distros),
+                              disciplines: safeArrayCommaSplit(disciplines),
+                              unitGeq: safeNumber(unitGeq),
+                              unitLeq: safeNumber(unitLeq),
+                              include: safeArrayCommaSplit(include),
                             });
                           },
                         },
@@ -631,7 +628,7 @@ class Search extends React.Component<SearchProps, SearchState> {
                           )
                         );
                       }}
-                      color={Utility.getTermColor(termName)}
+                      color={getTermColor(termName)}
                     >
                       {termName}
                     </SearchButton>

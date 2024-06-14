@@ -2,7 +2,7 @@ import {
   SideCardButtonData,
   sideCardButtonIsToggleable,
   ToggleableSideCardButtonData,
-} from '../../../types/SideCardTypes';
+} from '@/types/SideCardTypes';
 
 interface SideCardButtonProps {
   data: SideCardButtonData | ToggleableSideCardButtonData;

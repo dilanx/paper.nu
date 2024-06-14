@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { useDrop } from 'react-dnd';
-import PlanManager from '../../PlanManager';
-import { Color, UserOptions } from '../../types/BaseTypes';
+import { Color, UserOptions } from '@/types/BaseTypes';
 import {
   BookmarksData,
   Course,
@@ -10,13 +9,14 @@ import {
   CourseLocation,
   DropCollectedProps,
   PlanModificationFunctions,
-} from '../../types/PlanTypes';
-import { SideCard } from '../../types/SideCardTypes';
+} from '@/types/PlanTypes';
+import { SideCard } from '@/types/SideCardTypes';
 import Class from './Class';
 import QuarterUtilityButton from './QuarterUtilityButton';
 import { PlusIcon } from '@heroicons/react/24/outline';
-import { Alert } from '../../types/AlertTypes';
-import { OpenRatingsFn } from '../../types/RatingTypes';
+import { Alert } from '@/types/AlertTypes';
+import { OpenRatingsFn } from '@/types/RatingTypes';
+import { getQuarterCredits } from '@/app/Plan';
 
 interface QuarterProps {
   data: Course[];
@@ -65,7 +65,7 @@ function Quarter(props: QuarterProps) {
     collect: (monitor) => ({ isOver: monitor.isOver() }),
   }));
 
-  let courses = props.data;
+  const courses = props.data;
   let classes: JSX.Element[] | JSX.Element = [];
   if (courses) {
     if (courses.length > 0) {
@@ -100,7 +100,7 @@ function Quarter(props: QuarterProps) {
     }
   }
 
-  let units = PlanManager.getQuarterCredits(courses);
+  const units = getQuarterCredits(courses);
 
   let unitString = 'units';
   if (units === 1) {

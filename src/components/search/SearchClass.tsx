@@ -1,4 +1,3 @@
-import Utility from '../../utility/Utility';
 import { useDrag } from 'react-dnd';
 import { BookmarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
@@ -7,16 +6,17 @@ import {
   CourseDragItem,
   BookmarksData,
   PlanModificationFunctions,
-} from '../../types/PlanTypes';
-import { Color } from '../../types/BaseTypes';
+} from '@/types/PlanTypes';
+import { Color } from '@/types/BaseTypes';
 import { motion } from 'framer-motion';
 import AddButtons from './AddButtons';
-import ClassPropertyDisplay from '../plan/ClassPropertyDisplay';
-import PlanManager from '../../PlanManager';
-import { SideCard } from '../../types/SideCardTypes';
-import { Alert } from '../../types/AlertTypes';
-import { openInfo } from '../plan/CourseInfo';
-import { OpenRatingsFn } from '../../types/RatingTypes';
+import ClassPropertyDisplay from '@/components/plan/ClassPropertyDisplay';
+import { SideCard } from '@/types/SideCardTypes';
+import { Alert } from '@/types/AlertTypes';
+import { openInfo } from '@/components/plan/CourseInfo';
+import { OpenRatingsFn } from '@/types/RatingTypes';
+import { getOfferings } from '@/app/Plan';
+import { convertDisciplines, convertDistros } from '@/utility/Utility';
 
 const PLACEHOLDER_MESSAGE = `Don't know which specific class to take from a certain requirement category? Use a placeholder! Search for 'placeholder' to view all.`;
 
@@ -34,9 +34,9 @@ interface SearchClassProps {
 }
 
 function SearchClass(props: SearchClassProps) {
-  let course = props.course;
+  const course = props.course;
 
-  let item: CourseDragItem = { course };
+  const item: CourseDragItem = { course };
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -48,9 +48,9 @@ function SearchClass(props: SearchClassProps) {
     [props.selected]
   );
 
-  const recentOfferings = PlanManager.getOfferings(course).slice(0, 8);
-  const distroStrings = Utility.convertDistros(course.distros);
-  const disciplinesStrings = Utility.convertDisciplines(course.disciplines);
+  const recentOfferings = getOfferings(course).slice(0, 8);
+  const distroStrings = convertDistros(course.distros);
+  const disciplinesStrings = convertDisciplines(course.disciplines);
   const isPlaceholder = course.placeholder;
   const units = parseFloat(course.units);
   const isFavorite = props.bookmarks?.noCredit.has(course);

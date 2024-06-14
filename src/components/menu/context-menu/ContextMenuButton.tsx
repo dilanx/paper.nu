@@ -1,4 +1,4 @@
-import { ContextMenuItem } from '../../../types/BaseTypes';
+import { ContextMenuItem } from '@/types/BaseTypes';
 
 interface ContextMenuButtonProps {
   data: ContextMenuItem;

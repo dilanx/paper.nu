@@ -1,10 +1,10 @@
+import { Alert } from '@/types/AlertTypes';
+import { ContextMenuData } from '@/types/BaseTypes';
+import { ScheduleData, ValidScheduleDataMap } from '@/types/ScheduleTypes';
+import { getSections } from '@/utility/Calendar';
+import Links from '@/utility/StaticLinks';
+import { formatSections } from '@/utility/Utility';
 import { CalendarIcon, CameraIcon } from '@heroicons/react/24/outline';
-import { Alert } from '../../types/AlertTypes';
-import { ContextMenuData } from '../../types/BaseTypes';
-import { ScheduleData, ValidScheduleDataMap } from '../../types/ScheduleTypes';
-import { getSections } from '../../utility/Calendar';
-import Links from '../../utility/StaticLinks';
-import Utility from '../../utility/Utility';
 
 type ActionFunction<T = null> = (data: T) => void;
 
@@ -56,7 +56,7 @@ const exportMenu = ({
 
           const invalidSectionMessage =
             Object.keys(invalidSections).length > 0
-              ? ` The following sections cannot be added to the exported schedule because they don't have valid meeting time data: ${Utility.formatSections(
+              ? ` The following sections cannot be added to the exported schedule because they don't have valid meeting time data: ${formatSections(
                   invalidSections
                 )}`
               : '';

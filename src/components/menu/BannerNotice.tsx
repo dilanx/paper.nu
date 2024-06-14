@@ -1,6 +1,6 @@
 import { ExclamationCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Alert } from '../../types/AlertTypes';
-import { BannerData } from '../../types/BaseTypes';
+import { Alert } from '@/types/AlertTypes';
+import { BannerData } from '@/types/BaseTypes';
 
 interface BannerNoticeProps {
   data: BannerData;

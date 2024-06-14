@@ -1,15 +1,15 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import ScheduleManager from '../../ScheduleManager';
-import { Alert } from '../../types/AlertTypes';
+import { Alert } from '@/types/AlertTypes';
 import {
   ScheduleData,
   ScheduleInteractions,
   ScheduleModificationFunctions,
-} from '../../types/ScheduleTypes';
-import { SideCard } from '../../types/SideCardTypes';
-import SearchScheduleClass from '../search/SearchScheduleClass';
-import { OpenRatingsFn } from '../../types/RatingTypes';
+} from '@/types/ScheduleTypes';
+import { SideCard } from '@/types/SideCardTypes';
+import SearchScheduleClass from '@/components/search/SearchScheduleClass';
+import { OpenRatingsFn } from '@/types/RatingTypes';
+import { getCourseColor } from '@/app/Plan';
 
 interface ScheduleBookmarksListProps {
   schedule: ScheduleData;
@@ -33,18 +33,18 @@ const variants = {
 };
 
 function ScheduleBookmarksList(props: ScheduleBookmarksListProps) {
-  let content = props.schedule.bookmarks;
+  const content = props.schedule.bookmarks;
 
   const [selected, setSelected] = useState<string | undefined>();
 
   let classes: JSX.Element[] | JSX.Element = [];
   if (content.length > 0) {
-    classes = content.map((course, index) => {
+    classes = content.map((course) => {
       return (
         <SearchScheduleClass
           course={course}
           schedule={props.schedule}
-          color={ScheduleManager.getCourseColor(course.subject)}
+          color={getCourseColor(course.subject)}
           selected={selected === course.course_id}
           select={() =>
             setSelected(

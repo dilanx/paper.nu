@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import {
   ScrollSelectMenuLoadState,
   ScrollSelectMenuOption,
-} from '../../types/GenericMenuTypes';
+} from '@/types/GenericMenuTypes';
 import { SpinnerCircularFixed } from 'spinners-react';
 
 interface ScrollSelectMenuProps {

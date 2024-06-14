@@ -1,5 +1,4 @@
 import { createEvents, DateArray, EventAttributes } from 'ics';
-import ScheduleManager from '../ScheduleManager';
 import {
   isSectionWithValidMeetingPattern,
   ScheduleData,
@@ -7,14 +6,20 @@ import {
   SectionWithValidMeetingPattern,
   ValidScheduleDataMap,
   ValidScheduleSection,
-} from '../types/ScheduleTypes';
-import Utility from './Utility';
+} from '@/types/ScheduleTypes';
+import {
+  convertAllDaysToArray,
+  convertDate,
+  convertSectionComponent,
+  getClosestMeetingDate,
+} from './Utility';
+import { getLocation } from '@/app/Schedule';
 
 function getTimes(
   section: SectionWithValidMeetingPattern
 ): { start: DateArray; end: DateArray } | undefined {
-  const date = Utility.getClosestMeetingDate(
-    Utility.convertDate(section.section.start_date),
+  const date = getClosestMeetingDate(
+    convertDate(section.section.start_date),
     section.meeting_days
   );
   if (!date) return;
@@ -28,17 +33,17 @@ function getTimes(
 }
 
 function getRecurrenceRule(section: SectionWithValidMeetingPattern) {
-  const { y, m, d } = Utility.convertDate(section.section.end_date);
-  return `FREQ=WEEKLY;BYDAY=${Utility.convertAllDaysToArray(
-    section.meeting_days
-  ).join(',')};INTERVAL=1;UNTIL=${y}${(m + 1).toString().padStart(2, '0')}${d
+  const { y, m, d } = convertDate(section.section.end_date);
+  return `FREQ=WEEKLY;BYDAY=${convertAllDaysToArray(section.meeting_days).join(
+    ','
+  )};INTERVAL=1;UNTIL=${y}${(m + 1).toString().padStart(2, '0')}${d
     .toString()
     .padStart(2, '0')}T235959Z`;
 }
 
 export function getSections({ schedule }: ScheduleData) {
-  let validSections: ValidScheduleDataMap = {};
-  let invalidSections: ScheduleDataMap = {};
+  const validSections: ValidScheduleDataMap = {};
+  const invalidSections: ScheduleDataMap = {};
 
   for (const sectionId in schedule) {
     const section = schedule[sectionId];
@@ -88,12 +93,12 @@ export async function exportScheduleAsICS(validSections: ValidScheduleDataMap) {
           section.number ? ` ${section.number}` : ''
         }${
           section.component !== 'LEC'
-            ? ` (${Utility.convertSectionComponent(section.component)})`
+            ? ` (${convertSectionComponent(section.component)})`
             : ''
         }`,
         description: section.title,
         location: section.room?.[pattern] || 'Unknown',
-        geo: ScheduleManager.getLocation(section.room?.[pattern]),
+        geo: getLocation(section.room?.[pattern]),
         recurrenceRule: getRecurrenceRule(swmp),
       };
       events.push(event);

@@ -1,25 +1,25 @@
-import { Alert } from '../../types/AlertTypes';
-import { UserOptions } from '../../types/BaseTypes';
-import { OpenRatingsFn } from '../../types/RatingTypes';
+import { Alert } from '@/types/AlertTypes';
+import { UserOptions } from '@/types/BaseTypes';
+import { OpenRatingsFn } from '@/types/RatingTypes';
 import {
   ScheduleBookmarks,
   ScheduleInteractions,
   ScheduleModificationFunctions,
   ScheduleSectionOverride,
   SectionWithValidMeetingPattern,
-} from '../../types/ScheduleTypes';
-import { SearchModificationFunctions } from '../../types/SearchTypes';
-import { SideCard } from '../../types/SideCardTypes';
-import { getLayout } from '../../utility/Layout';
-import Utility from '../../utility/Utility';
+} from '@/types/ScheduleTypes';
+import { SearchModificationFunctions } from '@/types/SearchTypes';
+import { SideCard } from '@/types/SideCardTypes';
+import { getLayout } from '@/utility/Layout';
 import ScheduleClass from './ScheduleClass';
+import { convertDay } from '@/utility/Utility';
 
 function Cell({ day, children }: { day?: number; children?: React.ReactNode }) {
   return (
     <div className="relative flex h-full w-full items-center justify-center border-b border-t border-dashed border-gray-200 first:border-t-0 last:border-b-2 dark:border-gray-600">
       {day !== undefined && (
         <p className="m-0 text-center text-gray-500 dark:text-gray-300">
-          {Utility.convertDay(day)}
+          {convertDay(day)}
         </p>
       )}
       {children}
@@ -45,7 +45,7 @@ interface DayProps {
 }
 
 function Day(props: DayProps) {
-  let hours: JSX.Element[] = [
+  const hours: JSX.Element[] = [
     <Cell day={props.index} key={`day-${props.index}-x`} />,
   ];
 

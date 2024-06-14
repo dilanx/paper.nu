@@ -5,9 +5,7 @@ import React from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import toast, { Toaster } from 'react-hot-toast';
-import Account from './Account';
-import { getTermName } from './DataManager';
-import SaveDataManager from './SaveDataManager';
+import { getPlanName, getScheduleName, login } from './app/Account';
 import {
   activateAccountPlan,
   activateAccountSchedule,
@@ -17,6 +15,7 @@ import {
   update,
 } from './app/AccountModification';
 import bn from './app/BannerNotice';
+import { getTermName } from './app/Data';
 import {
   addBookmark,
   addCourse,
@@ -36,6 +35,11 @@ import {
   removeRecentShareHistory,
   updateRecentShare,
 } from './app/RecentShare';
+import {
+  load,
+  loadUserOptionsFromStorage,
+  saveUserOptionToStorage,
+} from './app/SaveData';
 import {
   addOverride,
   addScheduleBookmark,
@@ -91,7 +95,11 @@ import { SearchModificationFunctions } from './types/SearchTypes';
 import { SideCardData } from './types/SideCardTypes';
 import { Mode } from './utility/Constants';
 import { PaperError } from './utility/PaperError';
-import Utility from './utility/Utility';
+import {
+  BACKGROUND_DARK,
+  BACKGROUND_LIGHT,
+  errorAlert,
+} from './utility/Utility';
 const d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
@@ -99,22 +107,21 @@ const VERSION_NO_PATCH = VERSION.split('.').slice(0, 2).join('.');
 
 // TODO use context instead of passing down props for things like alert, side card, context menu, etc.
 
-class App extends React.Component<{}, AppState> implements AppType {
+class App
+  extends React.Component<Record<string, never>, AppState>
+  implements AppType
+{
   appRef;
 
-  constructor(props: {}) {
+  constructor(props: Record<string, never>) {
     super(props);
 
-    let defaultSwitches = SaveDataManager.loadSwitchesFromStorage(
-      (key, value, save) => {
-        this.setSwitch(key, value, save);
-      }
-    );
-    defaultSwitches.get.tab = 'Search';
+    const userOptions = loadUserOptionsFromStorage((key, value, save) => {
+      this.setUserOption(key, value, save);
+    });
+    userOptions.get.tab = 'Search';
 
-    let app = this;
-
-    let data: PlanData = {
+    const data: PlanData = {
       courses: [
         [[], [], []],
         [[], [], []],
@@ -129,57 +136,58 @@ class App extends React.Component<{}, AppState> implements AppType {
 
     const f: PlanModificationFunctions = {
       addCourse: (course, location) => {
-        addCourse(app, course, location);
+        addCourse(this, course, location);
       },
       removeCourse: (courseIndex, location) => {
-        removeCourse(app, courseIndex, location);
+        removeCourse(this, courseIndex, location);
       },
       moveCourse: (course, oldLocation, newLocation) => {
-        moveCourse(app, course, oldLocation, newLocation);
+        moveCourse(this, course, oldLocation, newLocation);
       },
       addBookmark: (course, forCredit) => {
-        addBookmark(app, course, forCredit);
+        addBookmark(this, course, forCredit);
       },
       removeBookmark: (course, forCredit) => {
-        removeBookmark(app, course, forCredit);
+        removeBookmark(this, course, forCredit);
       },
       putCustomCourse: (location, courseToEdit) =>
-        putCustomCourse(app, location, courseToEdit),
+        putCustomCourse(this, location, courseToEdit),
     };
 
     const f2: PlanSpecialFunctions = {
       addSummerQuarter: (year) => {
-        addSummerQuarter(app, year);
+        addSummerQuarter(this, year);
       },
       removeSummerQuarter: (year) => {
-        removeSummerQuarter(app, year);
+        removeSummerQuarter(this, year);
       },
       addYear: () => {
-        addYear(app);
+        addYear(this);
       },
       removeYear: (year) => {
-        removeYear(app, year);
+        removeYear(this, year);
       },
       clearData: (year?: number) => {
-        clearData(app, year);
+        clearData(this, year);
       },
     };
 
     const sf: ScheduleModificationFunctions = {
-      addSection: (section) => addSection(app, section),
-      removeSection: (section) => removeSection(app, section),
-      addOverride: (override) => addOverride(app, override),
-      checkOverrides: (section) => checkOverrides(app, section),
-      removeOverrides: (sectionId) => removeOverrides(app, sectionId),
-      addScheduleBookmark: (course) => addScheduleBookmark(app, course),
-      removeScheduleBookmark: (course) => removeScheduleBookmark(app, course),
-      putCustomSection: (sectionToEdit) => putCustomSection(app, sectionToEdit),
-      clear: () => clearSchedule(app),
+      addSection: (section) => addSection(this, section),
+      removeSection: (section) => removeSection(this, section),
+      addOverride: (override) => addOverride(this, override),
+      checkOverrides: (section) => checkOverrides(this, section),
+      removeOverrides: (sectionId) => removeOverrides(this, sectionId),
+      addScheduleBookmark: (course) => addScheduleBookmark(this, course),
+      removeScheduleBookmark: (course) => removeScheduleBookmark(this, course),
+      putCustomSection: (sectionToEdit) =>
+        putCustomSection(this, sectionToEdit),
+      clear: () => clearSchedule(this),
     };
 
     const ff: SearchModificationFunctions = {
       set: (query, current) => {
-        this.setSwitch('tab', 'Search');
+        this.setUserOption('tab', 'Search');
         this.setState({
           searchDefaults: {
             query,
@@ -191,20 +199,20 @@ class App extends React.Component<{}, AppState> implements AppType {
     };
 
     const rf: RecentShareModificationFunctions = {
-      open: (shortCode) => activateRecentShare(app, shortCode),
-      remove: (shortCode) => removeRecentShareHistory(app, shortCode),
+      open: (shortCode) => activateRecentShare(this, shortCode),
+      remove: (shortCode) => removeRecentShareHistory(this, shortCode),
     };
 
-    if (defaultSwitches.get.dark) {
-      document.body.style.backgroundColor = Utility.BACKGROUND_DARK;
+    if (userOptions.get.dark) {
+      document.body.style.backgroundColor = BACKGROUND_DARK;
       document
         .querySelector('meta[name="theme-color"]')
-        ?.setAttribute('content', Utility.BACKGROUND_DARK);
+        ?.setAttribute('content', BACKGROUND_DARK);
     } else {
-      document.body.style.backgroundColor = Utility.BACKGROUND_LIGHT;
+      document.body.style.backgroundColor = BACKGROUND_LIGHT;
       document
         .querySelector('meta[name="theme-color"]')
-        ?.setAttribute('content', Utility.BACKGROUND_LIGHT);
+        ?.setAttribute('content', BACKGROUND_LIGHT);
     }
 
     const lastVersion = localStorage.getItem('v');
@@ -218,7 +226,7 @@ class App extends React.Component<{}, AppState> implements AppType {
         bookmarks: [],
         overrides: [],
       },
-      switches: defaultSwitches,
+      userOptions: userOptions,
       f,
       f2,
       sf,
@@ -279,10 +287,10 @@ class App extends React.Component<{}, AppState> implements AppType {
           });
           break;
         case 'plan':
-          this.setSwitch('mode', Mode.PLAN);
+          this.setUserOption('mode', Mode.PLAN);
           break;
         case 'schedule':
-          this.setSwitch('mode', Mode.SCHEDULE);
+          this.setUserOption('mode', Mode.SCHEDULE);
           break;
       }
     }
@@ -293,17 +301,17 @@ class App extends React.Component<{}, AppState> implements AppType {
 
     if (code && state) {
       d('query has code and state, logging in');
-      Account.logIn(code, state).then((response) => {
+      login(code, state).then((response) => {
         if (!response.success) {
           this.showAlert(
-            Utility.errorAlert(
+            errorAlert(
               'account_initial_login_code',
               new PaperError(response.data as string)
             )
           );
         } else {
-          this.setSwitch('tab', 'Plans');
-          this.setSwitch('active_plan_id', 'None', true);
+          this.setUserOption('tab', 'Plans');
+          this.setUserOption('active_plan_id', 'None', true);
         }
         this.initialize(
           () => {
@@ -324,7 +332,7 @@ class App extends React.Component<{}, AppState> implements AppType {
 
   initialize(callback: () => void, options?: SaveDataOptions) {
     d('initializing');
-    SaveDataManager.load(this.state.switches, options)
+    load(this.state.userOptions, options)
       .then(
         ({
           mode,
@@ -397,8 +405,8 @@ class App extends React.Component<{}, AppState> implements AppType {
             });
             return;
           }
-          this.setSwitch('mode', mode);
-          this.setSwitch(
+          this.setUserOption('mode', mode);
+          this.setUserOption(
             mode === Mode.PLAN ? 'active_plan_id' : 'active_schedule_id',
             activeId,
             true
@@ -430,7 +438,7 @@ class App extends React.Component<{}, AppState> implements AppType {
           }
 
           switch (method) {
-            case 'URL':
+            case 'URL': {
               toast.success(
                 `Loaded shared ${modeStr}${
                   recentShare && typeof recentShare !== 'string'
@@ -439,18 +447,21 @@ class App extends React.Component<{}, AppState> implements AppType {
                 }`
               );
               break;
-            case 'Account':
+            }
+            case 'Account': {
               toast.success(
                 `Loaded ${modeStr}: ` +
                   (mode === Mode.PLAN
-                    ? Account.getPlanName(activeId || 'None')
-                    : Account.getScheduleName(activeId || 'None'))
+                    ? getPlanName(activeId)
+                    : getScheduleName(activeId))
               );
               break;
-            case 'Storage':
+            }
+            case 'Storage': {
               toast.success(`Loaded recently edited ${modeStr}`);
               break;
-            case 'TermChange':
+            }
+            case 'TermChange': {
               const sdata = data as ScheduleData;
               toast.success(
                 `Changed term to ${
@@ -460,11 +471,12 @@ class App extends React.Component<{}, AppState> implements AppType {
                 }`
               );
               break;
+            }
           }
         }
       )
       .catch((error: PaperError) => {
-        this.showAlert(Utility.errorAlert('initialization', error));
+        this.showAlert(errorAlert('initialization', error));
       })
       .finally(() => {
         callback();
@@ -472,7 +484,10 @@ class App extends React.Component<{}, AppState> implements AppType {
       });
   }
 
-  componentDidUpdate(_: Readonly<{}>, prevState: Readonly<AppState>) {
+  componentDidUpdate(
+    _: Readonly<Record<string, never>>,
+    prevState: Readonly<AppState>
+  ) {
     if (prevState.saveState !== 'start' && this.state.saveState === 'start') {
       d(
         'save timer reset (prev %s), waiting grace period before saving',
@@ -482,22 +497,21 @@ class App extends React.Component<{}, AppState> implements AppType {
         return true;
       };
 
-      const app = this;
       window.clearTimeout(this.state.saveTimeoutId);
 
       const activeIdKey =
-        this.state.switches.get.mode === Mode.PLAN
+        this.state.userOptions.get.mode === Mode.PLAN
           ? 'active_plan_id'
           : 'active_schedule_id';
-      const activeId = this.state.switches.get[activeIdKey];
+      const activeId = this.state.userOptions.get[activeIdKey];
       const timeoutId = window.setTimeout(() => {
-        const nowActiveId = this.state.switches.get[activeIdKey];
+        const nowActiveId = this.state.userOptions.get[activeIdKey];
         if (nowActiveId !== activeId) {
           d('active id changed, aborting save');
           return;
         }
         d('saving now');
-        update(app, this.state.switches.get.mode === Mode.SCHEDULE);
+        update(this, this.state.userOptions.get.mode === Mode.SCHEDULE);
       }, 1500);
       this.setState({ saveState: 'wait', saveTimeoutId: timeoutId });
     }
@@ -508,19 +522,19 @@ class App extends React.Component<{}, AppState> implements AppType {
     }
   }
 
-  setSwitch(key: keyof ReadUserOptions, val: any, save = false) {
-    let switches = this.state.switches;
+  setUserOption(key: keyof ReadUserOptions, val: any, save = false) {
+    const userOptions = this.state.userOptions;
     if (
       key === 'active_plan_id' &&
       val === 'None' &&
-      switches.get[key] !== val
+      userOptions.get[key] !== val
     ) {
       this.setState({ saveState: 'idle' });
     }
-    switches.get[key] = val;
-    this.setState({ switches: switches });
+    userOptions.get[key] = val;
+    this.setState({ userOptions });
     if (save) {
-      SaveDataManager.saveSwitchToStorage(key, val?.toString());
+      saveUserOptionToStorage(key, val?.toString());
     }
     d('switch set: %s = %s', key, val);
   }
@@ -570,8 +584,8 @@ class App extends React.Component<{}, AppState> implements AppType {
   }
 
   interactionMultiClear(interactions: (keyof ScheduleInteractions)[]) {
-    let scheduleInteractions = this.state.scheduleInteractions;
-    for (let interaction of interactions) {
+    const scheduleInteractions = this.state.scheduleInteractions;
+    for (const interaction of interactions) {
       if (interaction === 'multiClear') continue;
       delete scheduleInteractions[interaction].get;
     }
@@ -589,7 +603,7 @@ class App extends React.Component<{}, AppState> implements AppType {
   }
 
   render() {
-    const switches = this.state.switches;
+    const switches = this.state.userOptions;
     const tab = switches.get.tab;
     const darkMode = switches.get.dark;
     const isSchedule = switches.get.mode === Mode.SCHEDULE;
@@ -639,7 +653,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                 data={this.state.alertData}
                 switches={switches}
                 onConfirm={(data) => {
-                  let alertData = this.state.alertData;
+                  const alertData = this.state.alertData;
                   if (alertData?.action) {
                     alertData.action(data);
                   }
@@ -659,18 +673,6 @@ class App extends React.Component<{}, AppState> implements AppType {
                 onClose={() => this.setState({ about: false })}
               />
             )}
-
-            {/* {this.state.clp && (
-              <ChangeLogPreview
-                version={VERSION_NO_PATCH}
-                info={clp}
-                switches={switches}
-                onClose={() => {
-                  localStorage.setItem('v', VERSION_NO_PATCH);
-                  this.setState({ clp: false });
-                }}
-              />
-            )} */}
 
             {this.state.ratings && (
               <Ratings
@@ -746,9 +748,9 @@ class App extends React.Component<{}, AppState> implements AppType {
                           this.showAlert(alertData);
                         },
                         () => {
-                          this.setSwitch('mode', mode, true);
-                          this.setSwitch('notes', false);
-                          this.setSwitch('unsaved_notes', false);
+                          this.setUserOption('mode', mode, true);
+                          this.setUserOption('notes', false);
+                          this.setUserOption('unsaved_notes', false);
                           this.setState({ loadingLogin: true });
                           this.initialize(() => {
                             this.setState({ loadingLogin: false });
@@ -812,7 +814,7 @@ class App extends React.Component<{}, AppState> implements AppType {
                 )}
                 {tab === 'Plans' && (
                   <AccountPlans
-                    switches={this.state.switches}
+                    switches={this.state.userOptions}
                     recentShare={this.state.recentShare}
                     rf={this.state.rf}
                     alert={(alertData) => {
@@ -868,7 +870,6 @@ class App extends React.Component<{}, AppState> implements AppType {
                   switches={switches}
                   loading={this.state.loadingLogin}
                   openAboutMenu={() => this.setState({ about: true })}
-                  openChangeLogPreview={() => this.setState({ clp: true })}
                   saveState={this.state.saveState}
                 />
                 <AnimatePresence mode="wait">
@@ -919,33 +920,6 @@ class App extends React.Component<{}, AppState> implements AppType {
                 </AnimatePresence>
               </div>
             </div>
-            <AnimatePresence>
-              {/* {this.state.unsavedChanges && (
-                <motion.div
-                  initial={{ x: 20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: 20, opacity: 0 }}
-                  className={`fixed right-12 ${
-                    switches.get.save_location_top ? 'top-8' : 'bottom-8'
-                  }`}
-                >
-                  <button
-                    className="rainbow-border-button flex items-center gap-2 text-black opacity-75 shadow-lg after:bg-gray-100 hover:opacity-100
-                      active:before:bg-emerald-400 active:before:bg-none dark:text-white dark:after:bg-gray-700"
-                    onClick={() => {
-                      update(this, isSchedule);
-                    }}
-                  >
-                    <>
-                      <ArrowDownTrayIcon className="inline-block h-6 w-6" />
-                      <p className="inline-block text-lg font-extrabold">
-                        SAVE
-                      </p>
-                    </>
-                  </button>
-                </motion.div>
-              )} */}
-            </AnimatePresence>
           </div>
         </MotionConfig>
       </DndProvider>

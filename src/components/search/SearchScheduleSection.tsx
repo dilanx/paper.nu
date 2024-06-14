@@ -1,16 +1,20 @@
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
-import { Alert } from '../../types/AlertTypes';
-import { Color } from '../../types/BaseTypes';
+import { Alert } from '@/types/AlertTypes';
+import { Color } from '@/types/BaseTypes';
 import {
   ScheduleInteractions,
   ScheduleModificationFunctions,
   ScheduleSection,
-} from '../../types/ScheduleTypes';
-import { SideCard } from '../../types/SideCardTypes';
-import { openInfo } from '../schedule/ScheduleSectionInfo';
-import Utility from '../../utility/Utility';
-import { OpenRatingsFn } from '../../types/RatingTypes';
+} from '@/types/ScheduleTypes';
+import { SideCard } from '@/types/SideCardTypes';
+import { openInfo } from '@/components/schedule/ScheduleSectionInfo';
+import { OpenRatingsFn } from '@/types/RatingTypes';
+import {
+  convertAllDaysToString,
+  convertSectionComponent,
+  convertTime,
+} from '@/utility/Utility';
 
 interface SearchScheduleSectionProps {
   section: ScheduleSection;
@@ -60,15 +64,11 @@ function SearchScheduleSection({
     meetingPatterns.push(
       <div key={`sss-${section.section_id}-${i}`}>
         <p className="text-sm font-normal">
-          {meetingDays
-            ? Utility.convertAllDaysToString(meetingDays)
-            : 'no days'}
+          {meetingDays ? convertAllDaysToString(meetingDays) : 'no days'}
         </p>
         <p className="text-md font-normal">
           {startTime && endTime
-            ? Utility.convertTime(startTime, true) +
-              ' - ' +
-              Utility.convertTime(endTime, true)
+            ? convertTime(startTime, true) + ' - ' + convertTime(endTime, true)
             : 'no times'}
         </p>
         <p className="text-xs font-light">{room ?? 'no location'}</p>
@@ -106,7 +106,7 @@ function SearchScheduleSection({
         <p className="text-md overflow-hidden whitespace-nowrap px-2 font-bold">
           {section.section}
           <span className="pl-2 text-sm font-normal">
-            {Utility.convertSectionComponent(section.component).toUpperCase()}
+            {convertSectionComponent(section.component).toUpperCase()}
           </span>
           {disabled && (
             <span className="pl-2 text-xs font-normal text-red-600 dark:text-red-400">

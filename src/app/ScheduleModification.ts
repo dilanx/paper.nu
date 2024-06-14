@@ -5,18 +5,23 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import debug from 'debug';
-import ScheduleManager from '../ScheduleManager';
-import { AppType, Color } from '../types/BaseTypes';
+import { AppType, Color } from '@/types/BaseTypes';
 import {
   ScheduleCourse,
   ScheduleSection,
   ScheduleSectionOverride,
-} from '../types/ScheduleTypes';
+} from '@/types/ScheduleTypes';
 import { toast } from 'react-hot-toast';
-import { customSectionForm } from '../utility/Forms';
-import { DayMap, Days } from '../utility/Constants';
-import Utility from '../utility/Utility';
-import { getTermInfo } from '../DataManager';
+import { customSectionForm } from '@/utility/Forms';
+import { DayMap, Days } from '@/utility/Constants';
+import {
+  getAllSectionTimes,
+  saveSchedule,
+  sectionsOverlap,
+  timeEquals,
+} from './Schedule';
+import { convertTime, parseTime } from '@/utility/Utility';
+import { getTermInfo } from './Data';
 const d = debug('app:schedule-mod');
 
 function courseConfirmationPrompts(
@@ -43,9 +48,13 @@ function courseConfirmationPrompts(
     return;
   }
 
-  const overlaps = ScheduleManager.sectionsOverlap(section, data.schedule);
+  const overlaps = sectionsOverlap(section, data.schedule);
 
-  if (overlaps && !section.custom && app.state.switches.get.schedule_warnings) {
+  if (
+    overlaps &&
+    !section.custom &&
+    app.state.userOptions.get.schedule_warnings
+  ) {
     app.showAlert({
       title: 'Overlapping sections',
       message: `It looks like that section overlaps with ${overlaps.subject} ${overlaps.number} (section ${overlaps.section}). Are you sure you want to add it?`,
@@ -70,12 +79,12 @@ export function addOverride(app: AppType, override: ScheduleSectionOverride) {
   d('schedule override added: %s', override.section_id);
   app.setState({
     schedule,
-    saveState: ScheduleManager.save(schedule, app.state.switches),
+    saveState: saveSchedule(schedule, app.state.userOptions),
   });
 }
 
 export function checkOverrides(app: AppType, section: ScheduleSection) {
-  let times = ScheduleManager.getAllSectionTimes(section);
+  let times = getAllSectionTimes(section);
   const len = times.length;
   for (const override of app.state.schedule.overrides) {
     if (override.section_id !== section.section_id) {
@@ -85,8 +94,8 @@ export function checkOverrides(app: AppType, section: ScheduleSection) {
     times = times.filter(
       (time) =>
         override.day !== time.day ||
-        !ScheduleManager.timeEquals(time.start_time, override.start_time) ||
-        !ScheduleManager.timeEquals(time.end_time, override.end_time)
+        !timeEquals(time.start_time, override.start_time) ||
+        !timeEquals(time.end_time, override.end_time)
     );
   }
 
@@ -112,20 +121,20 @@ export function removeOverrides(app: AppType, sectionId: string) {
   d('schedule overrides removed: %s', sectionId);
   app.setState({
     schedule,
-    saveState: ScheduleManager.save(schedule, app.state.switches),
+    saveState: saveSchedule(schedule, app.state.userOptions),
   });
 }
 
 export function addSection(app: AppType, section: ScheduleSection) {
   courseConfirmationPrompts(app, section, () => {
     delete section.preview;
-    let schedule = app.state.schedule;
+    const schedule = app.state.schedule;
     schedule.schedule[section.section_id] = section;
 
     d('schedule section added: %s', section.section_id);
     app.setState({
       schedule,
-      saveState: ScheduleManager.save(schedule, app.state.switches),
+      saveState: saveSchedule(schedule, app.state.userOptions),
     });
   });
 }
@@ -139,7 +148,7 @@ export function removeSection(app: AppType, section: ScheduleSection) {
   d('schedule section removed: %s', section.section_id);
   app.setState({
     schedule,
-    saveState: ScheduleManager.save(schedule, app.state.switches),
+    saveState: saveSchedule(schedule, app.state.userOptions),
   });
 }
 
@@ -172,12 +181,12 @@ export function addScheduleBookmark(app: AppType, course: ScheduleCourse) {
   schedule.bookmarks.push(course);
   app.setState({
     schedule,
-    saveState: ScheduleManager.save(schedule, app.state.switches),
+    saveState: saveSchedule(schedule, app.state.userOptions),
   });
 }
 
 export function removeScheduleBookmark(app: AppType, course: ScheduleCourse) {
-  let schedule = app.state.schedule;
+  const schedule = app.state.schedule;
   if (
     !schedule.bookmarks.some(
       (bookmarkCourse) => bookmarkCourse.course_id === course.course_id
@@ -202,7 +211,7 @@ export function removeScheduleBookmark(app: AppType, course: ScheduleCourse) {
 
   app.setState({
     schedule,
-    saveState: ScheduleManager.save(schedule, app.state.switches),
+    saveState: saveSchedule(schedule, app.state.userOptions),
   });
 }
 
@@ -236,10 +245,10 @@ export function putCustomSection(
               instructor: sectionToEdit.instructors?.[0].name,
               location: sectionToEdit.room[0] || undefined,
               start: sectionToEdit.start_time[0]
-                ? Utility.convertTime(sectionToEdit.start_time[0], true)
+                ? convertTime(sectionToEdit.start_time[0], true)
                 : undefined,
               end: sectionToEdit.end_time[0]
-                ? Utility.convertTime(sectionToEdit.end_time[0], true)
+                ? convertTime(sectionToEdit.end_time[0], true)
                 : undefined,
               meeting_days:
                 sectionToEdit.meeting_days[0]
@@ -273,8 +282,8 @@ export function putCustomSection(
               .map((d) => DayMap[d])
               .join(''),
           ],
-          start_time: [Utility.parseTime(res.start) || null],
-          end_time: [Utility.parseTime(res.end) || null],
+          start_time: [parseTime(res.start) || null],
+          end_time: [parseTime(res.end) || null],
           room: [res.location || null],
           component: 'CUS',
           start_date: start,
@@ -319,7 +328,7 @@ export function clearSchedule(app: AppType) {
       });
       app.setState({
         schedule,
-        saveState: ScheduleManager.save(schedule, app.state.switches),
+        saveState: saveSchedule(schedule, app.state.userOptions),
       });
     },
   });

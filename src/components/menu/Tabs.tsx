@@ -5,8 +5,8 @@ import {
   ColorMap,
   ReadUserOptions,
   UserOptions,
-} from '../../types/BaseTypes';
-import Tooltip from '../generic/Tooltip';
+} from '@/types/BaseTypes';
+import Tooltip from '@/components/generic/Tooltip';
 
 interface TabBarProps {
   switches: UserOptions;
@@ -31,8 +31,8 @@ interface TabBarButtonProps {
 
 export function Tabs(props: TabBarProps) {
   const darkMode = props.switches.get.dark;
-  let colorMap = props.colorMap;
-  let color = colorMap[props.switches.get[props.switchName] as string];
+  const colorMap = props.colorMap;
+  const color = colorMap[props.switches.get[props.switchName] as string];
   return (
     <div className="relative">
       <div
@@ -68,7 +68,7 @@ export function Tabs(props: TabBarProps) {
 }
 
 export function TabButton(props: TabBarButtonProps) {
-  let color = props.color;
+  const color = props.color;
   return (
     <button
       className={`flex-1 px-2 py-1 text-sm ${

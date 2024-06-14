@@ -1,5 +1,5 @@
 import { Component, ComponentProps } from 'react';
-import { Mode } from '../utility/Constants';
+import { Mode } from '@/utility/Constants';
 import {
   RecentShareItem,
   RecentShareModificationFunctions,
@@ -24,7 +24,7 @@ import { RatingsViewData } from './RatingTypes';
 export interface AppState {
   data: PlanData;
   schedule: ScheduleData;
-  switches: UserOptions;
+  userOptions: UserOptions;
   alertData?: AlertData;
   sideCardData?: SideCardData;
   f: PlanModificationFunctions;
@@ -126,7 +126,7 @@ export type IconElement = (props: ComponentProps<'svg'>) => JSX.Element;
 
 export type StringMap = { [key: string]: string };
 
-export interface AppType extends Component<{}, AppState> {
+export interface AppType extends Component<Record<string, never>, AppState> {
   closeSideCard(): void;
   showAlert(alertData: AlertData): void;
   initialize(callback: () => void, options?: SaveDataOptions): void;

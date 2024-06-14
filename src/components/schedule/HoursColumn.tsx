@@ -1,4 +1,4 @@
-import Utility from '../../utility/Utility';
+import { convertHour } from '@/utility/Utility';
 
 interface HoursColumnProps {
   start: number;
@@ -6,7 +6,7 @@ interface HoursColumnProps {
 }
 
 function HoursColumn({ start, end }: HoursColumnProps) {
-  let hours: JSX.Element[] = [];
+  const hours: JSX.Element[] = [];
   for (let i = start; i <= end; i++) {
     hours.push(
       <div className="relative h-full" key={`hour-${i}`}>
@@ -14,7 +14,7 @@ function HoursColumn({ start, end }: HoursColumnProps) {
           className="absolute bottom-0 m-0 w-full translate-y-1/2 pr-2
                         text-right text-sm text-gray-500 dark:text-gray-300"
         >
-          {Utility.convertHour(i)}
+          {convertHour(i)}
         </p>
       </div>
     );

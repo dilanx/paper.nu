@@ -208,10 +208,6 @@ export interface AlertData {
   };
   textHTML?: JSX.Element;
   form?: AlertFormData;
-  selectMenu?: {
-    options: SelectMenuOption[];
-    defaultValue?: string;
-  };
   confirmButton?: string;
   disableConfirmButton?: string;
   color: Color;

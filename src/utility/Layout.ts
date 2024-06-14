@@ -3,8 +3,8 @@ import {
   ScheduleLayoutMap,
   SectionWithValidMeetingPattern,
   Time,
-} from '../types/ScheduleTypes';
-import Utility from './Utility';
+} from '@/types/ScheduleTypes';
+import { timeInMinutes } from './Utility';
 
 /*
     Adapted from salad.nu by Andy Xu
@@ -14,7 +14,7 @@ import Utility from './Utility';
 */
 
 function overlaps(end1: Time, start2: Time) {
-  return Utility.timeInMinutes(end1) > Utility.timeInMinutes(start2);
+  return timeInMinutes(end1) > timeInMinutes(start2);
 }
 
 function getCollisionGroups(sections: SectionWithValidMeetingPattern[]) {

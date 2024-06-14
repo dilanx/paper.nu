@@ -1,7 +1,11 @@
-import PlanManager from '../../PlanManager';
-import ScheduleManager from '../../ScheduleManager';
-import { Color } from '../../types/BaseTypes';
-import { SearchFilter } from '../../types/SearchTypes';
+import {
+  getAllSchoolSymbols,
+  getCourseColor,
+  getSchoolName,
+  getSchoolSubjects,
+} from '@/app/Plan';
+import { Color } from '@/types/BaseTypes';
+import { SearchFilter } from '@/types/SearchTypes';
 
 interface BrowseButtonProps {
   symbol: string;
@@ -37,10 +41,10 @@ function SearchBrowse({ filter, school, setSchool }: SearchBrowseProps) {
   return (
     <div className="m-4 flex flex-col gap-3">
       {!school &&
-        PlanManager.getAllSchoolSymbols().map((s, i) => (
+        getAllSchoolSymbols().map((s, i) => (
           <BrowseButton
             symbol={s}
-            name={PlanManager.getSchoolName(s)}
+            name={getSchoolName(s)}
             action={() => setSchool(s)}
             key={`browse-school-${i}`}
           />
@@ -49,18 +53,16 @@ function SearchBrowse({ filter, school, setSchool }: SearchBrowseProps) {
         <>
           <div className="text-center">
             <p className="text-2xl font-medium text-gray-400">{school}</p>
-            <p className="text-sm text-gray-400">
-              {PlanManager.getSchoolName(school)}
-            </p>
+            <p className="text-sm text-gray-400">{getSchoolName(school)}</p>
           </div>
-          {PlanManager.getSchoolSubjects(school).map((s, i) => (
+          {getSchoolSubjects(school).map((s, i) => (
             <BrowseButton
               symbol={s.symbol}
               name={s.name}
               action={() => {
                 filter.set({ subject: s.symbol });
               }}
-              color={ScheduleManager.getCourseColor(s.symbol)}
+              color={getCourseColor(s.symbol)}
               key={`browse-subject-${i}`}
             />
           ))}

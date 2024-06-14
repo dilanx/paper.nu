@@ -9,11 +9,11 @@ import {
 } from '@heroicons/react/24/outline';
 import debug from 'debug';
 import toast from 'react-hot-toast';
-import PlanManager from '../PlanManager';
-import { AppType, Color } from '../types/BaseTypes';
-import { Course, CourseLocation } from '../types/PlanTypes';
-import Utility from '../utility/Utility';
-import { customCourseForm } from '../utility/Forms';
+import { AppType, Color } from '@/types/BaseTypes';
+import { Course, CourseLocation } from '@/types/PlanTypes';
+import { customCourseForm } from '@/utility/Forms';
+import { duplicateCourse, getQuarterCredits, savePlan } from './Plan';
+import { convertQuarter, convertYear, shallowEqual } from '@/utility/Utility';
 const d = debug('app:plan-mod');
 
 function sortCourses(a: Course, b: Course) {
@@ -50,16 +50,16 @@ function courseConfirmationPrompts(
     return;
   }
 
-  const exists = PlanManager.duplicateCourse(course, data);
+  const exists = duplicateCourse(course, data);
 
   if (!repeatable && exists && !isPlaceholder && !ignoreExistCheck) {
     app.showAlert({
       title: 'Course already planned',
       message: `You already have ${
         course.id
-      } on your plan during the ${Utility.convertQuarter(
+      } on your plan during the ${convertQuarter(
         exists.quarter
-      ).title.toLowerCase()} quarter of your ${Utility.convertYear(
+      ).title.toLowerCase()} quarter of your ${convertYear(
         exists.year
       ).toLowerCase()}.`,
       cancelButton: 'Go back',
@@ -74,8 +74,7 @@ function courseConfirmationPrompts(
   }
 
   const unitCount =
-    PlanManager.getQuarterCredits(data.courses[year][quarter]) +
-    parseFloat(course.units);
+    getQuarterCredits(data.courses[year][quarter]) + parseFloat(course.units);
 
   if (unitCount > 5.5) {
     app.showAlert({
@@ -109,7 +108,7 @@ export function addCourse(
     d('course added: %s (y%dq%d)', course.id, year, quarter);
     app.setState({
       data,
-      saveState: PlanManager.save(data, app.state.switches),
+      saveState: savePlan(data, app.state.userOptions),
     });
   });
 }
@@ -125,15 +124,13 @@ export function removeCourse(
   }
   const data = app.state.data;
   data.courses[year][quarter].splice(
-    data.courses[year][quarter].findIndex((c) =>
-      Utility.shallowEqual(c, course)
-    ),
+    data.courses[year][quarter].findIndex((c) => shallowEqual(c, course)),
     1
   );
   d('course removed: %s (y%dq%d)', course.id, year, quarter);
   app.setState({
     data,
-    saveState: PlanManager.save(data, app.state.switches),
+    saveState: savePlan(data, app.state.userOptions),
   });
 }
 
@@ -155,9 +152,7 @@ export function moveCourse(
       if (oy >= 0) {
         const data = app.state.data;
         data.courses[oy][oq].splice(
-          data.courses[oy][oq].findIndex((c) =>
-            Utility.shallowEqual(c, course)
-          ),
+          data.courses[oy][oq].findIndex((c) => shallowEqual(c, course)),
           1
         );
       }
@@ -168,7 +163,7 @@ export function moveCourse(
       d('course moved: %s (y%dq%d) -> (y%dq%d)', course.id, oy, oq, ny, nq);
       app.setState({
         data,
-        saveState: PlanManager.save(data, app.state.switches),
+        saveState: savePlan(data, app.state.userOptions),
       });
     },
     true
@@ -183,9 +178,7 @@ export function editCourse(
 ) {
   const data = app.state.data;
   data.courses[year][quarter].splice(
-    data.courses[year][quarter].findIndex((c) =>
-      Utility.shallowEqual(c, oldCourse)
-    ),
+    data.courses[year][quarter].findIndex((c) => shallowEqual(c, oldCourse)),
     1,
     newCourse
   );
@@ -199,7 +192,7 @@ export function editCourse(
   );
   app.setState({
     data,
-    saveState: PlanManager.save(data, app.state.switches),
+    saveState: savePlan(data, app.state.userOptions),
   });
 }
 
@@ -249,7 +242,7 @@ export function addBookmark(app: AppType, course: Course, forCredit: boolean) {
     };
     return {
       data,
-      saveState: PlanManager.save(data, app.state.switches),
+      saveState: savePlan(data, app.state.userOptions),
     };
   });
 }
@@ -274,7 +267,7 @@ export function removeBookmark(
     };
     return {
       data,
-      saveState: PlanManager.save(data, prevState.switches),
+      saveState: savePlan(data, prevState.userOptions),
     };
   });
 }
@@ -282,7 +275,7 @@ export function removeBookmark(
 export function addSummerQuarter(app: AppType, year: number) {
   app.showAlert({
     title: 'Add summer quarter to this year?',
-    message: `This will add a summer quarter to your ${Utility.convertYear(
+    message: `This will add a summer quarter to your ${convertYear(
       year
     ).toLowerCase()}.`,
     confirmButton: 'Add quarter',
@@ -301,7 +294,7 @@ export function addSummerQuarter(app: AppType, year: number) {
 export function removeSummerQuarter(app: AppType, year: number) {
   app.showAlert({
     title: 'Remove summer quarter from this year?',
-    message: `This will remove the summer quarter from your ${Utility.convertYear(
+    message: `This will remove the summer quarter from your ${convertYear(
       year
     ).toLowerCase()} and all classes within it.`,
     confirmButton: 'Remove quarter',
@@ -313,7 +306,7 @@ export function removeSummerQuarter(app: AppType, year: number) {
       data.courses[year].pop();
       app.setState({
         data: data,
-        saveState: PlanManager.save(data, app.state.switches),
+        saveState: savePlan(data, app.state.userOptions),
       });
       d('summer quarter removed: y%d', year);
     },
@@ -332,7 +325,7 @@ export function removeYear(app: AppType, year: number) {
     return;
   }
 
-  const yearText = Utility.convertYear(year).toLowerCase();
+  const yearText = convertYear(year).toLowerCase();
   app.showAlert({
     title: `Remove ${yearText}?`,
     message: `All of the courses in your ${yearText} will be removed and the year will disappear from your plan.`,
@@ -345,7 +338,7 @@ export function removeYear(app: AppType, year: number) {
       data.courses.splice(year, 1);
       app.setState({
         data: data,
-        saveState: PlanManager.save(data, app.state.switches),
+        saveState: savePlan(data, app.state.userOptions),
       });
       d('year removed: y%d', year);
     },
@@ -405,9 +398,8 @@ export function putCustomCourse(
 }
 
 export function clearData(app: AppType, year?: number) {
-  let data;
   if (year === undefined) {
-    data = {
+    const data = {
       courses: [
         [[], [], []],
         [[], [], []],
@@ -422,10 +414,10 @@ export function clearData(app: AppType, year?: number) {
     d('plan cleared');
     app.setState({
       data,
-      saveState: PlanManager.save(data, app.state.switches),
+      saveState: savePlan(data, app.state.userOptions),
     });
   } else {
-    const yearText = Utility.convertYear(year).toLowerCase();
+    const yearText = convertYear(year).toLowerCase();
     app.showAlert({
       title: `Clear ${yearText}?`,
       message: `All of the courses in your ${yearText} will be removed.`,
@@ -437,7 +429,7 @@ export function clearData(app: AppType, year?: number) {
         const oldData = app.state.data;
         const courses = app.state.data.courses;
         courses[year] = [[], [], []];
-        data = { courses: courses, bookmarks: oldData.bookmarks };
+        const data = { courses: courses, bookmarks: oldData.bookmarks };
         d('year cleared: y%d', year);
         toast.success(`Cleared your ${yearText}`, {
           iconTheme: {
@@ -447,7 +439,7 @@ export function clearData(app: AppType, year?: number) {
         });
         app.setState({
           data,
-          saveState: PlanManager.save(data, app.state.switches),
+          saveState: savePlan(data, app.state.userOptions),
         });
       },
     });

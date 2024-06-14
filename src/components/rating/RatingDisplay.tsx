@@ -1,7 +1,7 @@
-import { IconElement } from '../../types/BaseTypes';
-import { BarChartMode, BarChartValue } from '../../types/GenericMenuTypes';
-import { RatingCalculations } from '../../types/RatingTypes';
-import BarChart from '../generic/BarChart';
+import { IconElement } from '@/types/BaseTypes';
+import { BarChartMode, BarChartValue } from '@/types/GenericMenuTypes';
+import { RatingCalculations } from '@/types/RatingTypes';
+import BarChart from '@/components/generic/BarChart';
 
 interface RatingDisplayProps {
   mode?: BarChartMode;
