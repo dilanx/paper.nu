@@ -24,7 +24,7 @@ function ToolbarButton({
           onClick(x + width, y + height + 10);
         }
       }}
-      className={`z-30 flex items-center gap-1 whitespace-nowrap rounded-lg px-3 py-1 text-sm
+      className={`z-30 flex items-center gap-1 whitespace-nowrap rounded-md px-3 py-1 text-sm
       font-medium ${
         active
           ? 'bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-gray-100'
