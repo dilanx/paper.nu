@@ -78,9 +78,6 @@ export interface PlanModificationFunctions {
   addBookmark: (course: Course, forCredit: boolean) => void;
   removeBookmark: (course: Course, forCredit: boolean) => void;
   putCustomCourse: (location: CourseLocation, courseToEdit?: Course) => void;
-}
-
-export interface PlanSpecialFunctions {
   addSummerQuarter: (year: number) => void;
   removeSummerQuarter: (year: number) => void;
   addYear: () => void;

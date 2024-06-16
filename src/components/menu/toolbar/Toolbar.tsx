@@ -1,3 +1,10 @@
+import { getPlan, getSchedule, login, logout } from '@/app/Account';
+import { discardNotesChanges } from '@/app/AccountModification';
+import { useApp, useData } from '@/app/Context';
+import Tooltip from '@/components/generic/Tooltip';
+import { SaveState } from '@/types/BaseTypes';
+import { Mode } from '@/utility/Constants';
+import Links from '@/utility/StaticLinks';
 import {
   ArrowRightOnRectangleIcon,
   CheckCircleIcon,
@@ -14,65 +21,40 @@ import {
 } from '@heroicons/react/24/outline';
 import { CalendarIcon, RectangleStackIcon } from '@heroicons/react/24/solid';
 import { SpinnerCircularFixed } from 'spinners-react';
-import { discardNotesChanges } from '@/app/AccountModification';
-import { Alert } from '@/types/AlertTypes';
-import {
-  ContextMenu,
-  ContextMenuData,
-  SaveState,
-  UserOptions,
-} from '@/types/BaseTypes';
-import { PlanData } from '@/types/PlanTypes';
-import { ScheduleData } from '@/types/ScheduleTypes';
-import { Mode } from '@/utility/Constants';
-import Links from '@/utility/StaticLinks';
-import Tooltip from '@/components/generic/Tooltip';
 import settingsMenu from './Settings';
 import { shareMenu } from './Share';
 import ToolbarAccount from './ToolbarAccount';
 import ToolbarButton from './ToolbarButton';
-import { getPlan, getSchedule, login, logout } from '@/app/Account';
 
 function ToolbarDivider() {
   return <div className="h-4 w-[1px] bg-gray-300 dark:bg-gray-500" />;
 }
 
 interface ToolbarProps {
-  appVersion: string;
-  alert: Alert;
-  contextMenuData?: ContextMenuData;
-  contextMenu: ContextMenu;
-  plan: PlanData;
-  schedule: ScheduleData;
-  openMap?: () => void;
-  switches: UserOptions;
   loading: boolean;
   openAboutMenu: () => void;
   saveState: SaveState;
 }
 
-function Toolbar({
-  appVersion,
-  alert,
-  contextMenuData,
-  contextMenu,
-  plan,
-  schedule,
-  openMap,
-  switches,
-  loading,
-  openAboutMenu,
-  saveState,
-}: ToolbarProps) {
-  const isSchedule = switches.get.mode === Mode.SCHEDULE;
-  const darkMode = switches.get.dark;
+function Toolbar({ loading, openAboutMenu, saveState }: ToolbarProps) {
+  const {
+    version,
+    userOptions,
+    activeContextMenu,
+    alert,
+    contextMenu,
+    mapView,
+  } = useApp();
+  const { plan, schedule } = useData();
+  const isSchedule = userOptions.get.mode === Mode.SCHEDULE;
+  const darkMode = userOptions.get.dark;
 
   const activeItem = isSchedule
-    ? switches.get.active_schedule_id
-      ? getSchedule(switches.get.active_schedule_id)
+    ? userOptions.get.active_schedule_id
+      ? getSchedule(userOptions.get.active_schedule_id)
       : undefined
-    : switches.get.active_plan_id
-    ? getPlan(switches.get.active_plan_id)
+    : userOptions.get.active_plan_id
+    ? getPlan(userOptions.get.active_plan_id)
     : undefined;
 
   return (
@@ -149,7 +131,7 @@ function Toolbar({
       <div className="flex gap-1">
         <ToolbarButton
           icon={InformationCircleIcon}
-          active={contextMenuData?.name === 'about'}
+          active={activeContextMenu === 'about'}
           onClick={(x, y) => {
             contextMenu({
               name: 'about',
@@ -180,7 +162,7 @@ function Toolbar({
                   icon: InboxArrowDownIcon,
                   onClick: () => {
                     window.open(
-                      `${Links.FEEDBACK}?v=v${encodeURIComponent(appVersion)}`,
+                      `${Links.FEEDBACK}?v=v${encodeURIComponent(version)}`,
                       '_blank'
                     );
                   },
@@ -195,35 +177,35 @@ function Toolbar({
           <ToolbarButton
             icon={MapIcon}
             onClick={() => {
-              if (openMap) {
-                openMap();
-              }
+              mapView();
             }}
           >
             Map
           </ToolbarButton>
         )}
         <ToolbarButton
-          selected={switches.get.notes}
+          selected={userOptions.get.notes}
           icon={PencilSquareIcon}
           onClick={() => {
-            if (switches.get.notes) {
-              discardNotesChanges(switches, alert, () => {
-                switches.set('notes', false);
-                switches.set('unsaved_notes', false);
+            if (userOptions.get.notes) {
+              discardNotesChanges(userOptions, alert, () => {
+                userOptions.set('notes', false);
+                userOptions.set('unsaved_notes', false);
               });
             } else {
-              switches.set('notes', true);
+              userOptions.set('notes', true);
             }
           }}
         >
           Notes
         </ToolbarButton>
         <ToolbarButton
-          active={contextMenuData?.name === 'share'}
+          active={activeContextMenu === 'share'}
           icon={UserGroupIcon}
           onClick={(x, y) => {
-            contextMenu(shareMenu({ x, y, plan, schedule, alert, switches }));
+            contextMenu(
+              shareMenu({ x, y, plan, schedule, alert, userOptions })
+            );
           }}
         >
           Share
@@ -237,7 +219,7 @@ function Toolbar({
       </div>
       <ToolbarAccount
         loading={loading}
-        active={contextMenuData?.name === 'account'}
+        active={activeContextMenu === 'account'}
         onClick={(x, y, signedIn) => {
           if (!signedIn) {
             login();
@@ -252,7 +234,7 @@ function Toolbar({
                 text: isSchedule ? 'Schedules' : 'Plans',
                 icon: isSchedule ? CalendarIcon : RectangleStackIcon,
                 onClick: () => {
-                  switches.set('tab', 'Plans');
+                  userOptions.set('tab', 'Plans');
                 },
               },
               {

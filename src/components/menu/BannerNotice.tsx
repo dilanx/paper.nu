@@ -1,18 +1,14 @@
-import { ExclamationCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Alert } from '@/types/AlertTypes';
+import { useApp } from '@/app/Context';
 import { BannerData } from '@/types/BaseTypes';
+import { ExclamationCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 interface BannerNoticeProps {
   data: BannerData;
-  alert: Alert;
   dismiss: () => void;
 }
 
-export default function BannerNotice({
-  data,
-  alert,
-  dismiss,
-}: BannerNoticeProps) {
+export default function BannerNotice({ data, dismiss }: BannerNoticeProps) {
+  const { alert } = useApp();
   return (
     <div
       className={`background-gradient-${data.gradient} relative z-50 flex w-full items-center justify-center text-center font-bold text-white shadow-sm md:h-8`}

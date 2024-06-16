@@ -1,57 +1,26 @@
-import { Alert } from '@/types/AlertTypes';
-import { ContextMenu, ContextMenuData, UserOptions } from '@/types/BaseTypes';
-import {
-  PlanData,
-  PlanModificationFunctions,
-  PlanSpecialFunctions,
-} from '@/types/PlanTypes';
-import { OpenRatingsFn } from '@/types/RatingTypes';
-import { SideCard } from '@/types/SideCardTypes';
+import { useApp, useData, useModification } from '@/app/Context';
+import { getTotalCredits } from '@/app/Plan';
+import { convertYear } from '@/utility/Utility';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import PlanTaskbarButton from './PlanTaskbarButton';
 import Year from './Year';
-import { convertYear } from '@/utility/Utility';
-import { getTotalCredits } from '@/app/Plan';
 
-interface ContentProps {
-  data: PlanData;
-  f: PlanModificationFunctions;
-  f2: PlanSpecialFunctions;
-  alert: Alert;
-  sideCard: SideCard;
-  openRatings: OpenRatingsFn;
-  contextMenuData?: ContextMenuData;
-  contextMenu: ContextMenu;
-  switches: UserOptions;
-}
+export default function Content() {
+  const { alert } = useApp();
+  const { plan } = useData();
+  const { planModification } = useModification();
 
-export default function Content(props: ContentProps) {
-  const content = props.data;
   let years: JSX.Element[] = [];
-  if (content.courses) {
-    years = content.courses.map((year, index) => {
+  if (plan.courses) {
+    years = plan.courses.map((year, index) => {
       return (
-        <Year
-          data={year}
-          bookmarks={props.data.bookmarks}
-          year={index}
-          f={props.f}
-          f2={props.f2}
-          sideCard={props.sideCard}
-          alert={props.alert}
-          openRatings={props.openRatings}
-          contextMenuData={props.contextMenuData}
-          contextMenu={props.contextMenu}
-          switches={props.switches}
-          title={convertYear(index)}
-          key={index}
-        />
+        <Year data={year} year={index} title={convertYear(index)} key={index} />
       );
     });
   }
 
-  const units = getTotalCredits(content);
+  const units = getTotalCredits(plan);
 
   let unitString = 'units';
   if (units === 1) {
@@ -74,10 +43,10 @@ export default function Content(props: ContentProps) {
           </p>
         </div>
         <div className="flex gap-4">
-          {content.courses.length < 10 && (
+          {plan.courses.length < 10 && (
             <PlanTaskbarButton
               onClick={() => {
-                props.alert({
+                alert({
                   title: 'Add a year?',
                   message:
                     'This will add another year to your plan. You can remove it by opening the year\'s menu and clicking "Delete year".',
@@ -86,7 +55,7 @@ export default function Content(props: ContentProps) {
                   color: 'cyan',
                   icon: PlusIcon,
                   action: () => {
-                    props.f2.addYear();
+                    planModification.addYear();
                   },
                 });
               }}
@@ -96,7 +65,7 @@ export default function Content(props: ContentProps) {
           )}
           <PlanTaskbarButton
             onClick={() => {
-              props.alert({
+              alert({
                 title: 'Clear plan?',
                 message:
                   'All of your current plan data, which includes everything for each year and everything in your bookmarks, will be cleared. Make sure to save any data you want to keep.',
@@ -105,7 +74,7 @@ export default function Content(props: ContentProps) {
                 cancelButton: 'Cancel',
                 confirmButton: 'Clear',
                 action: () => {
-                  props.f2.clearData();
+                  planModification.clearData();
                 },
               });
             }}

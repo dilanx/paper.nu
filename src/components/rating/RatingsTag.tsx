@@ -1,24 +1,19 @@
+import { getBasicRating } from '@/app/Account';
+import { useApp } from '@/app/Context';
+import { PaperError } from '@/utility/PaperError';
+import { errorAlert } from '@/utility/Utility';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { StarIcon } from '@heroicons/react/24/solid';
-import { OpenRatingsFn } from '@/types/RatingTypes';
 import { useEffect, useState } from 'react';
-import { PaperError } from '@/utility/PaperError';
-import { Alert } from '@/types/AlertTypes';
 import { SpinnerCircularFixed } from 'spinners-react';
-import { errorAlert } from '@/utility/Utility';
-import { getBasicRating } from '@/app/Account';
 
 interface RatingsTagProps {
   course: string;
-  alert: Alert;
-  openRatings: OpenRatingsFn;
 }
 
-export default function RatingsTag({
-  course,
-  alert,
-  openRatings,
-}: RatingsTagProps) {
+export default function RatingsTag({ course }: RatingsTagProps) {
+  const { alert, ratingsView } = useApp();
+
   const [[rating, total], setRating] = useState(['-', 0]);
   const [loading, setLoading] = useState(true);
 
@@ -52,7 +47,7 @@ export default function RatingsTag({
     <button
       className="relative flex items-center justify-center gap-2 overflow-hidden rounded-lg bg-gray-100 px-2 py-1 shadow-sm hover:bg-gray-200 active:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-600 dark:active:bg-gray-500"
       onClick={() => {
-        openRatings({
+        ratingsView({
           course,
         });
       }}

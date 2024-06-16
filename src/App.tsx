@@ -15,6 +15,7 @@ import {
   update,
 } from './app/AccountModification';
 import bn from './app/BannerNotice';
+import { AppProvider, DataProvider, ModificationProvider } from './app/Context';
 import { getTermName } from './app/Data';
 import {
   addBookmark,
@@ -73,18 +74,14 @@ import Search from './components/search/Search';
 import { RecentShareModificationFunctions } from './types/AccountTypes';
 import { AlertData } from './types/AlertTypes';
 import {
+  AppContext,
   AppState,
   AppType,
   ContextMenuData,
   ReadUserOptions,
   SaveDataOptions,
 } from './types/BaseTypes';
-import {
-  Course,
-  PlanData,
-  PlanModificationFunctions,
-  PlanSpecialFunctions,
-} from './types/PlanTypes';
+import { Course, PlanData, PlanModificationFunctions } from './types/PlanTypes';
 import { RatingsViewData } from './types/RatingTypes';
 import {
   ScheduleData,
@@ -150,11 +147,9 @@ class App
       removeBookmark: (course, forCredit) => {
         removeBookmark(this, course, forCredit);
       },
-      putCustomCourse: (location, courseToEdit) =>
-        putCustomCourse(this, location, courseToEdit),
-    };
-
-    const f2: PlanSpecialFunctions = {
+      putCustomCourse: (location, courseToEdit) => {
+        putCustomCourse(this, location, courseToEdit);
+      },
       addSummerQuarter: (year) => {
         addSummerQuarter(this, year);
       },
@@ -226,9 +221,8 @@ class App
         bookmarks: [],
         overrides: [],
       },
-      userOptions: userOptions,
+      userOptions,
       f,
-      f2,
       sf,
       ff,
       rf,
@@ -347,25 +341,31 @@ class App
         }) => {
           const modeStr = mode === Mode.PLAN ? 'plan' : 'schedule';
 
+          const appContext: AppContext = {
+            version: VERSION,
+            userOptions: this.state.userOptions,
+            activeContextMenu: this.state.contextMenuData?.name,
+            alert: (alertData: AlertData) => this.showAlert(alertData),
+            sideCard: (sideCardData: SideCardData) =>
+              this.showSideCard(sideCardData),
+            contextMenu: (contextMenuData: ContextMenuData) =>
+              this.showContextMenu(contextMenuData),
+            ratingsView: (ratingsData: RatingsViewData) =>
+              this.showRatingsView(ratingsData),
+            mapView: () => this.setState({ map: true }),
+          };
+
           if (sharedCourse) {
-            planOpenInfo(
-              (data) => this.showSideCard(data),
-              (data) => this.showAlert(data),
-              (data) => this.openRatingsView(data),
-              sharedCourse,
-              false
-            );
+            planOpenInfo(sharedCourse, appContext, false);
           }
 
           if (sharedSection) {
             scheduleOpenInfo(
-              (data) => this.showSideCard(data),
-              (data) => this.showAlert(data),
-              (data) => this.openRatingsView(data),
               { section: sharedSection },
+              appContext,
               undefined,
               {
-                ff: this.state.ff,
+                searchModification: this.state.ff,
               }
             );
           }
@@ -563,7 +563,7 @@ class App
     this.setState({ contextMenuData: undefined });
   }
 
-  openRatingsView(ratingsData: RatingsViewData) {
+  showRatingsView(ratingsData: RatingsViewData) {
     this.setState({ ratings: ratingsData });
   }
 
@@ -603,10 +603,10 @@ class App
   }
 
   render() {
-    const switches = this.state.userOptions;
-    const tab = switches.get.tab;
-    const darkMode = switches.get.dark;
-    const isSchedule = switches.get.mode === Mode.SCHEDULE;
+    const userOptions = this.state.userOptions;
+    const tab = userOptions.get.tab;
+    const darkMode = userOptions.get.dark;
+    const isSchedule = userOptions.get.mode === Mode.SCHEDULE;
 
     const newerTermAvailable =
       isSchedule &&
@@ -615,313 +615,238 @@ class App
 
     return (
       <DndProvider backend={HTML5Backend}>
-        {switches.get.notifications && (
-          <Toaster
-            containerClassName={`${darkMode ? 'dark' : ''}`}
-            position="top-right"
-            reverseOrder={false}
-            toastOptions={{
-              style: {
-                minWidth: '12rem',
-                fontSize: '0.875rem',
-                fontWeight: '500',
-                backgroundColor: darkMode ? '#262626' : undefined,
-                color: darkMode ? '#ffffff' : undefined,
-              },
-            }}
-          />
-        )}
-        <MotionConfig
-          reducedMotion={switches.get.reduced_motion ? 'always' : 'never'}
+        <AppProvider
+          value={{
+            version: VERSION,
+            userOptions,
+            activeContextMenu: this.state.contextMenuData?.name,
+            alert: (alertData: AlertData) => this.showAlert(alertData),
+            sideCard: (sideCardData: SideCardData) =>
+              this.showSideCard(sideCardData),
+            contextMenu: (contextMenuData: ContextMenuData) =>
+              this.showContextMenu(contextMenuData),
+            ratingsView: (ratingsData: RatingsViewData) =>
+              this.showRatingsView(ratingsData),
+            mapView: () => this.setState({ map: true }),
+          }}
         >
-          <div
-            className={`${darkMode ? 'dark' : ''} relative`}
-            ref={this.appRef}
+          <DataProvider
+            value={{
+              plan: this.state.data,
+              schedule: this.state.schedule,
+            }}
           >
-            {bn && this.state.banner && (
-              <BannerNotice
-                data={bn}
-                alert={(alertData) => this.showAlert(alertData)}
-                dismiss={() => {
-                  localStorage.setItem('bn_id', bn!.id);
-                  this.setState({ banner: false });
-                }}
-              />
-            )}
-            {this.state.alertData && (
-              <Alert
-                data={this.state.alertData}
-                switches={switches}
-                onConfirm={(data) => {
-                  const alertData = this.state.alertData;
-                  if (alertData?.action) {
-                    alertData.action(data);
-                  }
-                }}
-                onSwitch={(next) => {
-                  this.showAlert(next);
-                }}
-                onClose={() => {
-                  this.postShowAlert();
-                }}
-              />
-            )}
-
-            {this.state.about && (
-              <About
-                switches={switches}
-                onClose={() => this.setState({ about: false })}
-              />
-            )}
-
-            {this.state.ratings && (
-              <Ratings
-                data={this.state.ratings}
-                alert={(alertData) => {
-                  this.showAlert(alertData);
-                }}
-                switches={switches}
-                onClose={() => this.setState({ ratings: undefined })}
-              />
-            )}
-
-            {this.state.map && (
-              <CampusMap
-                schedule={this.state.schedule.schedule}
-                switches={switches}
-                onClose={() => {
-                  this.setState({ map: false });
-                }}
-              />
-            )}
-            {this.state.sideCardData && (
-              <SideCard
-                data={this.state.sideCardData}
-                switches={switches}
-                onClose={() => this.closeSideCard()}
-              />
-            )}
-            {this.state.contextMenuData && (
-              <ContextMenu
-                data={this.state.contextMenuData}
-                switches={switches}
-                onClose={() => {
-                  this.closeContextMenu();
-                }}
-              />
-            )}
-
-            <AnimatePresence>
-              {switches.get.notes && (
-                <Notes
-                  constraintsRef={this.appRef}
-                  switches={switches}
-                  alert={(alertData) => {
-                    this.showAlert(alertData);
+            <ModificationProvider
+              value={{
+                planModification: this.state.f,
+                scheduleModification: this.state.sf,
+                searchModification: this.state.ff,
+                recentShareModification: this.state.rf,
+              }}
+            >
+              {userOptions.get.notifications && (
+                <Toaster
+                  containerClassName={`${darkMode ? 'dark' : ''}`}
+                  position="top-right"
+                  reverseOrder={false}
+                  toastOptions={{
+                    style: {
+                      minWidth: '12rem',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      backgroundColor: darkMode ? '#262626' : undefined,
+                      color: darkMode ? '#ffffff' : undefined,
+                    },
                   }}
-                  onClose={() => switches.set('notes', false)}
                 />
               )}
-            </AnimatePresence>
-
-            <div className="grid grid-cols-1 bg-white dark:bg-gray-800 lg:grid-cols-8">
-              <div
-                className={`col-span-2 flex h-192 flex-col px-4 ${
-                  this.state.banner ? 'md:h-screen-banner' : 'md:h-screen'
-                }`}
+              <MotionConfig
+                reducedMotion={
+                  userOptions.get.reduced_motion ? 'always' : 'never'
+                }
               >
-                <Info
-                  dark={darkMode}
-                  openAboutMenu={() => this.setState({ about: true })}
-                  newerTermAvailable={newerTermAvailable}
-                  alert={(alertData) => this.showAlert(alertData)}
-                  currentTermId={this.state.schedule.termId}
-                  switchTerm={(termId) => this.switchTerm(termId)}
-                />
-                <ModeSwitch
-                  switches={switches}
-                  changeMode={(mode) => {
-                    discardChanges(this, () => {
-                      discardNotesChanges(
-                        switches,
-                        (alertData) => {
-                          this.showAlert(alertData);
-                        },
-                        () => {
-                          this.setUserOption('mode', mode, true);
-                          this.setUserOption('notes', false);
-                          this.setUserOption('unsaved_notes', false);
-                          this.setState({ loadingLogin: true });
-                          this.initialize(() => {
-                            this.setState({ loadingLogin: false });
-                          });
-                        }
-                      );
-                    });
-                  }}
-                />
-                <Search
-                  data={this.state.data}
-                  schedule={this.state.schedule}
-                  switches={switches}
-                  f={this.state.f}
-                  sf={this.state.sf}
-                  scheduleInteractions={this.state.scheduleInteractions}
-                  sideCard={(sideCardData) => {
-                    this.showSideCard(sideCardData);
-                  }}
-                  alert={(alertData) => {
-                    this.showAlert(alertData);
-                  }}
-                  openRatings={(ratingsData) => {
-                    this.openRatingsView(ratingsData);
-                  }}
-                  defaults={this.state.searchDefaults}
-                  expandMap={() => this.setState({ map: true })}
-                  loading={this.state.loadingLogin}
-                  term={
-                    this.state.schedule.termId
-                      ? {
-                          id: this.state.schedule.termId,
-                          name:
-                            getTermName(this.state.schedule.termId) ||
-                            'unknown',
-                        }
-                      : undefined
-                  }
-                  switchTerm={(termId) => this.switchTerm(termId)}
-                  latestTermId={this.state.latestTermId}
-                />
-                {tab === 'Bookmarks' && (
-                  <Bookmarks
-                    bookmarks={this.state.data.bookmarks}
-                    schedule={this.state.schedule}
-                    sideCard={(sideCardData) => {
-                      this.showSideCard(sideCardData);
-                    }}
-                    alert={(alertData) => {
-                      this.showAlert(alertData);
-                    }}
-                    openRatings={(ratingsData) => {
-                      this.openRatingsView(ratingsData);
-                    }}
-                    f={this.state.f}
-                    sf={this.state.sf}
-                    scheduleInteractions={this.state.scheduleInteractions}
-                    switches={switches}
-                    loading={this.state.loadingLogin}
-                  />
-                )}
-                {tab === 'Plans' && (
-                  <AccountPlans
-                    switches={this.state.userOptions}
-                    recentShare={this.state.recentShare}
-                    rf={this.state.rf}
-                    alert={(alertData) => {
-                      this.showAlert(alertData);
-                    }}
-                    activatePlan={(id) => {
-                      activateAccountPlan(this, id);
-                    }}
-                    activateSchedule={(id) => {
-                      activateAccountSchedule(this, id);
-                    }}
-                    deactivate={() => {
-                      deactivate(this);
-                    }}
-                    activeId={
-                      switches.get[
-                        `active_${isSchedule ? 'schedule' : 'plan'}_id`
-                      ]
-                    }
-                    loading={this.state.loadingLogin}
-                  />
-                )}
-                <Taskbar
-                  alert={(alertData) => {
-                    this.showAlert(alertData);
-                  }}
-                  version={VERSION}
-                  switches={switches}
-                />
-              </div>
-
-              <div
-                className={`${
-                  switches.get.compact ? 'compact-mode ' : ''
-                } no-scrollbar col-span-6 flex flex-col pt-0 ${
-                  this.state.banner ? 'lg:h-screen-banner' : 'lg:h-screen'
-                } lg:overflow-y-scroll`}
-              >
-                <Toolbar
-                  appVersion={VERSION}
-                  alert={(alertData) => {
-                    this.showAlert(alertData);
-                  }}
-                  contextMenuData={this.state.contextMenuData}
-                  contextMenu={(contextMenuData) => {
-                    this.showContextMenu(contextMenuData);
-                  }}
-                  plan={this.state.data}
-                  schedule={this.state.schedule}
-                  openMap={() => {
-                    this.setState({ map: true });
-                  }}
-                  switches={switches}
-                  loading={this.state.loadingLogin}
-                  openAboutMenu={() => this.setState({ about: true })}
-                  saveState={this.state.saveState}
-                />
-                <AnimatePresence mode="wait">
-                  {switches.get.mode === Mode.PLAN ? (
-                    <Content
-                      data={this.state.data}
-                      f={this.state.f}
-                      f2={this.state.f2}
-                      alert={(alertData) => {
-                        this.showAlert(alertData);
+                <div
+                  className={`${darkMode ? 'dark' : ''} relative`}
+                  ref={this.appRef}
+                >
+                  {bn && this.state.banner && (
+                    <BannerNotice
+                      data={bn}
+                      dismiss={() => {
+                        localStorage.setItem('bn_id', bn!.id);
+                        this.setState({ banner: false });
                       }}
-                      sideCard={(sideCardData) => {
-                        this.showSideCard(sideCardData);
-                      }}
-                      contextMenuData={this.state.contextMenuData}
-                      contextMenu={(contextMenuData) => {
-                        this.showContextMenu(contextMenuData);
-                      }}
-                      openRatings={(ratingsData) => {
-                        this.openRatingsView(ratingsData);
-                      }}
-                      switches={switches}
-                      key="plan"
-                    />
-                  ) : (
-                    <Schedule
-                      schedule={this.state.schedule}
-                      alert={(alertData) => {
-                        this.showAlert(alertData);
-                      }}
-                      sideCard={(sideCardData) => {
-                        this.showSideCard(sideCardData);
-                      }}
-                      openRatings={(ratingsData) => {
-                        this.openRatingsView(ratingsData);
-                      }}
-                      contextMenuData={this.state.contextMenuData}
-                      contextMenu={(contextMenuData) => {
-                        this.showContextMenu(contextMenuData);
-                      }}
-                      interactions={this.state.scheduleInteractions}
-                      sf={this.state.sf}
-                      ff={this.state.ff}
-                      switches={switches}
-                      key="schedule"
                     />
                   )}
-                </AnimatePresence>
-              </div>
-            </div>
-          </div>
-        </MotionConfig>
+                  {this.state.alertData && (
+                    <Alert
+                      data={this.state.alertData}
+                      onConfirm={(data) => {
+                        const alertData = this.state.alertData;
+                        if (alertData?.action) {
+                          alertData.action(data);
+                        }
+                      }}
+                      onSwitch={(next) => {
+                        this.showAlert(next);
+                      }}
+                      onClose={() => {
+                        this.postShowAlert();
+                      }}
+                    />
+                  )}
+
+                  {this.state.about && (
+                    <About onClose={() => this.setState({ about: false })} />
+                  )}
+
+                  {this.state.ratings && (
+                    <Ratings
+                      data={this.state.ratings}
+                      onClose={() => this.setState({ ratings: undefined })}
+                    />
+                  )}
+
+                  {this.state.map && (
+                    <CampusMap
+                      onClose={() => {
+                        this.setState({ map: false });
+                      }}
+                    />
+                  )}
+                  {this.state.sideCardData && (
+                    <SideCard
+                      data={this.state.sideCardData}
+                      onClose={() => this.closeSideCard()}
+                    />
+                  )}
+                  {this.state.contextMenuData && (
+                    <ContextMenu
+                      data={this.state.contextMenuData}
+                      onClose={() => {
+                        this.closeContextMenu();
+                      }}
+                    />
+                  )}
+
+                  <AnimatePresence>
+                    {userOptions.get.notes && (
+                      <Notes
+                        constraintsRef={this.appRef}
+                        onClose={() => userOptions.set('notes', false)}
+                      />
+                    )}
+                  </AnimatePresence>
+
+                  <div className="grid grid-cols-1 bg-white dark:bg-gray-800 lg:grid-cols-8">
+                    <div
+                      className={`col-span-2 flex h-192 flex-col px-4 ${
+                        this.state.banner ? 'md:h-screen-banner' : 'md:h-screen'
+                      }`}
+                    >
+                      <Info
+                        dark={darkMode}
+                        openAboutMenu={() => this.setState({ about: true })}
+                        newerTermAvailable={newerTermAvailable}
+                        currentTermId={this.state.schedule.termId}
+                        switchTerm={(termId) => this.switchTerm(termId)}
+                      />
+                      <ModeSwitch
+                        switches={userOptions}
+                        changeMode={(mode) => {
+                          discardChanges(this, () => {
+                            discardNotesChanges(
+                              userOptions,
+                              (alertData) => {
+                                this.showAlert(alertData);
+                              },
+                              () => {
+                                this.setUserOption('mode', mode, true);
+                                this.setUserOption('notes', false);
+                                this.setUserOption('unsaved_notes', false);
+                                this.setState({ loadingLogin: true });
+                                this.initialize(() => {
+                                  this.setState({ loadingLogin: false });
+                                });
+                              }
+                            );
+                          });
+                        }}
+                      />
+                      <Search
+                        scheduleInteractions={this.state.scheduleInteractions}
+                        defaults={this.state.searchDefaults}
+                        loading={this.state.loadingLogin}
+                        term={
+                          this.state.schedule.termId
+                            ? {
+                                id: this.state.schedule.termId,
+                                name:
+                                  getTermName(this.state.schedule.termId) ||
+                                  'unknown',
+                              }
+                            : undefined
+                        }
+                        switchTerm={(termId) => this.switchTerm(termId)}
+                      />
+                      {tab === 'Bookmarks' && (
+                        <Bookmarks
+                          scheduleInteractions={this.state.scheduleInteractions}
+                          loading={this.state.loadingLogin}
+                        />
+                      )}
+                      {tab === 'Plans' && (
+                        <AccountPlans
+                          recentShare={this.state.recentShare}
+                          activatePlan={(id) => {
+                            activateAccountPlan(this, id);
+                          }}
+                          activateSchedule={(id) => {
+                            activateAccountSchedule(this, id);
+                          }}
+                          deactivate={() => {
+                            deactivate(this);
+                          }}
+                          activeId={
+                            userOptions.get[
+                              `active_${isSchedule ? 'schedule' : 'plan'}_id`
+                            ]
+                          }
+                          loading={this.state.loadingLogin}
+                        />
+                      )}
+                      <Taskbar />
+                    </div>
+
+                    <div
+                      className={`${
+                        userOptions.get.compact ? 'compact-mode ' : ''
+                      } no-scrollbar col-span-6 flex flex-col pt-0 ${
+                        this.state.banner ? 'lg:h-screen-banner' : 'lg:h-screen'
+                      } lg:overflow-y-scroll`}
+                    >
+                      <Toolbar
+                        loading={this.state.loadingLogin}
+                        openAboutMenu={() => this.setState({ about: true })}
+                        saveState={this.state.saveState}
+                      />
+                      <AnimatePresence mode="wait">
+                        {userOptions.get.mode === Mode.PLAN ? (
+                          <Content key="plan" />
+                        ) : (
+                          <Schedule
+                            interactions={this.state.scheduleInteractions}
+                            key="schedule"
+                          />
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                </div>
+              </MotionConfig>
+            </ModificationProvider>
+          </DataProvider>
+        </AppProvider>
       </DndProvider>
     );
   }

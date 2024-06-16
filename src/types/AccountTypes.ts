@@ -72,7 +72,7 @@ export interface AccountModificationFunctions {
   deactivate: () => void;
   rename: (id: string, name: string) => void;
   duplicate: (document: Document) => void;
-  delete: (id: string, name: string) => void;
+  erase: (id: string, name: string) => void;
 }
 
 export interface UserInformation {

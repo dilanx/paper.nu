@@ -1,51 +1,41 @@
-import { useDrag } from 'react-dnd';
+import { useApp, useData, useModification } from '@/app/Context';
+import { getOfferings } from '@/app/Plan';
+import ClassPropertyDisplay from '@/components/plan/ClassPropertyDisplay';
+import { openInfo } from '@/components/plan/CourseInfo';
+import { Color } from '@/types/BaseTypes';
+import { Course, CourseDragItem } from '@/types/PlanTypes';
+import { convertDisciplines, convertDistros } from '@/utility/Utility';
 import { BookmarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
-import {
-  Course,
-  CourseDragItem,
-  BookmarksData,
-  PlanModificationFunctions,
-} from '@/types/PlanTypes';
-import { Color } from '@/types/BaseTypes';
 import { motion } from 'framer-motion';
+import { useDrag } from 'react-dnd';
 import AddButtons from './AddButtons';
-import ClassPropertyDisplay from '@/components/plan/ClassPropertyDisplay';
-import { SideCard } from '@/types/SideCardTypes';
-import { Alert } from '@/types/AlertTypes';
-import { openInfo } from '@/components/plan/CourseInfo';
-import { OpenRatingsFn } from '@/types/RatingTypes';
-import { getOfferings } from '@/app/Plan';
-import { convertDisciplines, convertDistros } from '@/utility/Utility';
 
 const PLACEHOLDER_MESSAGE = `Don't know which specific class to take from a certain requirement category? Use a placeholder! Search for 'placeholder' to view all.`;
 
 interface SearchClassProps {
-  courses: Course[][][];
   course: Course;
   color: Color;
   select: (course: string) => void;
-  bookmarks: BookmarksData;
-  f: PlanModificationFunctions;
   selected: boolean;
-  sideCard: SideCard;
-  alert: Alert;
-  openRatings: OpenRatingsFn;
 }
 
-function SearchClass(props: SearchClassProps) {
-  const course = props.course;
-
+function SearchClass({ course, color, select, selected }: SearchClassProps) {
+  const app = useApp();
+  const {
+    plan: { courses, bookmarks },
+  } = useData();
+  const { planModification } = useModification();
   const item: CourseDragItem = { course };
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'Class',
       item,
-      canDrag: !props.selected,
+      canDrag: !selected,
       collect: (monitor) => ({ isDragging: monitor.isDragging() }),
     }),
-    [props.selected]
+    [selected]
   );
 
   const recentOfferings = getOfferings(course).slice(0, 8);
@@ -53,22 +43,20 @@ function SearchClass(props: SearchClassProps) {
   const disciplinesStrings = convertDisciplines(course.disciplines);
   const isPlaceholder = course.placeholder;
   const units = parseFloat(course.units);
-  const isFavorite = props.bookmarks?.noCredit.has(course);
+  const isFavorite = bookmarks?.noCredit.has(course);
   return (
     <div
       ref={drag}
       className={`rounded-lg border-2 bg-opacity-60 p-2 dark:bg-gray-800 ${
-        props.selected
-          ? `bg-white border-${props.color}-400 -translate-y-2 cursor-default shadow-lg`
-          : `bg-${props.color}-100 border-${
-              props.color
-            }-300 border-opacity-60 hover:-translate-y-1 hover:shadow-md ${
+        selected
+          ? `bg-white border-${color}-400 -translate-y-2 cursor-default shadow-lg`
+          : `bg-${color}-100 border-${color}-300 border-opacity-60 hover:-translate-y-1 hover:shadow-md ${
               isDragging ? 'cursor-grabbing' : 'cursor-pointer'
             }`
       }
             group m-4 transition duration-300 ease-in-out`}
       onClick={() => {
-        if (props.select) props.select(course.id);
+        select(course.id);
       }}
     >
       <p className="text-lg font-bold text-black dark:text-gray-50">
@@ -110,7 +98,7 @@ function SearchClass(props: SearchClassProps) {
         </p>
       </div>
 
-      {props.selected && (
+      {selected && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -118,26 +106,26 @@ function SearchClass(props: SearchClassProps) {
         >
           <AddButtons
             action={(year, quarter) => {
-              props.f.addCourse(course, {
+              planModification.addCourse(course, {
                 year,
                 quarter,
               });
             }}
-            courses={props.courses}
+            courses={courses}
           />
           <div className="py-2">
             <button
               className="mx-auto my-2 block w-4/5 rounded-md bg-indigo-500 p-0.5 font-medium text-white opacity-100 shadow-sm hover:opacity-75 active:opacity-50"
               onClick={(e) => {
                 e.stopPropagation();
-                if (props.bookmarks.noCredit.has(course)) {
-                  props.f.removeBookmark(course, false);
+                if (bookmarks.noCredit.has(course)) {
+                  planModification.removeBookmark(course, false);
                 } else {
-                  props.f.addBookmark(course, false);
+                  planModification.addBookmark(course, false);
                 }
               }}
             >
-              {props.bookmarks.noCredit.has(course)
+              {bookmarks.noCredit.has(course)
                 ? 'Remove from bookmarks'
                 : 'Add to bookmarks'}
             </button>
@@ -145,14 +133,14 @@ function SearchClass(props: SearchClassProps) {
               className="mx-auto my-2 block w-4/5 rounded-md bg-indigo-800 p-0.5 font-medium text-white opacity-100 shadow-sm hover:opacity-75 active:opacity-50 dark:bg-indigo-400"
               onClick={(e) => {
                 e.stopPropagation();
-                if (props.bookmarks.forCredit.has(course)) {
-                  props.f.removeBookmark(course, true);
+                if (bookmarks.forCredit.has(course)) {
+                  planModification.removeBookmark(course, true);
                 } else {
-                  props.f.addBookmark(course, true);
+                  planModification.addBookmark(course, true);
                 }
               }}
             >
-              {props.bookmarks.forCredit.has(course)
+              {bookmarks.forCredit.has(course)
                 ? 'Remove for credit'
                 : 'Add for credit'}
             </button>
@@ -161,13 +149,7 @@ function SearchClass(props: SearchClassProps) {
             className="mx-auto my-2 flex items-center text-xs font-bold text-gray-400 hover:text-gray-500 active:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400 dark:active:text-gray-300"
             onClick={(e) => {
               e.stopPropagation();
-              openInfo(
-                props.sideCard,
-                props.alert,
-                props.openRatings,
-                course,
-                true
-              );
+              openInfo(course, app, true);
             }}
           >
             <span>VIEW MORE INFO</span>
@@ -176,7 +158,7 @@ function SearchClass(props: SearchClassProps) {
         </motion.div>
       )}
 
-      {!props.selected && (
+      {!selected && (
         <button
           className="absolute -right-2 -top-2 z-20 hidden rounded-full bg-gray-200 p-1
                     text-xs text-gray-500 opacity-80 transition-all duration-150 hover:bg-indigo-100 hover:text-indigo-400
@@ -184,9 +166,9 @@ function SearchClass(props: SearchClassProps) {
           onClick={(e) => {
             e.stopPropagation();
             if (isFavorite) {
-              props.f?.removeBookmark(course, false);
+              planModification.removeBookmark(course, false);
             } else {
-              props.f?.addBookmark(course, false);
+              planModification.addBookmark(course, false);
             }
           }}
         >

@@ -35,7 +35,7 @@ interface ShareMenuData {
   plan: PlanData;
   schedule: ScheduleData;
   alert: Alert;
-  switches: UserOptions;
+  userOptions: UserOptions;
 }
 
 export const shareMenu = ({
@@ -44,13 +44,13 @@ export const shareMenu = ({
   plan,
   schedule,
   alert,
-  switches,
+  userOptions,
 }: ShareMenuData): ContextMenuData => {
-  const isSchedule = switches.get.mode === Mode.SCHEDULE;
+  const isSchedule = userOptions.get.mode === Mode.SCHEDULE;
   const loggedIn = isLoggedIn();
   const active =
-    (!isSchedule && switches.get.active_plan_id) ||
-    (isSchedule && switches.get.active_schedule_id);
+    (!isSchedule && userOptions.get.active_plan_id) ||
+    (isSchedule && userOptions.get.active_schedule_id);
   const docText = isSchedule ? 'schedule' : 'plan';
   let shouldRevoke = false;
 

@@ -1,16 +1,12 @@
-import { Component, ComponentProps } from 'react';
 import { Mode } from '@/utility/Constants';
+import { Component, ComponentProps } from 'react';
 import {
   RecentShareItem,
   RecentShareModificationFunctions,
 } from './AccountTypes';
-import { AlertData } from './AlertTypes';
-import {
-  Course,
-  PlanData,
-  PlanModificationFunctions,
-  PlanSpecialFunctions,
-} from './PlanTypes';
+import { Alert, AlertData } from './AlertTypes';
+import { Course, PlanData, PlanModificationFunctions } from './PlanTypes';
+import { RatingsView, RatingsViewData } from './RatingTypes';
 import {
   ScheduleData,
   ScheduleInteractions,
@@ -18,8 +14,7 @@ import {
   ScheduleSection,
 } from './ScheduleTypes';
 import { SearchDefaults, SearchModificationFunctions } from './SearchTypes';
-import { SideCardData } from './SideCardTypes';
-import { RatingsViewData } from './RatingTypes';
+import { SideCard, SideCardData } from './SideCardTypes';
 
 export interface AppState {
   data: PlanData;
@@ -28,7 +23,6 @@ export interface AppState {
   alertData?: AlertData;
   sideCardData?: SideCardData;
   f: PlanModificationFunctions;
-  f2: PlanSpecialFunctions;
   sf: ScheduleModificationFunctions;
   ff: SearchModificationFunctions;
   rf: RecentShareModificationFunctions;
@@ -258,4 +252,27 @@ export interface BannerData {
   id: string;
   content: React.ReactNode;
   gradient?: number;
+}
+
+export interface AppContext {
+  version: string;
+  userOptions: UserOptions;
+  activeContextMenu: string | undefined;
+  alert: Alert;
+  sideCard: SideCard;
+  contextMenu: ContextMenu;
+  ratingsView: RatingsView;
+  mapView: () => void;
+}
+
+export interface DataContext {
+  plan: PlanData;
+  schedule: ScheduleData;
+}
+
+export interface ModificationContext {
+  planModification: PlanModificationFunctions;
+  scheduleModification: ScheduleModificationFunctions;
+  searchModification: SearchModificationFunctions;
+  recentShareModification: RecentShareModificationFunctions;
 }

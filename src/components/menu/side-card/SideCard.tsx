@@ -1,20 +1,20 @@
+import { useApp } from '@/app/Context';
+import ActionButton from '@/components/generic/ActionButton';
+import Tooltip from '@/components/generic/Tooltip';
+import { SideCardData } from '@/types/SideCardTypes';
 import { Dialog, Transition } from '@headlessui/react';
 import { CheckIcon, LinkIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment, useEffect, useRef, useState } from 'react';
-import { UserOptions } from '@/types/BaseTypes';
-import { SideCardData } from '@/types/SideCardTypes';
 import SideCardButton from './SideCardButton';
 import SideCardItem from './SideCardItem';
-import Tooltip from '@/components/generic/Tooltip';
-import ActionButton from '@/components/generic/ActionButton';
 
 interface SideCardProps {
   data: SideCardData;
-  switches: UserOptions;
   onClose: () => void;
 }
 
-function SideCard({ data, switches, onClose }: SideCardProps) {
+function SideCard({ data, onClose }: SideCardProps) {
+  const { userOptions } = useApp();
   const [isOpen, setIsOpen] = useState(true);
   const [hasCopied, setHasCopied] = useState(false);
 
@@ -39,7 +39,7 @@ function SideCard({ data, switches, onClose }: SideCardProps) {
       <Dialog
         as="div"
         initialFocus={initialFocus}
-        className={`${switches.get.dark ? 'dark' : ''} relative z-40`}
+        className={`${userOptions.get.dark ? 'dark' : ''} relative z-40`}
         onClose={() => close()}
       >
         <Transition.Child

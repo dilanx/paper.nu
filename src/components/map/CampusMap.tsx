@@ -1,3 +1,8 @@
+import { getCourseColor } from '@/app/Plan';
+import { getLocation } from '@/app/Schedule';
+import ActionButton from '@/components/generic/ActionButton';
+import { Color } from '@/types/BaseTypes';
+import { ScheduleSection } from '@/types/ScheduleTypes';
 import { Dialog, Switch, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment, useState } from 'react';
@@ -7,19 +12,13 @@ import {
   Marker,
   TileLayer,
 } from 'react-leaflet';
-import { Color, UserOptions } from '@/types/BaseTypes';
-import { ScheduleDataMap, ScheduleSection } from '@/types/ScheduleTypes';
 import { MapFlyTo, getMapMarkerIcon } from './MapUtility';
-import ActionButton from '@/components/generic/ActionButton';
-import { getCourseColor } from '@/app/Plan';
-import { getLocation } from '@/app/Schedule';
+import { useApp, useData } from '@/app/Context';
 
 const DEFAULT_POSITION: [number, number] = [42.055909, -87.675709];
 const DEFAULT_ZOOM = 16;
 
 interface CampusMapProps {
-  schedule: ScheduleDataMap;
-  switches: UserOptions;
   onClose: () => void;
 }
 
@@ -29,13 +28,17 @@ interface ClassMarker {
   color: Color;
 }
 
-function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
+function CampusMap({ onClose }: CampusMapProps) {
+  const { userOptions } = useApp();
+  const {
+    schedule: { schedule },
+  } = useData();
   const [open, setOpen] = useState(true);
   const [flyPosition, setFlyPosition] = useState<
     [number, number] | undefined
   >();
 
-  const minimap = switches.get.minimap;
+  const minimap = userOptions.get.minimap;
 
   const locations: ClassMarker[] = [];
 
@@ -68,7 +71,7 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
     <Transition appear show={open} as={Fragment}>
       <Dialog
         as="div"
-        className={`${switches.get.dark ? 'dark' : ''} relative z-40`}
+        className={`${userOptions.get.dark ? 'dark' : ''} relative z-40`}
         onClose={() => setOpen(false)}
       >
         <Transition.Child
@@ -147,7 +150,9 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
                       </p>
                       <Switch
                         checked={minimap}
-                        onChange={() => switches.set('minimap', !minimap, true)}
+                        onChange={() =>
+                          userOptions.set('minimap', !minimap, true)
+                        }
                         className={`${
                           minimap
                             ? 'bg-emerald-400 hover:bg-emerald-500 active:bg-emerald-600'
@@ -168,13 +173,6 @@ function CampusMap({ schedule, switches, onClose }: CampusMapProps) {
                     <ActionButton onClick={() => setOpen(false)}>
                       <XMarkIcon className="h-7 w-7" />
                     </ActionButton>
-                    {/* <button className="group relative">
-                      <XMarkIcon
-                        className="h-8 w-8 rounded-md p-0.5 text-gray-600 hover:bg-gray-100 active:bg-gray-200
-                        dark:text-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-500"
-                        onClick={() => setOpen(false)}
-                      />
-                    </button> */}
                   </div>
                   <p className="block w-40 text-xs text-gray-500 hsm:hidden">
                     Your window height is too small for the minimap.

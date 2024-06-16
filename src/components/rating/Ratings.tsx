@@ -1,22 +1,8 @@
-import { Dialog, Transition } from '@headlessui/react';
-import {
-  PencilSquareIcon,
-  PlusIcon,
-  QuestionMarkCircleIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline';
-import {
-  AcademicCapIcon,
-  ClockIcon,
-  ExclamationTriangleIcon,
-  PresentationChartBarIcon,
-  StarIcon,
-} from '@heroicons/react/24/solid';
-import { Fragment, useCallback, useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
-import { SpinnerCircularFixed } from 'spinners-react';
-import { Alert } from '@/types/AlertTypes';
-import { UserOptions } from '@/types/BaseTypes';
+import { getDetailedRatings, isLoggedIn, login, rate } from '@/app/Account';
+import { useApp } from '@/app/Context';
+import { getCourseColor } from '@/app/Plan';
+import ActionButton from '@/components/generic/ActionButton';
+import Tooltip from '@/components/generic/Tooltip';
 import { BarChartValue } from '@/types/GenericMenuTypes';
 import {
   CourseRating,
@@ -37,34 +23,41 @@ import {
   chooseOverallRatingSummary,
   ratingAverage,
 } from '@/utility/RatingMessages';
-import RatingDisplay from './RatingDisplay';
-import ActionButton from '@/components/generic/ActionButton';
-import Tooltip from '@/components/generic/Tooltip';
 import Links from '@/utility/StaticLinks';
-import { getCourseColor } from '@/app/Plan';
-import { getDetailedRatings, isLoggedIn, login, rate } from '@/app/Account';
 import { errorAlert } from '@/utility/Utility';
+import { Dialog, Transition } from '@headlessui/react';
+import {
+  PencilSquareIcon,
+  PlusIcon,
+  QuestionMarkCircleIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline';
+import {
+  AcademicCapIcon,
+  ClockIcon,
+  ExclamationTriangleIcon,
+  PresentationChartBarIcon,
+  StarIcon,
+} from '@heroicons/react/24/solid';
+import { Fragment, useCallback, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { SpinnerCircularFixed } from 'spinners-react';
+import RatingDisplay from './RatingDisplay';
 
 interface RatingsProps {
   data: RatingsViewData;
-  alert: Alert;
-  switches: UserOptions;
   onClose: () => void;
 }
 
-export default function Ratings({
-  data,
-  alert,
-  switches,
-  onClose,
-}: RatingsProps) {
+export default function Ratings({ data, onClose }: RatingsProps) {
+  const { userOptions, alert } = useApp();
   const [open, setOpen] = useState(true);
   const [state, setState] = useState<
     'loading' | 'not-logged-in' | 'done' | 'error'
   >('not-logged-in');
   const [ratings, setRatings] = useState<RatingInfo | null>(null);
 
-  const darkMode = switches.get.dark;
+  const darkMode = userOptions.get.dark;
   const color = getCourseColor(data.course);
 
   const update = useCallback(

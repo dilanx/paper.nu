@@ -1,3 +1,4 @@
+import { useApp } from '@/app/Context';
 import { TabButton, Tabs } from '@/components/menu/Tabs';
 import {
   AlertActionData,
@@ -5,7 +6,6 @@ import {
   AlertFormResponse,
   AlertNextFn,
 } from '@/types/AlertTypes';
-import { UserOptions } from '@/types/BaseTypes';
 import { formIsValid } from '@/utility/AlertFormInputValidation';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useRef, useState } from 'react';
@@ -18,7 +18,6 @@ import { getAlertOptions } from './AlertOptions';
 
 interface AlertProps {
   data: AlertData;
-  switches: UserOptions;
   onConfirm: (data: AlertActionData) => void;
   onSwitch: AlertNextFn;
   onClose: () => void;
@@ -28,12 +27,12 @@ type TextViewStatus = 'none' | 'loading' | 'updated' | 'error';
 
 export default function Alert({
   data,
-  switches,
   onConfirm,
   onSwitch,
   onClose,
 }: AlertProps) {
-  const darkMode = switches.get.dark;
+  const { userOptions } = useApp();
+  const darkMode = userOptions.get.dark;
   const [isOpen, setIsOpen] = useState(true);
   const [textValue, setTextValue] = useState<string | undefined>(
     data.textInput?.defaultValue
@@ -100,10 +99,9 @@ export default function Alert({
 
   if (data.tabs) {
     const tabs = data.tabs;
-    const selected = switches.get[tabs.switchName] as string;
+    const selected = userOptions.get[tabs.switchName] as string;
     tabBar = (
       <Tabs
-        switches={switches}
         switchName={tabs.switchName}
         tabLoading={false}
         colorMap={tabs.colorMap}
@@ -116,7 +114,6 @@ export default function Alert({
             <TabButton
               name={tab.name}
               selected={selected}
-              switches={switches}
               switchName={tabs.switchName}
               color={tabs.colorMap[tab.name]}
               disableClick={tab.disableClick}
@@ -131,7 +128,7 @@ export default function Alert({
     );
   }
 
-  const optionList = getAlertOptions(options, switches, onSwitch);
+  const optionList = getAlertOptions(options, userOptions, onSwitch);
 
   const editButtonList = getAlertEditButtons(data.editButtons, close);
 

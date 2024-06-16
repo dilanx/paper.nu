@@ -1,21 +1,17 @@
+import { useApp } from '@/app/Context';
 import { ExclamationCircleIcon, XMarkIcon } from '@heroicons/react/24/solid';
-import { UserOptions } from '@/types/BaseTypes';
-import { Alert } from '@/types/AlertTypes';
 
 interface SearchBoxNoticeProps {
   id: string;
-  alert: Alert;
-  switches: UserOptions;
   children?: React.ReactNode;
 }
 
 export default function SearchBoxNotice({
   id,
-  alert,
-  switches,
   children,
 }: SearchBoxNoticeProps) {
-  const store = switches.get.notice_dismiss;
+  const { userOptions, alert } = useApp();
+  const store = userOptions.get.notice_dismiss;
   if (store?.split(',').includes(id)) return <></>;
 
   return (
@@ -35,11 +31,11 @@ export default function SearchBoxNotice({
                 cancelButton: 'Cancel',
                 textHTML: <>{children}</>,
                 action: () => {
-                  const store = switches.get.notice_dismiss;
+                  const store = userOptions.get.notice_dismiss;
                   if (store) {
-                    switches.set('notice_dismiss', store + ',' + id, true);
+                    userOptions.set('notice_dismiss', store + ',' + id, true);
                   } else {
-                    switches.set('notice_dismiss', id, true);
+                    userOptions.set('notice_dismiss', id, true);
                   }
                 },
               });

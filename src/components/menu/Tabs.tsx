@@ -1,15 +1,10 @@
+import { useApp } from '@/app/Context';
+import Tooltip from '@/components/generic/Tooltip';
+import { Color, ColorMap, ReadUserOptions } from '@/types/BaseTypes';
 import { ReactNode } from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';
-import {
-  Color,
-  ColorMap,
-  ReadUserOptions,
-  UserOptions,
-} from '@/types/BaseTypes';
-import Tooltip from '@/components/generic/Tooltip';
 
 interface TabBarProps {
-  switches: UserOptions;
   switchName: keyof ReadUserOptions;
   tabLoading?: boolean;
   colorMap: ColorMap;
@@ -20,7 +15,6 @@ interface TabBarButtonProps {
   name: string;
   display?: string;
   selected: string;
-  switches: UserOptions;
   switchName?: keyof ReadUserOptions;
   color: Color;
   disableClick?: boolean;
@@ -30,9 +24,10 @@ interface TabBarButtonProps {
 }
 
 export function Tabs(props: TabBarProps) {
-  const darkMode = props.switches.get.dark;
+  const { userOptions } = useApp();
+  const darkMode = userOptions.get.dark;
   const colorMap = props.colorMap;
-  const color = colorMap[props.switches.get[props.switchName] as string];
+  const color = colorMap[userOptions.get[props.switchName] as string];
   return (
     <div className="relative">
       <div
@@ -42,7 +37,6 @@ export function Tabs(props: TabBarProps) {
           <TabButton
             name="Loading"
             selected="None"
-            switches={props.switches}
             color={color}
             disableClick={true}
           >
@@ -68,6 +62,7 @@ export function Tabs(props: TabBarProps) {
 }
 
 export function TabButton(props: TabBarButtonProps) {
+  const { userOptions } = useApp();
   const color = props.color;
   return (
     <button
@@ -83,7 +78,7 @@ export function TabButton(props: TabBarButtonProps) {
       onClick={() => {
         if (props.disableClick) return;
         if (props.switchName) {
-          props.switches.set(props.switchName, props.name, false);
+          userOptions.set(props.switchName, props.name, false);
         }
       }}
     >

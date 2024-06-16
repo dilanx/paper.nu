@@ -1,3 +1,7 @@
+import { useApp, useModification } from '@/app/Context';
+import UtilityButton from '@/components/menu/UtilityButton';
+import { Course } from '@/types/PlanTypes';
+import { convertQuarter } from '@/utility/Utility';
 import {
   Bars3Icon,
   ChevronDownIcon,
@@ -8,32 +12,11 @@ import {
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { Alert } from '@/types/AlertTypes';
-import { ContextMenu, ContextMenuData, UserOptions } from '@/types/BaseTypes';
-import {
-  BookmarksData,
-  Course,
-  PlanModificationFunctions,
-  PlanSpecialFunctions,
-} from '@/types/PlanTypes';
-import { OpenRatingsFn } from '@/types/RatingTypes';
-import { SideCard } from '@/types/SideCardTypes';
-import UtilityButton from '@/components/menu/UtilityButton';
 import Quarter from './Quarter';
-import { convertQuarter } from '@/utility/Utility';
 
 interface YearProps {
   data: Course[][];
-  bookmarks: BookmarksData;
   year: number;
-  f: PlanModificationFunctions;
-  f2: PlanSpecialFunctions;
-  sideCard: SideCard;
-  alert: Alert;
-  openRatings: OpenRatingsFn;
-  contextMenuData?: ContextMenuData;
-  contextMenu: ContextMenu;
-  switches: UserOptions;
   title: string;
 }
 
@@ -49,6 +32,8 @@ const variants = {
 };
 
 export default function Year(props: YearProps) {
+  const { activeContextMenu, contextMenu } = useApp();
+  const { planModification } = useModification();
   const [hidden, setHidden] = useState(false);
   const content = props.data;
 
@@ -59,13 +44,7 @@ export default function Year(props: YearProps) {
       return (
         <Quarter
           data={quarter}
-          bookmarks={props.bookmarks}
           location={{ year: props.year, quarter: index }}
-          f={props.f}
-          sideCard={props.sideCard}
-          alert={props.alert}
-          openRatings={props.openRatings}
-          switches={props.switches}
           title={title}
           color={color}
           yearHasSummer={content.length === 4}
@@ -81,9 +60,9 @@ export default function Year(props: YearProps) {
       icon: SunIcon,
       onClick: () => {
         if (quarters.length < 4) {
-          props.f2.addSummerQuarter(props.year);
+          planModification.addSummerQuarter(props.year);
         } else {
-          props.f2.removeSummerQuarter(props.year);
+          planModification.removeSummerQuarter(props.year);
         }
       },
     },
@@ -91,7 +70,7 @@ export default function Year(props: YearProps) {
       text: 'Clear courses',
       icon: TrashIcon,
       onClick: () => {
-        props.f2.clearData(props.year);
+        planModification.clearData(props.year);
       },
     },
   ];
@@ -101,7 +80,7 @@ export default function Year(props: YearProps) {
       text: 'Delete year',
       icon: MinusIcon,
       onClick: () => {
-        props.f2.removeYear(props.year);
+        planModification.removeYear(props.year);
       },
     });
   }
@@ -141,11 +120,9 @@ export default function Year(props: YearProps) {
           </UtilityButton>
           <UtilityButton
             Icon={Bars3Icon}
-            active={
-              props.contextMenuData?.name === `year-actions-${props.year}`
-            }
+            active={activeContextMenu === `year-actions-${props.year}`}
             onClick={(x, y) => {
-              props.contextMenu({
+              contextMenu({
                 x: x,
                 y: y,
                 name: `year-actions-${props.year}`,

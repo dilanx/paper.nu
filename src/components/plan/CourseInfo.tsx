@@ -1,4 +1,24 @@
 import {
+  getCourseColor,
+  getOfferings,
+  getOfferingsOrganized,
+} from '@/app/Plan';
+import RatingsTag from '@/components/rating/RatingsTag';
+import { Alert } from '@/types/AlertTypes';
+import { AppContext, IconElement } from '@/types/BaseTypes';
+import {
+  BookmarksData,
+  Course,
+  CourseLocation,
+  PlanModificationFunctions,
+} from '@/types/PlanTypes';
+import { SideCardData, SideCardItemData } from '@/types/SideCardTypes';
+import {
+  convertDisciplines,
+  convertDistros,
+  objAsAlertExtras,
+} from '@/utility/Utility';
+import {
   AcademicCapIcon,
   ArrowPathIcon,
   BuildingLibraryIcon,
@@ -7,31 +27,6 @@ import {
   Squares2X2Icon,
 } from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
-import { Alert } from '@/types/AlertTypes';
-import { IconElement } from '@/types/BaseTypes';
-import {
-  BookmarksData,
-  Course,
-  CourseLocation,
-  PlanModificationFunctions,
-} from '@/types/PlanTypes';
-import { OpenRatingsFn } from '@/types/RatingTypes';
-import {
-  SideCard,
-  SideCardData,
-  SideCardItemData,
-} from '@/types/SideCardTypes';
-import RatingsTag from '@/components/rating/RatingsTag';
-import {
-  getCourseColor,
-  getOfferings,
-  getOfferingsOrganized,
-} from '@/app/Plan';
-import {
-  convertDisciplines,
-  convertDistros,
-  objAsAlertExtras,
-} from '@/utility/Utility';
 
 function getDetails(
   detail: string,
@@ -97,14 +92,12 @@ function getDetails(
 interface PlanModificationWithinInfo {
   bookmarks: BookmarksData;
   location: CourseLocation;
-  f: PlanModificationFunctions;
+  planModification: PlanModificationFunctions;
 }
 
 export function openInfo(
-  sideCard: SideCard,
-  alert: Alert,
-  openRatings: OpenRatingsFn,
   course: Course,
+  appContext: AppContext,
   fromSearch: boolean,
   mod?: PlanModificationWithinInfo
 ) {
@@ -136,11 +129,9 @@ export function openInfo(
     message: placeholder
       ? `If you aren't sure which course to take to fulfill a certain requirement, you can use a placeholder! Search using 'placeholder' or by requirement category to find placeholders.`
       : course.description,
-    toolbar: !course.custom ? (
-      <RatingsTag course={course.id} alert={alert} openRatings={openRatings} />
-    ) : undefined,
+    toolbar: !course.custom ? <RatingsTag course={course.id} /> : undefined,
     items: items.reduce<SideCardItemData[]>((filtered, item) => {
-      const [icon, value] = getDetails(item, course, alert) ?? [];
+      const [icon, value] = getDetails(item, course, appContext.alert) ?? [];
       if (value) {
         filtered.push({
           key: item,
@@ -156,7 +147,7 @@ export function openInfo(
             ? {
                 text: 'Edit custom course',
                 onClick: (close) => {
-                  mod.f.putCustomCourse(mod.location, course);
+                  mod.planModification.putCustomCourse(mod.location, course);
                   close();
                 },
               }
@@ -167,13 +158,13 @@ export function openInfo(
                 enabled: {
                   text: 'Remove from bookmarks',
                   onClick: () => {
-                    mod.f.removeBookmark(course, false);
+                    mod.planModification.removeBookmark(course, false);
                   },
                 },
                 disabled: {
                   text: 'Add to bookmarks',
                   onClick: () => {
-                    mod.f.addBookmark(course, false);
+                    mod.planModification.addBookmark(course, false);
                   },
                 },
               },
@@ -181,7 +172,7 @@ export function openInfo(
             text: 'Remove course',
             danger: true,
             onClick: (close) => {
-              mod.f.removeCourse(course, mod.location);
+              mod.planModification.removeCourse(course, mod.location);
               close();
             },
           },
@@ -192,5 +183,5 @@ export function openInfo(
       : undefined,
   };
 
-  sideCard(sideCardData);
+  appContext.sideCard(sideCardData);
 }

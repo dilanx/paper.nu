@@ -1,32 +1,22 @@
-import { motion } from 'framer-motion';
-import { useDrop } from 'react-dnd';
-import { Color, UserOptions } from '@/types/BaseTypes';
+import { useApp, useModification } from '@/app/Context';
+import { getQuarterCredits } from '@/app/Plan';
+import { Color } from '@/types/BaseTypes';
 import {
-  BookmarksData,
   Course,
   CourseDragItem,
   CourseDropResult,
   CourseLocation,
   DropCollectedProps,
-  PlanModificationFunctions,
 } from '@/types/PlanTypes';
-import { SideCard } from '@/types/SideCardTypes';
+import { PlusIcon } from '@heroicons/react/24/outline';
+import { motion } from 'framer-motion';
+import { useDrop } from 'react-dnd';
 import Class from './Class';
 import QuarterUtilityButton from './QuarterUtilityButton';
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { Alert } from '@/types/AlertTypes';
-import { OpenRatingsFn } from '@/types/RatingTypes';
-import { getQuarterCredits } from '@/app/Plan';
 
 interface QuarterProps {
   data: Course[];
-  bookmarks: BookmarksData;
   location: CourseLocation;
-  f: PlanModificationFunctions;
-  sideCard: SideCard;
-  alert: Alert;
-  openRatings: OpenRatingsFn;
-  switches: UserOptions;
   title: string;
   color: Color;
   yearHasSummer: boolean;
@@ -45,6 +35,8 @@ const variants = {
 };
 
 function Quarter(props: QuarterProps) {
+  const { userOptions } = useApp();
+  const { planModification } = useModification();
   const [{ isOver }, drop] = useDrop<
     CourseDragItem,
     CourseDropResult,
@@ -56,9 +48,9 @@ function Quarter(props: QuarterProps) {
         return;
       }
       if (item.from) {
-        props.f.moveCourse(item.course, item.from, props.location);
+        planModification.moveCourse(item.course, item.from, props.location);
       } else {
-        props.f.addCourse(item.course, props.location);
+        planModification.addCourse(item.course, props.location);
       }
       return { moved: true };
     },
@@ -73,13 +65,7 @@ function Quarter(props: QuarterProps) {
         return (
           <Class
             course={classData}
-            bookmarks={props.bookmarks}
-            sideCard={props.sideCard}
-            alert={props.alert}
-            openRatings={props.openRatings}
             location={props.location}
-            f={props.f}
-            switches={props.switches}
             key={classData.id + '-' + index}
           />
         );
@@ -125,7 +111,7 @@ function Quarter(props: QuarterProps) {
           {props.title}
         </p>
         {classes}
-        {props.switches.get.quarter_units && (
+        {userOptions.get.quarter_units && (
           <p className="absolute right-2 top-0 m-0 p-0 text-right text-xs font-normal text-gray-400">
             <span className="font-medium">{units}</span> {unitString}
           </p>
@@ -134,7 +120,7 @@ function Quarter(props: QuarterProps) {
           <QuarterUtilityButton
             Icon={PlusIcon}
             onClick={() => {
-              props.f.putCustomCourse(props.location);
+              planModification.putCustomCourse(props.location);
             }}
           >
             CUSTOM

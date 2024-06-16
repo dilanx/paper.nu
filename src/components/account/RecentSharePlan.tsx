@@ -1,16 +1,13 @@
-import {
-  RecentShareItem,
-  RecentShareModificationFunctions,
-} from '@/types/AccountTypes';
-import { motion } from 'framer-motion';
-import { Avatar } from '@dilanx/avatar';
+import { useModification } from '@/app/Context';
 import { getTermName } from '@/app/Data';
+import { RecentShareItem } from '@/types/AccountTypes';
+import { Avatar } from '@dilanx/avatar';
 import { CheckIcon, LinkIcon, MinusIcon } from '@heroicons/react/24/outline';
+import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 interface RecentSharePlanProps {
   data: RecentShareItem;
-  rf: RecentShareModificationFunctions;
 }
 
 const variants = {
@@ -18,7 +15,8 @@ const variants = {
   visible: { x: 0, opacity: 1 },
 };
 
-export default function RecentSharePlan({ data, rf }: RecentSharePlanProps) {
+export default function RecentSharePlan({ data }: RecentSharePlanProps) {
+  const { recentShareModification } = useModification();
   const [hasCopied, setHasCopied] = useState(false);
 
   useEffect(() => {
@@ -37,7 +35,7 @@ export default function RecentSharePlan({ data, rf }: RecentSharePlanProps) {
         tabIndex={0}
         className="group my-4 block w-full transform cursor-pointer rounded-lg border-2 border-gray-300 px-4 py-1 text-left text-black transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md active:opacity-50 dark:border-gray-500"
         onClick={() => {
-          rf.open(data.shortCode);
+          recentShareModification.open(data.shortCode);
         }}
       >
         <p className="text-base font-semibold text-gray-500 dark:text-gray-300">
@@ -86,7 +84,7 @@ export default function RecentSharePlan({ data, rf }: RecentSharePlanProps) {
                         hover:opacity-100 group-hover:block dark:bg-gray-700 dark:text-white dark:hover:text-red-400"
             onClick={(e) => {
               e.stopPropagation();
-              rf.remove(data.shortCode);
+              recentShareModification.remove(data.shortCode);
             }}
           >
             <MinusIcon className="h-5 w-5" />

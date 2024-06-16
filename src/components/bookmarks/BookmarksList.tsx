@@ -1,25 +1,12 @@
+import { useApp, useData, useModification } from '@/app/Context';
+import { getQuarterCredits } from '@/app/Plan';
+import { CourseDragItem } from '@/types/PlanTypes';
 import { motion } from 'framer-motion';
 import { useDrop } from 'react-dnd';
-import { UserOptions } from '@/types/BaseTypes';
-import {
-  BookmarksData,
-  CourseDragItem,
-  PlanModificationFunctions,
-} from '@/types/PlanTypes';
-import { SideCard } from '@/types/SideCardTypes';
 import Class from '../plan/Class';
-import { Alert } from '@/types/AlertTypes';
-import { OpenRatingsFn } from '@/types/RatingTypes';
-import { getQuarterCredits } from '@/app/Plan';
 
 interface BookmarksListProps {
   credit: boolean;
-  bookmarks: BookmarksData;
-  sideCard: SideCard;
-  alert: Alert;
-  openRatings: OpenRatingsFn;
-  f: PlanModificationFunctions;
-  switches: UserOptions;
 }
 
 const variants = {
@@ -34,34 +21,34 @@ const variants = {
   },
 };
 
-function BookmarksList(props: BookmarksListProps) {
+function BookmarksList({ credit }: BookmarksListProps) {
+  const { userOptions } = useApp();
+  const {
+    plan: { bookmarks },
+  } = useData();
+  const { planModification } = useModification();
+
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'Class',
     drop: (item: CourseDragItem, monitor) => {
       if (monitor.didDrop()) {
         return;
       }
-      props.f.addBookmark(item.course, props.credit);
+      planModification.addBookmark(item.course, credit);
     },
     collect: (monitor) => ({ isOver: monitor.isOver() }),
   }));
 
-  const content = props.credit
-    ? Array.from(props.bookmarks.forCredit)
-    : Array.from(props.bookmarks.noCredit);
+  const content = credit
+    ? Array.from(bookmarks.forCredit)
+    : Array.from(bookmarks.noCredit);
   let classes: JSX.Element[] | JSX.Element = [];
   if (content.length > 0) {
     classes = content.map((classData, index) => {
       return (
         <Class
           course={classData}
-          bookmarks={props.bookmarks}
-          sideCard={props.sideCard}
-          alert={props.alert}
-          openRatings={props.openRatings}
-          location={{ year: -1, quarter: props.credit ? 1 : 0 }}
-          f={props.f}
-          switches={props.switches}
+          location={{ year: -1, quarter: credit ? 1 : 0 }}
           key={classData.id + '-' + index}
         />
       );
@@ -70,7 +57,7 @@ function BookmarksList(props: BookmarksListProps) {
     classes = (
       <div className={`overflow-hidden whitespace-normal text-center`}>
         <p className="px-2 text-sm font-light text-gray-500 dark:text-gray-400">
-          {props.credit
+          {credit
             ? `Classes here are counted towards total credit (like classes you've received AP/IB credit for).`
             : `Find a class you're interested in but don't have a spot for it on your schedule yet? Bookmark it for later by dragging it here.`}
         </p>
@@ -95,17 +82,17 @@ function BookmarksList(props: BookmarksListProps) {
                         ? 'border-dashed border-emerald-500 bg-emerald-300 bg-opacity-50'
                         : `border-solid bg-gray-50 dark:bg-gray-800
                         ${
-                          props.credit
+                          credit
                             ? 'border-indigo-800 dark:border-indigo-400'
                             : 'border-indigo-500'
                         }`
                     } space-y-3 shadow-lg`}
       >
         <p className="text-md m-0 p-0 text-center font-bold text-gray-600 dark:text-gray-400">
-          {props.credit ? 'FOR CREDIT' : 'BOOKMARKED COURSES'}
+          {credit ? 'FOR CREDIT' : 'BOOKMARKED COURSES'}
         </p>
         <div className="space-y-2">{classes}</div>
-        {props.credit && props.switches.get.quarter_units && (
+        {credit && userOptions.get.quarter_units && (
           <p className="absolute right-2 top-0 m-0 p-0 text-right text-xs font-normal text-gray-400">
             <span className="font-medium">{units}</span> {unitString}
           </p>

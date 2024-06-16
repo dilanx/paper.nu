@@ -1,5 +1,5 @@
-import { RecentShareItem } from '@/types/AccountTypes';
-import { AppType } from '@/types/BaseTypes';
+import { RecentShareItem } from '../types/AccountTypes';
+import { AppType } from '../types/BaseTypes';
 import { discardChanges, discardNotesChanges } from './AccountModification';
 
 export function updateRecentShare(shortCode: string, item?: RecentShareItem) {

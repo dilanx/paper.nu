@@ -1,36 +1,34 @@
-import { TrashIcon } from '@heroicons/react/24/outline';
-import { Alert } from '@/types/AlertTypes';
-import { UserOptions } from '@/types/BaseTypes';
-import { OpenRatingsFn } from '@/types/RatingTypes';
+import { getCourseColor } from '@/app/Plan';
 import {
-  ScheduleBookmarks,
   ScheduleInteractions,
-  ScheduleModificationFunctions,
   SectionWithValidMeetingPattern,
 } from '@/types/ScheduleTypes';
-import { SearchModificationFunctions } from '@/types/SearchTypes';
-import { SideCard } from '@/types/SideCardTypes';
-import { openInfo } from './ScheduleSectionInfo';
-import { getCourseColor } from '@/app/Plan';
 import { convertTime } from '@/utility/Utility';
+import { TrashIcon } from '@heroicons/react/24/outline';
+import { openInfo } from './ScheduleSectionInfo';
+import { useApp, useData, useModification } from '@/app/Context';
 
 interface ScheduleClassProps {
   swmp: SectionWithValidMeetingPattern;
   day: number;
-  bookmarks: ScheduleBookmarks;
-  alert?: Alert;
-  sideCard?: SideCard;
-  openRatings?: OpenRatingsFn;
   interactions?: ScheduleInteractions;
-  sf: ScheduleModificationFunctions;
-  ff: SearchModificationFunctions;
-  switches: UserOptions;
   imageMode?: boolean;
   split?: { i: number; l: number };
 }
 
-function ScheduleClass(props: ScheduleClassProps) {
-  const { swmp, interactions, sf, ff, switches, imageMode, split } = props;
+function ScheduleClass({
+  swmp,
+  day,
+  interactions,
+  imageMode,
+  split,
+}: ScheduleClassProps) {
+  const app = useApp();
+  const { userOptions } = app;
+  const {
+    schedule: { bookmarks },
+  } = useData();
+  const { scheduleModification, searchModification } = useModification();
   const { section, start_time, end_time } = swmp;
   const {
     subject,
@@ -103,22 +101,19 @@ function ScheduleClass(props: ScheduleClassProps) {
         interactions?.multiClear(['hoverSection', 'hoverDelete']);
       }}
       onClick={() => {
-        if (!props.sideCard || !props.alert || !props.openRatings) return;
         openInfo(
-          props.sideCard,
-          props.alert,
-          props.openRatings,
           {
             section,
-            day: props.day,
+            day,
             start_time: swmp.start_time,
             end_time: swmp.end_time,
           },
+          app,
           interactions,
           {
-            bookmarks: props.bookmarks,
-            sf,
-            ff,
+            bookmarks,
+            scheduleModification,
+            searchModification,
           }
         );
       }}
@@ -151,7 +146,7 @@ function ScheduleClass(props: ScheduleClassProps) {
             {instructorLastNames}
           </p>
         </div>
-        {switches.get.show_times && (
+        {userOptions.get.show_times && (
           <p
             className={`absolute bottom-1 right-1 m-0 text-right text-xs text-${color}-500 dark:text-${color}-300 font-semibold opacity-60 dark:opacity-90`}
           >
@@ -180,7 +175,7 @@ function ScheduleClass(props: ScheduleClassProps) {
         }}
         onClick={(e) => {
           e.stopPropagation();
-          sf.removeSection(section);
+          scheduleModification.removeSection(section);
           interactions?.multiClear(['hoverSection', 'hoverDelete']);
         }}
       >

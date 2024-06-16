@@ -1,30 +1,20 @@
-import { InformationCircleIcon } from '@heroicons/react/24/outline';
-import { motion } from 'framer-motion';
-import { Alert } from '@/types/AlertTypes';
-import { Color } from '@/types/BaseTypes';
-import {
-  ScheduleInteractions,
-  ScheduleModificationFunctions,
-  ScheduleSection,
-} from '@/types/ScheduleTypes';
-import { SideCard } from '@/types/SideCardTypes';
+import { useApp, useModification } from '@/app/Context';
 import { openInfo } from '@/components/schedule/ScheduleSectionInfo';
-import { OpenRatingsFn } from '@/types/RatingTypes';
+import { Color } from '@/types/BaseTypes';
+import { ScheduleInteractions, ScheduleSection } from '@/types/ScheduleTypes';
 import {
   convertAllDaysToString,
   convertSectionComponent,
   convertTime,
 } from '@/utility/Utility';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import { motion } from 'framer-motion';
 
 interface SearchScheduleSectionProps {
   section: ScheduleSection;
   color: Color;
-  sf: ScheduleModificationFunctions;
   interactions: ScheduleInteractions;
   alreadyAdded: boolean;
-  sideCard: SideCard;
-  alert: Alert;
-  openRatings: OpenRatingsFn;
 }
 
 const variants = {
@@ -35,13 +25,12 @@ const variants = {
 function SearchScheduleSection({
   section,
   color,
-  sf,
   interactions,
   alreadyAdded,
-  sideCard,
-  alert,
-  openRatings,
 }: SearchScheduleSectionProps) {
+  const app = useApp();
+  const { scheduleModification } = useModification();
+
   let disabled =
     alreadyAdded ||
     !section.meeting_days?.length ||
@@ -99,7 +88,7 @@ function SearchScheduleSection({
           e.stopPropagation();
           if (!disabled) {
             interactions.previewSection.clear();
-            sf.addSection(section);
+            scheduleModification.addSection(section);
           }
         }}
       >
@@ -128,7 +117,7 @@ function SearchScheduleSection({
           className="absolute bottom-1 right-1"
           onClick={(e) => {
             e.stopPropagation();
-            openInfo(sideCard, alert, openRatings, { section }, interactions);
+            openInfo({ section }, app, interactions);
           }}
         >
           <InformationCircleIcon className="h-5 w-5 text-gray-600 opacity-60 hover:opacity-100 active:opacity-75 dark:text-gray-300" />

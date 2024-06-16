@@ -1,18 +1,10 @@
-import { Alert } from '@/types/AlertTypes';
-import { UserOptions } from '@/types/BaseTypes';
-import { OpenRatingsFn } from '@/types/RatingTypes';
 import {
-  ScheduleBookmarks,
   ScheduleInteractions,
-  ScheduleModificationFunctions,
-  ScheduleSectionOverride,
   SectionWithValidMeetingPattern,
 } from '@/types/ScheduleTypes';
-import { SearchModificationFunctions } from '@/types/SearchTypes';
-import { SideCard } from '@/types/SideCardTypes';
 import { getLayout } from '@/utility/Layout';
-import ScheduleClass from './ScheduleClass';
 import { convertDay } from '@/utility/Utility';
+import ScheduleClass from './ScheduleClass';
 
 function Cell({ day, children }: { day?: number; children?: React.ReactNode }) {
   return (
@@ -32,15 +24,7 @@ interface DayProps {
   start: number;
   end: number;
   sections?: SectionWithValidMeetingPattern[];
-  bookmarks: ScheduleBookmarks;
-  overrides: ScheduleSectionOverride[];
-  alert?: Alert;
-  sideCard?: SideCard;
-  openRatings?: OpenRatingsFn;
   interactions?: ScheduleInteractions;
-  sf: ScheduleModificationFunctions;
-  ff: SearchModificationFunctions;
-  switches: UserOptions;
   imageMode?: boolean;
 }
 
@@ -56,14 +40,7 @@ function Day(props: DayProps) {
       <ScheduleClass
         swmp={swmp}
         day={props.index}
-        bookmarks={props.bookmarks}
-        alert={props.alert}
-        sideCard={props.sideCard}
-        openRatings={props.openRatings}
         interactions={props.interactions}
-        sf={props.sf}
-        ff={props.ff}
-        switches={props.switches}
         imageMode={props.imageMode}
         split={layoutMap[swmp.section.section_id][swmp.index]}
         key={`day-${props.index}-${swmp.section.section_id}-${swmp.index}`}
