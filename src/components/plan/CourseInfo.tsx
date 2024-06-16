@@ -1,4 +1,24 @@
 import {
+  getCourseColor,
+  getOfferings,
+  getOfferingsOrganized,
+} from '@/app/Plan';
+import RatingsTag from '@/components/rating/RatingsTag';
+import { Alert } from '@/types/AlertTypes';
+import { AppContext, IconElement } from '@/types/BaseTypes';
+import {
+  BookmarksData,
+  Course,
+  CourseLocation,
+  PlanModificationFunctions,
+} from '@/types/PlanTypes';
+import { SideCardData, SideCardItemData } from '@/types/SideCardTypes';
+import {
+  convertDisciplines,
+  convertDistros,
+  objAsAlertExtras,
+} from '@/utility/Utility';
+import {
   AcademicCapIcon,
   ArrowPathIcon,
   BuildingLibraryIcon,
@@ -7,30 +27,13 @@ import {
   Squares2X2Icon,
 } from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
-import PlanManager from '../../PlanManager';
-import { Alert } from '../../types/AlertTypes';
-import { IconElement } from '../../types/BaseTypes';
-import {
-  BookmarksData,
-  Course,
-  CourseLocation,
-  PlanModificationFunctions,
-} from '../../types/PlanTypes';
-import { OpenRatingsFn } from '../../types/RatingTypes';
-import {
-  SideCard,
-  SideCardData,
-  SideCardItemData,
-} from '../../types/SideCardTypes';
-import Utility from '../../utility/Utility';
-import RatingsTag from '../rating/RatingsTag';
 
 function getDetails(
   detail: string,
   course: Course,
   alert: Alert
 ): [IconElement, ReactNode] | undefined {
-  const offerings = PlanManager.getOfferings(course).slice(0, 8);
+  const offerings = getOfferings(course).slice(0, 8);
   switch (detail) {
     case 'RECENT OFFERINGS':
       return [
@@ -52,8 +55,8 @@ function getDetails(
                   message: `All offerings for ${course.id} since 2020 Fall.`,
                   color: 'purple',
                   cancelButton: 'Close',
-                  extras: Utility.objAsAlertExtras(
-                    PlanManager.getOfferingsOrganized(course),
+                  extras: objAsAlertExtras(
+                    getOfferingsOrganized(course),
                     (a, b) => b.localeCompare(a)
                   ),
                 });
@@ -71,15 +74,13 @@ function getDetails(
       return [
         BuildingLibraryIcon,
         course.disciplines
-          ? Utility.convertDisciplines(course.disciplines).join(', ')
+          ? convertDisciplines(course.disciplines).join(', ')
           : undefined,
       ];
     case 'DISTRIBUTION AREAS':
       return [
         BuildingLibraryIcon,
-        course.distros
-          ? Utility.convertDistros(course.distros).join(', ')
-          : undefined,
+        course.distros ? convertDistros(course.distros).join(', ') : undefined,
       ];
     case 'UNITS':
       return [AcademicCapIcon, parseFloat(course.units).toFixed(2).toString()];
@@ -91,14 +92,12 @@ function getDetails(
 interface PlanModificationWithinInfo {
   bookmarks: BookmarksData;
   location: CourseLocation;
-  f: PlanModificationFunctions;
+  planModification: PlanModificationFunctions;
 }
 
 export function openInfo(
-  sideCard: SideCard,
-  alert: Alert,
-  openRatings: OpenRatingsFn,
   course: Course,
+  appContext: AppContext,
   fromSearch: boolean,
   mod?: PlanModificationWithinInfo
 ) {
@@ -121,7 +120,7 @@ export function openInfo(
       : fromSearch
       ? 'COURSE INFO (SEARCH)'
       : 'COURSE INFO (SHARE)',
-    themeColor: PlanManager.getCourseColor(course.id),
+    themeColor: getCourseColor(course.id),
     title: placeholder ? 'Placeholder' : course.id,
     subtitle: course.name,
     alertMessage: course.legacy
@@ -130,11 +129,9 @@ export function openInfo(
     message: placeholder
       ? `If you aren't sure which course to take to fulfill a certain requirement, you can use a placeholder! Search using 'placeholder' or by requirement category to find placeholders.`
       : course.description,
-    toolbar: !course.custom ? (
-      <RatingsTag course={course.id} alert={alert} openRatings={openRatings} />
-    ) : undefined,
+    toolbar: !course.custom ? <RatingsTag course={course.id} /> : undefined,
     items: items.reduce<SideCardItemData[]>((filtered, item) => {
-      const [icon, value] = getDetails(item, course, alert) ?? [];
+      const [icon, value] = getDetails(item, course, appContext.alert) ?? [];
       if (value) {
         filtered.push({
           key: item,
@@ -150,7 +147,7 @@ export function openInfo(
             ? {
                 text: 'Edit custom course',
                 onClick: (close) => {
-                  mod.f.putCustomCourse(mod.location, course);
+                  mod.planModification.putCustomCourse(mod.location, course);
                   close();
                 },
               }
@@ -161,13 +158,13 @@ export function openInfo(
                 enabled: {
                   text: 'Remove from bookmarks',
                   onClick: () => {
-                    mod.f.removeBookmark(course, false);
+                    mod.planModification.removeBookmark(course, false);
                   },
                 },
                 disabled: {
                   text: 'Add to bookmarks',
                   onClick: () => {
-                    mod.f.addBookmark(course, false);
+                    mod.planModification.addBookmark(course, false);
                   },
                 },
               },
@@ -175,7 +172,7 @@ export function openInfo(
             text: 'Remove course',
             danger: true,
             onClick: (close) => {
-              mod.f.removeCourse(course, mod.location);
+              mod.planModification.removeCourse(course, mod.location);
               close();
             },
           },
@@ -186,5 +183,5 @@ export function openInfo(
       : undefined,
   };
 
-  sideCard(sideCardData);
+  appContext.sideCard(sideCardData);
 }

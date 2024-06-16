@@ -1,16 +1,15 @@
-import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useEffect, useRef, useState } from 'react';
-import { SpinnerCircularFixed } from 'spinners-react';
+import { useApp } from '@/app/Context';
+import { TabButton, Tabs } from '@/components/menu/Tabs';
 import {
   AlertActionData,
   AlertData,
   AlertFormResponse,
   AlertNextFn,
-} from '../../../types/AlertTypes';
-import { UserOptions } from '../../../types/BaseTypes';
-import { formIsValid } from '../../../utility/AlertFormInputValidation';
-import ScrollSelectMenu from '../../generic/ScrollSelectMenu';
-import { TabButton, Tabs } from '../Tabs';
+} from '@/types/AlertTypes';
+import { formIsValid } from '@/utility/AlertFormInputValidation';
+import { Dialog, Transition } from '@headlessui/react';
+import { Fragment, useEffect, useRef, useState } from 'react';
+import { SpinnerCircularFixed } from 'spinners-react';
 import { getAlertEditButtons } from './AlertEditButtons';
 import { getAlertExtras } from './AlertExtras';
 import { getAlertForm } from './AlertForm';
@@ -19,7 +18,6 @@ import { getAlertOptions } from './AlertOptions';
 
 interface AlertProps {
   data: AlertData;
-  switches: UserOptions;
   onConfirm: (data: AlertActionData) => void;
   onSwitch: AlertNextFn;
   onClose: () => void;
@@ -29,15 +27,15 @@ type TextViewStatus = 'none' | 'loading' | 'updated' | 'error';
 
 export default function Alert({
   data,
-  switches,
   onConfirm,
   onSwitch,
   onClose,
 }: AlertProps) {
-  const darkMode = switches.get.dark;
+  const { userOptions } = useApp();
+  const darkMode = userOptions.get.dark;
   const [isOpen, setIsOpen] = useState(true);
   const [textValue, setTextValue] = useState<string | undefined>(
-    data.selectMenu?.defaultValue || data.textInput?.defaultValue
+    data.textInput?.defaultValue
   );
   const [[textViewData, textViewStatus], setTextViewData] = useState<
     [string | undefined, TextViewStatus]
@@ -51,7 +49,7 @@ export default function Alert({
     }
   }, [data.textInput, textValue]);
 
-  let defaultFormValues: AlertFormResponse = {};
+  const defaultFormValues: AlertFormResponse = {};
   if (data.form) {
     for (const section of data.form.sections) {
       for (const field of section.fields) {
@@ -100,11 +98,10 @@ export default function Alert({
   let tabBar: JSX.Element | undefined = undefined;
 
   if (data.tabs) {
-    let tabs = data.tabs;
-    let selected = switches.get[tabs.switchName] as string;
+    const tabs = data.tabs;
+    const selected = userOptions.get[tabs.switchName] as string;
     tabBar = (
       <Tabs
-        switches={switches}
         switchName={tabs.switchName}
         tabLoading={false}
         colorMap={tabs.colorMap}
@@ -117,7 +114,6 @@ export default function Alert({
             <TabButton
               name={tab.name}
               selected={selected}
-              switches={switches}
               switchName={tabs.switchName}
               color={tabs.colorMap[tab.name]}
               disableClick={tab.disableClick}
@@ -132,9 +128,9 @@ export default function Alert({
     );
   }
 
-  let optionList = getAlertOptions(options, switches, onSwitch);
+  const optionList = getAlertOptions(options, userOptions, onSwitch);
 
-  let editButtonList = getAlertEditButtons(data.editButtons, close);
+  const editButtonList = getAlertEditButtons(data.editButtons, close);
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -326,28 +322,6 @@ export default function Alert({
                         </div>
                       )}
 
-                      {data.selectMenu && (
-                        // <SelectMenuLegacy
-                        //   options={data.selectMenu.options}
-                        //   value={textValue}
-                        //   setValue={(value) => setTextValue(value)}
-                        //   color={data.color}
-                        // />
-                        // <SelectMenu />
-                        <div className="my-2 flex gap-4">
-                          <ScrollSelectMenu
-                            className="flex-1"
-                            options={[
-                              { value: '1' },
-                              { value: '2' },
-                              { value: '3' },
-                            ]}
-                            selectedValue={'3'}
-                            setSelectedValue={() => {}}
-                          />
-                          {/* <ScrollSelectMenu className="flex-1" /> */}
-                        </div>
-                      )}
                       {data.notice && getAlertNotice(data.notice)}
                       {data.disableConfirmButton && (
                         <p className="text-right text-sm font-bold text-red-500 dark:text-red-400">

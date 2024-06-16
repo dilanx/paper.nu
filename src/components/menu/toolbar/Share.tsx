@@ -3,22 +3,30 @@ import {
   DocumentIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import Account from '../../../Account';
-import { Alert } from '../../../types/AlertTypes';
+import { Alert } from '@/types/AlertTypes';
 import {
   ContextMenuData,
   ContextMenuItem,
   UserOptions,
-} from '../../../types/BaseTypes';
-import { PlanData } from '../../../types/PlanTypes';
-import { ScheduleData } from '../../../types/ScheduleTypes';
-import { Mode } from '../../../utility/Constants';
+} from '@/types/BaseTypes';
+import { PlanData } from '@/types/PlanTypes';
+import { ScheduleData } from '@/types/ScheduleTypes';
+import { Mode } from '@/utility/Constants';
 import toast from 'react-hot-toast';
-import ScheduleManager from '../../../ScheduleManager';
-import PlanManager from '../../../PlanManager';
-import Links from '../../../utility/StaticLinks';
+import Links from '@/utility/StaticLinks';
 import debug from 'debug';
-import { PaperError } from '../../../utility/PaperError';
+import { PaperError } from '@/utility/PaperError';
+import {
+  getPlan,
+  getPlanName,
+  getSchedule,
+  getScheduleName,
+  isLoggedIn,
+  revokePersistent,
+  sharePersistent,
+} from '@/app/Account';
+import { serializeSchedule } from '@/app/Schedule';
+import { serializePlan } from '@/app/Plan';
 const d = debug('share');
 
 interface ShareMenuData {
@@ -27,7 +35,7 @@ interface ShareMenuData {
   plan: PlanData;
   schedule: ScheduleData;
   alert: Alert;
-  switches: UserOptions;
+  userOptions: UserOptions;
 }
 
 export const shareMenu = ({
@@ -36,21 +44,21 @@ export const shareMenu = ({
   plan,
   schedule,
   alert,
-  switches,
+  userOptions,
 }: ShareMenuData): ContextMenuData => {
-  const isSchedule = switches.get.mode === Mode.SCHEDULE;
-  const loggedIn = Account.isLoggedIn();
+  const isSchedule = userOptions.get.mode === Mode.SCHEDULE;
+  const loggedIn = isLoggedIn();
   const active =
-    (!isSchedule && switches.get.active_plan_id) ||
-    (isSchedule && switches.get.active_schedule_id);
+    (!isSchedule && userOptions.get.active_plan_id) ||
+    (isSchedule && userOptions.get.active_schedule_id);
   const docText = isSchedule ? 'schedule' : 'plan';
   let shouldRevoke = false;
 
   if (active && active !== 'None') {
     if (isSchedule) {
-      shouldRevoke = !!Account.getSchedule(active)?.public;
+      shouldRevoke = !!getSchedule(active)?.public;
     } else {
-      shouldRevoke = !!Account.getPlan(active)?.public;
+      shouldRevoke = !!getPlan(active)?.public;
     }
   }
 
@@ -61,8 +69,8 @@ export const shareMenu = ({
       onClick: () => {
         async function generateShortLink() {
           const data = isSchedule
-            ? ScheduleManager.serialize(schedule)
-            : PlanManager.serialize(plan);
+            ? serializeSchedule(schedule)
+            : serializePlan(plan);
 
           const response = await fetch(`${Links.SERVER}/paper/share`, {
             method: 'POST',
@@ -127,7 +135,7 @@ export const shareMenu = ({
             throw new PaperError('No active document');
           }
 
-          const response = await Account.sharePersistent(
+          const response = await sharePersistent(
             isSchedule ? 'schedules' : 'plans',
             active
           );
@@ -150,8 +158,8 @@ export const shareMenu = ({
               { id }
             );
             const name = isSchedule
-              ? Account.getScheduleName(active as string)
-              : Account.getPlanName(active as string);
+              ? getScheduleName(active as string)
+              : getPlanName(active as string);
             alert({
               title: 'Ready to share!',
               message: `Others can use the link below to load your ${docText}, ${name}! Notes are not shared, just the ${docText} itself along with any bookmarked courses. They won't be able to edit it or anything, but they will see the latest version of it when they refresh. Revoke access at any time in the share menu.`,
@@ -202,7 +210,7 @@ export const shareMenu = ({
             throw new PaperError('No active document');
           }
 
-          const response = await Account.revokePersistent(
+          const response = await revokePersistent(
             isSchedule ? 'schedules' : 'plans',
             active
           );

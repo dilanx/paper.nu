@@ -1,20 +1,21 @@
 import { Switch } from '@headlessui/react';
-import { AlertData, AlertDataOption } from '../../../types/AlertTypes';
-import { UserOptions } from '../../../types/BaseTypes';
+import { AlertData, AlertDataOption } from '@/types/AlertTypes';
+import { UserOptions } from '@/types/BaseTypes';
 import { Fragment } from 'react';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 
 export const getAlertOptions = (
   options: AlertDataOption[] | undefined,
-  switches: UserOptions,
+  userOptions: UserOptions,
   next: (nextAlert: AlertData) => void
 ) =>
   options?.map((option, i) => {
     const single = !option.switch;
-    const enabled = option.switch && (switches.get[option.switch] as boolean);
+    const enabled =
+      option.switch && (userOptions.get[option.switch] as boolean);
 
     const onClick = (newValue: boolean) => {
-      switches.set(option.switch!, newValue, option.saveToStorage);
+      userOptions.set(option.switch!, newValue, option.saveToStorage);
       if (option.action) {
         option.action(newValue, next);
       }

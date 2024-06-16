@@ -2,9 +2,9 @@ import {
   AlertFormData,
   AlertFormField,
   AlertFormResponse,
-} from '../types/AlertTypes';
-import { TextValidator } from '../types/BaseTypes';
-import Utility from './Utility';
+} from '@/types/AlertTypes';
+import { TextValidator } from '@/types/BaseTypes';
+import { parseTime, timeCompare } from './Utility';
 
 type FieldWithValidator = AlertFormField & {
   validator: TextValidator;
@@ -27,16 +27,16 @@ export function formIsValid(
           return [false, 'Invalid input'];
       }
       if (field.type === 'time' && response[field.name]) {
-        if (Utility.parseTime(response[field.name]) === undefined)
+        if (parseTime(response[field.name]) === undefined)
           return [false, 'Invalid time'];
       }
     }
   }
 
   for (const tc of timeConstraints) {
-    const min = Utility.parseTime(response[tc.minKey]);
-    const max = Utility.parseTime(response[tc.maxKey]);
-    if (min && max && Utility.timeCompare(max, min) <= 0) {
+    const min = parseTime(response[tc.minKey]);
+    const max = parseTime(response[tc.maxKey]);
+    if (min && max && timeCompare(max, min) <= 0) {
       return [false, tc.error];
     }
   }

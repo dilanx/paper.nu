@@ -2,7 +2,7 @@ import {
   InformationCircleIcon,
   LightBulbIcon,
 } from '@heroicons/react/24/outline';
-import { AlertNotice } from '../../../types/AlertTypes';
+import { AlertNotice } from '@/types/AlertTypes';
 
 const NOTICE_TYPES = {
   note: {

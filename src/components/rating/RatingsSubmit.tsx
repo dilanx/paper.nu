@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { getScheduleData } from '../../DataManager';
-import { AlertContext, AlertContextFn } from '../../types/AlertTypes';
-import { ScrollSelectMenuLoadState } from '../../types/GenericMenuTypes';
-import { CourseRatings } from '../../types/RatingTypes';
-import { TermInfo } from '../../types/ScheduleTypes';
-import ScrollSelectMenu from '../generic/ScrollSelectMenu';
+import { getScheduleData } from '@/app/Data';
+import { AlertContext, AlertContextFn } from '@/types/AlertTypes';
+import { ScrollSelectMenuLoadState } from '@/types/GenericMenuTypes';
+import { CourseRatings } from '@/types/RatingTypes';
+import { TermInfo } from '@/types/ScheduleTypes';
+import ScrollSelectMenu from '@/components/generic/ScrollSelectMenu';
 
 interface RatingSubmitProps {
   course: string;

@@ -1,4 +1,4 @@
-import paperBlack from '../../assets/paper-full-black.png';
+import paperBlack from '@/assets/paper-full-black.png';
 
 export default function SiteNotice() {
   return (

@@ -1,23 +1,12 @@
+import { useData } from '@/app/Context';
+import { getCourseColor } from '@/app/Plan';
+import SearchScheduleClass from '@/components/search/SearchScheduleClass';
+import { ScheduleInteractions } from '@/types/ScheduleTypes';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import ScheduleManager from '../../ScheduleManager';
-import { Alert } from '../../types/AlertTypes';
-import {
-  ScheduleData,
-  ScheduleInteractions,
-  ScheduleModificationFunctions,
-} from '../../types/ScheduleTypes';
-import { SideCard } from '../../types/SideCardTypes';
-import SearchScheduleClass from '../search/SearchScheduleClass';
-import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface ScheduleBookmarksListProps {
-  schedule: ScheduleData;
-  sf: ScheduleModificationFunctions;
   interactions: ScheduleInteractions;
-  sideCard: SideCard;
-  alert: Alert;
-  openRatings: OpenRatingsFn;
 }
 
 const variants = {
@@ -32,31 +21,28 @@ const variants = {
   },
 };
 
-function ScheduleBookmarksList(props: ScheduleBookmarksListProps) {
-  let content = props.schedule.bookmarks;
+function ScheduleBookmarksList({ interactions }: ScheduleBookmarksListProps) {
+  const {
+    schedule: { bookmarks },
+  } = useData();
 
   const [selected, setSelected] = useState<string | undefined>();
 
   let classes: JSX.Element[] | JSX.Element = [];
-  if (content.length > 0) {
-    classes = content.map((course, index) => {
+  if (bookmarks.length > 0) {
+    classes = bookmarks.map((course) => {
       return (
         <SearchScheduleClass
           course={course}
-          schedule={props.schedule}
-          color={ScheduleManager.getCourseColor(course.subject)}
+          color={getCourseColor(course.subject)}
           selected={selected === course.course_id}
           select={() =>
             setSelected(
               selected === course.course_id ? undefined : course.course_id
             )
           }
-          sf={props.sf}
-          interactions={props.interactions}
+          interactions={interactions}
           fromBookmarks={true}
-          sideCard={props.sideCard}
-          alert={props.alert}
-          openRatings={props.openRatings}
           key={`bookmark-${course.course_id}`}
         />
       );

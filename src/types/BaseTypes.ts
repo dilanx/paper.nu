@@ -1,16 +1,12 @@
+import { Mode } from '@/utility/Constants';
 import { Component, ComponentProps } from 'react';
-import { Mode } from '../utility/Constants';
 import {
   RecentShareItem,
   RecentShareModificationFunctions,
 } from './AccountTypes';
-import { AlertData } from './AlertTypes';
-import {
-  Course,
-  PlanData,
-  PlanModificationFunctions,
-  PlanSpecialFunctions,
-} from './PlanTypes';
+import { Alert, AlertData } from './AlertTypes';
+import { Course, PlanData, PlanModificationFunctions } from './PlanTypes';
+import { RatingsView, RatingsViewData } from './RatingTypes';
 import {
   ScheduleData,
   ScheduleInteractions,
@@ -18,17 +14,15 @@ import {
   ScheduleSection,
 } from './ScheduleTypes';
 import { SearchDefaults, SearchModificationFunctions } from './SearchTypes';
-import { SideCardData } from './SideCardTypes';
-import { RatingsViewData } from './RatingTypes';
+import { SideCard, SideCardData } from './SideCardTypes';
 
 export interface AppState {
   data: PlanData;
   schedule: ScheduleData;
-  switches: UserOptions;
+  userOptions: UserOptions;
   alertData?: AlertData;
   sideCardData?: SideCardData;
   f: PlanModificationFunctions;
-  f2: PlanSpecialFunctions;
   sf: ScheduleModificationFunctions;
   ff: SearchModificationFunctions;
   rf: RecentShareModificationFunctions;
@@ -126,7 +120,7 @@ export type IconElement = (props: ComponentProps<'svg'>) => JSX.Element;
 
 export type StringMap = { [key: string]: string };
 
-export interface AppType extends Component<{}, AppState> {
+export interface AppType extends Component<Record<string, never>, AppState> {
   closeSideCard(): void;
   showAlert(alertData: AlertData): void;
   initialize(callback: () => void, options?: SaveDataOptions): void;
@@ -258,4 +252,27 @@ export interface BannerData {
   id: string;
   content: React.ReactNode;
   gradient?: number;
+}
+
+export interface AppContext {
+  version: string;
+  userOptions: UserOptions;
+  activeContextMenu: string | undefined;
+  alert: Alert;
+  sideCard: SideCard;
+  contextMenu: ContextMenu;
+  ratingsView: RatingsView;
+  mapView: () => void;
+}
+
+export interface DataContext {
+  plan: PlanData;
+  schedule: ScheduleData;
+}
+
+export interface ModificationContext {
+  planModification: PlanModificationFunctions;
+  scheduleModification: ScheduleModificationFunctions;
+  searchModification: SearchModificationFunctions;
+  recentShareModification: RecentShareModificationFunctions;
 }

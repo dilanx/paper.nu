@@ -1,5 +1,5 @@
 import { Variants, motion } from 'framer-motion';
-import { BarChartMode, BarChartValue } from '../../types/GenericMenuTypes';
+import { BarChartMode, BarChartValue } from '@/types/GenericMenuTypes';
 
 const VERTICAL_BAR_CHART_COLORS = ['red', 'orange', 'yellow', 'teal', 'blue'];
 

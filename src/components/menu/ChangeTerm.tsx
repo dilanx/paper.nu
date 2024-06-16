@@ -1,9 +1,9 @@
 import { ArrowTrendingUpIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
-import { getLatestTermId, getTermName } from '../../DataManager';
-import { AlertContext, AlertContextFn } from '../../types/AlertTypes';
-import { Color, OrganizedTerms } from '../../types/BaseTypes';
-import ScrollSelectMenu from '../generic/ScrollSelectMenu';
+import { getLatestTermId, getTermName } from '@/app/Data';
+import { AlertContext, AlertContextFn } from '@/types/AlertTypes';
+import { Color, OrganizedTerms } from '@/types/BaseTypes';
+import ScrollSelectMenu from '@/components/generic/ScrollSelectMenu';
 
 interface ChangeTermProps {
   terms: OrganizedTerms;

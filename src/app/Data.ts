@@ -5,15 +5,15 @@ import {
   OrganizedTerms,
   SubjectDataCache,
   SubjectsAndSchools,
-} from './types/BaseTypes';
-import { PlanDataCache, RawCourseData } from './types/PlanTypes';
+} from '@/types/BaseTypes';
+import { PlanDataCache, RawCourseData } from '@/types/PlanTypes';
 import {
   ScheduleCourse,
   ScheduleDataCache,
   TermInfo,
-} from './types/ScheduleTypes';
-import { plan, schedule, subjectsAndSchools } from './utility/DataMap';
-import Links from './utility/StaticLinks';
+} from '@/types/ScheduleTypes';
+import { plan, schedule, subjectsAndSchools } from '@/utility/DataMap';
+import Links from '@/utility/StaticLinks';
 const d = debug('data-manager');
 
 let info: DataMapInformation | undefined = undefined;

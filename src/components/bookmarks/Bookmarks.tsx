@@ -1,38 +1,21 @@
+import { useApp } from '@/app/Context';
+import { ScheduleInteractions } from '@/types/ScheduleTypes';
+import { Mode } from '@/utility/Constants';
 import { SpinnerCircularFixed } from 'spinners-react';
-import { Alert } from '../../types/AlertTypes';
-import { UserOptions } from '../../types/BaseTypes';
-import {
-  BookmarksData,
-  PlanModificationFunctions,
-} from '../../types/PlanTypes';
-import {
-  ScheduleData,
-  ScheduleInteractions,
-  ScheduleModificationFunctions,
-} from '../../types/ScheduleTypes';
-import { SideCard } from '../../types/SideCardTypes';
-import { Mode } from '../../utility/Constants';
 import AccountPlanMessage from '../account/AccountPlanMessage';
 import BookmarksList from './BookmarksList';
 import ScheduleBookmarksList from './ScheduleBookmarksList';
-import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface BookmarksProps {
-  bookmarks: BookmarksData;
-  schedule: ScheduleData;
-  sideCard: SideCard;
-  alert: Alert;
-  openRatings: OpenRatingsFn;
-  f: PlanModificationFunctions;
-  sf: ScheduleModificationFunctions;
   scheduleInteractions: ScheduleInteractions;
-  switches: UserOptions;
   loading: boolean;
 }
 
 function Bookmarks(props: BookmarksProps) {
-  const mode = props.switches.get.mode;
-  const darkMode = props.switches.get.dark;
+  const { userOptions } = useApp();
+  const mode = userOptions.get.mode;
+  const darkMode = userOptions.get.dark;
+
   return (
     <div
       className="no-scrollbar my-2 h-full overflow-y-scroll rounded-2xl border-4
@@ -57,34 +40,11 @@ function Bookmarks(props: BookmarksProps) {
         />
       ) : mode === Mode.PLAN ? (
         <>
-          <BookmarksList
-            credit={false}
-            bookmarks={props.bookmarks}
-            sideCard={props.sideCard}
-            alert={props.alert}
-            openRatings={props.openRatings}
-            f={props.f}
-            switches={props.switches}
-          />
-          <BookmarksList
-            credit={true}
-            bookmarks={props.bookmarks}
-            sideCard={props.sideCard}
-            alert={props.alert}
-            openRatings={props.openRatings}
-            f={props.f}
-            switches={props.switches}
-          />
+          <BookmarksList credit={false} />
+          <BookmarksList credit={true} />
         </>
       ) : (
-        <ScheduleBookmarksList
-          schedule={props.schedule}
-          sf={props.sf}
-          interactions={props.scheduleInteractions}
-          sideCard={props.sideCard}
-          alert={props.alert}
-          openRatings={props.openRatings}
-        />
+        <ScheduleBookmarksList interactions={props.scheduleInteractions} />
       )}
     </div>
   );

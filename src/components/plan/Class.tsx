@@ -1,33 +1,22 @@
-import { TrashIcon } from '@heroicons/react/24/outline';
-import { motion } from 'framer-motion';
-import { useDrag } from 'react-dnd';
-import PlanManager from '../../PlanManager';
-import { UserOptions } from '../../types/BaseTypes';
+import { useApp, useData, useModification } from '@/app/Context';
+import { getCourseColor } from '@/app/Plan';
 import {
-  BookmarksData,
   Course,
   CourseDragItem,
   CourseDropResult,
   CourseLocation,
   DragCollectProps,
-  PlanModificationFunctions,
-} from '../../types/PlanTypes';
-import { SideCard } from '../../types/SideCardTypes';
-import { openInfo } from './CourseInfo';
-import Utility from '../../utility/Utility';
+} from '@/types/PlanTypes';
+import { convertDistros } from '@/utility/Utility';
+import { TrashIcon } from '@heroicons/react/24/outline';
+import { motion } from 'framer-motion';
+import { useDrag } from 'react-dnd';
 import ClassPropertyDisplay from './ClassPropertyDisplay';
-import { Alert } from '../../types/AlertTypes';
-import { OpenRatingsFn } from '../../types/RatingTypes';
+import { openInfo } from './CourseInfo';
 
 interface ClassProps {
   course: Course;
-  bookmarks: BookmarksData;
-  sideCard: SideCard;
-  alert: Alert;
-  openRatings: OpenRatingsFn;
   location: CourseLocation;
-  f: PlanModificationFunctions;
-  switches: UserOptions;
 }
 
 const variants = {
@@ -35,8 +24,13 @@ const variants = {
   visible: { y: 0, opacity: 1 },
 };
 
-function Class(props: ClassProps) {
-  const course = props.course;
+function Class({ course, location }: ClassProps) {
+  const app = useApp();
+  const {
+    plan: { bookmarks },
+  } = useData();
+  const { planModification } = useModification();
+  const { userOptions } = app;
 
   const [{ isDragging }, drag] = useDrag<
     CourseDragItem,
@@ -45,7 +39,7 @@ function Class(props: ClassProps) {
   >(() => {
     const dragItem: CourseDragItem = {
       course,
-      from: props.location,
+      from: location,
     };
 
     return {
@@ -56,9 +50,8 @@ function Class(props: ClassProps) {
   }, [course]);
 
   const custom = course.custom;
-  const color = course.color || PlanManager.getCourseColor(course.id);
-  const showMoreInfo =
-    props.switches.get.more_info && !props.switches.get.compact;
+  const color = course.color || getCourseColor(course.id);
+  const showMoreInfo = userOptions.get.more_info && !userOptions.get.compact;
   const isPlaceholder = course.placeholder;
   const units = parseFloat(course.units);
 
@@ -72,18 +65,11 @@ function Class(props: ClassProps) {
               custom ? 'border-dashed' : 'border-solid'
             } ${isDragging ? 'cursor-grabbing' : 'cursor-pointer'}`}
         onClick={() =>
-          openInfo(
-            props.sideCard,
-            props.alert,
-            props.openRatings,
-            course,
-            false,
-            {
-              bookmarks: props.bookmarks,
-              location: props.location,
-              f: props.f,
-            }
-          )
+          openInfo(course, app, false, {
+            bookmarks,
+            location,
+            planModification,
+          })
         }
       >
         <p
@@ -112,7 +98,7 @@ function Class(props: ClassProps) {
             {course.distros && (
               <ClassPropertyDisplay
                 title="DISTRIBUTION AREAS"
-                value={Utility.convertDistros(course.distros).join(', ')}
+                value={convertDistros(course.distros).join(', ')}
               />
             )}
             <div className="mt-1">
@@ -129,7 +115,7 @@ function Class(props: ClassProps) {
                         hover:opacity-100 group-hover:block dark:bg-gray-700 dark:text-white dark:hover:text-red-400"
           onClick={(e) => {
             e.stopPropagation();
-            props.f.removeCourse(course, props.location);
+            planModification.removeCourse(course, location);
           }}
         >
           <TrashIcon className="h-5 w-5" />

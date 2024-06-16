@@ -1,12 +1,12 @@
+import { useApp } from '@/app/Context';
+import { ColorMap } from '@/types/BaseTypes';
+import { Mode } from '@/utility/Constants';
 import {
   BookmarkIcon,
   CalendarIcon,
   MagnifyingGlassIcon,
   RectangleStackIcon,
 } from '@heroicons/react/24/solid';
-import { Alert } from '../../types/AlertTypes';
-import { ColorMap, UserOptions } from '../../types/BaseTypes';
-import { Mode } from '../../utility/Constants';
 import { TabButton, Tabs } from './Tabs';
 
 const TabBarButtonColors: ColorMap = {
@@ -15,27 +15,16 @@ const TabBarButtonColors: ColorMap = {
   Plans: 'rose',
 };
 
-interface TaskBarProps {
-  alert: Alert;
-  version: string;
-  switches: UserOptions;
-}
-
-function Taskbar(props: TaskBarProps) {
-  const switches = props.switches;
-  const isSchedule = switches.get.mode === Mode.SCHEDULE;
+function Taskbar() {
+  const { userOptions } = useApp();
+  const isSchedule = userOptions.get.mode === Mode.SCHEDULE;
   return (
     <div className="mx-auto mb-4 mt-2 w-full gap-2">
-      <Tabs
-        switches={props.switches}
-        switchName="tab"
-        colorMap={TabBarButtonColors}
-      >
+      <Tabs switchName="tab" colorMap={TabBarButtonColors}>
         <TabButton
           name="Search"
           alwaysShowDisplay
-          selected={props.switches.get.tab as string}
-          switches={props.switches}
+          selected={userOptions.get.tab as string}
           switchName="tab"
           color={TabBarButtonColors['Search']}
         >
@@ -44,8 +33,7 @@ function Taskbar(props: TaskBarProps) {
         <TabButton
           name="Bookmarks"
           alwaysShowDisplay
-          selected={props.switches.get.tab as string}
-          switches={props.switches}
+          selected={userOptions.get.tab as string}
           switchName="tab"
           color={TabBarButtonColors['Bookmarks']}
         >
@@ -55,8 +43,7 @@ function Taskbar(props: TaskBarProps) {
           name="Plans"
           alwaysShowDisplay
           display={isSchedule ? 'Schedules' : 'Plans'}
-          selected={props.switches.get.tab as string}
-          switches={props.switches}
+          selected={userOptions.get.tab as string}
           switchName="tab"
           color={TabBarButtonColors['Plans']}
         >

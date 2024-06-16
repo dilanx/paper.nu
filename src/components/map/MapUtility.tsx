@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useMap } from 'react-leaflet';
 import { divIcon } from 'leaflet';
-import { Color } from '../../types/BaseTypes';
+import { Color } from '@/types/BaseTypes';
 
 export const getMapMarkerIcon = (color: Color) =>
   divIcon({

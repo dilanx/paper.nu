@@ -1,50 +1,49 @@
+import { useApp } from '@/app/Context';
+import { getCourseColor } from '@/app/Plan';
+import { getLocation } from '@/app/Schedule';
+import { Color } from '@/types/BaseTypes';
+import { ScheduleSection } from '@/types/ScheduleTypes';
+import { Mode } from '@/utility/Constants';
 import { ArrowsPointingOutIcon } from '@heroicons/react/24/outline';
+import { Map } from 'leaflet';
 import { Fragment, useEffect, useRef } from 'react';
 import { MapContainer, Marker, TileLayer, Tooltip } from 'react-leaflet';
-import ScheduleManager from '../../ScheduleManager';
-import { Color, UserOptions } from '../../types/BaseTypes';
-import { ScheduleSection } from '../../types/ScheduleTypes';
 import {
   MapFlyTo,
   getMapMarkerIcon,
   getUnknownMapMarkerIcon,
 } from './MapUtility';
-import { Mode } from '../../utility/Constants';
-import { Map } from 'leaflet';
 
 const DEFAULT_POSITION: [number, number] = [42.055909, -87.672709];
 const DEFAULT_ZOOM = 14.2;
 
 interface CampusMinimapProps {
-  expand: () => void;
   location?: [string | null, Color];
   section?: ScheduleSection;
-  switches: UserOptions;
 }
 
-function CampusMinimap({
-  expand,
-  location,
-  section,
-  switches,
-}: CampusMinimapProps) {
+function CampusMinimap({ location, section }: CampusMinimapProps) {
+  const { userOptions, mapView } = useApp();
   const rooms = location ? [location[0]] : section?.room || [];
   const ref = useRef<Map | null>(null);
 
   const positions: ([number, number] | null)[] | undefined = rooms.map(
     (room) => {
-      const loc = ScheduleManager.getLocation(room);
+      const loc = getLocation(room);
       return loc ? [loc.lat, loc.lon] : null;
     }
   );
 
   useEffect(() => {
-    if (switches.get.mode === Mode.SCHEDULE && switches.get.tab === 'Search') {
+    if (
+      userOptions.get.mode === Mode.SCHEDULE &&
+      userOptions.get.tab === 'Search'
+    ) {
       if (ref.current) {
         ref.current.invalidateSize();
       }
     }
-  }, [switches.get.mode, switches.get.tab]);
+  }, [userOptions.get.mode, userOptions.get.tab]);
 
   const firstPosition = positions?.[0] || DEFAULT_POSITION;
   return (
@@ -73,8 +72,7 @@ function CampusMinimap({
                   icon={
                     section
                       ? getMapMarkerIcon(
-                          section.color ||
-                            ScheduleManager.getCourseColor(section.subject)
+                          section.color || getCourseColor(section.subject)
                         )
                       : getMapMarkerIcon(location![1])
                   }
@@ -96,7 +94,7 @@ function CampusMinimap({
       </MapContainer>
       <button
         className="absolute right-2 top-2 z-20 rounded-md p-0.5 text-gray-500 hover:bg-gray-100/20 active:bg-gray-100/40 dark:hover:bg-gray-600/20 dark:active:bg-gray-600/40"
-        onClick={() => expand()}
+        onClick={() => mapView()}
       >
         <ArrowsPointingOutIcon className="h-6 w-6" />
       </button>

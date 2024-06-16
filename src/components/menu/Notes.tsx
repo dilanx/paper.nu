@@ -1,41 +1,39 @@
+import { getDocument, isLoggedIn, updateDocument } from '@/app/Account';
+import { discardNotesChanges } from '@/app/AccountModification';
+import { useApp } from '@/app/Context';
+import { Mode } from '@/utility/Constants';
+import { errorAlert } from '@/utility/Utility';
 import { CloudIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { AnimatePresence, motion, useDragControls } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { SpinnerCircularFixed } from 'spinners-react';
-import Account from '../../Account';
-import { discardNotesChanges } from '../../app/AccountModification';
-import { Alert } from '../../types/AlertTypes';
-import { UserOptions } from '../../types/BaseTypes';
-import { Mode } from '../../utility/Constants';
-import Utility from '../../utility/Utility';
 
 interface NotesProps {
   constraintsRef: React.RefObject<HTMLDivElement>;
-  switches: UserOptions;
   onClose: () => void;
-  alert: Alert;
 }
 
-function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
-  const isSchedule = switches.get.mode === Mode.SCHEDULE;
+function Notes({ constraintsRef, onClose }: NotesProps) {
+  const { userOptions, alert } = useApp();
+  const isSchedule = userOptions.get.mode === Mode.SCHEDULE;
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saveLoading, setSaveLoading] = useState(false);
   const [notes, setNotes] = useState<string | null>(null);
-  const shouldSave = switches.get.unsaved_notes;
+  const shouldSave = userOptions.get.unsaved_notes;
   const dragControls = useDragControls();
-  const darkMode = switches.get.dark;
+  const darkMode = userOptions.get.dark;
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (Account.isLoggedIn()) {
-      const { active_plan_id, active_schedule_id } = switches.get;
+    if (isLoggedIn()) {
+      const { active_plan_id, active_schedule_id } = userOptions.get;
       if (
         (!isSchedule && active_plan_id) ||
         (isSchedule && active_schedule_id)
       ) {
-        Account.get(isSchedule ? 'schedules' : 'plans')
+        getDocument(isSchedule ? 'schedules' : 'plans')
           .then((res) => {
             if (!res) return;
 
@@ -50,14 +48,14 @@ function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
             setLoading(false);
           })
           .catch((err) => {
-            alert(Utility.errorAlert('notes_get_documents', err));
+            alert(errorAlert('notes_get_documents', err));
           });
         return;
       }
     }
     setLoading(false);
     setNotes(null);
-  }, [alert, isSchedule, switches.get]);
+  }, [alert, isSchedule, userOptions.get]);
 
   return (
     <motion.div
@@ -102,7 +100,7 @@ function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
                 onClick={() => {
                   const type = isSchedule ? 'schedules' : 'plans';
                   const id =
-                    switches.get[
+                    userOptions.get[
                       isSchedule ? 'active_schedule_id' : 'active_plan_id'
                     ];
                   if (!id || id === 'None') {
@@ -116,17 +114,17 @@ function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
                   const newNotes = textAreaRef.current?.value || '';
 
                   setSaveLoading(true);
-                  toast.promise(Account.update(type, id, { notes: newNotes }), {
+                  toast.promise(updateDocument(type, id, { notes: newNotes }), {
                     loading: 'Saving notes...',
                     success: () => {
-                      switches.set('unsaved_notes', false);
+                      userOptions.set('unsaved_notes', false);
                       setSaveLoading(false);
                       setNotes(newNotes);
                       return 'Saved notes';
                     },
                     error: (err) => {
                       setSaveLoading(false);
-                      alert(Utility.errorAlert('notes_update_document', err));
+                      alert(errorAlert('notes_update_document', err));
                       return 'Something went wrong';
                     },
                   });
@@ -152,7 +150,7 @@ function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
             className="p-0.1 rounded-md text-gray-600 hover:bg-gray-100 active:bg-gray-200
             dark:text-gray-400 dark:hover:bg-gray-700 dark:active:bg-gray-600"
             onClick={() => {
-              discardNotesChanges(switches, alert, onClose);
+              discardNotesChanges(userOptions, alert, onClose);
             }}
           >
             <XMarkIcon className="h-6 w-6" />
@@ -185,7 +183,7 @@ function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
               <button
                 className="rounded-lg bg-gray-300 px-4 py-1 text-sm text-gray-800 opacity-60 shadow-sm hover:opacity-100 active:opacity-80 dark:bg-gray-600 dark:text-gray-300"
                 onClick={() => {
-                  switches.set('tab', 'Plans');
+                  userOptions.set('tab', 'Plans');
                   onClose();
                 }}
               >
@@ -206,10 +204,10 @@ function Notes({ constraintsRef, switches, alert, onClose }: NotesProps) {
               maxLength={2000}
               onChange={(e) => {
                 if (e.target.value !== notes && !shouldSave) {
-                  switches.set('unsaved_notes', true);
+                  userOptions.set('unsaved_notes', true);
                 }
                 if (e.target.value === notes && shouldSave) {
-                  switches.set('unsaved_notes', false);
+                  userOptions.set('unsaved_notes', false);
                 }
               }}
               defaultValue={notes}

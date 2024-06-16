@@ -1,8 +1,6 @@
-import PlanManager from './PlanManager';
-import ScheduleManager from './ScheduleManager';
-import ShortcutsJson from './data/shortcuts.json';
-import { Course } from './types/PlanTypes';
-import { ScheduleCourse, ScheduleData } from './types/ScheduleTypes';
+import ShortcutsJson from '@/data/shortcuts.json';
+import { Course } from '@/types/PlanTypes';
+import { ScheduleCourse, ScheduleData } from '@/types/ScheduleTypes';
 import {
   FilterOptions,
   SearchError,
@@ -10,8 +8,10 @@ import {
   SearchResults,
   SearchShortcut,
   SearchShortcuts,
-} from './types/SearchTypes';
-import { Mode } from './utility/Constants';
+} from '@/types/SearchTypes';
+import { Mode } from '@/utility/Constants';
+import { courseMatchesFilter, getPlanCourseData } from './Plan';
+import { getScheduleCourseData, sectionMatchesFilter } from './Schedule';
 
 const PLAN_SEARCH_RESULT_LIMIT = 100;
 const SCHEDULE_SEARCH_RESULT_LIMIT = 50;
@@ -64,7 +64,7 @@ function prepareQuery(query: string): SearchQuery {
   query = cleanQuery(query);
   let terms = [query];
 
-  let firstWord = query.split(' ')[0];
+  const firstWord = query.split(' ')[0];
   let shortcut: SearchShortcut | undefined;
   if (shortcuts[firstWord]) {
     const sc = shortcuts[firstWord];
@@ -101,7 +101,7 @@ export function searchPlan(
 ): SearchResults<Course> | SearchError {
   const { terms, shortcut } = prepareQuery(query);
   const useFilters = filterExists(filter, Mode.PLAN);
-  const courseData = PlanManager.getPlanCourseData();
+  const courseData = getPlanCourseData();
 
   if (!courseData) {
     if (query.length === 0) {
@@ -121,7 +121,7 @@ export function searchPlan(
   let courseNameResults: Course[] = [];
 
   const checkCourse = (course: Course) => {
-    if (useFilters && !PlanManager.courseMatchesFilter(course, filter)) {
+    if (useFilters && !courseMatchesFilter(course, filter)) {
       return;
     }
 
@@ -178,7 +178,7 @@ export function searchSchedule(
 ): SearchResults<ScheduleCourse> | SearchError {
   const { terms, shortcut } = prepareQuery(query);
   const useFilters = filterExists(filter, Mode.SCHEDULE);
-  const courseData = ScheduleManager.getScheduleCourseData();
+  const courseData = getScheduleCourseData();
 
   if (!courseData) {
     if (query.length === 0) {
@@ -201,7 +201,7 @@ export function searchSchedule(
     course.hide_section_ids = [];
     if (useFilters) {
       for (const section of course.sections) {
-        if (!ScheduleManager.sectionMatchesFilter(section, schedule, filter)) {
+        if (!sectionMatchesFilter(section, schedule, filter)) {
           course.hide_section_ids.push(section.section_id);
         }
       }
@@ -226,7 +226,7 @@ export function searchSchedule(
 
   courseData.forEach(checkCourse);
 
-  let total = courseIdResults.length + courseNameResults.length;
+  const total = courseIdResults.length + courseNameResults.length;
   if (total === 0) return 'no_results';
 
   let limitExceeded = false;

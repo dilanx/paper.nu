@@ -1,3 +1,16 @@
+import { useApp, useData, useModification } from '@/app/Context';
+import { isHiddenFromSchedule } from '@/app/Schedule';
+import paperBlack from '@/assets/paper-full-black.png';
+import paperWhite from '@/assets/paper-full-white.png';
+import {
+  ScheduleInteractions,
+  SectionWithValidMeetingPattern,
+  isSectionWithValidMeetingPattern,
+  isValidScheduleSection,
+} from '@/types/ScheduleTypes';
+import { exportScheduleAsICS } from '@/utility/Calendar';
+import { exportScheduleAsImage } from '@/utility/Image';
+import { fitHours, sectionMeetingPatternIsValid } from '@/utility/Utility';
 import {
   ArrowTopRightOnSquareIcon,
   PlusIcon,
@@ -6,29 +19,6 @@ import {
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import ScheduleManager from '../../ScheduleManager';
-import paperBlack from '../../assets/paper-full-black.png';
-import paperWhite from '../../assets/paper-full-white.png';
-import { Alert } from '../../types/AlertTypes';
-import {
-  ContextMenu,
-  ContextMenuData,
-  UserOptions,
-} from '../../types/BaseTypes';
-import { OpenRatingsFn } from '../../types/RatingTypes';
-import {
-  ScheduleData,
-  ScheduleInteractions,
-  ScheduleModificationFunctions,
-  SectionWithValidMeetingPattern,
-  isSectionWithValidMeetingPattern,
-  isValidScheduleSection,
-} from '../../types/ScheduleTypes';
-import { SearchModificationFunctions } from '../../types/SearchTypes';
-import { SideCard } from '../../types/SideCardTypes';
-import { exportScheduleAsICS } from '../../utility/Calendar';
-import { exportScheduleAsImage } from '../../utility/Image';
-import Utility from '../../utility/Utility';
 import UtilityButton from '../menu/UtilityButton';
 import Day from './Day';
 import exportMenu from './Export';
@@ -39,27 +29,21 @@ interface DayMeetingPatterns {
 }
 
 interface ScheduleProps {
-  schedule: ScheduleData;
-  alert: Alert;
-  sideCard?: SideCard;
-  openRatings?: OpenRatingsFn;
-  contextMenuData?: ContextMenuData;
-  contextMenu?: ContextMenu;
   interactions?: ScheduleInteractions;
-  sf: ScheduleModificationFunctions;
-  ff: SearchModificationFunctions;
-  switches: UserOptions;
   imageMode?: boolean;
 }
 
-export default function Schedule(props: ScheduleProps) {
+export default function Schedule({ interactions, imageMode }: ScheduleProps) {
+  const { userOptions, activeContextMenu, alert, contextMenu } = useApp();
+  const { schedule } = useData();
+  const { scheduleModification } = useModification();
   const [takeImage, setTakeImage] = useState(false);
 
   useEffect(() => {
     if (takeImage) {
       // delay by 1 second to allow logo to load
       const timeout = window.setTimeout(() => {
-        exportScheduleAsImage(props.switches.get.dark).finally(() => {
+        exportScheduleAsImage(userOptions.get.dark).finally(() => {
           setTakeImage(false);
           toast.success('Exported schedule as image');
         });
@@ -69,20 +53,18 @@ export default function Schedule(props: ScheduleProps) {
         window.clearTimeout(timeout);
       };
     }
-  }, [takeImage, props.switches]);
+  }, [takeImage, userOptions.get.dark]);
 
-  let days: JSX.Element[] = [];
-  let sectionDays: DayMeetingPatterns = { 0: [], 1: [], 2: [], 3: [], 4: [] };
+  const days: JSX.Element[] = [];
+  const sectionDays: DayMeetingPatterns = { 0: [], 1: [], 2: [], 3: [], 4: [] };
 
   let start = 9;
   let end = 18;
 
-  const schedule = props.schedule.schedule;
-  const imageMode = props.imageMode;
-  const dark = props.switches.get.dark;
+  const dark = userOptions.get.dark;
 
-  for (let section_id in schedule) {
-    let section = schedule[section_id];
+  for (const section_id in schedule.schedule) {
+    const section = schedule.schedule[section_id];
     if (isValidScheduleSection(section)) {
       for (let i = 0; i < section.meeting_days.length; i++) {
         const swmp = {
@@ -101,8 +83,8 @@ export default function Schedule(props: ScheduleProps) {
         for (let j = 0; j < dayPattern.length; j++) {
           const day = parseInt(dayPattern[j]);
           if (
-            ScheduleManager.isHiddenFromSchedule(
-              props.schedule.overrides,
+            isHiddenFromSchedule(
+              schedule.overrides,
               swmp.section.section_id,
               day,
               swmp.start_time,
@@ -118,14 +100,14 @@ export default function Schedule(props: ScheduleProps) {
         // invariant: Paper data management system ensures
         // meeting_days, start_time, and end_time are all the same length
         if (shouldFitHours) {
-          start = Utility.fitHours(swmp.start_time, start, false);
-          end = Utility.fitHours(swmp.end_time, end, true);
+          start = fitHours(swmp.start_time, start, false);
+          end = fitHours(swmp.end_time, end, true);
         }
       }
     }
   }
 
-  const previewSection = props.interactions?.previewSection.get;
+  const previewSection = interactions?.previewSection.get;
   if (isValidScheduleSection(previewSection)) {
     previewSection.preview = true;
     for (let i = 0; i < previewSection.meeting_days.length; i++) {
@@ -144,16 +126,16 @@ export default function Schedule(props: ScheduleProps) {
       for (let j = 0; j < dayPattern.length; j++) {
         sectionDays[parseInt(dayPattern[j])].push(swmp);
       }
-      start = Utility.fitHours(swmp.start_time, start, false);
-      end = Utility.fitHours(swmp.end_time, end, true);
+      start = fitHours(swmp.start_time, start, false);
+      end = fitHours(swmp.end_time, end, true);
     }
   }
   for (let i = 0; i < 5; i++) {
-    let sections = [];
+    const sections = [];
 
     for (let j = 0; j < sectionDays[i].length; j++) {
       const section = sectionDays[i][j];
-      if (Utility.sectionMeetingPatternIsValid(section)) {
+      if (sectionMeetingPatternIsValid(section)) {
         sections.push(section);
       }
     }
@@ -164,15 +146,7 @@ export default function Schedule(props: ScheduleProps) {
         start={start}
         end={end}
         sections={sections}
-        bookmarks={props.schedule.bookmarks}
-        overrides={props.schedule.overrides}
-        alert={props.alert}
-        sideCard={props.sideCard}
-        openRatings={props.openRatings}
-        interactions={props.interactions}
-        sf={props.sf}
-        ff={props.ff}
-        switches={props.switches}
+        interactions={interactions}
         imageMode={imageMode}
         key={`day-${i}`}
       />
@@ -209,25 +183,21 @@ export default function Schedule(props: ScheduleProps) {
             <UtilityButton
               Icon={PlusIcon}
               onClick={() => {
-                props.sf.putCustomSection();
+                scheduleModification.putCustomSection();
               }}
             >
               CUSTOM
             </UtilityButton>
             <UtilityButton
               Icon={ArrowTopRightOnSquareIcon}
-              active={props.contextMenuData?.name === 'export'}
+              active={activeContextMenu === 'export'}
               onClick={(x, y) => {
-                if (!props.contextMenu) {
-                  return;
-                }
-
-                props.contextMenu(
+                contextMenu(
                   exportMenu({
                     x,
                     y,
-                    schedule: props.schedule,
-                    alert: props.alert,
+                    schedule: schedule,
+                    alert,
                     actions: {
                       image() {
                         setTakeImage(true);
@@ -249,7 +219,10 @@ export default function Schedule(props: ScheduleProps) {
             >
               EXPORT
             </UtilityButton>
-            <UtilityButton Icon={TrashIcon} onClick={() => props.sf.clear()}>
+            <UtilityButton
+              Icon={TrashIcon}
+              onClick={() => scheduleModification.clear()}
+            >
               CLEAR
             </UtilityButton>
           </div>
@@ -266,14 +239,7 @@ export default function Schedule(props: ScheduleProps) {
 
       {takeImage && (
         <div className="relative">
-          <Schedule
-            schedule={props.schedule}
-            alert={props.alert}
-            switches={props.switches}
-            sf={undefined as any}
-            ff={undefined as any}
-            imageMode={true}
-          />
+          <Schedule imageMode={true} />
         </div>
       )}
     </motion.div>

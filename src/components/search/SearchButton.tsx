@@ -1,5 +1,5 @@
-import { Color } from '../../types/BaseTypes';
-import Tooltip from '../generic/Tooltip';
+import { Color } from '@/types/BaseTypes';
+import Tooltip from '@/components/generic/Tooltip';
 
 interface SearchButtonProps {
   action: () => void;

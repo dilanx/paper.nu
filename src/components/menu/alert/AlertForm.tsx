@@ -7,14 +7,14 @@ import {
   AlertFormResponse,
   AlertFormSection,
   formFieldIs,
-} from '../../../types/AlertTypes';
-import { Color } from '../../../types/BaseTypes';
-import ColorSelectInput from '../../generic/ColorSelectInput';
-import MultiSelectInput from '../../generic/MultiSelectInput';
-import Section from '../../generic/Section';
-import SingleSelectInput from '../../generic/SingleSelectInput';
-import TextInput from '../../generic/TextInput';
-import TimeInput from '../../generic/TimeInput';
+} from '@/types/AlertTypes';
+import { Color } from '@/types/BaseTypes';
+import ColorSelectInput from '@/components/generic/ColorSelectInput';
+import MultiSelectInput from '@/components/generic/MultiSelectInput';
+import Section from '@/components/generic/Section';
+import SingleSelectInput from '@/components/generic/SingleSelectInput';
+import TextInput from '@/components/generic/TextInput';
+import TimeInput from '@/components/generic/TimeInput';
 
 export const getAlertForm = (
   values: AlertFormResponse,

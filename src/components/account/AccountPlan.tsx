@@ -1,21 +1,22 @@
+import { getTermName } from '@/app/Data';
+import { Document } from '@/types/AccountTypes';
+import { SerializedScheduleData } from '@/types/ScheduleTypes';
 import {
   DocumentDuplicateIcon,
   PencilIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
-import { getTermName } from '../../DataManager';
-import {
-  AccountModificationFunctions,
-  Document,
-} from '../../types/AccountTypes';
-import { SerializedScheduleData } from '../../types/ScheduleTypes';
 
 interface AccountPlanProps {
   id: string;
   plan: Document;
-  fa: AccountModificationFunctions;
   active: boolean;
+  activate: (id: string) => void;
+  deactivate: () => void;
+  rename: (id: string, name: string) => void;
+  duplicate: (document: Document) => void;
+  destroy: (id: string, name: string) => void;
 }
 
 const variants = {
@@ -23,8 +24,16 @@ const variants = {
   visible: { x: 0, opacity: 1 },
 };
 
-function AccountPlan(props: AccountPlanProps) {
-  const { id, plan } = props;
+function AccountPlan({
+  id,
+  plan,
+  active,
+  activate,
+  deactivate,
+  rename,
+  duplicate,
+  destroy,
+}: AccountPlanProps) {
   const termId = (plan.data as SerializedScheduleData)?.termId;
   const termName = termId ? getTermName(termId) : undefined;
 
@@ -33,15 +42,15 @@ function AccountPlan(props: AccountPlanProps) {
       <div
         tabIndex={0}
         className={`block border-2 ${
-          props.active ? 'border-emerald-400 ' : 'border-rose-400'
+          active ? 'border-emerald-400 ' : 'border-rose-400'
         } group my-4 w-full transform cursor-pointer rounded-lg px-4 py-1
             text-left text-black transition duration-300 ease-in-out hover:-translate-y-1
             hover:shadow-md active:opacity-50`}
         onClick={() => {
-          if (props.active) {
-            props.fa.deactivate();
+          if (active) {
+            deactivate();
           } else {
-            props.fa.activate(id);
+            activate(id);
           }
         }}
       >
@@ -62,7 +71,7 @@ function AccountPlan(props: AccountPlanProps) {
                         hover:opacity-100 group-hover:block dark:bg-gray-700 dark:text-white dark:hover:text-sky-400"
             onClick={(e) => {
               e.stopPropagation();
-              props.fa.rename(id, plan.name);
+              rename(id, plan.name);
             }}
           >
             <PencilIcon className="h-5 w-5" />
@@ -74,7 +83,7 @@ function AccountPlan(props: AccountPlanProps) {
                         hover:opacity-100 group-hover:block dark:bg-gray-700 dark:text-white dark:hover:text-teal-400"
             onClick={(e) => {
               e.stopPropagation();
-              props.fa.duplicate(plan);
+              duplicate(plan);
             }}
           >
             <DocumentDuplicateIcon className="h-5 w-5" />
@@ -86,13 +95,13 @@ function AccountPlan(props: AccountPlanProps) {
                         hover:opacity-100 group-hover:block dark:bg-gray-700 dark:text-white dark:hover:text-red-400"
             onClick={(e) => {
               e.stopPropagation();
-              props.fa.delete(id, plan.name);
+              destroy(id, plan.name);
             }}
           >
             <TrashIcon className="h-5 w-5" />
           </button>
         </div>
-        {props.active ? (
+        {active ? (
           <p className="absolute -bottom-2 right-2 rounded-md bg-white px-1 text-xs font-bold text-emerald-400 transition-all duration-150 group-hover:shadow-sm dark:bg-gray-800">
             ACTIVE
           </p>

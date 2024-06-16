@@ -2,8 +2,8 @@ import {
   AlertDataEditButton,
   AlertDataEditButtonData,
   editButtonIsToggleable,
-} from '../../../types/AlertTypes';
-import Tooltip from '../../generic/Tooltip';
+} from '@/types/AlertTypes';
+import Tooltip from '@/components/generic/Tooltip';
 
 export const getAlertEditButtons = (
   editButtons: AlertDataEditButton[] | undefined,
@@ -36,7 +36,7 @@ export const getAlertEditButtons = (
       dataSet = editButton.buttonData;
     }
 
-    let color = dataSet.color;
+    const color = dataSet.color;
 
     return (
       <button

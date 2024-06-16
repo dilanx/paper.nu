@@ -1,33 +1,21 @@
+import { useData, useModification } from '@/app/Context';
+import { Color } from '@/types/BaseTypes';
+import { ScheduleCourse, ScheduleInteractions } from '@/types/ScheduleTypes';
+import { FilterOptions } from '@/types/SearchTypes';
 import { BookmarkIcon, MinusIcon } from '@heroicons/react/24/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import { motion } from 'framer-motion';
 import { useDrag } from 'react-dnd';
-import { Alert } from '../../types/AlertTypes';
-import { Color } from '../../types/BaseTypes';
-import {
-  ScheduleCourse,
-  ScheduleData,
-  ScheduleInteractions,
-  ScheduleModificationFunctions,
-} from '../../types/ScheduleTypes';
-import { FilterOptions } from '../../types/SearchTypes';
-import { SideCard } from '../../types/SideCardTypes';
 import SearchScheduleSection from './SearchScheduleSection';
-import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface SearchScheduleClassProps {
   course: ScheduleCourse;
-  schedule: ScheduleData;
   color: Color;
   selected: boolean;
   select: () => void;
-  sf: ScheduleModificationFunctions;
   interactions: ScheduleInteractions;
   fromBookmarks?: boolean;
   filter?: FilterOptions;
-  sideCard: SideCard;
-  alert: Alert;
-  openRatings: OpenRatingsFn;
 }
 
 const variants = {
@@ -43,9 +31,12 @@ const variants = {
 };
 
 function SearchScheduleClass(props: SearchScheduleClassProps) {
+  const { schedule } = useData();
+  const { scheduleModification } = useModification();
+
   const course = props.course;
 
-  let item = { course };
+  const item = { course };
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -61,11 +52,11 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
 
   const isBookmarked =
     props.fromBookmarks ||
-    props.schedule.bookmarks.some((bookmarkCourse) => {
+    schedule.bookmarks.some((bookmarkCourse) => {
       return bookmarkCourse.course_id === course.course_id;
     });
 
-  let hidden = props.fromBookmarks ? 0 : course.hide_section_ids?.length ?? 0;
+  const hidden = props.fromBookmarks ? 0 : course.hide_section_ids?.length ?? 0;
 
   return (
     <div
@@ -108,12 +99,8 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
               <SearchScheduleSection
                 section={section}
                 color={props.color}
-                sf={props.sf}
                 interactions={props.interactions}
-                alreadyAdded={section.section_id in props.schedule.schedule}
-                sideCard={props.sideCard}
-                alert={props.alert}
-                openRatings={props.openRatings}
+                alreadyAdded={section.section_id in schedule.schedule}
                 key={`search-${section.section_id}`}
               />
             );
@@ -134,9 +121,9 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
           onClick={(e) => {
             e.stopPropagation();
             if (isBookmarked) {
-              props.sf?.removeScheduleBookmark(course);
+              scheduleModification.removeScheduleBookmark(course);
             } else {
-              props.sf?.addScheduleBookmark(course);
+              scheduleModification.addScheduleBookmark(course);
             }
           }}
         >

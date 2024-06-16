@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { InfoSetData } from '../../../types/BaseTypes';
-import Utility from '../../../utility/Utility';
+import { InfoSetData } from '@/types/BaseTypes';
+import { getPlaceholderInfoSet, initializeInfoSet } from '@/utility/Utility';
 
 interface InfoSetProps {
   title: string;
@@ -10,11 +10,11 @@ interface InfoSetProps {
 function InfoSet({ title, data }: InfoSetProps) {
   const [open, setOpen] = useState(false);
   const [values, setValues] = useState<InfoSetData<string>>(
-    Utility.getPlaceholderInfoSet(data)
+    getPlaceholderInfoSet(data)
   );
 
   useEffect(() => {
-    Utility.initializeInfoSet(data).then((data) => setValues(data));
+    initializeInfoSet(data).then((data) => setValues(data));
   }, [data]);
 
   return (

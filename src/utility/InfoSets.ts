@@ -1,9 +1,9 @@
 import localforage from 'localforage';
-import { InfoSetData, SubjectDataCache } from '../types/BaseTypes';
-import { PlanDataCache } from '../types/PlanTypes';
-import { ScheduleDataCache } from '../types/ScheduleTypes';
+import { InfoSetData, SubjectDataCache } from '@/types/BaseTypes';
+import { PlanDataCache } from '@/types/PlanTypes';
+import { ScheduleDataCache } from '@/types/ScheduleTypes';
 import Links from './StaticLinks';
-import Utility from './Utility';
+import { formatCacheVersion } from './Utility';
 
 function getTime<T>(location: string, key: keyof T) {
   return async () => {
@@ -11,7 +11,7 @@ function getTime<T>(location: string, key: keyof T) {
     if (!data) {
       return 'unused';
     }
-    return Utility.formatCacheVersion(
+    return formatCacheVersion(
       data[key] as string | number,
       (data['termId'] as string) || '1'
     );

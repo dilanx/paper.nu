@@ -29,11 +29,11 @@ export function getRecentShare() {
 export function activateRecentShare(app: AppType, shortCode: string) {
   discardChanges(app, () => {
     discardNotesChanges(
-      app.state.switches,
+      app.state.userOptions,
       (alertData) => app.showAlert(alertData),
       () => {
-        app.state.switches.set('notes', false);
-        app.state.switches.set('unsaved_notes', false);
+        app.state.userOptions.set('notes', false);
+        app.state.userOptions.set('unsaved_notes', false);
         app.setState({ loadingLogin: true });
         app.initialize(
           () => {

@@ -6,9 +6,9 @@ import {
   RectangleStackIcon,
 } from '@heroicons/react/24/outline';
 import debugModule from 'debug';
-import { clearCache, clearRatingsCache } from '../../../DataManager';
-import { AlertData } from '../../../types/AlertTypes';
-import Utility from '../../../utility/Utility';
+import { clearCache, clearRatingsCache } from '@/app/Data';
+import { AlertData } from '@/types/AlertTypes';
+import { BACKGROUND_DARK, BACKGROUND_LIGHT } from '@/utility/Utility';
 
 const settingsMenu = (): AlertData => ({
   title: 'Settings',
@@ -35,9 +35,7 @@ const settingsMenu = (): AlertData => ({
             saveToStorage: true,
             appearanceToggle: true,
             action: (newSwitch) => {
-              let color = newSwitch
-                ? Utility.BACKGROUND_DARK
-                : Utility.BACKGROUND_LIGHT;
+              const color = newSwitch ? BACKGROUND_DARK : BACKGROUND_LIGHT;
               document.body.style.backgroundColor = color;
               document
                 .querySelector('meta[name="theme-color"]')

@@ -1,14 +1,13 @@
+import { useApp } from '@/app/Context';
+import paperBlack from '@/assets/paper-full-black.png';
+import paperWhite from '@/assets/paper-full-white.png';
+import { switchTermAlert } from '@/components/search/Search';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
-import paperBlack from '../../assets/paper-full-black.png';
-import paperWhite from '../../assets/paper-full-white.png';
-import { Alert } from '../../types/AlertTypes';
-import { switchTermAlert } from '../search/Search';
 
 interface InfoProps {
   dark?: boolean;
   openAboutMenu: () => void;
   newerTermAvailable?: boolean;
-  alert: Alert;
   currentTermId?: string;
   switchTerm: (termId: string) => void;
 }
@@ -17,10 +16,10 @@ function Info({
   dark,
   openAboutMenu,
   newerTermAvailable,
-  alert,
   currentTermId,
   switchTerm,
 }: InfoProps) {
+  const { alert } = useApp();
   return (
     <>
       <button

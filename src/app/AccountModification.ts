@@ -1,17 +1,22 @@
+import { Document } from '@/types/AccountTypes';
+import { Alert } from '@/types/AlertTypes';
+import { AppType, UserOptions } from '@/types/BaseTypes';
+import { PlanData, SerializedPlanData } from '@/types/PlanTypes';
+import { ScheduleData, SerializedScheduleData } from '@/types/ScheduleTypes';
+import { Mode } from '@/utility/Constants';
+import { PaperError } from '@/utility/PaperError';
+import { errorAlert } from '@/utility/Utility';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import debug from 'debug';
 import toast from 'react-hot-toast';
-import Account from '../Account';
-import PlanManager from '../PlanManager';
-import ScheduleManager from '../ScheduleManager';
-import { Document } from '../types/AccountTypes';
-import { Alert } from '../types/AlertTypes';
-import { AppType, UserOptions } from '../types/BaseTypes';
-import { PlanData } from '../types/PlanTypes';
-import { ScheduleData } from '../types/ScheduleTypes';
-import { PaperError } from '../utility/PaperError';
-import Utility from '../utility/Utility';
-import { Mode } from '../utility/Constants';
+import {
+  getDocument,
+  getPlanName,
+  getScheduleName,
+  updateDocument,
+} from './Account';
+import { loadPlan, savePlan, serializePlan } from './Plan';
+import { loadSchedule, saveSchedule, serializeSchedule } from './Schedule';
 const d = debug('app:account-mod');
 
 function activate(
@@ -27,7 +32,7 @@ function activate(
     .then((docs) => {
       if (!docs) {
         app.showAlert(
-          Utility.errorAlert(
+          errorAlert(
             `account_activate_${errText}`,
             new PaperError('Undefined Document List')
           )
@@ -38,7 +43,7 @@ function activate(
       const item = docs.find((doc) => doc.id === id);
       if (!item) {
         app.showAlert(
-          Utility.errorAlert(
+          errorAlert(
             `account_activate_${errText}`,
             new PaperError('Undefined Document')
           )
@@ -53,61 +58,62 @@ function activate(
 
       discardChanges(app, () => {
         discardNotesChanges(
-          app.state.switches,
+          app.state.userOptions,
           (alertData) => app.showAlert(alertData),
           () => {
-            app.state.switches.set('notes', false);
-            app.state.switches.set('unsaved_notes', false);
+            app.state.userOptions.set('notes', false);
+            app.state.userOptions.set('unsaved_notes', false);
             app.setState({ loadingLogin: true });
-            (isSchedule ? ScheduleManager : PlanManager)
-              .load(item.data as any)
-              .then((data) => {
-                if (data === 'malformed') {
-                  app.showAlert(
-                    Utility.errorAlert(
-                      `account_activate_${errText}`,
-                      new PaperError('Malformed Data')
-                    )
-                  );
-                  return;
-                }
+            (isSchedule
+              ? loadSchedule(item.data as SerializedScheduleData)
+              : loadPlan(item.data as SerializedPlanData)
+            ).then((data) => {
+              if (data === 'malformed') {
+                app.showAlert(
+                  errorAlert(
+                    `account_activate_${errText}`,
+                    new PaperError('Malformed Data')
+                  )
+                );
+                return;
+              }
 
-                callback(item, data);
-              });
+              callback(item, data);
+            });
           }
         );
       });
     })
     .catch((error: PaperError) => {
-      app.showAlert(Utility.errorAlert(`account_activate_${errText}`, error));
+      app.showAlert(errorAlert(`account_activate_${errText}`, error));
     });
 }
 
 export function activateAccountPlan(app: AppType, planId: string) {
   d('plan activating: %s', planId);
-  activate(app, Account.get('plans'), planId, false, (item, data) => {
+  activate(app, getDocument('plans'), planId, false, (item, data) => {
     if (data === 'empty') {
-      app.state.switches.set('active_plan_id', planId, true);
-      app.state.switches.set('notes', false);
-      app.state.switches.set('unsaved_notes', false);
+      app.state.userOptions.set('active_plan_id', planId, true);
+      app.state.userOptions.set('notes', false);
+      app.state.userOptions.set('unsaved_notes', false);
       app.setState({
         saveState: 'start',
         loadingLogin: false,
       });
-      toast.success('Activated plan: ' + Account.getPlanName(planId));
+      toast.success('Activated plan: ' + getPlanName(planId));
       d('plan activated: %s (empty)', planId);
       return;
     }
 
-    app.state.switches.set('active_plan_id', planId, true);
+    app.state.userOptions.set('active_plan_id', planId, true);
     app.setState(
       {
         data: data as PlanData,
         loadingLogin: false,
       },
       () => {
-        PlanManager.save(data as PlanData, app.state.switches);
-        toast.success('Activated plan: ' + Account.getPlanName(planId));
+        savePlan(data as PlanData, app.state.userOptions);
+        toast.success('Activated plan: ' + getPlanName(planId));
         d('plan activated: %s', planId);
       }
     );
@@ -116,31 +122,27 @@ export function activateAccountPlan(app: AppType, planId: string) {
 
 export function activateAccountSchedule(app: AppType, scheduleId: string) {
   d('schedule activating: %s', scheduleId);
-  activate(app, Account.get('schedules'), scheduleId, true, (item, data) => {
+  activate(app, getDocument('schedules'), scheduleId, true, (item, data) => {
     if (data === 'empty') {
-      app.state.switches.set('active_schedule_id', scheduleId, true);
+      app.state.userOptions.set('active_schedule_id', scheduleId, true);
       app.setState({
         saveState: 'start',
         loadingLogin: false,
       });
-      toast.success(
-        'Activated schedule: ' + Account.getScheduleName(scheduleId)
-      );
+      toast.success('Activated schedule: ' + getScheduleName(scheduleId));
       d('schedule activated: %s (empty)', scheduleId);
       return;
     }
 
-    app.state.switches.set('active_schedule_id', scheduleId, true);
+    app.state.userOptions.set('active_schedule_id', scheduleId, true);
     app.setState(
       {
         schedule: data as ScheduleData,
         loadingLogin: false,
       },
       () => {
-        ScheduleManager.save(data as ScheduleData, app.state.switches);
-        toast.success(
-          'Activated schedule: ' + Account.getScheduleName(scheduleId)
-        );
+        saveSchedule(data as ScheduleData, app.state.userOptions);
+        toast.success('Activated schedule: ' + getScheduleName(scheduleId));
         d('schedule activated: %s', scheduleId);
       }
     );
@@ -148,16 +150,17 @@ export function activateAccountSchedule(app: AppType, scheduleId: string) {
 }
 
 export function deactivate(app: AppType) {
-  const t = app.state.switches.get.mode === Mode.SCHEDULE ? 'schedule' : 'plan';
+  const t =
+    app.state.userOptions.get.mode === Mode.SCHEDULE ? 'schedule' : 'plan';
   discardChanges(app, () => {
     discardNotesChanges(
-      app.state.switches,
+      app.state.userOptions,
       (alertData) => app.showAlert(alertData),
       () => {
-        app.state.switches.set('notes', false);
-        app.state.switches.set('unsaved_notes', false);
-        let id = app.state.switches.get[`active_${t}_id`];
-        app.state.switches.set(`active_${t}_id`, 'None', true);
+        app.state.userOptions.set('notes', false);
+        app.state.userOptions.set('unsaved_notes', false);
+        const id = app.state.userOptions.get[`active_${t}_id`];
+        app.state.userOptions.set(`active_${t}_id`, 'None', true);
         toast.success(`Deactivated ${t}`, {
           iconTheme: {
             primary: 'red',
@@ -172,23 +175,20 @@ export function deactivate(app: AppType) {
 
 export function update(app: AppType, isSchedule: boolean) {
   const t = isSchedule ? 'schedule' : 'plan';
-  let activeId = app.state.switches.get[`active_${t}_id`];
+  const activeId = app.state.userOptions.get[`active_${t}_id`];
   if (!activeId || activeId === 'None') {
     app.showAlert(
-      Utility.errorAlert(
-        `account_update_${t}`,
-        new PaperError('Nothing Active')
-      )
+      errorAlert(`account_update_${t}`, new PaperError('Nothing Active'))
     );
     return;
   }
 
   const sData = isSchedule
-    ? ScheduleManager.serialize(app.state.schedule)
-    : PlanManager.serialize(app.state.data);
+    ? serializeSchedule(app.state.schedule)
+    : serializePlan(app.state.data);
   app.setState({ saveState: 'save' });
 
-  Account.update(isSchedule ? 'schedules' : 'plans', activeId as string, {
+  updateDocument(isSchedule ? 'schedules' : 'plans', activeId as string, {
     data: sData,
   })
     .then(() => {
@@ -200,7 +200,7 @@ export function update(app: AppType, isSchedule: boolean) {
       app.setState({
         saveState: 'error',
       });
-      app.showAlert(Utility.errorAlert(`account_update_${t}`, err));
+      app.showAlert(errorAlert(`account_update_${t}`, err));
     });
 }
 

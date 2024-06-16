@@ -87,3 +87,9 @@ export interface SearchQuery {
   terms: string[];
   shortcut?: SearchShortcut;
 }
+
+export interface DisplayableSearchResults {
+  results?: JSX.Element[];
+  placeholder?: React.ReactNode;
+  shortcut?: SearchShortcut;
+}

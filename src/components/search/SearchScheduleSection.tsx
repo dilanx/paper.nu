@@ -1,26 +1,20 @@
+import { useApp, useModification } from '@/app/Context';
+import { openInfo } from '@/components/schedule/ScheduleSectionInfo';
+import { Color } from '@/types/BaseTypes';
+import { ScheduleInteractions, ScheduleSection } from '@/types/ScheduleTypes';
+import {
+  convertAllDaysToString,
+  convertSectionComponent,
+  convertTime,
+} from '@/utility/Utility';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
-import { Alert } from '../../types/AlertTypes';
-import { Color } from '../../types/BaseTypes';
-import {
-  ScheduleInteractions,
-  ScheduleModificationFunctions,
-  ScheduleSection,
-} from '../../types/ScheduleTypes';
-import { SideCard } from '../../types/SideCardTypes';
-import { openInfo } from '../schedule/ScheduleSectionInfo';
-import Utility from '../../utility/Utility';
-import { OpenRatingsFn } from '../../types/RatingTypes';
 
 interface SearchScheduleSectionProps {
   section: ScheduleSection;
   color: Color;
-  sf: ScheduleModificationFunctions;
   interactions: ScheduleInteractions;
   alreadyAdded: boolean;
-  sideCard: SideCard;
-  alert: Alert;
-  openRatings: OpenRatingsFn;
 }
 
 const variants = {
@@ -31,13 +25,12 @@ const variants = {
 function SearchScheduleSection({
   section,
   color,
-  sf,
   interactions,
   alreadyAdded,
-  sideCard,
-  alert,
-  openRatings,
 }: SearchScheduleSectionProps) {
+  const app = useApp();
+  const { scheduleModification } = useModification();
+
   let disabled =
     alreadyAdded ||
     !section.meeting_days?.length ||
@@ -60,15 +53,11 @@ function SearchScheduleSection({
     meetingPatterns.push(
       <div key={`sss-${section.section_id}-${i}`}>
         <p className="text-sm font-normal">
-          {meetingDays
-            ? Utility.convertAllDaysToString(meetingDays)
-            : 'no days'}
+          {meetingDays ? convertAllDaysToString(meetingDays) : 'no days'}
         </p>
         <p className="text-md font-normal">
           {startTime && endTime
-            ? Utility.convertTime(startTime, true) +
-              ' - ' +
-              Utility.convertTime(endTime, true)
+            ? convertTime(startTime, true) + ' - ' + convertTime(endTime, true)
             : 'no times'}
         </p>
         <p className="text-xs font-light">{room ?? 'no location'}</p>
@@ -99,14 +88,14 @@ function SearchScheduleSection({
           e.stopPropagation();
           if (!disabled) {
             interactions.previewSection.clear();
-            sf.addSection(section);
+            scheduleModification.addSection(section);
           }
         }}
       >
         <p className="text-md overflow-hidden whitespace-nowrap px-2 font-bold">
           {section.section}
           <span className="pl-2 text-sm font-normal">
-            {Utility.convertSectionComponent(section.component).toUpperCase()}
+            {convertSectionComponent(section.component).toUpperCase()}
           </span>
           {disabled && (
             <span className="pl-2 text-xs font-normal text-red-600 dark:text-red-400">
@@ -128,7 +117,7 @@ function SearchScheduleSection({
           className="absolute bottom-1 right-1"
           onClick={(e) => {
             e.stopPropagation();
-            openInfo(sideCard, alert, openRatings, { section }, interactions);
+            openInfo({ section }, app, interactions);
           }}
         >
           <InformationCircleIcon className="h-5 w-5 text-gray-600 opacity-60 hover:opacity-100 active:opacity-75 dark:text-gray-300" />

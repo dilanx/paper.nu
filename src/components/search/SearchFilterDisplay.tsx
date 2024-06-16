@@ -1,20 +1,20 @@
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { Color } from '../../types/BaseTypes';
+import { Color } from '@/types/BaseTypes';
 import {
   FilterBadgeName,
   FilterDisplay,
   FilterDisplayMap,
   FilterOptions,
   SearchFilter,
-} from '../../types/SearchTypes';
+} from '@/types/SearchTypes';
 import {
   ComponentMap,
   DayMap,
   DisciplineMap,
   DistroMap,
   Mode,
-} from '../../utility/Constants';
-import Utility from '../../utility/Utility';
+} from '@/utility/Constants';
+import { convertTime, getFilterBadgeInfo } from '@/utility/Utility';
 
 const display = (
   value: string,
@@ -52,12 +52,8 @@ function filtersAsStrings({
   }
 
   if (startAfter || startBefore) {
-    const after = startAfter
-      ? Utility.convertTime(startAfter, true)
-      : '12:00 AM';
-    const before = startBefore
-      ? Utility.convertTime(startBefore, true)
-      : '11:59 PM';
+    const after = startAfter ? convertTime(startAfter, true) : '12:00 AM';
+    const before = startBefore ? convertTime(startBefore, true) : '11:59 PM';
     filters['start'] = display(
       `${after} - ${before}`,
       'startAfter',
@@ -66,10 +62,8 @@ function filtersAsStrings({
   }
 
   if (endAfter || endBefore) {
-    const after = endAfter ? Utility.convertTime(endAfter, true) : '12:00 AM';
-    const before = endBefore
-      ? Utility.convertTime(endBefore, true)
-      : '11:59 PM';
+    const after = endAfter ? convertTime(endAfter, true) : '12:00 AM';
+    const before = endBefore ? convertTime(endBefore, true) : '11:59 PM';
     filters['end'] = display(`${after} - ${before}`, 'endAfter', 'endBefore');
   }
 
@@ -172,7 +166,7 @@ function SearchFilterDisplay({ filter, appMode }: SearchFilterDisplayProps) {
         toRemove[key] = undefined;
       }
 
-      const [color, mode] = Utility.getFilterBadgeInfo(name);
+      const [color, mode] = getFilterBadgeInfo(name);
 
       if (
         mode === 'b' ||

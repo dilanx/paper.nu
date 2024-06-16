@@ -1,4 +1,3 @@
-import PlanManager from '../PlanManager';
 import {
   AlertFormFieldColorSelect,
   AlertFormFieldMultiSelect,
@@ -7,10 +6,10 @@ import {
   AlertFormFieldTime,
   AlertFormResponse,
   AlertFormSection,
-} from '../types/AlertTypes';
-import { Color, TextValidator } from '../types/BaseTypes';
-import { Time } from '../types/ScheduleTypes';
-import { FilterOptions } from '../types/SearchTypes';
+} from '@/types/AlertTypes';
+import { Color, TextValidator } from '@/types/BaseTypes';
+import { Time } from '@/types/ScheduleTypes';
+import { FilterOptions } from '@/types/SearchTypes';
 import {
   Components,
   Days,
@@ -20,7 +19,8 @@ import {
   OVERALL_LEVELS,
   TIME_COMMITMENT_LEVELS,
 } from './Constants';
-import Utility from './Utility';
+import { convertTime } from './Utility';
+import { isSchoolSubject, isValidSubject } from '@/app/Plan';
 
 export function scheduleSearchFilterForm(
   filter: FilterOptions
@@ -45,7 +45,7 @@ export function scheduleSearchFilterForm(
     name,
     type: 'time',
     placeholder,
-    defaultValue: current ? Utility.convertTime(current, true) : undefined,
+    defaultValue: current ? convertTime(current, true) : undefined,
   });
   const sel = (
     name: string,
@@ -64,7 +64,7 @@ export function scheduleSearchFilterForm(
       totalRowItems: 1,
       fields: [
         text('subject', 'ex. COMP_SCI', filter.subject, (value) =>
-          PlanManager.isSchoolSubject(value.toUpperCase())
+          isSchoolSubject(value.toUpperCase())
         ),
       ],
     },
@@ -161,7 +161,7 @@ export function planSearchFilterForm(
       totalRowItems: 1,
       fields: [
         text('subject', 'ex. COMP_SCI', filter.subject, (value) =>
-          PlanManager.isValidSubject(value.toUpperCase())
+          isValidSubject(value.toUpperCase())
         ),
       ],
     },

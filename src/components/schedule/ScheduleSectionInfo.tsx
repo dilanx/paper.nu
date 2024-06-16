@@ -1,3 +1,39 @@
+import { getTermName } from '@/app/Data';
+import {
+  getCourse,
+  getCourseColor,
+  getOfferings,
+  getOfferingsOrganized,
+} from '@/app/Plan';
+import { getCourseById, getRoomFinderLink } from '@/app/Schedule';
+import { Alert } from '@/types/AlertTypes';
+import { AppContext, IconElement } from '@/types/BaseTypes';
+import { Course } from '@/types/PlanTypes';
+import {
+  ScheduleBookmarks,
+  ScheduleInteractions,
+  ScheduleModificationFunctions,
+  ScheduleSection,
+  ScheduleSectionBlock,
+} from '@/types/ScheduleTypes';
+import { SearchModificationFunctions } from '@/types/SearchTypes';
+import {
+  AnySideCardButtonData,
+  SideCardData,
+  SideCardItemData,
+} from '@/types/SideCardTypes';
+import { Days } from '@/utility/Constants';
+import {
+  capitalizeFirstLetter,
+  cleanEnrollmentRequirements,
+  convertAllDaysToString,
+  convertDisciplines,
+  convertDistros,
+  convertSectionComponent,
+  convertTime,
+  getTermColor,
+  objAsAlertExtras,
+} from '@/utility/Utility';
 import {
   AcademicCapIcon,
   BuildingLibraryIcon,
@@ -17,30 +53,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { MapIcon } from '@heroicons/react/24/solid';
 import { ReactNode } from 'react';
-import PlanManager from '../../PlanManager';
-import ScheduleManager from '../../ScheduleManager';
-import { Alert } from '../../types/AlertTypes';
-import { IconElement } from '../../types/BaseTypes';
-import { Course } from '../../types/PlanTypes';
-import {
-  ScheduleBookmarks,
-  ScheduleInteractions,
-  ScheduleModificationFunctions,
-  ScheduleSection,
-  ScheduleSectionBlock,
-} from '../../types/ScheduleTypes';
-import { SearchModificationFunctions } from '../../types/SearchTypes';
-import {
-  AnySideCardButtonData,
-  SideCard,
-  SideCardData,
-  SideCardItemData,
-} from '../../types/SideCardTypes';
-import Utility from '../../utility/Utility';
-import { getTermName } from '../../DataManager';
 import RatingsTag from '../rating/RatingsTag';
-import { OpenRatingsFn } from '../../types/RatingTypes';
-import { Days } from '../../utility/Constants';
 
 function getDetails(
   detail: string,
@@ -49,35 +62,35 @@ function getDetails(
   alert?: Alert,
   interactions?: ScheduleInteractions
 ): [IconElement, ReactNode] | undefined {
-  const offerings = course
-    ? PlanManager.getOfferings(course).slice(0, 8)
-    : undefined;
+  const offerings = course ? getOfferings(course).slice(0, 8) : undefined;
   switch (detail) {
-    case 'TOPIC':
+    case 'TOPIC': {
       return [TagIcon, section.topic];
-    case 'SECTION NUMBER':
+    }
+    case 'SECTION NUMBER': {
       return [HashtagIcon, section.section];
-    case 'COMPONENT':
+    }
+    case 'COMPONENT': {
       return [
         PuzzlePieceIcon,
-        Utility.capitalizeFirstLetter(
-          Utility.convertSectionComponent(section.component)
-        ),
+        capitalizeFirstLetter(convertSectionComponent(section.component)),
       ];
-    case 'TIME SLOT':
+    }
+    case 'TIME SLOT': {
       return [
         ClockIcon,
         section.meeting_days.map((day, i) =>
           day && section.start_time[i] && section.end_time[i] ? (
             <p key={`section-info-time-${i}`}>
-              {Utility.convertAllDaysToString(day)}{' '}
-              {Utility.convertTime(section.start_time[i]!, true)} -{' '}
-              {Utility.convertTime(section.end_time[i]!, true)}
+              {convertAllDaysToString(day)}{' '}
+              {convertTime(section.start_time[i]!, true)} -{' '}
+              {convertTime(section.end_time[i]!, true)}
             </p>
           ) : undefined
         ),
       ];
-    case 'INSTRUCTOR':
+    }
+    case 'INSTRUCTOR': {
       return [
         UserIcon,
         section.instructors?.map((instructor, i) => (
@@ -124,7 +137,8 @@ function getDetails(
           </button>
         )),
       ];
-    case 'LOCATION':
+    }
+    case 'LOCATION': {
       let roomFinderLinkExists = false;
       return [
         MapPinIcon,
@@ -133,7 +147,7 @@ function getDetails(
             room = room || 'None';
             let roomFinderLink: string | null = null;
             if (room) {
-              roomFinderLink = ScheduleManager.getRoomFinderLink(room);
+              roomFinderLink = getRoomFinderLink(room);
               if (roomFinderLink) roomFinderLinkExists = true;
             }
 
@@ -148,8 +162,7 @@ function getDetails(
                   if (interactions)
                     interactions.hoverLocation.set([
                       room,
-                      section.color ||
-                        ScheduleManager.getCourseColor(section.subject),
+                      section.color || getCourseColor(section.subject),
                     ]);
                 }}
                 onMouseLeave={() => {
@@ -182,14 +195,16 @@ function getDetails(
           )}
         </>,
       ];
-    case 'START/END DATES':
+    }
+    case 'START/END DATES': {
       return [
         CalendarDaysIcon,
         section.start_date && section.end_date
           ? `${section.start_date} to ${section.end_date}`
           : undefined,
       ];
-    case 'RECENT OFFERINGS':
+    }
+    case 'RECENT OFFERINGS': {
       return [
         Squares2X2Icon,
         offerings ? (
@@ -210,9 +225,8 @@ function getDetails(
                   color: 'purple',
                   cancelButton: 'Close',
                   extras: course
-                    ? Utility.objAsAlertExtras(
-                        PlanManager.getOfferingsOrganized(course),
-                        (a, b) => b.localeCompare(a)
+                    ? objAsAlertExtras(getOfferingsOrganized(course), (a, b) =>
+                        b.localeCompare(a)
                       )
                     : undefined,
                 });
@@ -224,32 +238,36 @@ function getDetails(
           </>
         ) : undefined,
       ];
-    case 'PREREQUISITES':
+    }
+    case 'PREREQUISITES': {
       return [ListBulletIcon, course?.prereqs];
-    case 'FOUNDATIONAL DISCIPLINES':
+    }
+    case 'FOUNDATIONAL DISCIPLINES': {
       return [
         BuildingLibraryIcon,
         section?.disciplines
-          ? Utility.convertDisciplines(section.disciplines).join(', ')
+          ? convertDisciplines(section.disciplines).join(', ')
           : undefined,
       ];
-    case 'DISTRIBUTION AREAS':
+    }
+    case 'DISTRIBUTION AREAS': {
       return [
         BuildingLibraryIcon,
         section?.distros
-          ? Utility.convertDistros(section.distros).join(', ')
+          ? convertDistros(section.distros).join(', ')
           : undefined,
       ];
-    case 'UNITS':
+    }
+    case 'UNITS': {
       return [AcademicCapIcon, course?.units];
-    case 'CAPACITY':
+    }
+    case 'CAPACITY': {
       return [UsersIcon, section.capacity];
-    case 'ENROLLMENT REQUIREMENTS':
-      return [
-        DocumentCheckIcon,
-        Utility.cleanEnrollmentRequirements(section.enrl_req),
-      ];
-    case 'DESCRIPTIONS':
+    }
+    case 'ENROLLMENT REQUIREMENTS': {
+      return [DocumentCheckIcon, cleanEnrollmentRequirements(section.enrl_req)];
+    }
+    case 'DESCRIPTIONS': {
       return [
         InformationCircleIcon,
         section?.descs ? (
@@ -263,30 +281,27 @@ function getDetails(
           </div>
         ) : undefined,
       ];
+    }
   }
 }
 
 interface SectionModificationWithinInfo {
   bookmarks?: ScheduleBookmarks;
-  sf?: ScheduleModificationFunctions;
-  ff: SearchModificationFunctions;
+  scheduleModification?: ScheduleModificationFunctions;
+  searchModification: SearchModificationFunctions;
 }
 
 export function openInfo(
-  sideCard: SideCard,
-  alert: Alert,
-  openRatings: OpenRatingsFn,
   { section, day, start_time, end_time }: ScheduleSectionBlock,
+  appContext: AppContext,
   interactions?: ScheduleInteractions,
   mod?: SectionModificationWithinInfo
 ) {
   const name = `${section.subject}${
     section.number ? ` ${section.number}` : ''
   }`;
-  const course = !section.custom ? PlanManager.getCourse(name) : undefined;
-  const scheduleCourse = ScheduleManager.getCourseById(
-    section.section_id.split('-')[0]
-  );
+  const course = !section.custom ? getCourse(name) : undefined;
+  const scheduleCourse = getCourseById(section.section_id.split('-')[0]);
 
   const items = [
     'TOPIC',
@@ -311,16 +326,16 @@ export function openInfo(
   // TODO organize this messy logic, it's 1:30 AM and I'm a bit tired rn
   if (mod) {
     sideCardButtons = [];
-    if (section.custom && mod.sf) {
+    if (section.custom && mod.scheduleModification) {
       sideCardButtons.push({
         text: 'Edit custom section',
         onClick: (close) => {
-          mod.sf!.putCustomSection(section);
+          mod.scheduleModification!.putCustomSection(section);
           close();
         },
       });
     } else {
-      if (scheduleCourse && mod.bookmarks && mod.sf) {
+      if (scheduleCourse && mod.bookmarks && mod.scheduleModification) {
         sideCardButtons.push({
           toggle: true,
           data: mod.bookmarks,
@@ -329,25 +344,25 @@ export function openInfo(
           enabled: {
             text: 'Remove from bookmarks',
             onClick: () => {
-              mod.sf!.removeScheduleBookmark(scheduleCourse);
+              mod.scheduleModification!.removeScheduleBookmark(scheduleCourse);
             },
           },
           disabled: {
             text: 'Add to bookmarks',
             onClick: () => {
-              mod.sf!.addScheduleBookmark(scheduleCourse);
+              mod.scheduleModification!.addScheduleBookmark(scheduleCourse);
             },
           },
         });
       }
     }
 
-    if (mod.sf) {
+    if (mod.scheduleModification) {
       sideCardButtons.push({
         text: 'Remove section',
         danger: true,
         onClick: (close) => {
-          mod.sf!.removeSection(section);
+          mod.scheduleModification!.removeSection(section);
           close();
         },
       });
@@ -355,22 +370,22 @@ export function openInfo(
       if (!section.custom) {
         sideCardButtons.push('divider');
 
-        const overrides = mod.sf.checkOverrides(section);
+        const overrides = mod.scheduleModification.checkOverrides(section);
 
         if (day !== undefined && start_time && end_time) {
           const disabled =
             overrides.timesRemaining && overrides.timesRemaining.length <= 1;
           sideCardButtons.push({
-            text: `Hide ${Days[day]} ${Utility.convertTime(
+            text: `Hide ${Days[day]} ${convertTime(
               start_time,
               true
-            )} - ${Utility.convertTime(end_time, true)}`,
+            )} - ${convertTime(end_time, true)}`,
             disabled,
             disabledText: disabled
               ? 'This is the only visible time.'
               : undefined,
             onClick: (close) => {
-              mod.sf!.addOverride({
+              mod.scheduleModification!.addOverride({
                 section_id: section.section_id,
                 day,
                 start_time,
@@ -390,7 +405,7 @@ export function openInfo(
               ? 'None of the times for this section are hidden.'
               : undefined,
             onClick: (close) => {
-              mod.sf!.removeOverrides(section.section_id);
+              mod.scheduleModification!.removeOverrides(section.section_id);
               close();
             },
           },
@@ -399,13 +414,13 @@ export function openInfo(
       }
     }
 
-    if (!section.custom || !mod.sf) {
+    if (!section.custom || !mod.scheduleModification) {
       sideCardButtons.push({
-        text: mod.sf
+        text: mod.scheduleModification
           ? `Show all sections of ${name}`
           : `Show sections of ${name} in current term`,
         onClick: (close) => {
-          mod.ff.set(name, scheduleCourse?.course_id);
+          mod.searchModification.set(name, scheduleCourse?.course_id);
           close();
         },
       });
@@ -418,20 +433,18 @@ export function openInfo(
     type: section.custom
       ? 'SECTION INFO (CUSTOM)'
       : mod
-      ? mod.sf
+      ? mod.scheduleModification
         ? 'SECTION INFO'
         : 'SECTION INFO (SHARE)'
       : 'SECTION INFO (SEARCH)',
-    themeColor: PlanManager.getCourseColor(name),
+    themeColor: getCourseColor(name),
     title: name,
     subtitle: section.title,
     message: course?.description ?? 'No course description available',
-    toolbar: !section.custom ? (
-      <RatingsTag course={name} alert={alert} openRatings={openRatings} />
-    ) : undefined,
+    toolbar: !section.custom ? <RatingsTag course={name} /> : undefined,
     items: items.reduce<SideCardItemData[]>((filtered, item) => {
       const [icon, value] =
-        getDetails(item, section, course, alert, interactions) ?? [];
+        getDetails(item, section, course, appContext.alert, interactions) ?? [];
       if (value) {
         filtered.push({
           key: item,
@@ -449,10 +462,10 @@ export function openInfo(
     tag: termName
       ? {
           text: termName.toUpperCase(),
-          color: Utility.getTermColor(termName),
+          color: getTermColor(termName),
         }
       : undefined,
   };
 
-  sideCard(sideCardData);
+  appContext.sideCard(sideCardData);
 }

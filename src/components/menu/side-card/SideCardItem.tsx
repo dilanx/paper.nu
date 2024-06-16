@@ -1,5 +1,5 @@
-import { Color } from '../../../types/BaseTypes';
-import { SideCardItemData } from '../../../types/SideCardTypes';
+import { Color } from '@/types/BaseTypes';
+import { SideCardItemData } from '@/types/SideCardTypes';
 
 interface SideCardItemProps {
   data: SideCardItemData;

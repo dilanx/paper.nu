@@ -1,5 +1,12 @@
 # Paper Change Log
 
+### 3.1.0
+
+_2024-06-15_
+
+- Modernized the codebase to improve maintainability.
+- Removed unnecessary dependencies.
+
 ### 3.0.2
 
 _2024-06-03_

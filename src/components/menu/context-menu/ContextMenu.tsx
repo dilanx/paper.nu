@@ -1,15 +1,16 @@
+import { useApp } from '@/app/Context';
+import { ContextMenuData } from '@/types/BaseTypes';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useRef, useState } from 'react';
-import { ContextMenuData, UserOptions } from '../../../types/BaseTypes';
 import ContextMenuButton from './ContextMenuButton';
 
 interface ContextMenuProps {
   data: ContextMenuData;
-  switches: UserOptions;
   onClose: () => void;
 }
 
-function ContextMenu({ data, switches, onClose }: ContextMenuProps) {
+function ContextMenu({ data, onClose }: ContextMenuProps) {
+  const { userOptions } = useApp();
   const [isOpen, setIsOpen] = useState(true);
 
   const ref = useRef<HTMLDivElement>(null);
@@ -38,7 +39,7 @@ function ContextMenu({ data, switches, onClose }: ContextMenuProps) {
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
         as="div"
-        className={`${switches.get.dark ? 'dark' : ''} relative z-40`}
+        className={`${userOptions.get.dark ? 'dark' : ''} relative z-40`}
         onClose={() => setIsOpen(false)}
       >
         <div className="fixed inset-0 z-20" />
