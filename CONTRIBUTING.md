@@ -6,6 +6,13 @@ Thank you for your interest in contributing to Paper! Contributions are welcome 
 
 **Paper** is a website built to help Northwestern students plan out their courses.
 
+### Technical stack
+
+- Written in **TypeScript**
+- Built with **React**
+- Uses **Tailwind CSS** for styling
+- Uses **Framer Motion** for animations and transitions
+
 ## About this repository
 
 This repository contains **only the client side** for Paper. At the moment, the server side is closed source. However, if you're interested in adding something to the server side (for example, new API endpoints involving user data or backend computation), let me know and I'd be happy to figure something out! I love creative ideas and am open to collaboration on cool things.
@@ -70,7 +77,9 @@ At the core of Paper is the functionality and user experience, which includes th
 
 - Deviation from the design of the rest of the application should be avoided and may be rejected. New UI enhancements are always welcome (I LOVE change for the better lol), but making something that does not look like it belongs in the application should be avoided.
 
-- Performance is important. Paper handles a LOT of course data and loads big chunks of data often. The client side includes a caching system to help minimize reloading big chunks of data when there's no new data to load. Make sure to be mindful of how your changes affect performance and network usage.
+- Fluidity is key. Smooth animations and transitions should be present everywhere that makes sense. They should provide a fluid, natural user experience. No animations or transitions somewhere in a place where they should be should be resolved, but too many animations can be overwhelming or make the application feel unresponsive. These aren't too hard to change, so feel free to experiment!
+
+- Performance is important. Paper handles a LOT of course data and loads big chunks of data often. The client side includes a custom caching system to help minimize reloading big chunks of data when there's no new data to load. Make sure to be mindful of how your changes affect performance and network usage.
 
 - Functionality should be intuitive at its core. The more features you have, the more convoluted the application becomes. However, we want as many cool and useful features as possible! The balance is key. Make sure your changes are intuitive and easy to use.
 
