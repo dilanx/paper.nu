@@ -8,7 +8,7 @@ Visit https://support.dilanxd.com/paper/ for documentation and support.
 
 ## Contributing
 
-Interest in contributing to Paper? See [CONTRIBUTING.md](CONTRIBUTING.md).
+Visit https://support.dilanxd.com/paper/contribute/ for contribution instructions.
 
 ## Roadmap
 
