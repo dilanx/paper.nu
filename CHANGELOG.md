@@ -5,6 +5,9 @@
 _2024-XX-XX_
 
 - The school to which a course or section belongs is now displayed in the course or section information menu. This is available for courses and sections offered since 2024 Fall.
+- Copy document ID to the clipboard when clicking on the document name in the toolbar.
+- Copy share link to the clipboard when clicking on the people icon in the toolbar, which is visible when a document is persistently shared.
+- Various UI updates, bug fixes, and other small changes.
 
 ### 3.1.0
 

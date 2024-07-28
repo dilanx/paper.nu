@@ -1,13 +1,11 @@
 import { getPlan, getSchedule, login, logout } from '@/app/Account';
 import { discardNotesChanges } from '@/app/AccountModification';
 import { useApp, useData } from '@/app/Context';
-import Tooltip from '@/components/generic/Tooltip';
 import { SaveState } from '@/types/BaseTypes';
 import { Mode } from '@/utility/Constants';
 import Links from '@/utility/StaticLinks';
 import {
   ArrowRightOnRectangleIcon,
-  CheckCircleIcon,
   Cog6ToothIcon,
   InboxArrowDownIcon,
   InformationCircleIcon,
@@ -17,18 +15,13 @@ import {
   QuestionMarkCircleIcon,
   UserCircleIcon,
   UserGroupIcon,
-  XCircleIcon,
 } from '@heroicons/react/24/outline';
 import { CalendarIcon, RectangleStackIcon } from '@heroicons/react/24/solid';
-import { SpinnerCircularFixed } from 'spinners-react';
 import settingsMenu from './Settings';
 import { shareMenu } from './Share';
 import ToolbarAccount from './ToolbarAccount';
 import ToolbarButton from './ToolbarButton';
-
-function ToolbarDivider() {
-  return <div className="h-4 w-[1px] bg-gray-300 dark:bg-gray-500" />;
-}
+import ToolbarStatus from './ToolbarStatus';
 
 interface ToolbarProps {
   loading: boolean;
@@ -47,7 +40,6 @@ function Toolbar({ loading, openAboutMenu, saveState }: ToolbarProps) {
   } = useApp();
   const { plan, schedule } = useData();
   const isSchedule = userOptions.get.mode === Mode.SCHEDULE;
-  const darkMode = userOptions.get.dark;
 
   const activeItem = isSchedule
     ? userOptions.get.active_schedule_id
@@ -64,69 +56,7 @@ function Toolbar({ loading, openAboutMenu, saveState }: ToolbarProps) {
       }`}
     >
       {activeItem && (
-        <div className="flex flex-1 items-center gap-2 font-semibold text-gray-400">
-          <div className="group relative flex cursor-default items-center gap-2 rounded-sm p-0.5 hover:bg-gray-100 dark:hover:bg-gray-700">
-            {isSchedule ? (
-              <CalendarIcon className="h-4 min-h-[1rem] w-4 min-w-[1rem]" />
-            ) : (
-              <RectangleStackIcon className="h-4 min-h-[1rem] w-4 min-w-[1rem]" />
-            )}
-            <p className="overflow-hidden text-ellipsis whitespace-nowrap text-xs">
-              {activeItem.name || '-'}
-            </p>
-            <Tooltip mini color="gray" className="-bottom-6 left-0 z-40">
-              ID: {activeItem.id}
-            </Tooltip>
-          </div>
-          {activeItem.public && (
-            <>
-              <ToolbarDivider />
-              <div className="group relative flex cursor-default items-center justify-center rounded-sm p-0.5 hover:bg-gray-100 dark:hover:bg-gray-700">
-                <UserGroupIcon className="group relative h-4 w-4" />
-                <Tooltip mini color="sky" className="-bottom-6 left-0 z-40">
-                  Accessible by link
-                </Tooltip>
-              </div>
-            </>
-          )}
-          <ToolbarDivider />
-          <div className="group relative flex cursor-default items-center gap-1 rounded-sm p-0.5 text-xs font-normal text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
-            {saveState === 'idle' && (
-              <>
-                <CheckCircleIcon className="h-4 w-4" />
-                <p>saved!</p>
-              </>
-            )}
-            {(saveState === 'start' ||
-              saveState === 'wait' ||
-              saveState === 'save') && (
-              <>
-                <SpinnerCircularFixed
-                  size={14}
-                  thickness={160}
-                  speed={200}
-                  color="#a1a1aa"
-                  secondaryColor={darkMode ? '#404040' : '#f5f5f5'}
-                />
-                <p>saving...</p>
-              </>
-            )}
-            {saveState === 'error' && (
-              <>
-                <XCircleIcon className="h-4 w-4 text-red-500" />
-                <p className="text-red-500">error when saving.</p>
-              </>
-            )}
-            <Tooltip mini color="green" className="-bottom-6 left-0 z-40">
-              {saveState === 'idle' && 'All changes saved'}
-              {(saveState === 'start' || saveState === 'wait') &&
-                'Preparing to save...'}
-              {saveState === 'save' && 'Saving...'}
-              {saveState === 'error' &&
-                'An error occurred when saving. Try again later.'}
-            </Tooltip>
-          </div>
-        </div>
+        <ToolbarStatus activeItem={activeItem} saveState={saveState} />
       )}
       <div className="flex gap-1">
         <ToolbarButton

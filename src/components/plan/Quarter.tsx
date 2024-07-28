@@ -116,7 +116,7 @@ function Quarter(props: QuarterProps) {
             <span className="font-medium">{units}</span> {unitString}
           </p>
         )}
-        <div className="absolute bottom-1 right-2 hidden transition-all duration-300 group-hover/quarter:block">
+        <div className="absolute bottom-1 right-1 hidden transition-all duration-300 group-hover/quarter:block">
           <QuarterUtilityButton
             Icon={PlusIcon}
             onClick={() => {

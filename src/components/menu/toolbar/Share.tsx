@@ -38,20 +38,156 @@ interface ShareMenuData {
   userOptions: UserOptions;
 }
 
-export const shareMenu = ({
+async function generateCopyShortLink(
+  docData: PlanData | ScheduleData,
+  isSchedule: boolean
+) {
+  const data = isSchedule
+    ? serializeSchedule(docData as ScheduleData)
+    : serializePlan(docData as PlanData);
+
+  const response = await fetch(`${Links.SERVER}/paper/share`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      type: isSchedule ? 2 : 1,
+      data,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new PaperError('Failed to generate share link');
+  }
+
+  const resData = await response.json();
+  return `${window.location.origin}/#${resData.shortCode}`;
+}
+
+function viewCopyShare(
+  docData: PlanData | ScheduleData,
+  isSchedule: boolean,
+  alert: Alert
+) {
+  const docText = isSchedule ? 'schedule' : 'plan';
+  const id = toast.loading('Generating link...');
+
+  d('generating share copy link for %s', docText);
+  generateCopyShortLink(docData, isSchedule)
+    .then((link) => {
+      d('share copy link generated');
+      toast.success('Link generated!', { id });
+      alert({
+        title: 'Ready to share!',
+        message: `Others can use the link below to load a copy of your ${docText}! Notes are not shared, just the ${docText} itself along with any bookmarked courses. Any changes you make will not be reflected in the copy.`,
+        confirmButton: 'Copy to clipboard',
+        cancelButton: 'Close',
+        color: 'sky',
+        icon: DocumentDuplicateIcon,
+        textView: {
+          text: link,
+        },
+        action: ({ textViewValue }) => {
+          if (!textViewValue) {
+            toast.error('Unable to copy URL');
+            return;
+          }
+          navigator.clipboard.writeText(textViewValue);
+          toast.success('URL copied to clipboard');
+        },
+      });
+    })
+    .catch((err) => {
+      d('failed to generate share copy link');
+      console.error(err);
+      toast.error('Failed to generate link', { id });
+    });
+}
+
+export async function generatePersistentShortLink(
+  active: string | false | undefined,
+  isSchedule: boolean
+) {
+  if (!active || active === 'None') {
+    throw new PaperError('No active document');
+  }
+
+  const response = await sharePersistent(
+    isSchedule ? 'schedules' : 'plans',
+    active
+  );
+  if (!response?.success) {
+    throw new PaperError('Failed to generate persistent link');
+  }
+  return `${window.location.origin}/#${response.shortCode}`;
+}
+
+export function viewPersistentShare(
+  active: string | false | undefined,
+  shouldRevoke: boolean,
+  isSchedule: boolean,
+  alert: Alert
+) {
+  const docText = isSchedule ? 'schedule' : 'plan';
+  const id = toast.loading(
+    shouldRevoke ? 'Retrieving link...' : 'Generating link...'
+  );
+
+  d('generating share persistent link for %s %s', docText, active);
+  generatePersistentShortLink(active, isSchedule)
+    .then((link) => {
+      d('share persistent link generated');
+      toast.success(shouldRevoke ? 'Link retrieved!' : 'Link generated!', {
+        id,
+      });
+      const name = isSchedule
+        ? getScheduleName(active as string)
+        : getPlanName(active as string);
+      alert({
+        title: 'Ready to share!',
+        message: `Others can use the link below to load your ${docText}, ${name}! Notes are not shared, just the ${docText} itself along with any bookmarked courses. They won't be able to edit it or anything, but they will see the latest version of it when they refresh. Revoke access at any time in the share menu.`,
+        confirmButton: 'Copy to clipboard',
+        cancelButton: 'Close',
+        color: 'sky',
+        icon: DocumentIcon,
+        textView: {
+          text: link,
+        },
+        action: ({ textViewValue }) => {
+          if (!textViewValue) {
+            toast.error('Unable to copy URL');
+            return;
+          }
+          navigator.clipboard.writeText(textViewValue);
+          toast.success('URL copied to clipboard');
+        },
+      });
+    })
+    .catch((err) => {
+      d('failed to generate share persistent link');
+      console.error(err);
+      toast.error(
+        shouldRevoke ? 'Failed to retrieve link' : 'Failed to generate link',
+        { id }
+      );
+    });
+}
+
+export function shareMenu({
   x,
   y,
   plan,
   schedule,
   alert,
   userOptions,
-}: ShareMenuData): ContextMenuData => {
+}: ShareMenuData): ContextMenuData {
   const isSchedule = userOptions.get.mode === Mode.SCHEDULE;
   const loggedIn = isLoggedIn();
+  const docText = isSchedule ? 'schedule' : 'plan';
   const active =
     (!isSchedule && userOptions.get.active_plan_id) ||
     (isSchedule && userOptions.get.active_schedule_id);
-  const docText = isSchedule ? 'schedule' : 'plan';
   let shouldRevoke = false;
 
   if (active && active !== 'None') {
@@ -66,131 +202,15 @@ export const shareMenu = ({
     {
       text: 'Share a copy',
       icon: DocumentDuplicateIcon,
-      onClick: () => {
-        async function generateShortLink() {
-          const data = isSchedule
-            ? serializeSchedule(schedule)
-            : serializePlan(plan);
-
-          const response = await fetch(`${Links.SERVER}/paper/share`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              type: isSchedule ? 2 : 1,
-              data,
-            }),
-          });
-
-          if (!response.ok) {
-            throw new PaperError('Failed to generate share link');
-          }
-
-          const resData = await response.json();
-          return `${window.location.origin}/#${resData.shortCode}`;
-        }
-
-        const id = toast.loading('Generating link...');
-
-        d('generating share copy link for %s', docText);
-        generateShortLink()
-          .then((link) => {
-            d('share copy link generated');
-            toast.success('Link generated!', { id });
-            alert({
-              title: 'Ready to share!',
-              message: `Others can use the link below to load a copy of your ${docText}! Notes are not shared, just the ${docText} itself along with any bookmarked courses. Any changes you make will not be reflected in the copy.`,
-              confirmButton: 'Copy to clipboard',
-              cancelButton: 'Close',
-              color: 'sky',
-              icon: DocumentDuplicateIcon,
-              textView: {
-                text: link,
-              },
-              action: ({ textViewValue }) => {
-                if (!textViewValue) {
-                  toast.error('Unable to copy URL');
-                  return;
-                }
-                navigator.clipboard.writeText(textViewValue);
-                toast.success('URL copied to clipboard');
-              },
-            });
-          })
-          .catch((err) => {
-            d('failed to generate share copy link');
-            console.error(err);
-            toast.error('Failed to generate link', { id });
-          });
-      },
+      onClick: () =>
+        viewCopyShare(isSchedule ? schedule : plan, isSchedule, alert),
       description: `Share a copy of this ${docText}. Others will not see any changes you make.`,
     },
     {
       text: shouldRevoke ? 'View persistent share link' : 'Share persistent',
       icon: DocumentIcon,
-      onClick: () => {
-        async function generateShortLink() {
-          if (!active || active === 'None') {
-            throw new PaperError('No active document');
-          }
-
-          const response = await sharePersistent(
-            isSchedule ? 'schedules' : 'plans',
-            active
-          );
-          if (!response?.success) {
-            throw new PaperError('Failed to generate persistent link');
-          }
-          return `${window.location.origin}/#${response.shortCode}`;
-        }
-
-        const id = toast.loading(
-          shouldRevoke ? 'Retrieving link...' : 'Generating link...'
-        );
-
-        d('generating share persistent link for %s %s', docText, active);
-        generateShortLink()
-          .then((link) => {
-            d('share persistent link generated');
-            toast.success(
-              shouldRevoke ? 'Link retrieved!' : 'Link generated!',
-              { id }
-            );
-            const name = isSchedule
-              ? getScheduleName(active as string)
-              : getPlanName(active as string);
-            alert({
-              title: 'Ready to share!',
-              message: `Others can use the link below to load your ${docText}, ${name}! Notes are not shared, just the ${docText} itself along with any bookmarked courses. They won't be able to edit it or anything, but they will see the latest version of it when they refresh. Revoke access at any time in the share menu.`,
-              confirmButton: 'Copy to clipboard',
-              cancelButton: 'Close',
-              color: 'sky',
-              icon: DocumentIcon,
-              textView: {
-                text: link,
-              },
-              action: ({ textViewValue }) => {
-                if (!textViewValue) {
-                  toast.error('Unable to copy URL');
-                  return;
-                }
-                navigator.clipboard.writeText(textViewValue);
-                toast.success('URL copied to clipboard');
-              },
-            });
-          })
-          .catch((err) => {
-            d('failed to generate share persistent link');
-            console.error(err);
-            toast.error(
-              shouldRevoke
-                ? 'Failed to retrieve link'
-                : 'Failed to generate link',
-              { id }
-            );
-          });
-      },
+      onClick: () =>
+        viewPersistentShare(active, shouldRevoke, isSchedule, alert),
       description: `${
         shouldRevoke ? 'View your' : 'Share a'
       } link to this specific ${docText}. Others will always see the latest version. You can revoke access at any time.`,
@@ -249,4 +269,4 @@ export const shareMenu = ({
     y,
     items,
   };
-};
+}
