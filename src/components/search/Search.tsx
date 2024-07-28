@@ -135,7 +135,7 @@ export default function Search({
           delete updated[f];
           continue;
         }
-        updated[f] = filter[f] as any;
+        updated[f] = newFilters[f] as any;
       }
 
       // this isn't quite right

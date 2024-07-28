@@ -2,7 +2,7 @@
 
 ### 3.1.0
 
-_2024-06-15_
+_2024-06-16_
 
 - Modernized the codebase to improve maintainability.
 - Removed unnecessary dependencies.
