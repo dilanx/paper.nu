@@ -106,6 +106,7 @@ export interface ScheduleSection {
   descs?: ScheduleSectionDescription[];
   distros?: string;
   disciplines?: string;
+  school?: string;
   preview?: boolean;
   custom?: boolean;
   color?: Color;

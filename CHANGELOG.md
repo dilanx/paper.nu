@@ -1,5 +1,11 @@
 # Paper Change Log
 
+### 3.2.0
+
+_2024-XX-XX_
+
+- The school to which a course or section belongs is now displayed in the course or section information menu. This is available for courses and sections offered since 2024 Fall.
+
 ### 3.1.0
 
 _2024-06-16_

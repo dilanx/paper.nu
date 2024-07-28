@@ -1,10 +1,5 @@
 import { getTermName } from '@/app/Data';
-import {
-  getCourse,
-  getCourseColor,
-  getOfferings,
-  getOfferingsOrganized,
-} from '@/app/Plan';
+import { getCourse, getCourseColor } from '@/app/Plan';
 import { getCourseById, getRoomFinderLink } from '@/app/Schedule';
 import { Alert } from '@/types/AlertTypes';
 import { AppContext, IconElement } from '@/types/BaseTypes';
@@ -32,13 +27,12 @@ import {
   convertSectionComponent,
   convertTime,
   getTermColor,
-  objAsAlertExtras,
 } from '@/utility/Utility';
 import {
   AcademicCapIcon,
   BuildingLibraryIcon,
+  CalculatorIcon,
   CalendarDaysIcon,
-  ChevronRightIcon,
   ClockIcon,
   DocumentCheckIcon,
   HashtagIcon,
@@ -53,7 +47,9 @@ import {
 } from '@heroicons/react/24/outline';
 import { MapIcon } from '@heroicons/react/24/solid';
 import { ReactNode } from 'react';
+import RecentOfferings from '../info/RecentOfferings';
 import RatingsTag from '../rating/RatingsTag';
+import School from '../info/School';
 
 function getDetails(
   detail: string,
@@ -62,7 +58,6 @@ function getDetails(
   alert?: Alert,
   interactions?: ScheduleInteractions
 ): [IconElement, ReactNode] | undefined {
-  const offerings = course ? getOfferings(course).slice(0, 8) : undefined;
   switch (detail) {
     case 'TOPIC': {
       return [TagIcon, section.topic];
@@ -207,36 +202,7 @@ function getDetails(
     case 'RECENT OFFERINGS': {
       return [
         Squares2X2Icon,
-        offerings ? (
-          <>
-            <p className="text-sm">
-              {offerings.length > 0
-                ? offerings.join(', ')
-                : 'Not offered recently'}
-            </p>
-            <button
-              className="inline-flex items-center text-xs font-bold text-gray-400 hover:text-purple-500 active:text-purple-600 dark:text-gray-500 dark:hover:text-purple-300 dark:active:text-purple-200"
-              onClick={() => {
-                alert?.({
-                  icon: Squares2X2Icon,
-                  title: 'Historic Offerings',
-                  subtitle: course?.id,
-                  message: `All offerings for ${course?.id} since 2020 Fall.`,
-                  color: 'purple',
-                  cancelButton: 'Close',
-                  extras: course
-                    ? objAsAlertExtras(getOfferingsOrganized(course), (a, b) =>
-                        b.localeCompare(a)
-                      )
-                    : undefined,
-                });
-              }}
-            >
-              <span>VIEW ALL OFFERINGS</span>
-              <ChevronRightIcon className="h-4 w-4 stroke-2" />
-            </button>
-          </>
-        ) : undefined,
+        course ? <RecentOfferings course={course!} /> : undefined,
       ];
     }
     case 'PREREQUISITES': {
@@ -259,10 +225,16 @@ function getDetails(
       ];
     }
     case 'UNITS': {
-      return [AcademicCapIcon, course?.units];
+      return [CalculatorIcon, course?.units];
     }
     case 'CAPACITY': {
       return [UsersIcon, section.capacity];
+    }
+    case 'SCHOOL': {
+      return [
+        AcademicCapIcon,
+        section.school ? <School school={section.school} /> : undefined,
+      ];
     }
     case 'ENROLLMENT REQUIREMENTS': {
       return [DocumentCheckIcon, cleanEnrollmentRequirements(section.enrl_req)];
@@ -317,6 +289,7 @@ export function openInfo(
     'DISTRIBUTION AREAS',
     'UNITS',
     'CAPACITY',
+    'SCHOOL',
     'ENROLLMENT REQUIREMENTS',
     'DESCRIPTIONS',
   ];

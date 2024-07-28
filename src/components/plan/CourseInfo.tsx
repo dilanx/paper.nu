@@ -1,10 +1,5 @@
-import {
-  getCourseColor,
-  getOfferings,
-  getOfferingsOrganized,
-} from '@/app/Plan';
+import { getCourseColor } from '@/app/Plan';
 import RatingsTag from '@/components/rating/RatingsTag';
-import { Alert } from '@/types/AlertTypes';
 import { AppContext, IconElement } from '@/types/BaseTypes';
 import {
   BookmarksData,
@@ -13,79 +8,59 @@ import {
   PlanModificationFunctions,
 } from '@/types/PlanTypes';
 import { SideCardData, SideCardItemData } from '@/types/SideCardTypes';
-import {
-  convertDisciplines,
-  convertDistros,
-  objAsAlertExtras,
-} from '@/utility/Utility';
+import { convertDisciplines, convertDistros } from '@/utility/Utility';
 import {
   AcademicCapIcon,
   ArrowPathIcon,
   BuildingLibraryIcon,
-  ChevronRightIcon,
+  CalculatorIcon,
   ListBulletIcon,
   Squares2X2Icon,
 } from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
+import RecentOfferings from '../info/RecentOfferings';
+import School from '../info/School';
 
 function getDetails(
   detail: string,
-  course: Course,
-  alert: Alert
+  course: Course
 ): [IconElement, ReactNode] | undefined {
-  const offerings = getOfferings(course).slice(0, 8);
   switch (detail) {
-    case 'RECENT OFFERINGS':
+    case 'RECENT OFFERINGS': {
       return [
         Squares2X2Icon,
-        course.custom ? undefined : (
-          <>
-            <p className="text-sm">
-              {offerings.length > 0
-                ? offerings.join(', ')
-                : 'Not offered recently'}
-            </p>
-            <button
-              className="inline-flex items-center text-xs font-bold text-gray-400 hover:text-purple-500 active:text-purple-600 dark:text-gray-500 dark:hover:text-purple-300 dark:active:text-purple-200"
-              onClick={() => {
-                alert({
-                  icon: Squares2X2Icon,
-                  title: 'Historic Offerings',
-                  subtitle: course.id,
-                  message: `All offerings for ${course.id} since 2020 Fall.`,
-                  color: 'purple',
-                  cancelButton: 'Close',
-                  extras: objAsAlertExtras(
-                    getOfferingsOrganized(course),
-                    (a, b) => b.localeCompare(a)
-                  ),
-                });
-              }}
-            >
-              <span>VIEW ALL OFFERINGS</span>
-              <ChevronRightIcon className="h-4 w-4 stroke-2" />
-            </button>
-          </>
-        ),
+        course.custom ? undefined : <RecentOfferings course={course} />,
       ];
-    case 'PREREQUISITES':
+    }
+    case 'PREREQUISITES': {
       return [ListBulletIcon, course.prereqs];
-    case 'FOUNDATIONAL DISCIPLINES':
+    }
+    case 'FOUNDATIONAL DISCIPLINES': {
       return [
         BuildingLibraryIcon,
         course.disciplines
           ? convertDisciplines(course.disciplines).join(', ')
           : undefined,
       ];
-    case 'DISTRIBUTION AREAS':
+    }
+    case 'DISTRIBUTION AREAS': {
       return [
         BuildingLibraryIcon,
         course.distros ? convertDistros(course.distros).join(', ') : undefined,
       ];
-    case 'UNITS':
-      return [AcademicCapIcon, parseFloat(course.units).toFixed(2).toString()];
-    case 'REPEATABLE FOR CREDIT':
+    }
+    case 'UNITS': {
+      return [CalculatorIcon, parseFloat(course.units).toFixed(2).toString()];
+    }
+    case 'REPEATABLE FOR CREDIT': {
       return [ArrowPathIcon, course.repeatable ? 'Yes' : 'No'];
+    }
+    case 'SCHOOL': {
+      return [
+        AcademicCapIcon,
+        course.school ? <School school={course.school} /> : undefined,
+      ];
+    }
   }
 }
 
@@ -110,6 +85,7 @@ export function openInfo(
     'DISTRIBUTION AREAS',
     'UNITS',
     'REPEATABLE FOR CREDIT',
+    'SCHOOL',
   ];
 
   const sideCardData: SideCardData = {
@@ -131,7 +107,7 @@ export function openInfo(
       : course.description,
     toolbar: !course.custom ? <RatingsTag course={course.id} /> : undefined,
     items: items.reduce<SideCardItemData[]>((filtered, item) => {
-      const [icon, value] = getDetails(item, course, appContext.alert) ?? [];
+      const [icon, value] = getDetails(item, course) ?? [];
       if (value) {
         filtered.push({
           key: item,

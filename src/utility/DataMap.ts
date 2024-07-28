@@ -39,7 +39,7 @@ export function subjectsAndSchools(data: any): SubjectsAndSchools {
 }
 
 export function plan({ courses, legacy, ...rest }: any): RawCourseData {
-  const courseMap = ({ i, n, u, r, d, p, s, f, t, l }: any) => ({
+  const courseMap = ({ i, n, u, r, d, p, s, f, c, t, l }: any) => ({
     id: i,
     name: n,
     units: u,
@@ -48,6 +48,7 @@ export function plan({ courses, legacy, ...rest }: any): RawCourseData {
     prereqs: p,
     distros: s,
     disciplines: f,
+    school: c,
     terms: t,
     placeholder: l,
   });
@@ -67,7 +68,27 @@ export function schedule(data: any, termId: string): ScheduleCourse[] {
     subject: u,
     number: n,
     sections: s?.map(
-      ({ i, r, t, k, u, n, s, m, x, y, l, d, e, c, a, q, p, o, f }: any) => ({
+      ({
+        i,
+        r,
+        t,
+        k,
+        u,
+        n,
+        s,
+        m,
+        x,
+        y,
+        l,
+        d,
+        e,
+        c: sc,
+        a,
+        q,
+        p,
+        o,
+        f,
+      }: any) => ({
         section_id: i,
         termId,
         instructors: r?.map(({ n, p, a, o, b, u }: any) => ({
@@ -89,12 +110,13 @@ export function schedule(data: any, termId: string): ScheduleCourse[] {
         room: l,
         start_date: d,
         end_date: e,
-        component: c,
+        component: sc,
         capacity: a,
         enrl_req: q,
         descs: p,
         distros: o,
         disciplines: f,
+        school: c,
       })
     ),
   }));
