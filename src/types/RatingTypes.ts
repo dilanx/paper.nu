@@ -80,10 +80,6 @@ export interface RatingInfo {
   rated: boolean;
 }
 
-export interface RatingList {
-  ratedCourses: string[];
-}
-
 export interface CachedRatings {
   timestamp: number;
   summary?: OverallRating;

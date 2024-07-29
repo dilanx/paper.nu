@@ -19,5 +19,4 @@ export type PlanErrorLocation =
   | 'notes_update_document'
   | 'ratings_get_basic'
   | 'ratings_get_detailed'
-  | 'ratings_submit'
-  | 'plan_ratings_get_list';
+  | 'ratings_submit';
