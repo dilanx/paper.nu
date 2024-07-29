@@ -1,5 +1,6 @@
 import {
   AlertFormFieldColorSelect,
+  AlertFormFieldDate,
   AlertFormFieldMultiSelect,
   AlertFormFieldSingleSelect,
   AlertFormFieldText,
@@ -15,6 +16,7 @@ import Section from '@/components/generic/Section';
 import SingleSelectInput from '@/components/generic/SingleSelectInput';
 import TextInput from '@/components/generic/TextInput';
 import TimeInput from '@/components/generic/TimeInput';
+import DateInput from '@/components/generic/DateInput';
 
 export const getAlertForm = (
   values: AlertFormResponse,
@@ -39,6 +41,17 @@ export const getAlertForm = (
               maxLength={field.maxLength}
               required={field.required}
               paragraph={field.paragraph}
+              key={`alert-form-field-${field.name}`}
+            />
+          );
+        }
+        if (formFieldIs<AlertFormFieldDate>(field, 'date')) {
+          return (
+            <DateInput
+              value={values[field.name] || ''}
+              setValue={(value) => setValue(field.name, value)}
+              placeholder={field.placeholder}
+              required={field.required}
               key={`alert-form-field-${field.name}`}
             />
           );

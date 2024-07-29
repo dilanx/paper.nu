@@ -20,7 +20,12 @@ import {
   sectionsOverlap,
   timeEquals,
 } from './Schedule';
-import { convertTime, parseTime } from '@/utility/Utility';
+import {
+  convertDate,
+  convertTime,
+  parseDate,
+  parseTime,
+} from '@/utility/Utility';
 import { getTermInfo } from './Data';
 const d = debug('app:schedule-mod');
 
@@ -230,6 +235,8 @@ export function putCustomSection(
   app: AppType,
   sectionToEdit?: ScheduleSection
 ) {
+  const { start, end } =
+    getTermInfo(app.state.schedule.termId || app.state.latestTermId) || {};
   app.showAlert({
     title: sectionToEdit ? 'Edit custom section' : 'Add custom section',
     message:
@@ -250,6 +257,8 @@ export function putCustomSection(
               end: sectionToEdit.end_time[0]
                 ? convertTime(sectionToEdit.end_time[0], true)
                 : undefined,
+              start_date: sectionToEdit.start_date,
+              end_date: sectionToEdit.end_date,
               meeting_days:
                 sectionToEdit.meeting_days[0]
                   ?.split('')
@@ -257,7 +266,10 @@ export function putCustomSection(
                   .join(',') || undefined,
               color: sectionToEdit.color,
             }
-          : undefined
+          : {
+              start_date: start,
+              end_date: end,
+            }
       ),
       timeConstraints: [
         {
@@ -267,9 +279,9 @@ export function putCustomSection(
         },
       ],
       onSubmit: (res) => {
-        const { start, end } =
-          getTermInfo(app.state.schedule.termId || app.state.latestTermId) ||
-          {};
+        const startDate = parseDate(res.start_date);
+        const endDate = parseDate(res.end_date);
+
         addSection(app, {
           section_id: `CUSTOM-${getNextAvailableCustomSectionId(app)}`,
           ...(sectionToEdit || {}),
@@ -286,8 +298,8 @@ export function putCustomSection(
           end_time: [parseTime(res.end) || null],
           room: [res.location || null],
           component: 'CUS',
-          start_date: start,
-          end_date: end,
+          start_date: startDate ? convertDate(startDate) : start,
+          end_date: endDate ? convertDate(endDate) : end,
           custom: true,
           color: res.color as Color,
           instructors: res.instructor

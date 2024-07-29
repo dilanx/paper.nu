@@ -68,6 +68,7 @@ export interface AlertFormSection {
 
 type AlertFormFieldType =
   | 'text'
+  | 'date'
   | 'time'
   | 'single-select'
   | 'multi-select'
@@ -86,6 +87,11 @@ export interface AlertFormFieldText extends AlertFormField {
   validator?: (value: string) => boolean;
   maxLength?: number;
   paragraph?: boolean;
+}
+
+export interface AlertFormFieldDate extends AlertFormField {
+  type: 'date';
+  placeholder?: string;
 }
 
 export interface AlertFormFieldTime extends AlertFormField {

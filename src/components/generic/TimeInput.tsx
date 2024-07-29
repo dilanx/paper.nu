@@ -5,7 +5,6 @@ interface TimeInputProps {
   value: string;
   setValue: (value: string) => void;
   placeholder?: string;
-  validator?: (value: string) => boolean;
   required?: boolean;
 }
 

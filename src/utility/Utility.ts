@@ -200,9 +200,15 @@ export function convertHour(num: number) {
   return num - (num === 12 ? 0 : 12) + ' PM';
 }
 
-export function convertDate(date: string): ScheduleDate {
+export function convertDateString(date: string): ScheduleDate {
   const [y, m, d] = date.split('-').map((p) => parseInt(p));
   return { y, m: m - 1, d };
+}
+
+export function convertDate({ y, m, d }: ScheduleDate) {
+  return `${y}-${(m + 1).toString().padStart(2, '0')}-${d
+    .toString()
+    .padStart(2, '0')}`;
 }
 
 export function convertTime({ h, m }: Time, withAmPm = false) {
@@ -406,7 +412,7 @@ export function getFilterBadgeInfo(
 }
 
 export function parseTime(text?: string): Time | undefined {
-  if (!text) return;
+  if (!text) return undefined;
   const timeString = text.toLowerCase();
   const timeRegex = /^\d{1,2}(:\d{1,2})? ?(a|am|p|pm)?$/i;
 
@@ -443,6 +449,34 @@ export function parseTime(text?: string): Time | undefined {
   }
 
   return { h, m };
+}
+
+export function parseDate(text?: string): ScheduleDate | undefined {
+  if (!text) return undefined;
+  const dateRegex = /^\d{4}-\d{1,2}-\d{1,2}$/i;
+
+  if (!dateRegex.test(text)) {
+    return undefined;
+  }
+
+  const [y, m, d] = text.split('-').map((p) => parseInt(p));
+  if (isNaN(y) || isNaN(m) || isNaN(d)) {
+    return undefined;
+  }
+
+  if (m < 1 || m > 12 || d < 1 || d > 31) {
+    return undefined;
+  }
+
+  if (m === 2 && (y % 4 === 0 ? d > 29 : d > 28)) {
+    return undefined;
+  }
+
+  if ((m === 4 || m === 6 || m === 9 || m === 11) && d > 30) {
+    return undefined;
+  }
+
+  return { y, m: m - 1, d };
 }
 
 export function timeCompare(time1: Time, time2: Time) {

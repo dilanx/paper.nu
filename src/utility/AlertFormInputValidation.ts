@@ -4,7 +4,7 @@ import {
   AlertFormResponse,
 } from '@/types/AlertTypes';
 import { TextValidator } from '@/types/BaseTypes';
-import { parseTime, timeCompare } from './Utility';
+import { parseDate, parseTime, timeCompare } from './Utility';
 
 type FieldWithValidator = AlertFormField & {
   validator: TextValidator;
@@ -25,6 +25,10 @@ export function formIsValid(
       if (hasValidator(field) && response[field.name]) {
         if (!field.validator(response[field.name] || ''))
           return [false, 'Invalid input'];
+      }
+      if (field.type === 'date' && response[field.name]) {
+        if (parseDate(response[field.name]) === undefined)
+          return [false, 'Invalid date'];
       }
       if (field.type === 'time' && response[field.name]) {
         if (parseTime(response[field.name]) === undefined)

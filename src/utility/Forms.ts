@@ -1,5 +1,6 @@
 import {
   AlertFormFieldColorSelect,
+  AlertFormFieldDate,
   AlertFormFieldMultiSelect,
   AlertFormFieldSingleSelect,
   AlertFormFieldText,
@@ -264,6 +265,12 @@ export function customSectionForm(
     required,
     defaultValue: defaults[name],
   });
+  const date = (name: string): AlertFormFieldDate => ({
+    name,
+    type: 'date',
+    required: true,
+    defaultValue: defaults[name],
+  });
   const time = (name: string): AlertFormFieldTime => ({
     name,
     type: 'time',
@@ -310,14 +317,24 @@ export function customSectionForm(
       fields: [sel],
     },
     {
-      title: 'START',
+      title: 'START TIME',
       totalRowItems: 2,
       fields: [time('start')],
     },
     {
-      title: 'END',
+      title: 'END TIME',
       totalRowItems: 2,
       fields: [time('end')],
+    },
+    {
+      title: 'START DATE',
+      totalRowItems: 2,
+      fields: [date('start_date')],
+    },
+    {
+      title: 'END DATE',
+      totalRowItems: 2,
+      fields: [date('end_date')],
     },
     {
       title: 'COLOR',

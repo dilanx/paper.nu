@@ -9,7 +9,7 @@ import {
 } from '@/types/ScheduleTypes';
 import {
   convertAllDaysToArray,
-  convertDate,
+  convertDateString,
   convertSectionComponent,
   getClosestMeetingDate,
 } from './Utility';
@@ -19,7 +19,7 @@ function getTimes(
   section: SectionWithValidMeetingPattern
 ): { start: DateArray; end: DateArray } | undefined {
   const date = getClosestMeetingDate(
-    convertDate(section.section.start_date),
+    convertDateString(section.section.start_date),
     section.meeting_days
   );
   if (!date) return;
@@ -33,7 +33,7 @@ function getTimes(
 }
 
 function getRecurrenceRule(section: SectionWithValidMeetingPattern) {
-  const { y, m, d } = convertDate(section.section.end_date);
+  const { y, m, d } = convertDateString(section.section.end_date);
   return `FREQ=WEEKLY;BYDAY=${convertAllDaysToArray(section.meeting_days).join(
     ','
   )};INTERVAL=1;UNTIL=${y}${(m + 1).toString().padStart(2, '0')}${d
