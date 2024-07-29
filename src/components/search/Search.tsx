@@ -41,7 +41,6 @@ import {
   XCircleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
-import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';
 import MiniContentBlock from './MiniContentBlock';
@@ -290,11 +289,6 @@ export default function Search({
     scheduleInteractions.previewSection.get ||
     schedule.schedule[scheduleInteractions.hoverSection.get || ''];
 
-  const roomFinderAvailable = useMemo(
-    () => mapSection?.room?.some((r) => r?.toLowerCase().includes('tech')),
-    [mapSection]
-  );
-
   const isBrowsing = searchMode === SearchMode.BROWSE || filter.subject;
   const isBrowsingDeep =
     (searchMode === SearchMode.BROWSE && browseSchool) || filter.subject;
@@ -505,7 +499,7 @@ export default function Search({
                 section={mapSection}
               />
 
-              <AnimatePresence>
+              {/* <AnimatePresence>
                 {roomFinderAvailable && (
                   <motion.div
                     initial={{ x: '-50%', y: 100 }}
@@ -514,12 +508,12 @@ export default function Search({
                     transition={{ delay: 0.25, duration: 0.2 }}
                     className="absolute bottom-1 left-1/2 z-20 w-full -translate-x-1/2 px-2"
                   >
-                    <p className="rounded-lg bg-gray-400/50 px-1 py-0.5 text-center text-xs font-medium text-white backdrop-blur-md dark:bg-gray-700/50">
+                    <p className="rounded-lg bg-white/50 px-1 py-0.5 text-center text-xs font-normal text-black backdrop-blur-md dark:bg-gray-700/50 dark:text-white">
                       ROOM FINDER AVAILABLE FROM COURSE INFO MENU
                     </p>
                   </motion.div>
                 )}
-              </AnimatePresence>
+              </AnimatePresence> */}
             </div>
           )}
         </>

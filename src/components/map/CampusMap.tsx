@@ -6,14 +6,10 @@ import { ScheduleSection } from '@/types/ScheduleTypes';
 import { Dialog, Switch, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment, useState } from 'react';
-import {
-  MapContainer,
-  Tooltip as MapTooltip,
-  Marker,
-  TileLayer,
-} from 'react-leaflet';
+import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { MapFlyTo, getMapMarkerIcon } from './MapUtility';
 import { useApp, useData } from '@/app/Context';
+import MapTooltip from './MapTooltip';
 
 const DEFAULT_POSITION: [number, number] = [42.055909, -87.675709];
 const DEFAULT_ZOOM = 16;
@@ -114,11 +110,7 @@ function CampusMap({ onClose }: CampusMapProps) {
                       key={`map-marker-${i}`}
                       icon={getMapMarkerIcon(color)}
                     >
-                      <MapTooltip
-                        direction="right"
-                        className="border-none bg-white/50 text-black shadow-lg backdrop-blur-md before:border-r-white/50 dark:bg-gray-700/50 dark:text-white dark:before:border-r-gray-700/50"
-                        opacity={1}
-                      >
+                      <MapTooltip direction="right">
                         <div>
                           {sections.map((section, j) => (
                             <div

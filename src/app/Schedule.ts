@@ -219,6 +219,10 @@ export function getTechRoomFinderLink(room: string) {
   return link;
 }
 
+export function isRoomFinderAvailable(room: string | null) {
+  return !!room?.toLowerCase().includes('tech');
+}
+
 export function getRoomFinderLink(room: string) {
   if (room.toLowerCase().includes('tech')) {
     return getTechRoomFinderLink(room);
