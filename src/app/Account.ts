@@ -17,6 +17,7 @@ import {
   CourseRating,
   RateResponse,
   RatingInfo,
+  RatingList,
   SummaryRatingResponse,
 } from '@/types/RatingTypes';
 import { RATINGS_CACHE_EXPIRE_TIME } from '@/utility/Constants';
@@ -419,6 +420,26 @@ export async function getDetailedRatings(course: string, reload = false) {
   return response;
 }
 
+export async function getCoursesRatedByUser() {
+  dp('rating: get list');
+  if (memoryCache.ratedCourses) {
+    dp('rating: cache hit');
+    return memoryCache.ratedCourses;
+  }
+
+  dp('rating: cache miss, fetching data');
+  const res = await operation<RatingList>('/paper/ratings/list', 'GET', {
+    autoAuth: false,
+  });
+
+  if (res) memoryCache.ratedCourses = res.ratedCourses;
+  return res?.ratedCourses;
+}
+
+export function getCoursesRatedByUserCached() {
+  return memoryCache.ratedCourses;
+}
+
 export async function rate(course: string, ratings: CourseRating) {
   dp(`rating: rate %s`, course);
   const response = await operation<RateResponse>(`/paper/ratings`, 'POST', {
@@ -427,6 +448,10 @@ export async function rate(course: string, ratings: CourseRating) {
       ratings,
     },
   });
+
+  if (response?.success) {
+    memoryCache.ratedCourses?.push(course);
+  }
 
   return response;
 }

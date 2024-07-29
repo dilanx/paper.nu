@@ -1,16 +1,23 @@
+import {
+  getCoursesRatedByUser,
+  getCoursesRatedByUserCached,
+} from '@/app/Account';
 import { useApp, useData, useModification } from '@/app/Context';
 import { getTotalCredits } from '@/app/Plan';
+import { Course } from '@/types/PlanTypes';
 import { convertYear } from '@/utility/Utility';
 import {
   CalculatorIcon,
   PlusIcon,
+  PresentationChartBarIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
+import { useEffect, useMemo } from 'react';
 import PlanTaskbarActionButton from './PlanTaskbarActionButton';
-import Year from './Year';
 import PlanTaskbarInfoButton from './PlanTaskbarInfoButton';
 import UnitOverview from './UnitOverview';
+import Year from './Year';
 
 export default function Content() {
   const { alert } = useApp();
@@ -31,6 +38,36 @@ export default function Content() {
   let unitString = 'units';
   if (units === 1) {
     unitString = 'unit';
+  }
+
+  useEffect(() => {
+    getCoursesRatedByUser().catch((e) => {
+      console.error(e);
+    });
+  }, []);
+
+  const ratedCourses = getCoursesRatedByUserCached();
+
+  const coursesToRate = useMemo(() => {
+    if (!ratedCourses) return 0;
+
+    const courses = new Set(
+      (plan.courses.flat(Infinity) as Course[])
+        .filter((c) => !c.placeholder && !c.custom)
+        .map((c) => c.id)
+    );
+
+    for (const course of ratedCourses) {
+      courses.delete(course);
+    }
+
+    console.log(courses);
+    return courses.size;
+  }, [ratedCourses, plan.courses]);
+
+  let coursesToRateString = 'courses';
+  if (coursesToRate === 1) {
+    coursesToRateString = 'course';
   }
 
   return (
@@ -59,6 +96,31 @@ export default function Content() {
         >
           <span className="font-medium">{units}</span> total {unitString}
         </PlanTaskbarInfoButton>
+        {ratedCourses && (
+          <PlanTaskbarInfoButton
+            onClick={() => {
+              alert({
+                title: 'Rate Courses',
+                message: `This is your progress in rating all of the courses on your plan. You have ${coursesToRate} ${coursesToRateString} left.`,
+                color: 'amber',
+                icon: PresentationChartBarIcon,
+                cancelButton: 'Close',
+                custom: {
+                  content: () => <div>coming soon</div>,
+                },
+              });
+            }}
+          >
+            {coursesToRate > 0 ? (
+              <>
+                <span className="font-medium">{coursesToRate}</span>{' '}
+                {coursesToRateString} to rate
+              </>
+            ) : (
+              <>All courses rated</>
+            )}
+          </PlanTaskbarInfoButton>
+        )}
         <div className="flex gap-4">
           {plan.courses.length < 10 && (
             <PlanTaskbarActionButton

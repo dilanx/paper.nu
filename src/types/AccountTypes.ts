@@ -63,6 +63,7 @@ export interface DocumentCache {
   user?: UserInformation;
   plans?: Document[];
   schedules?: Document[];
+  ratedCourses?: string[];
 }
 
 export type DocumentType = 'plans' | 'schedules';
