@@ -1,10 +1,16 @@
 import { useApp, useData, useModification } from '@/app/Context';
 import { getTotalCredits } from '@/app/Plan';
 import { convertYear } from '@/utility/Utility';
-import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import {
+  CalculatorIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
-import PlanTaskbarButton from './PlanTaskbarButton';
+import PlanTaskbarActionButton from './PlanTaskbarActionButton';
 import Year from './Year';
+import PlanTaskbarInfoButton from './PlanTaskbarInfoButton';
+import UnitOverview from './UnitOverview';
 
 export default function Content() {
   const { alert } = useApp();
@@ -37,14 +43,26 @@ export default function Content() {
     >
       {years}
       <div className="m-5 flex flex-col items-center justify-center gap-4 sm:flex-row">
-        <div className="w-48 rounded-lg border-2 border-gray-200 p-1 shadow-sm dark:border-gray-600">
-          <p className="text-center text-sm font-light text-gray-400 dark:text-gray-400">
-            <span className="font-medium">{units}</span> total {unitString}
-          </p>
-        </div>
+        <PlanTaskbarInfoButton
+          onClick={() => {
+            alert({
+              title: 'Unit Overview',
+              message: `This is a breakdown of the ${units} ${unitString} across your plan.`,
+              color: 'blue',
+              icon: CalculatorIcon,
+              cancelButton: 'Close',
+              custom: {
+                content: () => <UnitOverview plan={plan} />,
+              },
+            });
+          }}
+        >
+          <span className="font-medium">{units}</span> total {unitString}
+        </PlanTaskbarInfoButton>
         <div className="flex gap-4">
           {plan.courses.length < 10 && (
-            <PlanTaskbarButton
+            <PlanTaskbarActionButton
+              Icon={PlusIcon}
               onClick={() => {
                 alert({
                   title: 'Add a year?',
@@ -61,9 +79,10 @@ export default function Content() {
               }}
             >
               Add year
-            </PlanTaskbarButton>
+            </PlanTaskbarActionButton>
           )}
-          <PlanTaskbarButton
+          <PlanTaskbarActionButton
+            Icon={TrashIcon}
             onClick={() => {
               alert({
                 title: 'Clear plan?',
@@ -80,7 +99,7 @@ export default function Content() {
             }}
           >
             Clear plan
-          </PlanTaskbarButton>
+          </PlanTaskbarActionButton>
         </div>
       </div>
     </motion.div>

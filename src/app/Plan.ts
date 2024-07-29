@@ -264,6 +264,14 @@ export function getTotalCredits({
   return total / 100;
 }
 
+export function getYearCredits(year: Course[][]) {
+  let total = 0;
+  for (let q = 0; q < year.length; q++) {
+    total += countCourseUnitsInHundreds(year[q]);
+  }
+  return total / 100;
+}
+
 export function getQuarterCredits(quarter: Course[] | Set<Course>) {
   return countCourseUnitsInHundreds(quarter) / 100;
 }
