@@ -151,7 +151,7 @@ function SideCard({ data, onClose }: SideCardProps) {
                   {data.buttons.map((button, i) =>
                     button === 'divider' ? (
                       <div
-                        className="m-2 h-0.5 rounded-sm bg-gray-100"
+                        className="m-2 h-0.5 rounded-sm bg-gray-100 dark:bg-gray-600"
                         key={`side-card-button-${i}`}
                       />
                     ) : (
