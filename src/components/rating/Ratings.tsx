@@ -27,6 +27,7 @@ import Links from '@/utility/StaticLinks';
 import { errorAlert } from '@/utility/Utility';
 import { Dialog, Transition } from '@headlessui/react';
 import {
+  CheckIcon,
   PencilSquareIcon,
   PlusIcon,
   QuestionMarkCircleIcon,
@@ -229,7 +230,11 @@ export default function Ratings({ data, onClose }: RatingsProps) {
                             });
                           }}
                         >
-                          <PlusIcon className="h-4 w-4 stroke-2" />
+                          {ratings.rated ? (
+                            <CheckIcon className="h-4 w-4 stroke-2" />
+                          ) : (
+                            <PlusIcon className="h-4 w-4 stroke-2" />
+                          )}
                           <span>
                             {ratings.rated
                               ? 'COURSE ALREADY RATED'
