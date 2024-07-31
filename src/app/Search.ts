@@ -19,7 +19,7 @@ const SCHEDULE_SEARCH_RESULT_LIMIT = 50;
 const shortcuts = ShortcutsJson as SearchShortcuts;
 
 function cleanQuery(query: string) {
-  return query.toLowerCase().replace(/-|_/g, ' ');
+  return query.toLowerCase().replace(/_/g, ' ');
 }
 
 function filterBelongsTo(option: keyof FilterOptions, mode: Mode) {
@@ -91,7 +91,7 @@ function checkInvalidQueryTerms(terms: string[]) {
 }
 
 function search(searchThrough: string, term: string) {
-  const st = searchThrough.toLowerCase().replace(/-|_/g, ' ');
+  const st = searchThrough.toLowerCase().replace(/_/g, ' ');
   return term.split(' ').every((t) => st.includes(t));
 }
 
