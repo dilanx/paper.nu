@@ -33,10 +33,7 @@ function getDetails(
     case 'TOPIC': {
       return [
         TagIcon,
-        !mod ||
-        course.custom ||
-        course.placeholder ||
-        !getCourseTopics(course) ? undefined : (
+        !mod || course.custom || !getCourseTopics(course) ? undefined : (
           <TopicSelect
             course={course}
             onChange={(value) => {
@@ -53,17 +50,13 @@ function getDetails(
     case 'RECENT OFFERINGS': {
       return [
         Squares2X2Icon,
-        course.custom || course.placeholder ? undefined : (
-          <RecentOfferings course={course} />
-        ),
+        course.custom ? undefined : <RecentOfferings course={course} />,
       ];
     }
     case 'RECENT TOPICS': {
       return [
         TagIcon,
-        course.custom ||
-        course.placeholder ||
-        !getCourseTopics(course) ? undefined : (
+        course.custom || !getCourseTopics(course) ? undefined : (
           <RecentTopics course={course} />
         ),
       ];
@@ -112,8 +105,6 @@ export function openInfo(
   fromSearch: boolean,
   mod?: PlanModificationWithinInfo
 ) {
-  const placeholder = course.placeholder;
-
   const items = [
     'TOPIC',
     'RECENT TOPICS',
@@ -135,25 +126,16 @@ export function openInfo(
       ? 'COURSE INFO (SEARCH)'
       : 'COURSE INFO (SHARE)',
     themeColor: getCourseColor(course.id),
-    title: placeholder ? 'Placeholder' : course.id,
+    title: course.id,
     subtitle: course.name,
     alertMessage: course.legacy
       ? "This course is no longer in the Northwestern course catalog. It will not appear in search results unless the 'Include Legacy Courses' filter is applied."
       : undefined,
-    message: placeholder
-      ? `If you aren't sure which course to take to fulfill a certain requirement, you can use a placeholder! Search using 'placeholder' or by requirement category to find placeholders.`
-      : course.description,
-    toolbar:
-      !course.custom && !course.placeholder ? (
-        <RatingsTag course={course.id} />
-      ) : undefined,
+    message: course.description,
+    toolbar: !course.custom ? <RatingsTag course={course.id} /> : undefined,
     items: items.reduce<SideCardItemData[]>((filtered, item) => {
       const [icon, value] =
-        getDetails(
-          item,
-          course,
-          (!course.custom && !course.placeholder && mod) || undefined
-        ) ?? [];
+        getDetails(item, course, (!course.custom && mod) || undefined) ?? [];
       if (value) {
         filtered.push({
           key: item,

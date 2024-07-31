@@ -11,8 +11,6 @@ import { motion } from 'framer-motion';
 import { useDrag } from 'react-dnd';
 import AddButtons from './AddButtons';
 
-const PLACEHOLDER_MESSAGE = `Don't know which specific class to take from a certain requirement category? Use a placeholder! Search for 'placeholder' to view all.`;
-
 interface SearchClassProps {
   course: Course;
   color: Color;
@@ -41,7 +39,6 @@ function SearchClass({ course, color, select, selected }: SearchClassProps) {
   const recentOfferings = getOfferings(course).slice(0, 8);
   const distroStrings = convertDistros(course.distros);
   const disciplinesStrings = convertDisciplines(course.disciplines);
-  const isPlaceholder = course.placeholder;
   const units = parseFloat(course.units);
   const isFavorite = bookmarks?.noCredit.has(course);
   return (
@@ -60,13 +57,11 @@ function SearchClass({ course, color, select, selected }: SearchClassProps) {
       }}
     >
       <p className="text-lg font-bold text-black dark:text-gray-50">
-        {isPlaceholder ? course.name : course.id}
+        {course.id}
       </p>
-      <p className="text-sm text-black dark:text-gray-50">
-        {isPlaceholder ? 'PLACEHOLDER' : course.name}
-      </p>
+      <p className="text-sm text-black dark:text-gray-50">{course.name}</p>
       <p className="mt-4 text-xs text-gray-700 dark:text-gray-300">
-        {isPlaceholder ? PLACEHOLDER_MESSAGE : course.description}
+        {course.description}
       </p>
       {course.prereqs && (
         <ClassPropertyDisplay title="PREREQUISITES" value={course.prereqs} />

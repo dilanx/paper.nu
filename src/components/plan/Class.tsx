@@ -52,7 +52,6 @@ function Class({ course, location }: ClassProps) {
   const custom = course.custom;
   const color = course.color || getCourseColor(course.id);
   const showMoreInfo = userOptions.get.more_info && !userOptions.get.compact;
-  const isPlaceholder = course.placeholder;
   const units = parseFloat(course.units);
 
   return (
@@ -72,17 +71,11 @@ function Class({ course, location }: ClassProps) {
           })
         }
       >
-        <p
-          className={`text-md ${
-            isPlaceholder ? 'font-normal' : 'font-bold'
-          } overflow-hidden whitespace-nowrap text-black compact:text-sm dark:text-gray-50`}
-        >
-          {isPlaceholder ? course.name : course.id}
+        <p className="text-md overflow-hidden whitespace-nowrap font-bold text-black compact:text-sm dark:text-gray-50">
+          {course.id}
         </p>
         <p
-          className={`text-xs ${
-            isPlaceholder ? 'font-light' : 'font-normal'
-          } block w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-black compact:hidden dark:text-gray-50`}
+          className="block w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-xs font-normal text-black compact:hidden dark:text-gray-50"
           title={course.name}
         >
           {course.itopic ? `${course.itopic} - ${course.name}` : course.name}

@@ -15,6 +15,7 @@ _2024-XX-XX_
 - Fixed an issue where some time filters would not filter correctly.
 - Copy document ID to the clipboard when clicking on the document name in the toolbar.
 - Copy share link to the clipboard when clicking on the people icon in the toolbar, which is visible when a document is persistently shared.
+- Pre-built placeholder courses have been removed from Paper and will be removed from existing plans that have them. To add a placeholder course, you can create a custom course.
 - Various UI updates, bug fixes, and other small changes.
 
 ### 3.1.0

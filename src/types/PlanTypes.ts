@@ -66,7 +66,6 @@ export interface Course {
   disciplines?: string;
   school?: string;
   terms?: string[];
-  placeholder?: boolean;
   legacy?: boolean;
   custom?: boolean;
   color?: Color;

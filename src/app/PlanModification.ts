@@ -22,8 +22,6 @@ import {
 const d = debug('app:plan-mod');
 
 function sortCourses(a: Course, b: Course) {
-  if (a.placeholder) return 1;
-  if (b.placeholder) return -1;
   return a.id.localeCompare(b.id);
 }
 
@@ -35,7 +33,6 @@ function courseConfirmationPrompts(
   ignoreExistCheck = false
 ) {
   const data = app.state.data;
-  const isPlaceholder = course.placeholder;
   const repeatable = course.repeatable;
 
   const numCourses = data.courses[year][quarter].length;
@@ -57,7 +54,7 @@ function courseConfirmationPrompts(
 
   const exists = duplicateCourse(course, data);
 
-  if (!repeatable && exists && !isPlaceholder && !ignoreExistCheck) {
+  if (!repeatable && exists && !ignoreExistCheck) {
     app.showAlert({
       title: 'Course already planned',
       message: `You already have ${

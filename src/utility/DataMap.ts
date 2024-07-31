@@ -40,7 +40,7 @@ export function subjectsAndSchools(data: any): SubjectsAndSchools {
 
 export function plan({ courses, legacy, ...rest }: any): RawCourseData {
   const topics: CourseTopicsData = {};
-  const courseMap = ({ i, n, u, r, d, p, s, f, c, t, o, l }: any) => {
+  const courseMap = ({ i, n, u, r, d, p, s, f, c, t, o }: any) => {
     topics[i] = o;
     return {
       id: i,
@@ -53,7 +53,6 @@ export function plan({ courses, legacy, ...rest }: any): RawCourseData {
       disciplines: f,
       school: c,
       terms: t,
-      placeholder: l,
     };
   };
 
