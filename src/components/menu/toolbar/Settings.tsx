@@ -147,8 +147,8 @@ const settingsMenu = (): AlertData => ({
           },
           {
             switch: 'debug',
-            title: 'Debug mode',
-            description: `Log messages will print into your browser's console (verbose log level is required).`,
+            title: 'Developer mode',
+            description: `View extra developer information on Paper and view log messages in your browser's console (verbose log level is required).`,
             saveToStorage: true,
             action: (newSwitch) => {
               if (newSwitch) {
