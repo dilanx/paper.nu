@@ -90,9 +90,17 @@ function checkInvalidQueryTerms(terms: string[]) {
   }
 }
 
+function getSearchRegex(term: string) {
+  const pattern = term
+    .replace(/([.*+?^=!:${}()|[]\/\\])/g, '\\$1')
+    .replace(/x/g, '[\\dx]');
+
+  return new RegExp(`${pattern}`, 'i');
+}
+
 function search(searchThrough: string, term: string) {
   const st = searchThrough.toLowerCase().replace(/_/g, ' ');
-  return term.split(' ').every((t) => st.includes(t));
+  return term.split(' ').every((t) => getSearchRegex(t).test(st));
 }
 
 export function searchPlan(

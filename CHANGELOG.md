@@ -8,6 +8,7 @@ _2024-XX-XX_
 - Custom sections can now have custom start and end dates, which affects the events when exporting your schedule to calendar.
 - View a unit breakdown on your plan by clicking on the total units number at the bottom of the plan.
 - The school to which a course or section belongs is now displayed in the course or section information menu. This is available for courses and sections offered since 2024 Fall.
+- Catalog number wildcards are now supported in search. For example, something like 'CS 3xx' will match all COMP_SCI courses in the 300s.
 - Copy document ID to the clipboard when clicking on the document name in the toolbar.
 - Copy share link to the clipboard when clicking on the people icon in the toolbar, which is visible when a document is persistently shared.
 - Various UI updates, bug fixes, and other small changes.
