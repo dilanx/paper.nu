@@ -288,7 +288,7 @@ export function sectionMatchesFilter(
     after: Time | undefined,
     before: Time | undefined
   ) => {
-    const check = (against: Time | undefined) => {
+    const check = (against: Time | undefined, dir: 1 | -1) => {
       if (against) {
         if (!start) {
           return false;
@@ -299,7 +299,7 @@ export function sectionMatchesFilter(
           if (!time) {
             return false;
           }
-          if (timeCompare(time, against) < 0) {
+          if (dir * timeCompare(time, against) < 0) {
             return false;
           }
         }
@@ -308,7 +308,7 @@ export function sectionMatchesFilter(
       return true;
     };
 
-    return check(after) && check(before);
+    return check(after, 1) && check(before, -1);
   };
 
   if (!t(section.start_time, filter.startAfter, filter.startBefore)) {
