@@ -29,7 +29,9 @@ function getDetails(
     case 'RECENT OFFERINGS': {
       return [
         Squares2X2Icon,
-        course.custom ? undefined : <RecentOfferings course={course} />,
+        course.custom || course.placeholder ? undefined : (
+          <RecentOfferings course={course} />
+        ),
       ];
     }
     case 'PREREQUISITES': {
@@ -105,7 +107,10 @@ export function openInfo(
     message: placeholder
       ? `If you aren't sure which course to take to fulfill a certain requirement, you can use a placeholder! Search using 'placeholder' or by requirement category to find placeholders.`
       : course.description,
-    toolbar: !course.custom ? <RatingsTag course={course.id} /> : undefined,
+    toolbar:
+      !course.custom && !course.placeholder ? (
+        <RatingsTag course={course.id} />
+      ) : undefined,
     items: items.reduce<SideCardItemData[]>((filtered, item) => {
       const [icon, value] = getDetails(item, course) ?? [];
       if (value) {

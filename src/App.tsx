@@ -102,8 +102,6 @@ const d = debug('app');
 const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
 const VERSION_NO_PATCH = VERSION.split('.').slice(0, 2).join('.');
 
-// TODO use context instead of passing down props for things like alert, side card, context menu, etc.
-
 class App
   extends React.Component<Record<string, never>, AppState>
   implements AppType
