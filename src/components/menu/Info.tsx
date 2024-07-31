@@ -1,3 +1,4 @@
+import { isScheduleActive } from '@/app/Account';
 import { useApp } from '@/app/Context';
 import paperBlack from '@/assets/paper-full-black.png';
 import paperWhite from '@/assets/paper-full-white.png';
@@ -19,7 +20,7 @@ function Info({
   currentTermId,
   switchTerm,
 }: InfoProps) {
-  const { alert } = useApp();
+  const { alert, userOptions } = useApp();
   return (
     <>
       <button
@@ -40,7 +41,13 @@ function Info({
             text-violet-600 hover:bg-violet-600 hover:text-white active:bg-violet-500 active:text-white
             dark:text-violet-400 dark:hover:bg-violet-400 dark:hover:text-gray-800 dark:active:bg-violet-300 dark:active:text-gray-800"
             onClick={() => {
-              alert(switchTermAlert(switchTerm, currentTermId));
+              alert(
+                switchTermAlert(
+                  switchTerm,
+                  currentTermId,
+                  isScheduleActive(userOptions.get.active_schedule_id)
+                )
+              );
             }}
           >
             <span>COURSES FOR A NEWER TERM ARE AVAILABLE</span>

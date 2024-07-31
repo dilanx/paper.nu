@@ -297,8 +297,12 @@ export async function deleteDocument(type: DocumentType, id: string) {
   return memoryCache[type];
 }
 
+export function isPlanActive(planId: string | undefined): boolean {
+  return !!planId && planId !== 'None';
+}
+
 export function getPlan(planId: string | undefined) {
-  if (!planId || planId === 'None') return undefined;
+  if (!isPlanActive(planId)) return undefined;
   return memoryCache.plans?.find((plan) => plan.id === planId);
 }
 
@@ -311,8 +315,12 @@ export function getPlanName(planId: string | undefined) {
   return plan.name;
 }
 
+export function isScheduleActive(scheduleId: string | undefined): boolean {
+  return !!scheduleId && scheduleId !== 'None';
+}
+
 export function getSchedule(scheduleId: string | undefined) {
-  if (!scheduleId || scheduleId === 'None') return undefined;
+  if (!isScheduleActive(scheduleId)) return undefined;
   return memoryCache.schedules?.find((schedule) => schedule.id === scheduleId);
 }
 

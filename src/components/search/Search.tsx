@@ -1,3 +1,4 @@
+import { isPlanActive, isScheduleActive } from '@/app/Account';
 import { useApp, useData } from '@/app/Context';
 import { getOrganizedTerms, getTermName } from '@/app/Data';
 import { getCourseColor, getSchoolOfSubject } from '@/app/Plan';
@@ -55,7 +56,8 @@ import SearchSchedulePlaceholder from './SearchSchedulePlaceholder';
 
 export function switchTermAlert(
   switchTerm: (termId: string) => void,
-  currentTermId?: string
+  currentTermId: string | undefined,
+  activeDocument: boolean
 ): AlertData {
   const terms = getOrganizedTerms();
   const [year, quarter] =
@@ -66,6 +68,13 @@ export function switchTermAlert(
     icon: CalendarDaysIcon,
     message:
       'Switching terms will allow you to create a schedule for a different quarter. This will clear everything on your current schedule.',
+    notice: activeDocument
+      ? {
+          type: 'note',
+          message:
+            'You have an active cloud schedule. Changing terms will not affect its data but it will be deactivated.',
+        }
+      : undefined,
     color: 'violet',
     textHTML: !terms ? (
       <span className="text-red-500">
@@ -468,7 +477,17 @@ export default function Search({
                     fullWidth
                     tooltip="Change term"
                     action={() => {
-                      alert(switchTermAlert(switchTerm, term?.id));
+                      alert(
+                        switchTermAlert(
+                          switchTerm,
+                          term?.id,
+                          isSchedule
+                            ? isScheduleActive(
+                                userOptions.get.active_schedule_id
+                              )
+                            : isPlanActive(userOptions.get.active_plan_id)
+                        )
+                      );
                     }}
                     color={getTermColor(termName)}
                   >

@@ -152,20 +152,6 @@ export interface SelectMenuOption {
   label?: string;
 }
 
-// export type AlertScrollSelectMenuFn = (selected: {
-//   [name: string]: string;
-// }) => AlertScrollSelectMenu;
-
-// export interface AlertScrollSelectMenu {
-//   name: string;
-//   options: SelectMenuOption[];
-//   defaultValue?: string;
-// }
-
-// export interface AlertScrollSelectMenuSelected {
-//   [name: string]: string;
-// }
-
 /**
  * error key indicates error
  */

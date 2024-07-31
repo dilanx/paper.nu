@@ -1,3 +1,7 @@
+import { AppType, Color } from '@/types/BaseTypes';
+import { Course, CourseLocation } from '@/types/PlanTypes';
+import { customCourseForm } from '@/utility/Forms';
+import { convertQuarter, convertYear, shallowEqual } from '@/utility/Utility';
 import {
   BookmarkSlashIcon,
   ExclamationTriangleIcon,
@@ -9,11 +13,7 @@ import {
 } from '@heroicons/react/24/outline';
 import debug from 'debug';
 import toast from 'react-hot-toast';
-import { AppType, Color } from '@/types/BaseTypes';
-import { Course, CourseLocation } from '@/types/PlanTypes';
-import { customCourseForm } from '@/utility/Forms';
 import { duplicateCourse, getQuarterCredits, savePlan } from './Plan';
-import { convertQuarter, convertYear, shallowEqual } from '@/utility/Utility';
 const d = debug('app:plan-mod');
 
 function sortCourses(a: Course, b: Course) {
