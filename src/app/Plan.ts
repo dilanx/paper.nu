@@ -74,7 +74,6 @@ async function loadData(
   }
 
   let loadedSomething = false;
-  let malformed = false;
 
   try {
     const data = basePlanArrays(
@@ -94,7 +93,6 @@ async function loadData(
                   );
                 } else {
                   ds('course not found: %s (y%dq%d)', c, y, q);
-                  malformed = true;
                   return null;
                 }
               } else {
@@ -110,34 +108,34 @@ async function loadData(
                 };
               }
             })
+            .filter((c) => c)
             .sort((a, b) => (a?.id || '').localeCompare(b?.id || ''))
         )
       )
     );
-
-    if (malformed) return 'malformed';
 
     const deserializeBookmarks = (
       type: 'for credit' | 'no credit',
       bookmarks?: string[]
     ) =>
       new Set(
-        bookmarks?.map((c) => {
-          loadedSomething = true;
-          const [courseId, topic] = c.split(';T=');
-          const course = getCourse(courseId);
-          if (course) {
-            ds('plan bookmark %s loaded: %s', type, c);
-            return initCourse(
-              course,
-              topic ? decodeURIComponent(topic) : undefined
-            );
-          } else {
-            ds('plan bookmark %s not found: %s', type, c);
-            malformed = true;
-            return null;
-          }
-        }) || []
+        bookmarks
+          ?.map((c) => {
+            loadedSomething = true;
+            const [courseId, topic] = c.split(';T=');
+            const course = getCourse(courseId);
+            if (course) {
+              ds('plan bookmark %s loaded: %s', type, c);
+              return initCourse(
+                course,
+                topic ? decodeURIComponent(topic) : undefined
+              );
+            } else {
+              ds('plan bookmark %s not found: %s', type, c);
+              return null;
+            }
+          })
+          .filter((c) => c) || []
       );
 
     const bookmarksNoCredit = deserializeBookmarks(
@@ -148,10 +146,6 @@ async function loadData(
       'for credit',
       serializedData?.bookmarks?.forCredit
     );
-
-    if (malformed) {
-      return 'malformed';
-    }
 
     if (!loadedSomething) {
       return 'empty';
