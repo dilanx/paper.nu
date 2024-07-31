@@ -20,6 +20,7 @@
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.0",
     "react-leaflet": "^4.1.0",
+    "react-select": "^5.8.0",
     "spinners-react": "^1.0.7"
   },
   "devDependencies": {

@@ -16,21 +16,48 @@ import {
   CalculatorIcon,
   ListBulletIcon,
   Squares2X2Icon,
+  TagIcon,
 } from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
 import RecentOfferings from '../info/RecentOfferings';
 import School from '../info/School';
+import RecentTopics from '../info/RecentTopics';
+import TopicSelect from './TopicSelect';
 
 function getDetails(
   detail: string,
-  course: Course
+  course: Course,
+  isOnPlan: boolean
 ): [IconElement, ReactNode] | undefined {
   switch (detail) {
+    case 'TOPIC': {
+      return [
+        TagIcon,
+        !isOnPlan ||
+        course.custom ||
+        course.placeholder ||
+        !course.topics ||
+        course.topics.length === 0 ? undefined : (
+          <TopicSelect />
+        ),
+      ];
+    }
     case 'RECENT OFFERINGS': {
       return [
         Squares2X2Icon,
         course.custom || course.placeholder ? undefined : (
           <RecentOfferings course={course} />
+        ),
+      ];
+    }
+    case 'RECENT TOPICS': {
+      return [
+        TagIcon,
+        course.custom ||
+        course.placeholder ||
+        !course.topics ||
+        course.topics.length === 0 ? undefined : (
+          <RecentTopics course={course} />
         ),
       ];
     }
@@ -81,6 +108,8 @@ export function openInfo(
   const placeholder = course.placeholder;
 
   const items = [
+    'TOPIC',
+    'RECENT TOPICS',
     'RECENT OFFERINGS',
     'PREREQUISITES',
     'FOUNDATIONAL DISCIPLINES',
@@ -112,7 +141,12 @@ export function openInfo(
         <RatingsTag course={course.id} />
       ) : undefined,
     items: items.reduce<SideCardItemData[]>((filtered, item) => {
-      const [icon, value] = getDetails(item, course) ?? [];
+      const [icon, value] =
+        getDetails(
+          item,
+          course,
+          !course.custom && !course.placeholder && !!mod
+        ) ?? [];
       if (value) {
         filtered.push({
           key: item,

@@ -18,7 +18,7 @@ export default function RecentOfferings({ course }: RecentOfferingsProps) {
         {offerings.length > 0 ? offerings.join(', ') : 'Not offered recently'}
       </p>
       <button
-        className="inline-flex items-center text-xs font-bold text-gray-400 hover:text-purple-500 active:text-purple-600 dark:text-gray-500 dark:hover:text-purple-300 dark:active:text-purple-200"
+        className="inline-flex items-center rounded-sm px-1 py-0.5 text-xs font-bold text-gray-500 hover:bg-black/5 active:bg-black/10 dark:text-gray-400 dark:hover:bg-white/5 dark:active:bg-white/10"
         onClick={() => {
           app.alert({
             icon: Squares2X2Icon,
