@@ -225,7 +225,10 @@ function getDetails(
       ];
     }
     case 'UNITS': {
-      return [CalculatorIcon, course?.units];
+      return [
+        CalculatorIcon,
+        course ? parseFloat(course.units).toFixed(2).toString() : undefined,
+      ];
     }
     case 'CAPACITY': {
       return [UsersIcon, section.capacity];
