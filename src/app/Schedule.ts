@@ -60,8 +60,22 @@ async function loadData(
   let customId = 1;
 
   try {
-    for (const sSection of serializedData.schedule || []) {
+    for (let sSection of serializedData.schedule || []) {
       if (typeof sSection === 'string') {
+        if (!sSection.includes(';')) {
+          ds('course section %s is in old format, updating locally', sSection);
+          const updated = updateSerializedId(sSection);
+          if (!updated) {
+            ds(
+              'course section %s failed to update, assuming not found',
+              sSection
+            );
+            continue;
+          }
+
+          ds('course section %s updated to %s', sSection, updated);
+          sSection = updated;
+        }
         const section = getSectionById(sSection);
         if (!section) {
           ds('course section not found: %s', sSection);
@@ -167,8 +181,27 @@ export function getScheduleCourseData() {
   return scheduleData;
 }
 
-export function getCourseById(id: string) {
-  if (!scheduleData) return;
+// update serialized id to v3.2 format
+export function updateSerializedId(id: string) {
+  if (id.includes(';')) {
+    return id;
+  }
+
+  const [courseId, sectionNumber] = id.split('-');
+
+  for (const course of scheduleData || []) {
+    if (course.course_id.split(';')[1] === courseId) {
+      if (sectionNumber) {
+        return `${course.course_id}-${sectionNumber}`;
+      }
+
+      return course.course_id;
+    }
+  }
+}
+
+export function getCourseById(id: string | undefined) {
+  if (!scheduleData || !id) return;
   for (const course of scheduleData) {
     if (course.course_id === id) {
       return course;

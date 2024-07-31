@@ -62,7 +62,7 @@ export function plan({ courses, legacy, ...rest }: any): RawCourseData {
 
 export function schedule(data: any, termId: string): ScheduleCourse[] {
   return data.map(({ i, c, t, u, n, s }: any) => ({
-    course_id: i,
+    course_id: `${u};${i}`,
     school: c,
     title: t,
     subject: u,
@@ -89,7 +89,7 @@ export function schedule(data: any, termId: string): ScheduleCourse[] {
         o,
         f,
       }: any) => ({
-        section_id: i,
+        section_id: `${u};${i}`,
         termId,
         instructors: r?.map(({ n, p, a, o, b, u }: any) => ({
           name: n,
