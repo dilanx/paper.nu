@@ -4,6 +4,8 @@
 
 _2024-XX-XX_
 
+- Courses that offer multiple topics can now be assigned a topic on your plan. Select the topic from the course's information menu. When a topic is set for a course, the name of the course on your plan will include the topic.
+- You can now view the topics historically offered within a course from the course's information menu.
 - Location names are now displayed in the minimap when hovering over a section on the schedule.
 - Custom sections can now have custom start and end dates, which affects the events when exporting your schedule to calendar.
 - View a unit breakdown on your plan by clicking on the total units number at the bottom of the plan.

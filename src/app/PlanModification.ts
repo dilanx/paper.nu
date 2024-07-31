@@ -13,7 +13,12 @@ import {
 } from '@heroicons/react/24/outline';
 import debug from 'debug';
 import toast from 'react-hot-toast';
-import { duplicateCourse, getQuarterCredits, savePlan } from './Plan';
+import {
+  duplicateCourse,
+  getQuarterCredits,
+  initCourse,
+  savePlan,
+} from './Plan';
 const d = debug('app:plan-mod');
 
 function sortCourses(a: Course, b: Course) {
@@ -102,7 +107,7 @@ export function addCourse(
   courseConfirmationPrompts(app, course, location, () => {
     const data = app.state.data;
     const { year, quarter } = location;
-    data.courses[year][quarter].push(course);
+    data.courses[year][quarter].push(initCourse(course));
     data.courses[year][quarter].sort(sortCourses);
 
     d('course added: %s (y%dq%d)', course.id, year, quarter);
@@ -172,21 +177,21 @@ export function moveCourse(
 
 export function editCourse(
   app: AppType,
-  oldCourse: Course,
-  newCourse: Course,
+  courseInstanceUid: string,
+  course: Course,
   { year, quarter }: CourseLocation
 ) {
   const data = app.state.data;
   data.courses[year][quarter].splice(
-    data.courses[year][quarter].findIndex((c) => shallowEqual(c, oldCourse)),
+    data.courses[year][quarter].findIndex((c) => c.iuid === courseInstanceUid),
     1,
-    newCourse
+    course
   );
   data.courses[year][quarter].sort(sortCourses);
   d(
-    'course edited: %s -> %s (y%dq%d)',
-    oldCourse.id,
-    newCourse.id,
+    'course edited: I-%s %s (y%dq%d)',
+    courseInstanceUid,
+    course.id,
     year,
     quarter
   );
@@ -375,6 +380,7 @@ export function putCustomCourse(
         },
       ],
       onSubmit: (res) => {
+        const iuid = courseToEdit?.iuid || 'UNKNOWN';
         const course: Course = {
           id: res.title!,
           name: res.subtitle || '',
@@ -383,10 +389,13 @@ export function putCustomCourse(
           custom: true,
           repeatable: true,
           description: 'Custom course',
+
+          // iuid will be overwritten on add but not on edit
+          iuid,
         };
 
         if (courseToEdit) {
-          editCourse(app, courseToEdit, course, location);
+          editCourse(app, iuid, course, location);
         } else {
           addCourse(app, course, location);
         }

@@ -16,6 +16,7 @@ export interface SideCardData {
   items?: SideCardItemData[];
   buttons?: AnySideCardButtonData[];
   link?: string;
+  developer?: ReactNode;
 }
 
 export interface SideCardItemData {

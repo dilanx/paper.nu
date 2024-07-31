@@ -140,7 +140,7 @@ function ScheduleClass({
             )}
           </p>
           <p className="m-0 text-xs text-black dark:text-white">
-            {title + (topic ? `: ${topic}` : '')}
+            {topic ? `${topic} - ${title}` : title}
           </p>
           <p className="m-0 text-xs font-light text-gray-500 opacity-75 dark:text-gray-300">
             {instructorLastNames}

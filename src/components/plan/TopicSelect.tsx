@@ -1,28 +1,29 @@
+import { Course } from '@/types/PlanTypes';
 import SelectInput from '../generic/SelectInput';
+import { useMemo } from 'react';
+import { getCourseTopics } from '@/app/Plan';
 
-// TODO continue topic select
+interface TopicSelectProps {
+  course: Course;
+  onChange: (topic: string | null) => void;
+}
 
-export default function TopicSelect() {
+export default function TopicSelect({ course, onChange }: TopicSelectProps) {
+  const topics =
+    useMemo(() => getCourseTopics(course)?.map((t) => t[0]), [course]) || [];
+
   return (
-    <SelectInput
-      placeholder="Assign a topic to this course..."
-      options={[
-        {
-          value:
-            'long long text this is a long text long long text this is a long text long long text this is a long text',
-          label:
-            'long long text this is a long text long long text this is a long text long long text this is a long text',
-        },
-        { value: 'test2', label: 'test2' },
-        { value: 'test3', label: 'test3' },
-        { value: 'test4', label: 'test3' },
-        { value: 'test5', label: 'test3' },
-        { value: 'test6', label: 'test3' },
-        { value: 'test7', label: 'test3' },
-        { value: 'test8', label: 'test3' },
-        { value: 'test9', label: 'test3' },
-        { value: 'test10', label: 'test3' },
-      ]}
-    />
+    <>
+      <SelectInput
+        placeholder="Assign a topic to this course..."
+        onChange={onChange}
+        defaultValue={course.itopic || null}
+        options={topics}
+      />
+      <p className="m-2 text-xs font-light text-gray-400">
+        This course offers multiple topics. You can select one to save to your
+        plan for this course.
+      </p>
+    </>
   );
 }

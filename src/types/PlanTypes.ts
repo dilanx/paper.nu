@@ -3,6 +3,15 @@ import { Color } from './BaseTypes';
 export interface RawCourseData {
   courses: Course[];
   legacy: Course[];
+  topics: CourseTopicsData;
+}
+
+export type CourseTopic = [string, string[]];
+
+export type CourseTopics = CourseTopic[];
+
+export interface CourseTopicsData {
+  [id: string]: CourseTopics;
 }
 
 export interface PlanData {
@@ -61,6 +70,10 @@ export interface Course {
   legacy?: boolean;
   custom?: boolean;
   color?: Color;
+
+  // instance data
+  iuid?: string;
+  itopic?: string | null;
 }
 
 export interface CourseLocation {
@@ -75,6 +88,11 @@ export interface PlanModificationFunctions {
     course: Course,
     oldLocation: CourseLocation,
     newLocation: CourseLocation
+  ) => void;
+  editCourse: (
+    courseInstanceUid: string,
+    course: Course,
+    location: CourseLocation
   ) => void;
   addBookmark: (course: Course, forCredit: boolean) => void;
   removeBookmark: (course: Course, forCredit: boolean) => void;

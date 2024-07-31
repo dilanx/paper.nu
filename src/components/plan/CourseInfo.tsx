@@ -1,4 +1,4 @@
-import { getCourseColor } from '@/app/Plan';
+import { getCourseColor, getCourseTopics } from '@/app/Plan';
 import RatingsTag from '@/components/rating/RatingsTag';
 import { AppContext, IconElement } from '@/types/BaseTypes';
 import {
@@ -20,25 +20,33 @@ import {
 } from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
 import RecentOfferings from '../info/RecentOfferings';
-import School from '../info/School';
 import RecentTopics from '../info/RecentTopics';
+import School from '../info/School';
 import TopicSelect from './TopicSelect';
 
 function getDetails(
   detail: string,
   course: Course,
-  isOnPlan: boolean
+  mod?: PlanModificationWithinInfo
 ): [IconElement, ReactNode] | undefined {
   switch (detail) {
     case 'TOPIC': {
       return [
         TagIcon,
-        !isOnPlan ||
+        !mod ||
         course.custom ||
         course.placeholder ||
-        !course.topics ||
-        course.topics.length === 0 ? undefined : (
-          <TopicSelect />
+        !getCourseTopics(course) ? undefined : (
+          <TopicSelect
+            course={course}
+            onChange={(value) => {
+              mod.planModification.editCourse(
+                course.iuid || 'UNKNOWN',
+                { ...course, itopic: value },
+                mod.location
+              );
+            }}
+          />
         ),
       ];
     }
@@ -55,8 +63,7 @@ function getDetails(
         TagIcon,
         course.custom ||
         course.placeholder ||
-        !course.topics ||
-        course.topics.length === 0 ? undefined : (
+        !getCourseTopics(course) ? undefined : (
           <RecentTopics course={course} />
         ),
       ];
@@ -145,7 +152,7 @@ export function openInfo(
         getDetails(
           item,
           course,
-          !course.custom && !course.placeholder && !!mod
+          (!course.custom && !course.placeholder && mod) || undefined
         ) ?? [];
       if (value) {
         filtered.push({
@@ -196,6 +203,7 @@ export function openInfo(
     link: !course.custom
       ? `${window.location.origin}?c=${encodeURIComponent(course.id)}`
       : undefined,
+    developer: course.iuid,
   };
 
   appContext.sideCard(sideCardData);

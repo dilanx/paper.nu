@@ -598,14 +598,16 @@ export function getAcadYear(year: number, quarter: UniversityQuarter) {
 
 export function objAsAlertExtras(
   obj: { [key: string]: string | string[] },
-  sortFn: (a: string, b: string) => number = (a, b) => a.localeCompare(b)
+  sortFn: (a: string, b: string) => number = (a, b) => a.localeCompare(b),
+  mapFn?: (key: string) => string
 ) {
   const extras: AlertDataExtra[] = [];
   const keys = Object.keys(obj).sort(sortFn);
+
   for (const title of keys) {
     const content = obj[title];
     extras.push({
-      title,
+      title: mapFn ? mapFn(title) : title,
       content: typeof content === 'string' ? content : content.join(', '),
     });
   }

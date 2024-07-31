@@ -1,6 +1,3 @@
-import debug from 'debug';
-import localforage from 'localforage';
-import { getPlanData, getSubjectData, getTermName } from './Data';
 import {
   SaveState,
   SubjectData,
@@ -10,6 +7,7 @@ import {
 } from '@/types/BaseTypes';
 import {
   Course,
+  CourseTopic,
   PlanData,
   RawCourseData,
   SerializedPlanCourse,
@@ -18,6 +16,10 @@ import {
 import { FilterOptions } from '@/types/SearchTypes';
 import { DisciplineMap, DistroMap } from '@/utility/Constants';
 import { getAcadYear } from '@/utility/Utility';
+import debug from 'debug';
+import localforage from 'localforage';
+import { v4 as uuidv4 } from 'uuid';
+import { getPlanData, getSubjectData, getTermName } from './Data';
 const ds = debug('plan-manager:ser');
 
 let subjectData: SubjectData | undefined = undefined;
@@ -55,6 +57,13 @@ function basePlanArrays<T = Course>(data: any[][][] | undefined): T[][][] {
   return data;
 }
 
+export function initCourse(course: Course, topic?: string) {
+  const courseData = JSON.parse(JSON.stringify(course)) as Course;
+  courseData.iuid = uuidv4();
+  courseData.itopic = topic;
+  return courseData;
+}
+
 async function loadData(
   serializedData?: SerializedPlanData
 ): Promise<PlanData | 'malformed' | 'empty'> {
@@ -75,10 +84,14 @@ async function loadData(
             .map<Course | null>((c) => {
               loadedSomething = true;
               if (typeof c === 'string') {
-                const course = getCourse(c);
+                const [courseId, topic] = c.split(';T=');
+                const course = getCourse(courseId);
                 if (course) {
                   ds('course loaded: %s (y%dq%d)', c, y, q);
-                  return course;
+                  return initCourse(
+                    course,
+                    topic ? decodeURIComponent(topic) : undefined
+                  );
                 } else {
                   ds('course not found: %s (y%dq%d)', c, y, q);
                   malformed = true;
@@ -111,10 +124,14 @@ async function loadData(
       new Set(
         bookmarks?.map((c) => {
           loadedSomething = true;
-          const course = getCourse(c);
+          const [courseId, topic] = c.split(';T=');
+          const course = getCourse(courseId);
           if (course) {
             ds('plan bookmark %s loaded: %s', type, c);
-            return course;
+            return initCourse(
+              course,
+              topic ? decodeURIComponent(topic) : undefined
+            );
           } else {
             ds('plan bookmark %s not found: %s', type, c);
             malformed = true;
@@ -158,6 +175,9 @@ function saveData({ courses, bookmarks }: PlanData): SerializedPlanData {
     return {};
   }
 
+  const serializeId = (c: Course) =>
+    c.id + (c.itopic ? `;T=${encodeURIComponent(c.itopic)}` : '');
+
   const serializedData = courses.map((year) =>
     year.map((quarter) =>
       quarter.map<SerializedPlanCourse>((c) => {
@@ -169,15 +189,15 @@ function saveData({ courses, bookmarks }: PlanData): SerializedPlanData {
             color: c.color,
           };
         } else {
-          return c.id;
+          return serializeId(c);
         }
       })
     )
   );
 
   const serializedBookmarks = {
-    noCredit: Array.from(bookmarks.noCredit).map((c) => c.id),
-    forCredit: Array.from(bookmarks.forCredit).map((c) => c.id),
+    noCredit: Array.from(bookmarks.noCredit).map(serializeId),
+    forCredit: Array.from(bookmarks.forCredit).map(serializeId),
   };
 
   return {
@@ -348,6 +368,41 @@ export function getSchoolOfSubject(subject: string) {
   }
 }
 
+export function getCourseTopics(course: Course) {
+  const allCourseData = getPlanCourseData();
+  if (!allCourseData) return null;
+  const topics = allCourseData.topics[course.id];
+  if (!topics) return null;
+  if (topics.length === 0) return null;
+  return topics;
+}
+
+export function getRecentTopics(course: Course) {
+  const topics = getCourseTopics(course);
+  if (!topics) return null;
+
+  return topics
+    .map<CourseTopic>(([term, topics]) => [
+      term,
+      topics.sort((a, b) => parseInt(b) - parseInt(a)),
+    ])
+    .sort((a, b) => parseInt(b[1][0]) - parseInt(a[1][0]));
+}
+
+export function getTopicsOrganized(course: Course) {
+  const topics = getRecentTopics(course);
+  const organized: { [quarter: string]: string[] } = {};
+
+  for (const [topic, terms] of topics ?? []) {
+    for (const term of terms) {
+      if (!organized[term]) organized[term] = [];
+      organized[term].push(topic);
+    }
+  }
+
+  return organized;
+}
+
 export function getOfferings(course: Course, sortByOldest = false) {
   return (
     course.terms
@@ -359,6 +414,7 @@ export function getOfferings(course: Course, sortByOldest = false) {
 export function getOfferingsOrganized(course: Course) {
   const offerings = getOfferings(course, true);
   const organized: { [acadYear: string]: string[] } = {};
+
   for (const offering of offerings) {
     const [year, quarter] = offering.split(' ');
     const acadYear = getAcadYear(parseInt(year), quarter as UniversityQuarter);

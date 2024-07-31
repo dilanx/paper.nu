@@ -27,22 +27,21 @@ const theme =
     },
   });
 
-interface SelectOption {
-  value: string;
-  label: string;
-}
-
 interface SelectInputProps {
-  options: SelectOption[];
+  options: string[];
   placeholder?: string;
-  defaultValue?: SelectOption;
+  defaultValue?: string | null;
+  onChange?: (value: string | null) => void;
 }
 
 export default function SelectInput({
   options,
   placeholder,
+  defaultValue,
+  onChange,
 }: SelectInputProps) {
   const { userOptions } = useApp();
+  const opts = options.map((option) => ({ value: option, label: option }));
 
   return (
     <Select
@@ -50,8 +49,14 @@ export default function SelectInput({
       isClearable
       className="text-left font-sans text-sm font-normal"
       theme={theme(!!userOptions.get.dark)}
-      options={options}
+      options={opts}
       placeholder={placeholder}
+      defaultValue={
+        defaultValue ? { value: defaultValue, label: defaultValue } : undefined
+      }
+      onChange={
+        onChange ? (value) => onChange(value?.value || null) : undefined
+      }
     />
   );
 }

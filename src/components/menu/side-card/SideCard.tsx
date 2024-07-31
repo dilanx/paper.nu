@@ -164,6 +164,11 @@ function SideCard({ data, onClose }: SideCardProps) {
                   )}
                 </div>
               )}
+              {data.developer && userOptions.get.debug && (
+                <div className="mt-4 text-center text-xs text-gray-300 dark:text-gray-500">
+                  {data.developer}
+                </div>
+              )}
             </Dialog.Panel>
           </Transition.Child>
         </div>

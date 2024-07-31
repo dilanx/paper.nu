@@ -85,7 +85,7 @@ function Class({ course, location }: ClassProps) {
           } block w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-black compact:hidden dark:text-gray-50`}
           title={course.name}
         >
-          {isPlaceholder ? 'PLACEHOLDER' : course.name}
+          {course.itopic ? `${course.itopic} - ${course.name}` : course.name}
         </p>
         {showMoreInfo && (
           <div>

@@ -23,6 +23,7 @@ import {
   addSummerQuarter,
   addYear,
   clearData,
+  editCourse,
   moveCourse,
   putCustomCourse,
   removeBookmark,
@@ -138,6 +139,9 @@ class App
       },
       moveCourse: (course, oldLocation, newLocation) => {
         moveCourse(this, course, oldLocation, newLocation);
+      },
+      editCourse: (courseInstanceUid, course, location) => {
+        editCourse(this, courseInstanceUid, course, location);
       },
       addBookmark: (course, forCredit) => {
         addBookmark(this, course, forCredit);
