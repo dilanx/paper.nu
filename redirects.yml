@@ -1,0 +1,13 @@
+# https://github.com/dilanx/redirects
+
+redirects:
+  - from: /changelog
+    to: https://github.com/dilanx/paper.nu/blob/main/CHANGELOG.md
+  - from: /support
+    to: https://support.dilanxd.com/paper
+  - from: /contribute
+    to: https://support.dilanxd.com/paper/contribute
+
+seo:
+  image: https://www.paper.nu/icon.png
+  theme-color: '#ffffff'

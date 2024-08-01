@@ -21,6 +21,8 @@ jobs:
         run: npm run lint:prettier
       - name: Build website
         run: npm run build
+      - name: Generate redirects
+        uses: dilanx/redirects@v3
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:

@@ -14,9 +14,10 @@ _2024-XX-XX_
 - Catalog number wildcards are now supported in search. For example, something like 'CS 3xx' will match all COMP_SCI courses in the 300s.
 - Fixed an issue where some courses would either change into a different course or disappear on reload due to a bug with handling cross-listed courses.
 - Fixed an issue where some time filters would not filter correctly.
-- Copy document ID to the clipboard when clicking on the document name in the toolbar.
+- Added a sleek new information notification for when you load a new version of Paper.
 - Copy share link to the clipboard when clicking on the people icon in the toolbar, which is visible when a document is persistently shared.
 - Pre-built placeholder courses have been removed from Paper and will be removed from existing plans that have them. To add a placeholder course, you can create a custom course.
+- Copy document ID to the clipboard when clicking on the document name in the toolbar.
 - Various UI updates, bug fixes, and other small changes.
 
 ### 3.1.0
