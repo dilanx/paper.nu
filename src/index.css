@@ -36,15 +36,15 @@
     }
   }
 
-  .rainbow-border-button {
+  .rainbow-border {
     position: relative;
     overflow: hidden;
-    padding: 16px;
+    padding: 4px;
     border-radius: 16px;
     transition: all 150ms linear;
   }
 
-  .rainbow-border-button::before {
+  .rainbow-border::before {
     content: '';
     display: block;
     background: conic-gradient(
@@ -65,18 +65,85 @@
     border-radius: 100%;
     z-index: -2;
     transition: all 150ms linear;
-  }
-
-  .rainbow-border-button:hover::before {
     animation: spin 5s linear infinite;
   }
 
-  .rainbow-border-button::after {
+  .rainbow-border::after {
     content: '';
     position: absolute;
     inset: 8px;
     z-index: -1;
     border-radius: 8px;
+  }
+
+  /* react-hot-toast */
+  @keyframes animation-toast-enter {
+    0% {
+      transform: translate3d(0, 200%, 0) scale(0.6);
+      opacity: 0.5;
+    }
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* react-hot-toast */
+  @keyframes animation-toast-exit {
+    0% {
+      transform: translate3d(0, 0, -1px) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translate3d(0, 150%, -1px) scale(0.6);
+      opacity: 0;
+    }
+  }
+
+  /* react-hot-toast */
+  @keyframes animation-fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  /* react-hot-toast */
+  @keyframes animation-fade-out {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  /* react-hot-toast */
+  .animate-toast-enter {
+    animation: animation-toast-enter 0.35s cubic-bezier(0.21, 1.02, 0.73, 1)
+      forwards;
+  }
+
+  /* react-hot-toast */
+  .animate-toast-exit {
+    animation: animation-toast-exit 0.4s forwards
+      cubic-bezier(0.06, 0.71, 0.55, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* react-hot-toast */
+    .animate-toast-enter {
+      animation: animation-fade-in 0.35s cubic-bezier(0.21, 1.02, 0.73, 1)
+        forwards;
+    }
+
+    /* react-hot-toast */
+    .animate-toast-exit {
+      animation: animation-fade-out 0.4s forwards
+        cubic-bezier(0.06, 0.71, 0.55, 1);
+    }
   }
 
   .background-gradient-1 {

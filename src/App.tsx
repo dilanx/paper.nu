@@ -98,6 +98,7 @@ import {
   BACKGROUND_LIGHT,
   errorAlert,
 } from './utility/Utility';
+import ChangeLogPreview from './components/menu/changelog/ChangeLogPreview';
 const d = debug('app');
 
 const VERSION = process.env.REACT_APP_VERSION ?? '0.0.0';
@@ -212,7 +213,6 @@ class App
         ?.setAttribute('content', BACKGROUND_LIGHT);
     }
 
-    const lastVersion = localStorage.getItem('v');
     const bannerNoticeId = localStorage.getItem('bn_id');
 
     this.appRef = React.createRef<HTMLDivElement>();
@@ -228,7 +228,6 @@ class App
       sf,
       ff,
       rf,
-      clp: !lastVersion || lastVersion !== VERSION_NO_PATCH,
       banner: !!bn && (!bannerNoticeId || bannerNoticeId !== bn.id),
       loadingLogin: false,
       saveState: 'idle',
@@ -322,6 +321,26 @@ class App
           this.setState({ loadingLogin: false });
         },
         { hash, showCourse, showSection }
+      );
+    }
+
+    const lastVersion = localStorage.getItem('v');
+    if (lastVersion != null && lastVersion !== VERSION_NO_PATCH) {
+      toast.custom(
+        (t) => (
+          <ChangeLogPreview
+            version={VERSION}
+            toast={t}
+            dark={this.state.userOptions.get.dark}
+            onDismiss={() => {
+              localStorage.setItem('v', VERSION_NO_PATCH);
+            }}
+          />
+        ),
+        {
+          position: 'bottom-right',
+          duration: Infinity,
+        }
       );
     }
   }

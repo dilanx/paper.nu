@@ -9,6 +9,7 @@ _2024-XX-XX_
 - Location names are now displayed in the minimap when hovering over a section on the schedule.
 - Custom sections can now have custom start and end dates, which affects the events when exporting your schedule to calendar.
 - View a unit breakdown on your plan by clicking on the total units number at the bottom of the plan.
+- A time bar can be displayed on your schedule to show the current time. This can be toggled in the settings and is disabled by default.
 - The school to which a course or section belongs is now displayed in the course or section information menu. This is available for courses and sections offered since 2024 Fall.
 - Catalog number wildcards are now supported in search. For example, something like 'CS 3xx' will match all COMP_SCI courses in the 300s.
 - Fixed an issue where some courses would either change into a different course or disappear on reload due to a bug with handling cross-listed courses.

@@ -128,6 +128,12 @@ const settingsMenu = (): AlertData => ({
             saveToStorage: true,
           },
           {
+            switch: 'time_bar',
+            title: 'Time bar',
+            description: 'Display a bar over the schedule at the current time.',
+            saveToStorage: true,
+          },
+          {
             switch: 'schedule_warnings',
             title: 'Schedule warnings',
             description: `You'll get warnings for trying things like adding a conflicting section to your schedule.`,

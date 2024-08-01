@@ -17,7 +17,7 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import UtilityButton from '../menu/UtilityButton';
 import Day from './Day';
@@ -38,6 +38,9 @@ export default function Schedule({ interactions, imageMode }: ScheduleProps) {
   const { schedule } = useData();
   const { scheduleModification } = useModification();
   const [takeImage, setTakeImage] = useState(false);
+  const [time, setTime] = useState<Date>(new Date());
+  const ref = useRef<HTMLDivElement>(null);
+  const timeBar = userOptions.get.time_bar;
 
   useEffect(() => {
     if (takeImage) {
@@ -54,6 +57,20 @@ export default function Schedule({ interactions, imageMode }: ScheduleProps) {
       };
     }
   }, [takeImage, userOptions.get.dark]);
+
+  useEffect(() => {
+    if (!timeBar) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [timeBar]);
 
   const days: JSX.Element[] = [];
   const sectionDays: DayMeetingPatterns = { 0: [], 1: [], 2: [], 3: [], 4: [] };
@@ -147,6 +164,15 @@ export default function Schedule({ interactions, imageMode }: ScheduleProps) {
         end={end}
         sections={sections}
         interactions={interactions}
+        time={
+          timeBar
+            ? {
+                d: (time.getDay() - 1) % 7,
+                h: time.getHours(),
+                m: time.getMinutes(),
+              }
+            : undefined
+        }
         imageMode={imageMode}
         key={`day-${i}`}
       />
@@ -155,6 +181,7 @@ export default function Schedule({ interactions, imageMode }: ScheduleProps) {
 
   return (
     <motion.div
+      ref={ref}
       className={`p-4 ${
         imageMode ? 'absolute top-full h-imgh w-imgw' : 'relative flex-1 pt-2'
       }`}
@@ -176,7 +203,14 @@ export default function Schedule({ interactions, imageMode }: ScheduleProps) {
                           : 'h-192 border-gray-300 dark:border-gray-700 lg:h-full'
                       }`}
       >
-        <HoursColumn start={start} end={end} />
+        <HoursColumn
+          start={start}
+          end={end}
+          time={
+            timeBar ? { h: time.getHours(), m: time.getMinutes() } : undefined
+          }
+          imageMode={imageMode}
+        />
         {days}
         {!imageMode && (
           <div className="absolute right-7 top-4 flex items-center gap-1">

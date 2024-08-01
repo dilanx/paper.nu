@@ -5,6 +5,12 @@ export interface Time {
   m: number;
 }
 
+export interface TimeAndDay {
+  d: number;
+  h: number;
+  m: number;
+}
+
 export interface ScheduleData {
   termId?: string;
   schedule: ScheduleDataMap;

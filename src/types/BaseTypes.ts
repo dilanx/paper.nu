@@ -33,7 +33,6 @@ export interface AppState {
   searchDefaults?: SearchDefaults;
   about?: boolean;
   banner?: boolean;
-  clp?: boolean;
   map?: boolean;
   ratings?: RatingsViewData;
   latestTermId?: string;
@@ -62,6 +61,7 @@ export interface ReadUserOptions {
   notes?: boolean;
   unsaved_notes?: boolean;
   notice_dismiss?: string;
+  time_bar?: boolean;
 }
 
 export interface UserOptions {

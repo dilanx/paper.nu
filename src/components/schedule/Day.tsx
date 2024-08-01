@@ -1,6 +1,7 @@
 import {
   ScheduleInteractions,
   SectionWithValidMeetingPattern,
+  TimeAndDay,
 } from '@/types/ScheduleTypes';
 import { getLayout } from '@/utility/Layout';
 import { convertDay } from '@/utility/Utility';
@@ -25,29 +26,50 @@ interface DayProps {
   end: number;
   sections?: SectionWithValidMeetingPattern[];
   interactions?: ScheduleInteractions;
+  time?: TimeAndDay;
   imageMode?: boolean;
 }
 
-function Day(props: DayProps) {
-  const hours: JSX.Element[] = [
-    <Cell day={props.index} key={`day-${props.index}-x`} />,
-  ];
+function Day({
+  index,
+  start,
+  end,
+  sections,
+  interactions,
+  time,
+  imageMode,
+}: DayProps) {
+  const hours: JSX.Element[] = [<Cell day={index} key={`day-${index}-x`} />];
 
-  const { hourAssignments, layoutMap } = getLayout(props.sections);
+  const { hourAssignments, layoutMap } = getLayout(sections);
 
-  for (let i = props.start + 1; i <= props.end; i++) {
+  for (let i = start + 1; i <= end; i++) {
     const children = hourAssignments[i - 1]?.map((swmp) => (
       <ScheduleClass
         swmp={swmp}
-        day={props.index}
-        interactions={props.interactions}
-        imageMode={props.imageMode}
+        day={index}
+        interactions={interactions}
+        imageMode={imageMode}
         split={layoutMap[swmp.section.section_id][swmp.index]}
-        key={`day-${props.index}-${swmp.section.section_id}-${swmp.index}`}
+        key={`day-${index}-${swmp.section.section_id}-${swmp.index}`}
       />
     ));
 
-    hours.push(<Cell key={`day-${props.index}-${i}`}>{children}</Cell>);
+    hours.push(
+      <Cell key={`day-${index}-${i}`}>
+        {children}
+        {time && !imageMode && i === time.h + 1 && (
+          <div
+            className={`absolute left-0 z-30 h-0.5 w-full bg-emerald-500 ${
+              index === 0 ? 'rounded-l-md' : index === 4 ? 'rounded-r-md' : ''
+            } ${time.d === index ? 'opacity-75' : 'opacity-30'}`}
+            style={{
+              top: `${(time.m / 60) * 100}%`,
+            }}
+          />
+        )}
+      </Cell>
+    );
   }
 
   return <div className="flex flex-col">{hours}</div>;
