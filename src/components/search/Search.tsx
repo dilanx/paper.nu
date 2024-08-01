@@ -38,6 +38,7 @@ import {
 import {
   Bars3Icon,
   CalendarDaysIcon,
+  FaceSmileIcon,
   FunnelIcon,
   XCircleIcon,
   XMarkIcon,
@@ -161,13 +162,12 @@ export default function Search({
           ? searchPlan(search, filter)
           : searchSchedule(search, schedule, filter);
 
-      if (search === 'angela') {
+      if (search === 'i follow paper on ig') {
         return {
           placeholder: (
-            <div className="flex justify-center">
-              <button className="rounded-md bg-pink-500 px-2 py-1 font-bold text-white shadow-sm hover:bg-pink-400 active:bg-pink-300">
-                ANGELA
-              </button>
+            <div className="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
+              <FaceSmileIcon className="h-24 w-24" />
+              <p className="text-lg font-bold">Thank you!</p>
             </div>
           ),
         };
