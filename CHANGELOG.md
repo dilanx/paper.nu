@@ -16,6 +16,8 @@ _2024-XX-XX_
 - Fixed an issue where some time filters would not filter correctly.
 - Added a sleek new information notification for when you load a new version of Paper.
 - Copy share link to the clipboard when clicking on the people icon in the toolbar, which is visible when a document is persistently shared.
+- The number of results displayed in the search box at once has been reduced to improve search performance across devices. You can opt for more results to be displayed in the settings.
+- Courses in plan search no longer show the description, prerequisites, foundational disciplines, nor distribution areas on the card, but you can still view more information by clicking on it and pressing the info button, which has been moved above the add buttons for convenience.
 - Pre-built placeholder courses have been removed from Paper and will be removed from existing plans that have them. To add a placeholder course, you can create a custom course.
 - Copy document ID to the clipboard when clicking on the document name in the toolbar.
 - Various UI updates, bug fixes, and other small changes.

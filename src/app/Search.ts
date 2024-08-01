@@ -13,8 +13,10 @@ import { Mode } from '@/utility/Constants';
 import { courseMatchesFilter, getPlanCourseData } from './Plan';
 import { getScheduleCourseData, sectionMatchesFilter } from './Schedule';
 
-const PLAN_SEARCH_RESULT_LIMIT = 100;
-const SCHEDULE_SEARCH_RESULT_LIMIT = 50;
+export const LIGHT_PLAN_SEARCH_RESULT_LIMIT = 25;
+export const LIGHT_SCHEDULE_SEARCH_RESULT_LIMIT = 25;
+export const HEAVY_PLAN_SEARCH_RESULT_LIMIT = 75;
+export const HEAVY_SCHEDULE_SEARCH_RESULT_LIMIT = 50;
 
 const shortcuts = ShortcutsJson as SearchShortcuts;
 
@@ -105,6 +107,7 @@ function search(searchThrough: string, term: string) {
 
 export function searchPlan(
   query: string,
+  resultLimit: number,
   filter?: FilterOptions
 ): SearchResults<Course> | SearchError {
   const { terms, shortcut } = prepareQuery(query);
@@ -152,15 +155,15 @@ export function searchPlan(
   if (total === 0) return 'no_results';
 
   let limitExceeded = false;
-  if (total > PLAN_SEARCH_RESULT_LIMIT) {
+  if (total > resultLimit) {
     limitExceeded = true;
-    if (courseIdResults.length > PLAN_SEARCH_RESULT_LIMIT) {
-      courseIdResults = courseIdResults.slice(0, PLAN_SEARCH_RESULT_LIMIT);
+    if (courseIdResults.length > resultLimit) {
+      courseIdResults = courseIdResults.slice(0, resultLimit);
       courseNameResults = [];
     } else {
       courseNameResults = courseNameResults.slice(
         0,
-        PLAN_SEARCH_RESULT_LIMIT - courseIdResults.length
+        resultLimit - courseIdResults.length
       );
     }
   }
@@ -171,7 +174,7 @@ export function searchPlan(
   return {
     results: courseIdResults.concat(courseNameResults),
     shortcut,
-    limitExceeded: limitExceeded ? total - PLAN_SEARCH_RESULT_LIMIT : undefined,
+    limitExceeded: limitExceeded ? total - resultLimit : undefined,
   };
 }
 
@@ -182,6 +185,7 @@ function fullId(course: ScheduleCourse) {
 export function searchSchedule(
   query: string,
   schedule: ScheduleData,
+  resultLimit: number,
   filter?: FilterOptions
 ): SearchResults<ScheduleCourse> | SearchError {
   const { terms, shortcut } = prepareQuery(query);
@@ -238,15 +242,15 @@ export function searchSchedule(
   if (total === 0) return 'no_results';
 
   let limitExceeded = false;
-  if (total > SCHEDULE_SEARCH_RESULT_LIMIT) {
+  if (total > resultLimit) {
     limitExceeded = true;
-    if (courseIdResults.length > SCHEDULE_SEARCH_RESULT_LIMIT) {
-      courseIdResults = courseIdResults.slice(0, SCHEDULE_SEARCH_RESULT_LIMIT);
+    if (courseIdResults.length > resultLimit) {
+      courseIdResults = courseIdResults.slice(0, resultLimit);
       courseNameResults = [];
     } else {
       courseNameResults = courseNameResults.slice(
         0,
-        SCHEDULE_SEARCH_RESULT_LIMIT - courseIdResults.length
+        resultLimit - courseIdResults.length
       );
     }
   }
@@ -257,8 +261,6 @@ export function searchSchedule(
   return {
     results: courseIdResults.concat(courseNameResults),
     shortcut,
-    limitExceeded: limitExceeded
-      ? total - SCHEDULE_SEARCH_RESULT_LIMIT
-      : undefined,
+    limitExceeded: limitExceeded ? total - resultLimit : undefined,
   };
 }

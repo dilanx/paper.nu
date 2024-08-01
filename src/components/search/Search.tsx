@@ -2,7 +2,15 @@ import { isPlanActive, isScheduleActive } from '@/app/Account';
 import { useApp, useData } from '@/app/Context';
 import { getOrganizedTerms, getTermName } from '@/app/Data';
 import { getCourseColor, getSchoolOfSubject } from '@/app/Plan';
-import { filterExists, searchPlan, searchSchedule } from '@/app/Search';
+import {
+  filterExists,
+  HEAVY_PLAN_SEARCH_RESULT_LIMIT,
+  HEAVY_SCHEDULE_SEARCH_RESULT_LIMIT,
+  LIGHT_PLAN_SEARCH_RESULT_LIMIT,
+  LIGHT_SCHEDULE_SEARCH_RESULT_LIMIT,
+  searchPlan,
+  searchSchedule,
+} from '@/app/Search';
 import CampusMinimap from '@/components/map/CampusMinimap';
 import ChangeTerm from '@/components/menu/ChangeTerm';
 import { AlertData } from '@/types/AlertTypes';
@@ -125,7 +133,7 @@ export default function Search({
 }: SearchProps) {
   const { userOptions, alert } = useApp();
   const { schedule } = useData();
-  const [search, setSearch] = useState(defaults?.query ?? '');
+  const [searchInput, setSearchInput] = useState(defaults?.query ?? '');
   const [searchMode, setSearchMode] = useState(SearchMode.NORMAL);
   const [filter, setFilter] = useState<FilterOptions>({});
   const [planCurrent, setPlanCurrent] = useState<string>();
@@ -159,10 +167,23 @@ export default function Search({
       const appMode = userOptions.get.mode as Mode;
       const results =
         userOptions.get.mode === Mode.PLAN
-          ? searchPlan(search, filter)
-          : searchSchedule(search, schedule, filter);
+          ? searchPlan(
+              searchInput,
+              userOptions.get.more_results
+                ? HEAVY_PLAN_SEARCH_RESULT_LIMIT
+                : LIGHT_PLAN_SEARCH_RESULT_LIMIT,
+              filter
+            )
+          : searchSchedule(
+              searchInput,
+              schedule,
+              userOptions.get.more_results
+                ? HEAVY_SCHEDULE_SEARCH_RESULT_LIMIT
+                : LIGHT_SCHEDULE_SEARCH_RESULT_LIMIT,
+              filter
+            );
 
-      if (search === 'i follow paper on ig') {
+      if (searchInput === 'i follow paper on ig') {
         return {
           placeholder: (
             <div className="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
@@ -271,12 +292,15 @@ export default function Search({
           >
             There are too many results to display. You'll need to narrow your
             search to get more.
+            {userOptions.get.more_results
+              ? ''
+              : ' You can opt for more results at once in the settings.'}
           </MiniContentBlock>
         );
       }
 
       return {
-        results: courseList,
+        results: courseList.slice(0, 50),
         shortcut: results.shortcut,
       };
     }, [
@@ -285,14 +309,15 @@ export default function Search({
       schedule,
       scheduleCurrent,
       scheduleInteractions,
-      search,
+      searchInput,
       searchMode,
       term?.name,
       userOptions.get.mode,
+      userOptions.get.more_results,
     ]);
 
   const darkMode = userOptions.get.dark;
-  const queryEmpty = search.length === 0;
+  const queryEmpty = searchInput.length === 0;
   const isLoading = loading || !term;
   const mapSection: ScheduleSection =
     scheduleInteractions.previewSection.get ||
@@ -331,12 +356,12 @@ export default function Search({
                 className="important-focus-black dark:important-focus-white w-full rounded-lg border-2 border-gray-300 bg-white p-2 px-4
                      pl-8 text-black shadow-sm outline-none transition-all duration-150 placeholder:text-gray-400 hover:border-gray-500 focus:border-black peer-hover:border-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:border-gray-500 dark:focus:border-white"
                 ref={searchFieldRef}
-                value={search}
+                value={searchInput}
                 placeholder={`Search ${
                   isSchedule ? term?.name + '...' : 'for classes...'
                 }`}
                 onChange={(event) => {
-                  setSearch(event.target.value);
+                  setSearchInput(event.target.value);
                   setScheduleCurrent(undefined);
                 }}
               />
@@ -345,7 +370,7 @@ export default function Search({
                   className="absolute bottom-0 right-4 top-0 my-2 block text-gray-300 transition-colors duration-150 
                                             hover:text-red-400 active:text-red-300 dark:text-gray-600 dark:hover:text-red-400 dark:active:text-red-500"
                   onClick={() => {
-                    setSearch('');
+                    setSearchInput('');
                     searchFieldRef.current?.focus();
                   }}
                 >

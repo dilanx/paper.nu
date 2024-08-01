@@ -62,6 +62,7 @@ export interface ReadUserOptions {
   unsaved_notes?: boolean;
   notice_dismiss?: string;
   time_bar?: boolean;
+  more_results?: boolean;
 }
 
 export interface UserOptions {

@@ -82,6 +82,13 @@ const settingsMenu = (): AlertData => ({
               });
             },
           },
+          {
+            switch: 'more_results',
+            title: 'Show more search results at once',
+            description:
+              "Rendered search results are limited to improve performance on your device, so you'll have to narrow your search more to get what you want. If you have a more powerful device, turning this on will increase the number of search results displayed at once.",
+            saveToStorage: true,
+          },
         ],
       },
       {
@@ -106,15 +113,6 @@ const settingsMenu = (): AlertData => ({
             description: `See prerequisites and distribution areas on the class items without having to click on their info button. The info won't display if compact mode is enabled.`,
             saveToStorage: true,
           },
-          // {
-          //   title: 'Clear plan',
-          //   description: `Clear all of your current plan data, which includes everything for each year and everything in your bookmarks. Make sure to save the current URL somewhere if you don't want to lose it.`,
-          //   buttonTextOn: 'Clear',
-          //   confirmation: 'clear_plan',
-          //   singleAction: () => {
-          //     f2.clearData();
-          //   },
-          // },
         ],
       },
       {
