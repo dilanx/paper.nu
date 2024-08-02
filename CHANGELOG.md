@@ -2,7 +2,7 @@
 
 ### 3.2.0
 
-_2024-XX-XX_
+_2024-08-02_
 
 - Courses that offer multiple topics can now be assigned a topic on your plan. Select the topic from the course's information menu. When a topic is set for a course, the name of the course on your plan will include the topic.
 - You can now view the topics historically offered within a course from the course's information menu.
