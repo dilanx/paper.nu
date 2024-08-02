@@ -441,6 +441,7 @@ export function openInfo(
           color: getTermColor(termName),
         }
       : undefined,
+    developer: section.section_id,
   };
 
   appContext.sideCard(sideCardData);
