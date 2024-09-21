@@ -13,14 +13,14 @@ export default function QuarterUtilityButton({
 }: QuarterUtilityButtonProps) {
   return (
     <button
-      className="flex items-center gap-1 rounded-md px-1 py-0.5 text-xs font-medium text-gray-400 hover:bg-gray-300/25 active:bg-gray-300/50 dark:text-gray-400 dark:hover:bg-gray-500/25 dark:active:bg-gray-500/50"
+      className="text-2xs flex items-center gap-0.5 rounded-md px-1 py-0.5 font-medium text-gray-400 hover:bg-gray-300/25 active:bg-gray-300/50 dark:text-gray-400 dark:hover:bg-gray-500/25 dark:active:bg-gray-500/50"
       onClick={() => {
         if (onClick) {
           onClick();
         }
       }}
     >
-      <Icon className="h-4 w-4 stroke-2" />
+      <Icon className="h-3 w-3 stroke-2" />
       <p>{children}</p>
     </button>
   );

@@ -22,9 +22,15 @@ export default function BannerNotice({ data, dismiss }: BannerNoticeProps) {
             color: 'purple',
             title: 'Dismiss this banner notice?',
             icon: ExclamationCircleIcon,
+            message:
+              'This specific banner notice will not be shown on this device again.',
             confirmButton: 'Dismiss',
             cancelButton: 'Cancel',
-            textHTML: <>{data.content}</>,
+            textHTML: (
+              <div className="my-2 rounded-md bg-gray-100 p-1 shadow-sm dark:bg-gray-600">
+                {data.content}
+              </div>
+            ),
             action: () => {
               dismiss();
             },

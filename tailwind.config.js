@@ -1,6 +1,7 @@
 const plugin = require('tailwindcss/plugin');
 const colors = require('tailwindcss/colors');
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx,css}', './public/index.html'],
   safelist: [
@@ -40,6 +41,9 @@ module.exports = {
         imgw: '1440px',
         imgh: '960px',
         'screen-banner': 'calc(100vh - 2rem)',
+      },
+      fontSize: {
+        '2xs': '0.625rem',
       },
     },
   },
