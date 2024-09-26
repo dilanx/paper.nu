@@ -174,7 +174,7 @@ function About({ onClose }: AboutProps) {
                     </a>
                   </p>
                 </div>
-                <InfoSet title="more information" data={INFO_VERSIONS} />
+                <InfoSet title="MORE INFORMATION" data={INFO_VERSIONS} />
                 <div className="absolute right-2 top-2">
                   <ActionButton onClick={() => setOpen(false)}>
                     <XMarkIcon className="h-7 w-7" />

@@ -20,12 +20,12 @@ function InfoSet({ title, data }: InfoSetProps) {
   return (
     <div className="my-4">
       <button
-        className="mx-auto block rounded-md px-4 py-1 font-mono text-xs font-bold
+        className="mx-auto block rounded-md px-4 py-1 font-mono text-2xs font-bold tracking-wide
         text-gray-500 hover:bg-gray-100 active:bg-gray-100 active:opacity-75
         dark:text-gray-400 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:active:opacity-75"
         onClick={() => setOpen(!open)}
       >
-        {open ? `Hide ${title}` : `Show ${title}`}
+        {open ? `HIDE ${title}` : `SHOW ${title}`}
       </button>
       {open && (
         <div className="my-1 flex flex-col items-center justify-center gap-1 text-center font-mono text-xs text-gray-400 dark:text-gray-500">
