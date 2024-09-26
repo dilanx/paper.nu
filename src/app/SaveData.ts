@@ -40,6 +40,7 @@ const DEFAULT_USER_OPTIONS: ReadUserOptions = {
   mode: Mode.PLAN,
   schedule_warnings: true,
   minimap: true,
+  time_bar: true,
 };
 
 function matchAccountId(
