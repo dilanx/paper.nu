@@ -6,6 +6,7 @@ import { Mode } from '@/utility/Constants';
 import Links from '@/utility/StaticLinks';
 import {
   ArrowRightOnRectangleIcon,
+  CodeBracketSquareIcon,
   Cog6ToothIcon,
   InboxArrowDownIcon,
   InformationCircleIcon,
@@ -95,6 +96,13 @@ function Toolbar({ loading, openAboutMenu, saveState }: ToolbarProps) {
                       `${Links.FEEDBACK}?v=v${encodeURIComponent(version)}`,
                       '_blank'
                     );
+                  },
+                },
+                {
+                  text: 'Contribute',
+                  icon: CodeBracketSquareIcon,
+                  onClick: () => {
+                    window.open(Links.CONTRIBUTE, '_blank');
                   },
                 },
               ],

@@ -13,7 +13,7 @@ const Links = {
   SUPPORT_RATINGS: 'https://support.dilanxd.com/paper/ratings/',
 
   SOURCE_CODE: 'https://github.com/dilanx/paper.nu',
-  ISSUES: 'https://github.com/dilanx/paper.nu/issues',
+  CONTRIBUTE: 'https://www.paper.nu/contribute',
 
   DEVELOPER: 'https://www.dilanxd.com',
 
