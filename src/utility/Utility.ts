@@ -160,6 +160,14 @@ export function getTermColor(name: string): Color {
   return 'gray';
 }
 
+export function getCurrentTime(useCentralTime: boolean) {
+  return useCentralTime
+    ? new Date(
+        new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })
+      )
+    : new Date();
+}
+
 export function convertAllDaysToString(nums: string) {
   let days = '';
   for (let i = 0; i < nums.length; i++) {

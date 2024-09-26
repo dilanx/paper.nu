@@ -10,7 +10,11 @@ import {
 } from '@/types/ScheduleTypes';
 import { exportScheduleAsICS } from '@/utility/Calendar';
 import { exportScheduleAsImage } from '@/utility/Image';
-import { fitHours, sectionMeetingPatternIsValid } from '@/utility/Utility';
+import {
+  fitHours,
+  getCurrentTime,
+  sectionMeetingPatternIsValid,
+} from '@/utility/Utility';
 import {
   ArrowTopRightOnSquareIcon,
   PlusIcon,
@@ -38,7 +42,9 @@ export default function Schedule({ interactions, imageMode }: ScheduleProps) {
   const { schedule } = useData();
   const { scheduleModification } = useModification();
   const [takeImage, setTakeImage] = useState(false);
-  const [time, setTime] = useState<Date>(new Date());
+  const [time, setTime] = useState<Date>(
+    getCurrentTime(!userOptions.get.debug)
+  );
   const ref = useRef<HTMLDivElement>(null);
   const timeBar = userOptions.get.time_bar;
 
@@ -64,13 +70,13 @@ export default function Schedule({ interactions, imageMode }: ScheduleProps) {
     }
 
     const interval = setInterval(() => {
-      setTime(new Date());
+      setTime(getCurrentTime(!userOptions.get.debug));
     }, 1000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [timeBar]);
+  }, [timeBar, userOptions.get.debug]);
 
   const days: JSX.Element[] = [];
   const sectionDays: DayMeetingPatterns = { 0: [], 1: [], 2: [], 3: [], 4: [] };

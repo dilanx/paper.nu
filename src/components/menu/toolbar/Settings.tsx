@@ -128,7 +128,8 @@ const settingsMenu = (): AlertData => ({
           {
             switch: 'time_bar',
             title: 'Time bar',
-            description: 'Display a bar over the schedule at the current time.',
+            description:
+              'Display a bar over the schedule at the current time in the central time zone.',
             saveToStorage: true,
           },
           {
@@ -152,7 +153,7 @@ const settingsMenu = (): AlertData => ({
           {
             switch: 'debug',
             title: 'Developer mode',
-            description: `View extra developer information on Paper and view log messages in your browser's console (verbose log level is required).`,
+            description: `View extra developer information on Paper and view log messages in your browser's console (verbose log level is required). Having developer mode enabled will also make the schedule time bar use your browser's time zone instead of central time.`,
             saveToStorage: true,
             action: (newSwitch) => {
               if (newSwitch) {
