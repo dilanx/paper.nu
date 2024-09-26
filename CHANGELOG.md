@@ -1,12 +1,22 @@
 # Paper Change Log
 
-### 3.2.1
+## 3.2.2
+
+_2024-09-25_
+
+- The schedule time bar will always use the central time zone to align with class times, regardless of what time zone your device is currently in.
+- The schedule time bar is now enabled by default.
+- Added a context menu to the settings button on the toolbar to quickly access specific sections.
+- Added a contribution option to the about button's context menu on the toolbar.
+- Various UI updates, bug fixes, and other small changes.
+
+## 3.2.1
 
 _2024-09-20_
 
 - Various UI updates, bug fixes, and other small changes.
 
-### 3.2.0
+## 3.2.0
 
 _2024-08-02_
 
@@ -28,26 +38,26 @@ _2024-08-02_
 - Copy document ID to the clipboard when clicking on the document name in the toolbar.
 - Various UI updates, bug fixes, and other small changes.
 
-### 3.1.0
+## 3.1.0
 
 _2024-06-16_
 
 - Modernized the codebase to improve maintainability.
 - Removed unnecessary dependencies.
 
-### 3.0.2
+## 3.0.2
 
 _2024-06-03_
 
 - Updated the feedback button to use the new feedback system.
 
-### 3.0.1
+## 3.0.1
 
 _2024-01-04_
 
 - Various UI updates, bug fixes, and other small changes.
 
-### 3.0.0
+## 3.0.0
 
 _2024-01-02_
 
@@ -92,20 +102,20 @@ _2024-01-02_
   - The Plan Northwestern and salad.nu bubbles in the about menu have been removed. This information is in the project attributions, which is now linked in the menu instead.
   - A bunch of other UI updates, bug fixes, and other small changes to improve functionality, accessibility and user experience.
 
-### 2.6.2
+## 2.6.2
 
 _2023-09-18_
 
 - Add support for dismissable banner notices.
 
-### 2.6.1
+## 2.6.1
 
 _2023-07-10_
 
 - Fixed a bug where account plans and schedules may not load and activate first even if they are the most recently edited.
 - Various UI updates, bug fixes, and other small changes.
 
-### 2.6.0
+## 2.6.0
 
 _2023-06-02_
 
@@ -120,32 +130,32 @@ _2023-06-02_
 - Plan and schedule names are no longer automatically displayed in uppercase.
 - Various UI updates, bug fixes, and other small changes.
 
-### 2.5.1
+## 2.5.1
 
 _2023-05-08_
 
 - Updated the exported schedule image.
 
-### 2.5.0
+## 2.5.0
 
 _2023-05-07_
 
 - Various UI updates, bug fixes, and other small changes.
 
-### 2.4.2
+## 2.4.2
 
 _2023-05-02_
 
 - Various UI updates, bug fixes, and other small changes.
 
-### 2.4.1
+## 2.4.1
 
 _2023-04-26_
 
 - Updated the buttons below the search bar.
 - Various UI updates, bug fixes, and other small changes.
 
-### 2.4.0
+## 2.4.0
 
 _2023-03-26_
 
@@ -159,7 +169,7 @@ _2023-03-26_
 - You can now get a direct link to a room on Tech Room Finder from within a course section's information card. Just click on the room name if it has a solid underline.
 - While a course section's information card is open, you can hover over a room name (both solid and dotted underlines) to see the location on the minimap.
 
-### 2.3.0
+## 2.3.0
 
 _2023-03-21_
 
@@ -175,32 +185,32 @@ _2023-03-21_
 - Courses with multiple meeting patterns now have their other meeting patterns available on Paper.
 - The minimap is no longer visible when the window height is too low.
 
-### 2.2.4
+## 2.2.4
 
 _2023-02-15_
 
 - Fixed the cache version number format.
 
-### 2.2.3
+## 2.2.3
 
 _2023-02-14_
 
 - Updated the cache version number format.
 
-### 2.2.2
+## 2.2.2
 
 _2023-02-14_
 
 - Internal information can now be viewed in the about menu.
 - Various UI changes, bug fixes, and enhancements.
 
-### 2.2.1
+## 2.2.1
 
 _2023-02-06_
 
 - If a schedule term newer than the currently active one is available, a clickable message will appear in the top left corner.
 
-### 2.2.0
+## 2.2.0
 
 _2023-01-30_
 
@@ -230,26 +240,26 @@ _2023-01-30_
 - Updated the change log preview UI.
 - Various UI changes and bug fixes.
 
-### 2.1.3
+## 2.1.3
 
 _2022-12-31_
 
 - Fixed a few bugs related to certain schedules exporting incorrectly or not at all.
 
-### 2.1.2
+## 2.1.2
 
 _2022-12-30_
 
 - Change log previews now show only the major and minor version numbers.
 - The built-in feedback submission feature has been removed.
 
-### 2.1.1
+## 2.1.1
 
 _2022-12-11_
 
 - Alert modals can now include developer notices when necessary.
 
-### 2.1.0
+## 2.1.0
 
 _2022-11-12_
 
@@ -274,21 +284,21 @@ _2022-11-12_
 - Drastically increased the default opacity of the utility bar on the left side of the schedule so it's more obvious.
 - If a section on your schedule is no longer offered in the upcoming quarter (thus the data is now unavailable), only that section will disappear from the schedule rather than Paper considering the entire schedule malformed.
 
-### 2.0.2
+## 2.0.2
 
 _2022-11-03_
 
 - Updated feedback submission information.
 - Added ability to clear entire local course data cache.
 
-### 2.0.1
+## 2.0.1
 
 _2022-11-01_
 
 - Updated feedback submission information.
 - Update alert option button styling.
 
-### 2.0.0
+## 2.0.0
 
 _2022-10-31_
 
@@ -315,25 +325,25 @@ Plan Northwestern is now **Paper**, and has replaced both salad.nu and the origi
   - Toggle the minimap, which appears at the bottom of the search menu and will show the location of a section you're hovering over.
 - **Huge data set!** Data for the past 8 years (starting Fall 2020) is accessible.
 
-### 1.2.3
+## 1.2.3
 
 _2022-09-22_
 
 - Added system status embed.
 
-### 1.2.2
+## 1.2.2
 
 _2022-07-05_
 
 - Fixed a bug with My List.
 
-### 1.2.1
+## 1.2.1
 
 _2022-07-04_
 
 - Updated the 'About' menu.
 
-### 1.2.0
+## 1.2.0
 
 _2022-06-24_
 
@@ -358,27 +368,27 @@ _2022-06-24_
 - Updated all project dependencies to their latest versions.
   - This was a breaking change for [React DnD](https://react-dnd.github.io/react-dnd/about), so parts of draggable components and their destinations had to be redone.
 
-### 1.1.3
+## 1.1.3
 
 _2022-02-18_
 
 - The color of the deepest background, the one behind the main UI, now matches the color of the main UI background, which changes as you toggle dark mode.
 - Some other small changes were made.
 
-### 1.1.2
+## 1.1.2
 
 _2022-02-11_
 
 - Made it way easier to scroll through search and your plan on mobile devices and at smaller window sizes.
 - Fixed some UI bugs.
 
-### 1.1.1
+## 1.1.1
 
 _2022-02-11_
 
 - Certain window sizes made the UI look too crushed. Now, the UI will switch to its "vertical" mode (as seen on mobile devices) at a bit larger of a window size than before.
 
-### 1.1.0
+## 1.1.0
 
 _2022-02-08_
 
@@ -403,7 +413,7 @@ _2022-02-08_
 - Added a calendar icon next to the name and as a favicon.
 - Added a button that links to this change log in the "About" menu. Also, clicking on my name links you to my website. Why not, right?
 
-### 1.0.0
+## 1.0.0
 
 _2021-12-22_
 
