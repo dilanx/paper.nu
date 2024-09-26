@@ -6,18 +6,24 @@ import { Mode } from '@/utility/Constants';
 import Links from '@/utility/StaticLinks';
 import {
   ArrowRightOnRectangleIcon,
+  CalendarIcon as CalendarIconOutline,
   CodeBracketSquareIcon,
   Cog6ToothIcon,
+  EllipsisHorizontalIcon,
   InboxArrowDownIcon,
   InformationCircleIcon,
   MapIcon,
   NewspaperIcon,
   PencilSquareIcon,
   QuestionMarkCircleIcon,
+  RectangleStackIcon as RectangleStackIconOutline,
   UserCircleIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
-import { CalendarIcon, RectangleStackIcon } from '@heroicons/react/24/solid';
+import {
+  CalendarIcon as CalendarIconSolid,
+  RectangleStackIcon as RectangleStackIconSolid,
+} from '@heroicons/react/24/solid';
 import settingsMenu from './Settings';
 import { shareMenu } from './Share';
 import ToolbarAccount from './ToolbarAccount';
@@ -122,8 +128,8 @@ function Toolbar({ loading, openAboutMenu, saveState }: ToolbarProps) {
           </ToolbarButton>
         )}
         <ToolbarButton
-          selected={userOptions.get.notes}
           icon={PencilSquareIcon}
+          selected={userOptions.get.notes}
           onClick={() => {
             if (userOptions.get.notes) {
               discardNotesChanges(userOptions, alert, () => {
@@ -138,8 +144,8 @@ function Toolbar({ loading, openAboutMenu, saveState }: ToolbarProps) {
           Notes
         </ToolbarButton>
         <ToolbarButton
-          active={activeContextMenu === 'share'}
           icon={UserGroupIcon}
+          active={activeContextMenu === 'share'}
           onClick={(x, y) => {
             contextMenu(
               shareMenu({ x, y, plan, schedule, alert, userOptions })
@@ -150,7 +156,48 @@ function Toolbar({ loading, openAboutMenu, saveState }: ToolbarProps) {
         </ToolbarButton>
         <ToolbarButton
           icon={Cog6ToothIcon}
-          onClick={() => alert(settingsMenu())}
+          active={activeContextMenu === 'settings'}
+          onClick={(x, y) => {
+            contextMenu({
+              name: 'settings',
+              x,
+              y,
+              items: [
+                {
+                  text: 'General',
+                  icon: Cog6ToothIcon,
+                  onClick: () => {
+                    userOptions.set('settings_tab', 'General');
+                    alert(settingsMenu());
+                  },
+                },
+                {
+                  text: 'Plan',
+                  icon: RectangleStackIconOutline,
+                  onClick: () => {
+                    userOptions.set('settings_tab', 'Plan');
+                    alert(settingsMenu());
+                  },
+                },
+                {
+                  text: 'Schedule',
+                  icon: CalendarIconOutline,
+                  onClick: () => {
+                    userOptions.set('settings_tab', 'Schedule');
+                    alert(settingsMenu());
+                  },
+                },
+                {
+                  text: 'Advanced',
+                  icon: EllipsisHorizontalIcon,
+                  onClick: () => {
+                    userOptions.set('settings_tab', 'Advanced');
+                    alert(settingsMenu());
+                  },
+                },
+              ],
+            });
+          }}
         >
           Settings
         </ToolbarButton>
@@ -170,7 +217,7 @@ function Toolbar({ loading, openAboutMenu, saveState }: ToolbarProps) {
             items: [
               {
                 text: isSchedule ? 'Schedules' : 'Plans',
-                icon: isSchedule ? CalendarIcon : RectangleStackIcon,
+                icon: isSchedule ? CalendarIconSolid : RectangleStackIconSolid,
                 onClick: () => {
                   userOptions.set('tab', 'Plans');
                 },
