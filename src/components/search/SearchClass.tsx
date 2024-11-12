@@ -4,8 +4,11 @@ import ClassPropertyDisplay from '@/components/plan/ClassPropertyDisplay';
 import { openInfo } from '@/components/plan/CourseInfo';
 import { Color } from '@/types/BaseTypes';
 import { Course, CourseDragItem } from '@/types/PlanTypes';
-import { BookmarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
+import { BookmarkIcon } from '@heroicons/react/24/outline';
+import {
+  BookmarkIcon as BookmarkIconSolid,
+  InformationCircleIcon,
+} from '@heroicons/react/24/solid';
 import { motion } from 'framer-motion';
 import { useDrag } from 'react-dnd';
 import AddButtons from './AddButtons';
@@ -78,16 +81,6 @@ function SearchClass({ course, color, select, selected }: SearchClassProps) {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.25, duration: 0.2 }}
         >
-          <button
-            className="mx-auto my-2 flex items-center rounded-sm px-1 py-0.5 text-xs font-bold text-gray-500 hover:bg-black/5 active:bg-black/10 dark:text-gray-400 dark:hover:bg-white/5 dark:active:bg-white/10"
-            onClick={(e) => {
-              e.stopPropagation();
-              openInfo(course, app, true);
-            }}
-          >
-            <span>VIEW MORE INFO</span>
-            <ChevronRightIcon className="h-4 w-4 stroke-2" />
-          </button>
           <AddButtons
             action={(year, quarter) => {
               planModification.addCourse(course, {
@@ -129,6 +122,15 @@ function SearchClass({ course, color, select, selected }: SearchClassProps) {
                 : 'Add for credit'}
             </button>
           </div>
+          <button
+            className="absolute bottom-1 right-1 rounded-md p-0.5 hover:bg-black/5 active:bg-black/10 dark:hover:bg-white/5 dark:active:bg-white/10"
+            onClick={(e) => {
+              e.stopPropagation();
+              openInfo(course, app, true);
+            }}
+          >
+            <InformationCircleIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+          </button>
         </motion.div>
       )}
 

@@ -7,7 +7,7 @@ import {
   convertSectionComponent,
   convertTime,
 } from '@/utility/Utility';
-import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import { InformationCircleIcon } from '@heroicons/react/24/solid';
 import { motion } from 'framer-motion';
 
 interface SearchScheduleSectionProps {
@@ -114,13 +114,13 @@ function SearchScheduleSection({
           </p>
         </div>
         <button
-          className="absolute bottom-1 right-1"
+          className="absolute bottom-1 right-1 rounded-md p-0.5 hover:bg-black/5 active:bg-black/10 dark:hover:bg-white/5 dark:active:bg-white/10"
           onClick={(e) => {
             e.stopPropagation();
             openInfo({ section }, app, interactions);
           }}
         >
-          <InformationCircleIcon className="h-5 w-5 text-gray-600 opacity-60 hover:opacity-100 active:opacity-75 dark:text-gray-300" />
+          <InformationCircleIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
         </button>
       </div>
     </motion.div>
