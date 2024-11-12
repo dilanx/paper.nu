@@ -1,9 +1,16 @@
-import { useData, useModification } from '@/app/Context';
+import { useApp, useData, useModification } from '@/app/Context';
 import { Color } from '@/types/BaseTypes';
 import { ScheduleCourse, ScheduleInteractions } from '@/types/ScheduleTypes';
 import { FilterOptions } from '@/types/SearchTypes';
-import { BookmarkIcon, MinusIcon } from '@heroicons/react/24/outline';
-import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
+import {
+  BookmarkIcon as BookmarkIconOutline,
+  MinusIcon,
+  ExclamationCircleIcon as ExclamationCircleIconOutline,
+} from '@heroicons/react/24/outline';
+import {
+  BookmarkIcon as BookmarkIconSolid,
+  ExclamationCircleIcon as ExclamationCircleIconSolid,
+} from '@heroicons/react/24/solid';
 import { motion } from 'framer-motion';
 import { useDrag } from 'react-dnd';
 import SearchScheduleSection from './SearchScheduleSection';
@@ -33,6 +40,7 @@ const variants = {
 function SearchScheduleClass(props: SearchScheduleClassProps) {
   const { schedule } = useData();
   const { scheduleModification } = useModification();
+  const { alert } = useApp();
 
   const course = props.course;
 
@@ -86,7 +94,7 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
           initial="hidden"
           animate="visible"
           variants={variants}
-          className="px-2 py-4"
+          className="py px-2"
         >
           {course.sections.map((section) => {
             if (
@@ -110,6 +118,61 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
               {hidden} section{hidden > 1 ? 's' : ''} hidden by filter
             </p>
           )}
+          <div className="flex justify-end">
+            <button
+              className={`text-2xs text-${props.color}-400 flex items-center gap-1 rounded-sm p-0.5 font-bold uppercase tracking-wide opacity-75 hover:bg-black/5 active:bg-black/10 dark:hover:bg-white/5 dark:active:bg-white/10`}
+              onClick={(e) => {
+                e.stopPropagation();
+                alert({
+                  title: 'Notice a missing section?',
+                  color: 'red',
+                  icon: ExclamationCircleIconOutline,
+                  textHTML: (
+                    <div className="flex flex-col gap-2">
+                      <p>
+                        There have been reports of some missing associated
+                        sections for certain sections. This includes things like
+                        some discussion sections attached to lecture sections,
+                        or some lecture sessions attached to lab sections.
+                      </p>
+                      <p>
+                        Unfortunately, the course data API that the school
+                        provides to Paper is known for missing a lot of random
+                        information. I've been contacting the registrar's office
+                        since November 2023 and with follow-ups recently about
+                        this issue, but sadly they'll respond only sometimes
+                        saying they will look into it and other times I don't
+                        hear back.
+                      </p>
+                      <p>
+                        It's important to me to provide the most accurate
+                        information for Paper users. Some things are very
+                        outdated at the registrar (like what quarters courses
+                        are typically offered) so Paper actually builds its own
+                        data with its own historical data to provide this
+                        information accurately. However, missing course data
+                        from the registrar can't really be resolved by Paper
+                        itself, so it's a bit of a waiting game for now.
+                      </p>
+                      <p>
+                        Sorry about these issues! So many of you rely on Paper
+                        for the accurate information on courses so I'll keep on
+                        contacting the registrar until they respond and help me
+                        fix this issue. In the meantime, you can add custom
+                        sections to your schedule to account for these missing
+                        sections. It's not ideal, I know, but hopefully just
+                        temporary. Thanks for your patience!
+                      </p>
+                    </div>
+                  ),
+                  cancelButton: 'Close',
+                });
+              }}
+            >
+              <ExclamationCircleIconSolid className="h-3 w-3" />
+              Notice a missing section?
+            </button>
+          </div>
         </motion.div>
       )}
 
@@ -134,7 +197,7 @@ function SearchScheduleClass(props: SearchScheduleClassProps) {
               <BookmarkIconSolid className="h-5 w-5" />
             )
           ) : (
-            <BookmarkIcon className="h-5 w-5" />
+            <BookmarkIconOutline className="h-5 w-5" />
           )}
         </button>
       )}
