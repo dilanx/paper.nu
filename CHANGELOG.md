@@ -1,5 +1,11 @@
 # Paper Change Log
 
+## 3.2.3
+
+_2024-11-11_
+
+- Various UI updates, bug fixes, and other small changes.
+
 ## 3.2.2
 
 _2024-09-25_
