@@ -12,6 +12,7 @@ import { FilterBadgeName } from '@/types/SearchTypes';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import React, { ReactElement, ReactNode } from 'react';
 import { PaperError, PaperExpectedAuthError } from './PaperError';
+import Links from './StaticLinks';
 
 export const BACKGROUND_LIGHT = '#ffffff';
 export const BACKGROUND_DARK = '#262626';
@@ -360,12 +361,7 @@ export function errorAlert(
       text: errorText,
     },
     action: () => {
-      window.open(
-        `https://support.dilanxd.com/paper/troubleshooting?e=${encodeURIComponent(
-          errorText
-        )}`,
-        '_blank'
-      );
+      window.open(Links.SUPPORT_ERROR, '_blank');
     },
   };
 }

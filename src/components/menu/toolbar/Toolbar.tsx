@@ -93,6 +93,9 @@ function Toolbar({ loading, openAboutMenu, saveState }: ToolbarProps) {
                   onClick: () => {
                     window.open(Links.SUPPORT, '_blank');
                   },
+                  disabled: true,
+                  disabledReason:
+                    'Documentation website migration in progress.',
                 },
                 {
                   text: 'Feedback',
@@ -110,6 +113,9 @@ function Toolbar({ loading, openAboutMenu, saveState }: ToolbarProps) {
                   onClick: () => {
                     window.open(Links.CONTRIBUTE, '_blank');
                   },
+                  disabled: true,
+                  disabledReason:
+                    'Documentation website migration in progress.',
                 },
               ],
             });
