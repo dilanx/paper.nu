@@ -361,7 +361,10 @@ export function errorAlert(
       text: errorText,
     },
     action: () => {
-      window.open(Links.SUPPORT_ERROR, '_blank');
+      window.open(
+        `${Links.SUPPORT_ERROR}?e=${encodeURIComponent(errorText)}`,
+        '_blank'
+      );
     },
   };
 }

@@ -5,13 +5,13 @@ const Links = {
   ACCOUNT: 'https://auth.dilanxd.com/account',
 
   HOMEPAGE: 'https://www.dilanxd.com/paper',
-  SUPPORT: 'https://docs.dilanxd.com/paper',
+  SUPPORT: 'https://support.dilanxd.com/paper/',
   FEEDBACK: 'https://forms.dilanxd.com/paper-support',
   CHANGELOG: 'https://www.dilanxd.com/paper/changelog',
-  FAQ: 'https://docs.dilanxd.com/paper-faqs',
+  FAQ: 'https://support.dilanxd.com/paper/faq/',
 
-  SUPPORT_RATINGS: 'https://docs.dilanxd.com/paper-ratings',
-  SUPPORT_ERROR: 'https://docs.dilanxd.com/paper-errors',
+  SUPPORT_RATINGS: 'https://support.dilanxd.com/paper/ratings/',
+  SUPPORT_ERROR: 'https://support.dilanxd.com/paper/troubleshooting/',
 
   SOURCE_CODE: 'https://github.com/dilanx/paper.nu',
   CONTRIBUTE: 'https://www.paper.nu/contribute',
