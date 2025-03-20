@@ -1,5 +1,11 @@
 # Paper Change Log
 
+## 3.2.4
+
+_2025-03-19_
+
+- Support searching by subject display names. For example, "Computer Science" will show "COMP_SCI" courses, and "Computer Science 110" will show "COMP_SCI 110".
+
 ## 3.2.3
 
 _2024-11-11_
