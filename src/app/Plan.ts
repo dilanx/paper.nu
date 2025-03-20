@@ -322,6 +322,10 @@ export function getCourse(courseId: string) {
   }
 }
 
+export function getCourseSubjectDisplayName(subject: string) {
+  return subjectData?.[subject]?.display ?? subject;
+}
+
 export function getCourseColor(courseId: string) {
   if (!subjectData) return 'gray';
   const subj = courseId.split(' ')[0];

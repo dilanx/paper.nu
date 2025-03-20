@@ -10,8 +10,15 @@ import {
   SearchShortcuts,
 } from '@/types/SearchTypes';
 import { Mode } from '@/utility/Constants';
-import { courseMatchesFilter, getPlanCourseData } from './Plan';
+import {
+  courseMatchesFilter,
+  getCourseSubjectDisplayName,
+  getPlanCourseData,
+} from './Plan';
 import { getScheduleCourseData, sectionMatchesFilter } from './Schedule';
+
+// TODO might be time to run search on the server side, this isn't sustainable
+// this can also be pretty optimized if someone wants to do it lmao
 
 export const LIGHT_PLAN_SEARCH_RESULT_LIMIT = 25;
 export const LIGHT_SCHEDULE_SEARCH_RESULT_LIMIT = 25;
@@ -100,6 +107,15 @@ function getSearchRegex(term: string) {
   return new RegExp(`${pattern}`, 'i');
 }
 
+function fullId(subject: string, ...number: string[]) {
+  const displayName = getCourseSubjectDisplayName(subject);
+  return `${displayName} ${subject} ${number.join(' ')}`;
+}
+
+function scheduleCourseId(course: ScheduleCourse) {
+  return `${course.subject} ${course.number}`;
+}
+
 function search(searchThrough: string, term: string) {
   const st = searchThrough.toLowerCase().replace(/_/g, ' ');
   return term.split(' ').every((t) => getSearchRegex(t).test(st));
@@ -136,8 +152,11 @@ export function searchPlan(
       return;
     }
 
+    const [subject, ...rest] = course.id.split(' ');
+    const id = fullId(subject, ...rest);
+
     for (const term of terms) {
-      if (search(course.id, term)) {
+      if (search(id, term)) {
         courseIdResults.push(course);
       } else if (search(course.name, term)) {
         courseNameResults.push(course);
@@ -176,10 +195,6 @@ export function searchPlan(
     shortcut,
     limitExceeded: limitExceeded ? total - resultLimit : undefined,
   };
-}
-
-function fullId(course: ScheduleCourse) {
-  return `${course.subject} ${course.number}`;
 }
 
 export function searchSchedule(
@@ -223,7 +238,7 @@ export function searchSchedule(
       }
     }
 
-    const id = fullId(course);
+    const id = fullId(course.subject, course.number);
     for (const term of terms) {
       if (search(id, term)) {
         courseIdResults.push(course);
@@ -255,8 +270,12 @@ export function searchSchedule(
     }
   }
 
-  courseIdResults.sort((a, b) => fullId(a).localeCompare(fullId(b)));
-  courseNameResults.sort((a, b) => fullId(a).localeCompare(fullId(b)));
+  courseIdResults.sort((a, b) =>
+    scheduleCourseId(a).localeCompare(scheduleCourseId(b))
+  );
+  courseNameResults.sort((a, b) =>
+    scheduleCourseId(a).localeCompare(scheduleCourseId(b))
+  );
 
   return {
     results: courseIdResults.concat(courseNameResults),
