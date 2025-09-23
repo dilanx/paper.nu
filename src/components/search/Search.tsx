@@ -220,6 +220,17 @@ export default function Search({
         };
       }
 
+      if (results === 'invalid_regex') {
+        return {
+          placeholder: (
+            <SearchMessage
+              title="Invalid regular expression!"
+              subtitle="Your search filter may contain a regular expression. Make sure to double check your syntax!"
+            />
+          ),
+        };
+      }
+
       if (results === 'no_results') {
         return {
           placeholder: (
