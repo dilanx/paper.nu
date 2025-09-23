@@ -110,7 +110,7 @@ export async function getSubjectData(): Promise<SubjectsAndSchools> {
     d('subject data: cache miss, fetching data');
   }
 
-  const res = await fetch('https://api.dilanxd.com/paper/subjects');
+  const res = await fetch('https://api-legacy.dilanxd.com/paper/subjects');
   const json = await res.json();
 
   await localforage.setItem('subjects', {

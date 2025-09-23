@@ -1,8 +1,8 @@
 const Links = {
-  SERVER: 'https://api.dilanxd.com',
-  AUTH: 'https://api.dilanxd.com/auth',
-  TOKEN: `https://api.dilanxd.com/auth/token`,
-  ACCOUNT: 'https://auth.dilanxd.com/account',
+  SERVER: 'https://api-legacy.dilanxd.com',
+  AUTH: 'https://api-legacy.dilanxd.com/auth',
+  TOKEN: `https://api-legacy.dilanxd.com/auth/token`,
+  ACCOUNT: 'https://auth-legacy.dilanxd.com/account',
 
   HOMEPAGE: 'https://www.dilanxd.com/paper',
   SUPPORT: 'https://support.dilanxd.com/paper/',
