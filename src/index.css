@@ -23,10 +23,6 @@
     grid-template-columns: 3.2rem repeat(5, minmax(0, 1fr));
   }
 
-  .alert-data a {
-    @apply text-purple-800 hover:underline dark:text-purple-300;
-  }
-
   @keyframes spin {
     from {
       transform: translate(-50%, -50%) rotate(0);
@@ -201,6 +197,20 @@
       to right,
       #3f2b96,
       #a8c0ff
+    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  }
+
+  .background-gradient-5 {
+    background: #ffefba; /* fallback for old browsers */
+    background: -webkit-linear-gradient(
+      to right,
+      #ffffff,
+      #ffefba
+    ); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(
+      to right,
+      #ffffff,
+      #ffefba
     ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   }
 

@@ -252,6 +252,7 @@ export interface SubjectsAndSchools {
 export interface BannerData {
   id: string;
   content: React.ReactNode;
+  theme: 'light' | 'dark';
   gradient?: number;
 }
 

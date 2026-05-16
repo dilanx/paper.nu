@@ -1,5 +1,11 @@
 # Paper Change Log
 
+## 3.2.5
+
+_2026-05-16_
+
+- Add theme options to banner notices.
+
 ## 3.2.4
 
 _2025-03-19_
