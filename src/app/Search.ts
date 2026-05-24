@@ -99,12 +99,22 @@ function checkInvalidQueryTerms(terms: string[]) {
   }
 }
 
-function getSearchRegex(term: string) {
+function isValidRegex(pattern: string): [boolean, RegExp | null] {
+  try {
+    const regex = new RegExp(pattern, 'i');
+    return [true, regex];
+  } catch {
+    return [false, null];
+  }
+}
+
+function getSearchRegex(term: string): RegExp | null {
   const pattern = term
     .replace(/([.*+?^=!:${}()|[]\/\\])/g, '\\$1')
     .replace(/x/g, '[\\dx]');
 
-  return new RegExp(`${pattern}`, 'i');
+  const [isValid, regex] = isValidRegex(pattern);
+  return isValid ? regex : null;
 }
 
 function fullId(subject: string, ...number: string[]) {
@@ -118,7 +128,19 @@ function scheduleCourseId(course: ScheduleCourse) {
 
 function search(searchThrough: string, term: string) {
   const st = searchThrough.toLowerCase().replace(/_/g, ' ');
-  return term.split(' ').every((t) => getSearchRegex(t).test(st));
+
+  // true = valid regex, match; false = valid regex, no match; 'invalid_regex' = invalid regex
+  const regexStateList: Array<boolean | 'invalid_regex'> = term
+    .split(' ')
+    .map((t) => {
+      const regex = getSearchRegex(t);
+      return regex ? regex.test(st) : 'invalid_regex';
+    });
+
+  const isAllRegexMatches = regexStateList.every((t) => t === true);
+  const isSomeInvalidRegex = regexStateList.some((t) => t === 'invalid_regex');
+
+  return isSomeInvalidRegex ? 'invalid_regex' : isAllRegexMatches;
 }
 
 export function searchPlan(
@@ -156,15 +178,30 @@ export function searchPlan(
     const id = fullId(subject, ...rest);
 
     for (const term of terms) {
-      if (search(id, term)) {
+      const searchIdResult = search(id, term);
+      const searchCourseResult = search(course.name, term);
+
+      if (
+        searchIdResult == 'invalid_regex' ||
+        searchCourseResult == 'invalid_regex'
+      ) {
+        return 'invalid_regex';
+      }
+
+      if (searchIdResult) {
         courseIdResults.push(course);
-      } else if (search(course.name, term)) {
+      } else if (searchCourseResult) {
         courseNameResults.push(course);
       }
     }
   };
 
-  courseData.courses.forEach(checkCourse);
+  for (const course of courseData.courses) {
+    const result = checkCourse(course);
+    if (result == 'invalid_regex') {
+      return 'invalid_regex';
+    }
+  }
 
   if (filter?.include?.includes('Legacy Courses')) {
     courseData.legacy.forEach(checkCourse);
@@ -240,10 +277,24 @@ export function searchSchedule(
 
     const id = fullId(course.subject, course.number);
     for (const term of terms) {
-      if (search(id, term)) {
+      const searchIdResult = search(id, term);
+      const searchCourseResult = search(course.title, term);
+      const isSectionsContainsInvalidRegex = course.sections.some(
+        (s) => s.topic && search(s.topic, term) == 'invalid_regex'
+      );
+
+      if (
+        searchIdResult == 'invalid_regex' ||
+        searchCourseResult == 'invalid_regex' ||
+        isSectionsContainsInvalidRegex
+      ) {
+        return 'invalid_regex';
+      }
+
+      if (searchIdResult) {
         courseIdResults.push(course);
       } else if (
-        search(course.title, term) ||
+        searchCourseResult ||
         course.sections.some((s) => s.topic && search(s.topic, term))
       ) {
         courseNameResults.push(course);
@@ -251,7 +302,12 @@ export function searchSchedule(
     }
   };
 
-  courseData.forEach(checkCourse);
+  for (const course of courseData) {
+    const result = checkCourse(course);
+    if (result == 'invalid_regex') {
+      return 'invalid_regex';
+    }
+  }
 
   const total = courseIdResults.length + courseNameResults.length;
   if (total === 0) return 'no_results';
