@@ -4,14 +4,12 @@ const Links = {
   TOKEN: `https://api-legacy.dilanxd.com/auth/token`,
   ACCOUNT: 'https://auth-legacy.dilanxd.com/account',
 
-  HOMEPAGE: 'https://www.dilanxd.com/paper',
-  SUPPORT: 'https://support1.dilanxd.com/paper/',
-  FEEDBACK: 'https://forms.dilanxd.com/paper-support',
+  SUPPORT: 'https://support.dilanxd.com/paper',
+  FEEDBACK: 'https://support.dilanxd.com/paper-feedback',
   CHANGELOG: 'https://www.dilanxd.com/paper/changelog',
-  FAQ: 'https://support1.dilanxd.com/paper/faq/',
 
-  SUPPORT_RATINGS: 'https://support1.dilanxd.com/paper/ratings/',
-  SUPPORT_ERROR: 'https://support1.dilanxd.com/paper/troubleshooting/',
+  SUPPORT_RATINGS: 'https://support.dilanxd.com/paper',
+  SUPPORT_ERROR: 'https://support.dilanxd.com/paper',
 
   SOURCE_CODE: 'https://github.com/dilanx/paper.nu',
   CONTRIBUTE: 'https://www.paper.nu/contribute',

@@ -67,7 +67,6 @@ function About({ onClose }: AboutProps) {
                   </p>
                 </div>
                 <div className="my-8 flex w-full flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4">
-                  <AboutButton href={Links.HOMEPAGE}>Learn More</AboutButton>
                   <AboutButton href={Links.SUPPORT}>Help Center</AboutButton>
                   <AboutButton href={Links.CHANGELOG}>Change Log</AboutButton>
                   <AboutButton href={Links.SOURCE_CODE}>

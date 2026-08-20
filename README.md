@@ -4,12 +4,4 @@
 
 Find more information and get started at [paper.nu](https://www.paper.nu).
 
-## Documentation and Support
-
-Visit https://support1.dilanxd.com/paper/ for documentation and support.
-
-## Contributing
-
-Visit https://support1.dilanxd.com/paper/contribute/ for contribution instructions.
-
-If you want to get involved in Paper development but don't have ideas, feel free to check out [this list of ideas](https://support1.dilanxd.com/paper/contribute/ideas/) for inspiration!
+Visit https://support.dilanxd.com/paper for documentation and support.

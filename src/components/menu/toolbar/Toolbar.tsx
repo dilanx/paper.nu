@@ -7,7 +7,6 @@ import Links from '@/utility/StaticLinks';
 import {
   ArrowRightOnRectangleIcon,
   CalendarIcon as CalendarIconOutline,
-  CodeBracketSquareIcon,
   Cog6ToothIcon,
   EllipsisHorizontalIcon,
   InboxArrowDownIcon,
@@ -37,14 +36,8 @@ interface ToolbarProps {
 }
 
 function Toolbar({ loading, openAboutMenu, saveState }: ToolbarProps) {
-  const {
-    version,
-    userOptions,
-    activeContextMenu,
-    alert,
-    contextMenu,
-    mapView,
-  } = useApp();
+  const { userOptions, activeContextMenu, alert, contextMenu, mapView } =
+    useApp();
   const { plan, schedule } = useData();
   const isSchedule = userOptions.get.mode === Mode.SCHEDULE;
 
@@ -98,17 +91,7 @@ function Toolbar({ loading, openAboutMenu, saveState }: ToolbarProps) {
                   text: 'Feedback',
                   icon: InboxArrowDownIcon,
                   onClick: () => {
-                    window.open(
-                      `${Links.FEEDBACK}?v=v${encodeURIComponent(version)}`,
-                      '_blank'
-                    );
-                  },
-                },
-                {
-                  text: 'Contribute',
-                  icon: CodeBracketSquareIcon,
-                  onClick: () => {
-                    window.open(Links.CONTRIBUTE, '_blank');
+                    window.open(Links.FEEDBACK, '_blank');
                   },
                 },
               ],

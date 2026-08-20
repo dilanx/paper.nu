@@ -4,9 +4,7 @@ redirects:
   - from: /changelog
     to: https://github.com/dilanx/paper.nu/blob/main/CHANGELOG.md
   - from: /support
-    to: https://support1.dilanxd.com/paper
-  - from: /contribute
-    to: https://support1.dilanxd.com/paper/contribute
+    to: https://support.dilanxd.com/paper
 
 seo:
   image: https://www.paper.nu/icon.png
