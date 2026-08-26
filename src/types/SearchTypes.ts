@@ -15,7 +15,8 @@ export type SearchError =
   | 'no_query'
   | 'too_short'
   | 'no_results'
-  | 'not_loaded';
+  | 'not_loaded'
+  | 'invalid_regex';
 
 export interface SearchFilter {
   get: FilterOptions;
